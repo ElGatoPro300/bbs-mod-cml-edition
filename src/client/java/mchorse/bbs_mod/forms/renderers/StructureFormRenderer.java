@@ -248,7 +248,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(nbtFile);
                 parseStructure(root);
                 System.out.println("[BBS][Structure] Cargado comprimido desde File OK: '" + file + "'");
                 return;
@@ -260,7 +260,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 try (DataInputStream dis = new DataInputStream(new java.io.FileInputStream(nbtFile)))
                 {
-                    NbtElement elem = NbtIo.read(dis, NbtTagSizeTracker.ofUnlimitedBytes());
+                    NbtElement elem = NbtIo.read(dis, NbtTagSizeTracker.EMPTY);
                     if (elem instanceof NbtCompound)
                     {
                         parseStructure((NbtCompound) elem);
@@ -281,7 +281,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(is);
                 parseStructure(root);
                 System.out.println("[BBS][Structure] Cargado comprimido vía InputStream OK: '" + file + "'");
             }
@@ -293,7 +293,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Reiniciar stream para lectura sin comprimir */
                 try (InputStream is2 = BBSMod.getProvider().getAsset(Link.assets(file)); DataInputStream dis = new DataInputStream(is2))
                 {
-                    NbtElement elem = NbtIo.read(dis, NbtTagSizeTracker.ofUnlimitedBytes());
+                    NbtElement elem = NbtIo.read(dis, NbtTagSizeTracker.EMPTY);
                     if (elem instanceof NbtCompound)
                     {
                         parseStructure((NbtCompound) elem);
