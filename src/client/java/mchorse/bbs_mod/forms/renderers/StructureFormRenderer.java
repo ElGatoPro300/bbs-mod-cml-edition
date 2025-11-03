@@ -401,28 +401,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
             catch (IOException e)
             {
-<<<<<<< HEAD
-                System.out.println("[BBS][Structure] Lectura comprimida desde File falló, probando sin comprimir: '" + file + "'");
-                e.printStackTrace();
-
-                try (DataInputStream dis = new DataInputStream(new java.io.FileInputStream(nbtFile)))
-                {
-                    NbtElement elem = NbtIo.read(dis, NbtTagSizeTracker.EMPTY);
-                    if (elem instanceof NbtCompound)
-                    {
-                        parseStructure((NbtCompound) elem);
-                        System.out.println("[BBS][Structure] Cargado sin comprimir desde File OK: '" + file + "'");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.out.println("[BBS][Structure] Lectura sin comprimir desde File también falló: '" + file + "'");
-                    ex.printStackTrace();
-                }
-=======
-                
->>>>>>> master
+                // Silenciar errores de lectura; se intentará vía InputStream abajo
             }
         }
 
@@ -436,28 +415,12 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
             catch (IOException e)
             {
-<<<<<<< HEAD
-                System.out.println("[BBS][Structure] Lectura comprimida vía InputStream falló, probando sin comprimir: '" + file + "'");
-                e.printStackTrace();
-
-                /* Reiniciar stream para lectura sin comprimir */
-                try (InputStream is2 = BBSMod.getProvider().getAsset(Link.assets(file)); DataInputStream dis = new DataInputStream(is2))
-                {
-                    NbtElement elem = NbtIo.read(dis, NbtTagSizeTracker.EMPTY);
-                    if (elem instanceof NbtCompound)
-                    {
-                        parseStructure((NbtCompound) elem);
-                        System.out.println("[BBS][Structure] Cargado sin comprimir vía InputStream OK: '" + file + "'");
-                    }
-                }
-=======
-                
->>>>>>> master
+                // Silenciar errores; no fallback a lectura sin comprimir en esta rama
             }
         }
         catch (Exception e)
         {
-            
+            // Ignorar errores del provider
         }
         
     }
