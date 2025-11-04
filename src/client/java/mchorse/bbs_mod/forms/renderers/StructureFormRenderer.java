@@ -123,9 +123,29 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         consumers.setSubstitute(BBSRendering.getColorConsumer(tint));
         consumers.setUI(true);
 
-        renderStructure(matrices, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+        /* Usar el render con culling y soporte de bloques interactivos también en UI */
+        FormRenderingContext uiContext = new FormRenderingContext()
+            .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, context.getTransition())
+            .inUI();
+
+        // Ajuste de gráfica para capas (hojas, portales, etc.) igual que en 3D
+        try
+        {
+            net.minecraft.client.option.GraphicsMode gm = net.minecraft.client.MinecraftClient.getInstance().options.getGraphicsMode().getValue();
+            net.minecraft.client.render.RenderLayers.setFancyGraphicsOrBetter(gm != net.minecraft.client.option.GraphicsMode.FAST);
+        }
+        catch (Throwable ignored) {}
+
+        // Igual que en vanilla: proveedor custom y capas de bloque (no de entidad)
+        boolean useEntityLayers = false;
+        renderStructureCulledWorld(uiContext, matrices, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers);
 
         consumers.draw();
+        // Restaurar estado GL para evitar fugas hacia otros renders UI
+        com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+        com.mojang.blaze3d.systems.RenderSystem.enableDepthTest();
+        com.mojang.blaze3d.systems.RenderSystem.depthFunc(org.lwjgl.opengl.GL11.GL_LEQUAL);
+        mchorse.bbs_mod.forms.CustomVertexConsumerProvider.clearRunnables();
         consumers.setUI(false);
         consumers.setSubstitute(null);
 
@@ -170,6 +190,16 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             // En vanilla, el proveedor custom da una iluminación más consistente
             consumers = FormUtilsClient.getProvider();
             useEntityLayers = false;
+        }
+
+        // Aplicar tinte/opacidad del formulario cuando sea posible
+        // - En vanilla: el proveedor custom soporta sustitución del consumidor
+        // - Con shaders: el tinte se aplicará envolviendo cada VertexConsumer en el bucle
+        //   de render (más abajo), por lo que aquí no hay sustitución global
+        Color tint3D = this.form.color.get();
+        if (!shadersActive && consumers instanceof CustomVertexConsumerProvider)
+        {
+            ((CustomVertexConsumerProvider) consumers).setSubstitute(BBSRendering.getColorConsumer(tint3D));
         }
 
         // Ajuste de gráfica para capas (hojas, etc.)
@@ -288,11 +318,27 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         BlockEntityRenderDispatcher beDispatcher = MinecraftClient.getInstance().getBlockEntityRenderDispatcher();
 
         // Posición ancla en el mundo: el formulario se renderiza relativo a su entidad
-        net.minecraft.util.math.BlockPos anchor = new net.minecraft.util.math.BlockPos(
-            (int)Math.floor(context.entity.getX()),
-            (int)Math.floor(context.entity.getY()),
-            (int)Math.floor(context.entity.getZ())
-        );
+        // Si no hay entidad (UI), usar origen como ancla
+        net.minecraft.util.math.BlockPos anchor;
+        if (context.entity != null)
+        {
+            anchor = new net.minecraft.util.math.BlockPos(
+                (int)Math.floor(context.entity.getX()),
+                (int)Math.floor(context.entity.getY()),
+                (int)Math.floor(context.entity.getZ())
+            );
+        }
+        else
+        {
+            anchor = net.minecraft.util.math.BlockPos.ORIGIN;
+        }
+
+        // Definir offset base desde el centro/paridad para que el BlockRenderView
+        // pueda traducir las consultas de luz/color a coordenadas de mundo reales.
+        int baseDx = (int)Math.floor(-cx + parityX);
+        int baseDy = (int)Math.floor(-cy);
+        int baseDz = (int)Math.floor(-cz + parityZ);
+        view.setWorldAnchor(anchor, baseDx, baseDy, baseDz);
 
         for (BlockEntry entry : blocks)
         {
@@ -306,7 +352,25 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 ? RenderLayers.getEntityBlockLayer(entry.state, false)
                 : RenderLayers.getBlockLayer(entry.state);
 
+            // Si hay opacidad global (<1), forzar capa translúcida para todos los bloques
+            // de la estructura, de modo que el alpha se aplique incluso a geometría sólida/cutout.
+            float globalAlpha = this.form.color.get().a;
+            if (globalAlpha < 0.999f)
+            {
+                layer = useEntityLayers
+                    ? net.minecraft.client.render.TexturedRenderLayers.getEntityTranslucentCull()
+                    : RenderLayer.getTranslucent();
+            }
+
             VertexConsumer vc = consumers.getBuffer(layer);
+            // Envolver el consumidor con tinte/opacidad para garantizar coloración
+            // también cuando se usan buffers de entidad (compatibilidad con shaders).
+            Color tint = this.form.color.get();
+            java.util.function.Function<VertexConsumer, VertexConsumer> recolor = BBSRendering.getColorConsumer(tint);
+            if (recolor != null)
+            {
+                vc = recolor.apply(vc);
+            }
             MinecraftClient.getInstance().getBlockRenderManager().renderBlock(entry.state, entry.pos, view, stack, vc, true, Random.create());
 
             // Renderizar bloques con entidad (cofres, camas, carteles, cráneos, etc.)
