@@ -1,0 +1,100 @@
+plugins {
+	id 'fabric-loom' version '1.8-SNAPSHOT'
+	id 'maven-publish'
+}
+
+version = project.mod_version + "-" + minecraft_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+				metadataSources {
+					mavenPom()
+					artifact()
+				}
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
+	mavenCentral()
+	maven { url 'https://repo.spongepowered.org/maven' }
+}
+
+loom {
+    splitEnvironmentSourceSets()
+
+	mods {
+		"bbs" {
+			sourceSet sourceSets.main
+		}
+	}
+
+	accessWidenerPath.set(getRootProject().file("src/main/resources/bbs.accesswidener"))
+}
+
+configurations.all {
+	resolutionStrategy {
+		force 'org.lwjgl:lwjgl:3.3.3'
+		force 'org.lwjgl:lwjgl-opengl:3.3.3'
+		force 'org.lwjgl:lwjgl-glfw:3.3.3'
+		force 'org.lwjgl:lwjgl-stb:3.3.3'
+		force 'org.lwjgl:lwjgl-tinyfd:3.3.3'
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Usa Sodium solo para compilación; evitar incluirlo en runtime del dev client
+    modCompileOnly "maven.modrinth:sodium:mc1.21-0.5.11"
+    // Iris opcional en runtime; mantener como compileOnly
+    modCompileOnly "maven.modrinth:iris:1.7.3+1.21"
+	modImplementation "org.anarres:jcpp:1.4.14"
+	modImplementation "io.github.douira:glsl-transformer:2.0.0-pre13"
+
+	// MixinExtras: include runtime and add common API for compilation
+	compileOnly "io.github.llamalad7:mixinextras-common:0.4.1"
+	include(modImplementation("io.github.llamalad7:mixinextras-fabric:0.4.1"))
+
+	// Ensure refmap generation via Mixin annotation processor
+	annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+	clientAnnotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+}
+
+processResources {
+	inputs.property "version", project.version
+	filesMatching("fabric.mod.json") { expand "version": project.version }
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+	it.options.compilerArgs.addAll(['-Xdiags:verbose','-Xlint:none','-ArewriteMixinJson=true','-AoutRefMap=bbs.client.refmap.json','-Amixin.config=bbs.client.mixins.json'])
+}
+
+java {
+	withSourcesJar()
+	toolchain { languageVersion = JavaLanguageVersion.of(21) }
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	from("LICENSE") { rename { "${it}_${project.base.archivesName.get()}" } }
+}
+
+publishing {
+	publications { mavenJava(MavenPublication) { from components.java } }
+	repositories { }
+}
