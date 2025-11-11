@@ -48,6 +48,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import java.io.File;
 import java.io.IOException;
@@ -431,24 +432,51 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             cz = size.getZ() / 2f;
         }
 
-        // Ajuste de paridad: igualar el comportamiento de render de un bloque
-        // - Bloque único se traduce -0.5 en X/Z para centrar visualmente sobre el grid
-        // - Para estructuras impares: su centro coincide con el centro de un bloque => usar -0.5
-        // - Para estructuras pares: su centro está entre dos bloques => usar 0.0 (ya está a mitad de arista)
-        float parityX = 0f;
-        float parityZ = 0f;
-        if (boundsMin != null && boundsMax != null)
+        // Determinar pivote efectivo
+        float pivotX;
+        float pivotY;
+        float pivotZ;
+        mchorse.bbs_mod.forms.forms.utils.PivotSettings pivotSettingsRuntime = this.form.pivot.getRuntimeValue();
+        boolean useAuto = pivotSettingsRuntime != null ? pivotSettingsRuntime.auto : this.form.autoPivot.get();
+        if (useAuto)
         {
-            int widthX = boundsMax.getX() - boundsMin.getX() + 1;
-            int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
-            parityX = (widthX % 2 == 1) ? -0.5f : 0f;
-            parityZ = (widthZ % 2 == 1) ? -0.5f : 0f;
+            // Ajuste de paridad: igualar el comportamiento de render de un bloque
+            // - Bloque único se traduce -0.5 en X/Z para centrar visualmente sobre el grid
+            // - Para estructuras impares: su centro coincide con el centro de un bloque => usar -0.5
+            // - Para estructuras pares: su centro está entre dos bloques => usar 0.0 (ya está a mitad de arista)
+            float parityXAuto = 0f;
+            float parityZAuto = 0f;
+            if (boundsMin != null && boundsMax != null)
+            {
+                int widthX = boundsMax.getX() - boundsMin.getX() + 1;
+                int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
+                parityXAuto = (widthX % 2 == 1) ? -0.5f : 0f;
+                parityZAuto = (widthZ % 2 == 1) ? -0.5f : 0f;
+            }
+            pivotX = cx - parityXAuto;
+            pivotY = cy;
+            pivotZ = cz - parityZAuto;
+        }
+        else
+        {
+            if (pivotSettingsRuntime != null)
+            {
+                pivotX = pivotSettingsRuntime.pivot.x;
+                pivotY = pivotSettingsRuntime.pivot.y;
+                pivotZ = pivotSettingsRuntime.pivot.z;
+            }
+            else
+            {
+                pivotX = this.form.pivotX.get();
+                pivotY = this.form.pivotY.get();
+                pivotZ = this.form.pivotZ.get();
+            }
         }
 
         for (BlockEntry entry : blocks)
         {
             stack.push();
-            stack.translate(entry.pos.getX() - cx + parityX, entry.pos.getY() - cy, entry.pos.getZ() - cz + parityZ);
+            stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
             MinecraftClient.getInstance().getBlockRenderManager().renderBlockAsEntity(entry.state, stack, consumers, light, overlay);
             stack.pop();
         }
@@ -480,14 +508,40 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             cz = size.getZ() / 2f;
         }
 
-        float parityX = 0f;
-        float parityZ = 0f;
-        if (boundsMin != null && boundsMax != null)
+        float pivotX;
+        float pivotY;
+        float pivotZ;
+        mchorse.bbs_mod.forms.forms.utils.PivotSettings pivotSettingsRuntime2 = this.form.pivot.getRuntimeValue();
+        boolean useAuto2 = pivotSettingsRuntime2 != null ? pivotSettingsRuntime2.auto : this.form.autoPivot.get();
+        if (useAuto2)
         {
-            int widthX = boundsMax.getX() - boundsMin.getX() + 1;
-            int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
-            parityX = (widthX % 2 == 1) ? -0.5f : 0f;
-            parityZ = (widthZ % 2 == 1) ? -0.5f : 0f;
+            float parityXAuto = 0f;
+            float parityZAuto = 0f;
+            if (boundsMin != null && boundsMax != null)
+            {
+                int widthX = boundsMax.getX() - boundsMin.getX() + 1;
+                int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
+                parityXAuto = (widthX % 2 == 1) ? -0.5f : 0f;
+                parityZAuto = (widthZ % 2 == 1) ? -0.5f : 0f;
+            }
+            pivotX = cx - parityXAuto;
+            pivotY = cy;
+            pivotZ = cz - parityZAuto;
+        }
+        else
+        {
+            if (pivotSettingsRuntime2 != null)
+            {
+                pivotX = pivotSettingsRuntime2.pivot.x;
+                pivotY = pivotSettingsRuntime2.pivot.y;
+                pivotZ = pivotSettingsRuntime2.pivot.z;
+            }
+            else
+            {
+                pivotX = this.form.pivotX.get();
+                pivotY = this.form.pivotY.get();
+                pivotZ = this.form.pivotZ.get();
+            }
         }
 
         // Construir vista virtual con todos los bloques
@@ -496,10 +550,25 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             entries.add(new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(be.state, be.pos));
         }
+        // Resolve unified structure light settings with legacy fallback
+        boolean lightsEnabled;
+        int lightIntensity;
+        mchorse.bbs_mod.forms.forms.utils.StructureLightSettings slRuntime = this.form.structureLight.getRuntimeValue();
+        if (slRuntime != null)
+        {
+            lightsEnabled = slRuntime.enabled;
+            lightIntensity = slRuntime.intensity;
+        }
+        else
+        {
+            lightsEnabled = this.form.emitLight.get();
+            lightIntensity = this.form.lightIntensity.get();
+        }
+
         mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
             .setBiomeOverride(this.form.biomeId.get())
-            .setLightsEnabled(this.form.emitLight.get())
-            .setLightIntensity(this.form.lightIntensity.get());
+            .setLightsEnabled(lightsEnabled)
+            .setLightIntensity(lightIntensity);
 
         BlockEntityRenderDispatcher beDispatcher = MinecraftClient.getInstance().getBlockEntityRenderDispatcher();
 
@@ -521,15 +590,15 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         // Definir offset base desde el centro/paridad para que el BlockRenderView
         // pueda traducir las consultas de luz/color a coordenadas de mundo reales.
-        int baseDx = (int)Math.floor(-cx + parityX);
-        int baseDy = (int)Math.floor(-cy);
-        int baseDz = (int)Math.floor(-cz + parityZ);
+        int baseDx = (int)Math.floor(-pivotX);
+        int baseDy = (int)Math.floor(-pivotY);
+        int baseDz = (int)Math.floor(-pivotZ);
         view.setWorldAnchor(anchor, baseDx, baseDy, baseDz);
 
         for (BlockEntry entry : blocks)
         {
             stack.push();
-            stack.translate(entry.pos.getX() - cx + parityX, entry.pos.getY() - cy, entry.pos.getZ() - cz + parityZ);
+            stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
             // Durante la captura del VAO normal, omitir bloques con texturas animadas
             // o tinte por bioma para evitar doble dibujo y parpadeos.
@@ -571,9 +640,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (!this.capturingVAO && block instanceof BlockEntityProvider)
             {
                 // Alinear la posición del BE con la ubicación real donde se dibuja
-                int dx = (int)Math.floor(entry.pos.getX() - cx + parityX);
-                int dy = (int)Math.floor(entry.pos.getY() - cy);
-                int dz = (int)Math.floor(entry.pos.getZ() - cz + parityZ);
+                int dx = (int)Math.floor(entry.pos.getX() - pivotX);
+                int dy = (int)Math.floor(entry.pos.getY() - pivotY);
+                int dz = (int)Math.floor(entry.pos.getZ() - pivotZ);
                 net.minecraft.util.math.BlockPos worldPos = anchor.add(dx, dy, dz);
 
                 BlockEntity be = ((BlockEntityProvider) block).createBlockEntity(worldPos, entry.state);
@@ -637,14 +706,40 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             cz = size.getZ() / 2f;
         }
 
-        float parityX = 0f;
-        float parityZ = 0f;
-        if (boundsMin != null && boundsMax != null)
+        float pivotX;
+        float pivotY;
+        float pivotZ;
+        mchorse.bbs_mod.forms.forms.utils.PivotSettings pivotSettingsRuntime3 = this.form.pivot.getRuntimeValue();
+        boolean useAuto3 = pivotSettingsRuntime3 != null ? pivotSettingsRuntime3.auto : this.form.autoPivot.get();
+        if (useAuto3)
         {
-            int widthX = boundsMax.getX() - boundsMin.getX() + 1;
-            int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
-            parityX = (widthX % 2 == 1) ? -0.5f : 0f;
-            parityZ = (widthZ % 2 == 1) ? -0.5f : 0f;
+            float parityXAuto = 0f;
+            float parityZAuto = 0f;
+            if (boundsMin != null && boundsMax != null)
+            {
+                int widthX = boundsMax.getX() - boundsMin.getX() + 1;
+                int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
+                parityXAuto = (widthX % 2 == 1) ? -0.5f : 0f;
+                parityZAuto = (widthZ % 2 == 1) ? -0.5f : 0f;
+            }
+            pivotX = cx - parityXAuto;
+            pivotY = cy;
+            pivotZ = cz - parityZAuto;
+        }
+        else
+        {
+            if (pivotSettingsRuntime3 != null)
+            {
+                pivotX = pivotSettingsRuntime3.pivot.x;
+                pivotY = pivotSettingsRuntime3.pivot.y;
+                pivotZ = pivotSettingsRuntime3.pivot.z;
+            }
+            else
+            {
+                pivotX = this.form.pivotX.get();
+                pivotY = this.form.pivotY.get();
+                pivotZ = this.form.pivotZ.get();
+            }
         }
 
         // Vista virtual para culling/colores/luz correctos
@@ -653,10 +748,25 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             entries.add(new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(be.state, be.pos));
         }
+        // Resolve unified structure light settings with legacy fallback
+        boolean lightsEnabled2;
+        int lightIntensity2;
+        mchorse.bbs_mod.forms.forms.utils.StructureLightSettings slRuntime2 = this.form.structureLight.getRuntimeValue();
+        if (slRuntime2 != null)
+        {
+            lightsEnabled2 = slRuntime2.enabled;
+            lightIntensity2 = slRuntime2.intensity;
+        }
+        else
+        {
+            lightsEnabled2 = this.form.emitLight.get();
+            lightIntensity2 = this.form.lightIntensity.get();
+        }
+
         mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
             .setBiomeOverride(this.form.biomeId.get())
-            .setLightsEnabled(this.form.emitLight.get())
-            .setLightIntensity(this.form.lightIntensity.get());
+            .setLightsEnabled(lightsEnabled2)
+            .setLightIntensity(lightIntensity2);
 
         // Ancla mundial
         net.minecraft.util.math.BlockPos anchor;
@@ -673,9 +783,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             anchor = net.minecraft.util.math.BlockPos.ORIGIN;
         }
 
-        int baseDx = (int)Math.floor(-cx + parityX);
-        int baseDy = (int)Math.floor(-cy);
-        int baseDz = (int)Math.floor(-cz + parityZ);
+        int baseDx = (int)Math.floor(-pivotX);
+        int baseDy = (int)Math.floor(-pivotY);
+        int baseDz = (int)Math.floor(-pivotZ);
         view.setWorldAnchor(anchor, baseDx, baseDy, baseDz);
 
         for (BlockEntry entry : blocks)
@@ -686,7 +796,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
 
             stack.push();
-            stack.translate(entry.pos.getX() - cx + parityX, entry.pos.getY() - cy, entry.pos.getZ() - cz + parityZ);
+            stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
             // Selección de capa: en shaders usar variante de entidad para que el pack procese la animación
             boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
@@ -717,7 +827,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         // Asegurar estado de blending correcto para capas translúcidas
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        // Centrado basado en límites reales (min/max)
+        // Calcular pivote efectivo igual que en renderStructureCulledWorld
         float cx;
         float cy;
         float cz;
@@ -735,14 +845,40 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             cz = size.getZ() / 2f;
         }
 
-        float parityX = 0f;
-        float parityZ = 0f;
-        if (boundsMin != null && boundsMax != null)
+        float pivotX;
+        float pivotY;
+        float pivotZ;
+        mchorse.bbs_mod.forms.forms.utils.PivotSettings pivotSettingsRuntime2 = this.form.pivot.getRuntimeValue();
+        boolean useAuto2 = pivotSettingsRuntime2 != null ? pivotSettingsRuntime2.auto : this.form.autoPivot.get();
+        if (useAuto2)
         {
-            int widthX = boundsMax.getX() - boundsMin.getX() + 1;
-            int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
-            parityX = (widthX % 2 == 1) ? -0.5f : 0f;
-            parityZ = (widthZ % 2 == 1) ? -0.5f : 0f;
+            float parityXAuto = 0f;
+            float parityZAuto = 0f;
+            if (boundsMin != null && boundsMax != null)
+            {
+                int widthX = boundsMax.getX() - boundsMin.getX() + 1;
+                int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
+                parityXAuto = (widthX % 2 == 1) ? -0.5f : 0f;
+                parityZAuto = (widthZ % 2 == 1) ? -0.5f : 0f;
+            }
+            pivotX = cx - parityXAuto;
+            pivotY = cy;
+            pivotZ = cz - parityZAuto;
+        }
+        else
+        {
+            if (pivotSettingsRuntime2 != null)
+            {
+                pivotX = pivotSettingsRuntime2.pivot.x;
+                pivotY = pivotSettingsRuntime2.pivot.y;
+                pivotZ = pivotSettingsRuntime2.pivot.z;
+            }
+            else
+            {
+                pivotX = this.form.pivotX.get();
+                pivotY = this.form.pivotY.get();
+                pivotZ = this.form.pivotZ.get();
+            }
         }
 
         // Vista virtual para culling/colores/luz correctos
@@ -771,9 +907,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             anchor = net.minecraft.util.math.BlockPos.ORIGIN;
         }
 
-        int baseDx = (int)Math.floor(-cx + parityX);
-        int baseDy = (int)Math.floor(-cy);
-        int baseDz = (int)Math.floor(-cz + parityZ);
+        int baseDx = (int)Math.floor(-pivotX);
+        int baseDy = (int)Math.floor(-pivotY);
+        int baseDz = (int)Math.floor(-pivotZ);
         view.setWorldAnchor(anchor, baseDx, baseDy, baseDz);
 
         for (BlockEntry entry : blocks)
@@ -784,7 +920,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
 
             stack.push();
-            stack.translate(entry.pos.getX() - cx + parityX, entry.pos.getY() - cy, entry.pos.getZ() - cz + parityZ);
+            stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
             // Capa según el estado; hojas suelen ser cutout_mipped, césped/plantas cutout
             RenderLayer layer = RenderLayers.getBlockLayer(entry.state);
@@ -860,7 +996,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
      */
     private void renderBlockEntitiesOnly(FormRenderingContext context, MatrixStack stack, net.minecraft.client.render.VertexConsumerProvider consumers, int light, int overlay)
     {
-        // Centrado basado en límites reales (min/max)
+        // Calcular pivote efectivo igual que en renderStructureCulledWorld
         float cx;
         float cy;
         float cz;
@@ -878,14 +1014,40 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             cz = size.getZ() / 2f;
         }
 
-        float parityX = 0f;
-        float parityZ = 0f;
-        if (boundsMin != null && boundsMax != null)
+        float pivotX;
+        float pivotY;
+        float pivotZ;
+        mchorse.bbs_mod.forms.forms.utils.PivotSettings pivotSettingsRuntime = this.form.pivot.getRuntimeValue();
+        boolean useAuto = pivotSettingsRuntime != null ? pivotSettingsRuntime.auto : this.form.autoPivot.get();
+        if (useAuto)
         {
-            int widthX = boundsMax.getX() - boundsMin.getX() + 1;
-            int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
-            parityX = (widthX % 2 == 1) ? -0.5f : 0f;
-            parityZ = (widthZ % 2 == 1) ? -0.5f : 0f;
+            float parityXAuto = 0f;
+            float parityZAuto = 0f;
+            if (boundsMin != null && boundsMax != null)
+            {
+                int widthX = boundsMax.getX() - boundsMin.getX() + 1;
+                int widthZ = boundsMax.getZ() - boundsMin.getZ() + 1;
+                parityXAuto = (widthX % 2 == 1) ? -0.5f : 0f;
+                parityZAuto = (widthZ % 2 == 1) ? -0.5f : 0f;
+            }
+            pivotX = cx - parityXAuto;
+            pivotY = cy;
+            pivotZ = cz - parityZAuto;
+        }
+        else
+        {
+            if (pivotSettingsRuntime != null)
+            {
+                pivotX = pivotSettingsRuntime.pivot.x;
+                pivotY = pivotSettingsRuntime.pivot.y;
+                pivotZ = pivotSettingsRuntime.pivot.z;
+            }
+            else
+            {
+                pivotX = this.form.pivotX.get();
+                pivotY = this.form.pivotY.get();
+                pivotZ = this.form.pivotZ.get();
+            }
         }
 
         // Ancla mundial
@@ -914,11 +1076,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
 
             stack.push();
-            stack.translate(entry.pos.getX() - cx + parityX, entry.pos.getY() - cy, entry.pos.getZ() - cz + parityZ);
+            stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
-            int dx = (int)Math.floor(entry.pos.getX() - cx + parityX);
-            int dy = (int)Math.floor(entry.pos.getY() - cy);
-            int dz = (int)Math.floor(entry.pos.getZ() - cz + parityZ);
+            int dx = (int)Math.floor(entry.pos.getX() - pivotX);
+            int dy = (int)Math.floor(entry.pos.getY() - pivotY);
+            int dz = (int)Math.floor(entry.pos.getZ() - pivotZ);
             net.minecraft.util.math.BlockPos worldPos = anchor.add(dx, dy, dz);
 
             BlockEntity be = ((BlockEntityProvider) block).createBlockEntity(worldPos, entry.state);
