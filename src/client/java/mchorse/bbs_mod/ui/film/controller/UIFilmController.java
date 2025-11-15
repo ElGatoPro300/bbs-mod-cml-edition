@@ -1267,19 +1267,7 @@ public class UIFilmController extends UIElement
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);
         int y = (int) ((1F - (context.mouseY - viewport.y) / (float) viewport.h) * mainTexture.height);
 
-        /* Evitar el picking de huesos cuando el mouse está sobre un gizmo
-         * en la vista de cámara de films. Esto prioriza la interacción del
-         * gizmo sobre la selección por stencil. */
-        boolean blockPicking = BBSSettings.modelBlockGizmosEnabled.get() && BoneGizmoSystem.get().isHoveringHandle();
-
-        if (!blockPicking)
-        {
-            this.stencil.pick(x, y);
-        }
-        else
-        {
-            this.stencil.clearPicking();
-        }
+        this.stencil.pick(x, y);
         this.stencil.unbind(this.stencilMap);
 
         MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
