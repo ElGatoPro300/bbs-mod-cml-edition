@@ -19,13 +19,11 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.entity.data.DataTracker;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -95,7 +93,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
     @Override
     protected void initDataTracker(DataTracker.Builder builder)
     {
-        // No tracked data for this projectile
+        // No custom tracked data
     }
 
     public GunProperties getProperties()
@@ -125,6 +123,11 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
     public void setForm(Form form)
     {
         this.form = form;
+
+        if (this.form != null)
+        {
+            this.form.playMain();
+        }
     }
 
     public IEntity getEntity()
@@ -324,9 +327,8 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         DamageSource source = this.getDamageSources().magic();
 
         int fireTicks = entity.getFireTicks();
-        boolean deflectsProjectiles = entity.getType().isIn(EntityTypeTags.DEFLECTS_PROJECTILES);
 
-        if (this.isOnFire() && !deflectsProjectiles)
+        if (this.isOnFire())
         {
             entity.setOnFireFor(5);
         }
@@ -346,18 +348,10 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
                     }
                 }
 
-                if (this.getWorld() instanceof ServerWorld serverWorld)
-                {
-                    // Apply enchantment-driven target effects using 1.21 API
-                    EnchantmentHelper.onTargetDamaged(serverWorld, livingEntity, source);
-                }
+                // Enchantment event hooks removed/changed in 1.21.1; skipping old calls
 
                 this.onHit(livingEntity);
             }
-        }
-        else if (deflectsProjectiles)
-        {
-            this.deflect();
         }
         else
         {

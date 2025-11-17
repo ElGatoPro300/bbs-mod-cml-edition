@@ -247,16 +247,16 @@ public class CubicCubeRenderer implements ICubicRenderer
 
         if (this.stencilMap != null)
         {
-            builder.light(LightmapTextureManager.pack(stencilMap.increment ? group.index : 0, 0));
+            builder.light(stencilMap.increment ? group.index : 0, 0);
         }
         else
         {
             int u = (int) Lerps.lerp(this.light & '\uffff', LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, MathUtils.clamp(group.lighting, 0F, 1F));
             int v = this.light >> 16 & '\uffff';
 
-            builder.light(LightmapTextureManager.pack(u, v));
+            builder.light(u, v);
         }
 
-        builder.normal(normal.x, normal.y, normal.z);
+            builder.normal(normal.x, normal.y, normal.z);
     }
 }

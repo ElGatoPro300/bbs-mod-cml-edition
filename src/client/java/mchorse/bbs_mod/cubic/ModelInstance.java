@@ -31,7 +31,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -58,6 +58,13 @@ public class ModelInstance implements IModelInstance
     public boolean culling = true;
     public boolean onCpu;
     public String anchorGroup = "";
+
+    /* Look-at configuration (per model, from config.json) */
+    public boolean lookAtConfigured = false;
+    public String lookAtHeadBone = "head";
+    public String lookAtAnchorBone = "anchor";
+    public boolean lookAtAllowPitch = true;
+    public float lookAtHeadLimitDeg = 45F;
 
     public Vector3f scale = new Vector3f(1F);
     public float uiScale = 1F;
@@ -208,6 +215,18 @@ public class ModelInstance implements IModelInstance
             this.fpOffhand = new ArmorSlot();
             this.fpOffhand.fromData(config.get("fp_offhand"));
         }
+
+        /* Optional look-at configuration */
+        if (config.has("look_at", BaseType.TYPE_MAP))
+        {
+            this.lookAtConfigured = true;
+            MapType lookAt = config.getMap("look_at");
+
+            if (lookAt.has("head")) this.lookAtHeadBone = lookAt.getString("head", this.lookAtHeadBone);
+            if (lookAt.has("anchor")) this.lookAtAnchorBone = lookAt.getString("anchor", this.lookAtAnchorBone);
+            if (lookAt.has("pitch")) this.lookAtAllowPitch = lookAt.getBool("pitch", this.lookAtAllowPitch);
+            if (lookAt.has("head_limit")) this.lookAtHeadLimitDeg = lookAt.getFloat("head_limit", this.lookAtHeadLimitDeg);
+        }
     }
 
     public void setup()
@@ -322,8 +341,7 @@ public class ModelInstance implements IModelInstance
             {
                 RenderSystem.setShader(program);
 
-        BufferBuilder builder = new BufferBuilder(new net.minecraft.client.util.BufferAllocator(786432), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-
+                BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
                 BufferRenderer.drawWithGlobalProgram(builder.end());
             }

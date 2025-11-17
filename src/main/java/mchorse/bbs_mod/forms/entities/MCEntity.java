@@ -501,8 +501,7 @@ public class MCEntity implements IEntity
     @Override
     public int getRoll()
     {
-        // 1.21: LivingEntity#getRoll() fue removido; devolvemos 0 como valor neutro
-        return 0;
+        return 0; // 1.21: LivingEntity#getRoll removed; not exposed
     }
 
     @Override

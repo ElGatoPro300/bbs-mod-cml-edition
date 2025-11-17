@@ -5,10 +5,12 @@ import com.mojang.blaze3d.systems.VertexSorter;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.util.math.MatrixStack;
-import org.joml.Matrix4fStack;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
+// Note: In MC 1.21, RenderSystem.getModelViewMatrix() returns JOML Matrix4f, and
+// RenderSystem.getModelViewStack() returns a JOML Matrix4fStack.
 
 public class MatrixStackUtils
 {
@@ -16,7 +18,7 @@ public class MatrixStackUtils
 
     private static Matrix4f oldProjection = new Matrix4f();
     private static Matrix4f oldMV = new Matrix4f();
-    // In 1.21.1, inverse view rotation matrix is managed internally; no manual cache
+    private static Matrix3f oldInverse = new Matrix3f();
 
     public static void scaleStack(MatrixStack stack, float x, float y, float z)
     {
@@ -29,29 +31,24 @@ public class MatrixStackUtils
         /* Cache the global stuff */
         oldProjection.set(RenderSystem.getProjectionMatrix());
         oldMV.set(RenderSystem.getModelViewMatrix());
-        // Inverse view rotation matrix is handled internally; no explicit retrieval
+        // En 1.21 no existe getInverseViewRotationMatrix; guardamos solo la rotación del ModelView
+        oldInverse.set(new Matrix3f(RenderSystem.getModelViewMatrix()));
 
-        Matrix4fStack renderStack = RenderSystem.getModelViewStack();
-
-        renderStack.pushMatrix();
-        renderStack.identity();
+        Matrix4fStack mvStack = RenderSystem.getModelViewStack();
+        mvStack.identity();
         RenderSystem.applyModelViewMatrix();
-        renderStack.popMatrix();
     }
 
     public static void restoreMatrices()
     {
         /* Return back to orthographic projection */
         RenderSystem.setProjectionMatrix(oldProjection, VertexSorter.BY_Z);
-        // No explicit inverse view rotation matrix restore in 1.21.1
+        // Ya no aplicamos explícitamente la inversa de rotación; restauramos el ModelView completo abajo
 
-        Matrix4fStack renderStack = RenderSystem.getModelViewStack();
-
-        renderStack.pushMatrix();
-        renderStack.identity();
-        MatrixStackUtils.multiply(renderStack, oldMV);
+        Matrix4fStack mvStack = RenderSystem.getModelViewStack();
+        // Restore the ModelView matrix from the cached value
+        mvStack.set(oldMV);
         RenderSystem.applyModelViewMatrix();
-        renderStack.popMatrix();
     }
 
     public static void applyTransform(MatrixStack stack, Transform transform)
@@ -81,11 +78,6 @@ public class MatrixStackUtils
         stack.peek().getNormalMatrix().mul(normal);
     }
 
-    public static void multiply(Matrix4fStack stack, Matrix4f matrix)
-    {
-        stack.mul(matrix);
-    }
-
     public static void scaleBack(MatrixStack matrices)
     {
         Matrix4f position = matrices.peek().getPositionMatrix();
@@ -109,32 +101,42 @@ public class MatrixStackUtils
         position.m22(position.m22() / max);
     }
 
-    /* Helpers for view rotation matrix in 1.21.1 where RenderSystem no longer exposes inverse view rotation directly */
-    public static Matrix4f getViewRotationMatrix4f()
+    /**
+     * Devuelve una copia de la matriz con la escala normalizada a 1 en cada eje
+     * (X, Y, Z), preservando la traslación y la rotación.
+     *
+     * Útil para renderizar/pickear gizmos que no deben deformarse con la
+     * escala del hueso/parte.
+     */
+    public static Matrix4f stripScale(Matrix4f matrix)
     {
-        Matrix4f mv = new Matrix4f(RenderSystem.getModelViewMatrix());
-        Matrix4f rot = new Matrix4f();
-        rot.m00(mv.m00()); rot.m01(mv.m01()); rot.m02(mv.m02());
-        rot.m10(mv.m10()); rot.m11(mv.m11()); rot.m12(mv.m12());
-        rot.m20(mv.m20()); rot.m21(mv.m21()); rot.m22(mv.m22());
-        return rot;
-    }
+        Matrix4f out = new Matrix4f(matrix);
 
-    public static Matrix4f getInverseViewRotationMatrix4f()
-    {
-        Matrix4f rot = getViewRotationMatrix4f();
-        rot.invert();
-        return rot;
-    }
+        float sx = (float) Math.sqrt(out.m00() * out.m00() + out.m10() * out.m10() + out.m20() * out.m20());
+        float sy = (float) Math.sqrt(out.m01() * out.m01() + out.m11() * out.m11() + out.m21() * out.m21());
+        float sz = (float) Math.sqrt(out.m02() * out.m02() + out.m12() * out.m12() + out.m22() * out.m22());
 
-    public static Matrix3f getInverseViewRotationMatrix3f()
-    {
-        Matrix4f mv = new Matrix4f(RenderSystem.getModelViewMatrix());
-        Matrix3f rot3 = new Matrix3f();
-        rot3.m00(mv.m00()); rot3.m01(mv.m01()); rot3.m02(mv.m02());
-        rot3.m10(mv.m10()); rot3.m11(mv.m11()); rot3.m12(mv.m12());
-        rot3.m20(mv.m20()); rot3.m21(mv.m21()); rot3.m22(mv.m22());
-        rot3.invert();
-        return rot3;
+        if (sx != 0F)
+        {
+            out.m00(out.m00() / sx);
+            out.m10(out.m10() / sx);
+            out.m20(out.m20() / sx);
+        }
+
+        if (sy != 0F)
+        {
+            out.m01(out.m01() / sy);
+            out.m11(out.m11() / sy);
+            out.m21(out.m21() / sy);
+        }
+
+        if (sz != 0F)
+        {
+            out.m02(out.m02() / sz);
+            out.m12(out.m12() / sz);
+            out.m22(out.m22() / sz);
+        }
+
+        return out;
     }
 }

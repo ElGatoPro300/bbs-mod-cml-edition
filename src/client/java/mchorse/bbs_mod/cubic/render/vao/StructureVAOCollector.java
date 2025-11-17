@@ -2,7 +2,7 @@ package mchorse.bbs_mod.cubic.render.vao;
 
 import net.minecraft.client.render.VertexConsumer;
 import org.joml.Matrix4f;
-import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,9 @@ public class StructureVAOCollector implements VertexConsumer
 
     private final Vtx[] quad = new Vtx[4];
     private int quadIndex = 0;
+    private boolean hasCurrent = false;
 
-    // working per-vertex state until terminal attribute call
+    // working per-vertex state until endVertex()
     private float vx, vy, vz;
     private float vnx, vny, vnz;
     private float vu, vv;
@@ -41,17 +42,27 @@ public class StructureVAOCollector implements VertexConsumer
     @Override
     public VertexConsumer vertex(float x, float y, float z)
     {
+        // Finalizar vértice previo si existía
+        if (hasCurrent) finalizeCurrent();
         this.vx = x;
         this.vy = y;
         this.vz = z;
+        this.hasCurrent = true;
         return this;
     }
 
     @Override
     public VertexConsumer vertex(Matrix4f matrix, float x, float y, float z)
     {
-        // Matrix-transform not needed for collection; positions already come transformed.
-        return this.vertex(x, y, z);
+        // Finalizar vértice previo si existía
+        if (hasCurrent) finalizeCurrent();
+        Vector4f v = new Vector4f(x, y, z, 1F);
+        v.mul(matrix);
+        this.vx = v.x;
+        this.vy = v.y;
+        this.vz = v.z;
+        this.hasCurrent = true;
+        return this;
     }
 
     @Override
@@ -70,23 +81,9 @@ public class StructureVAOCollector implements VertexConsumer
     }
 
     @Override
-    public VertexConsumer overlay(int overlay)
-    {
-        // Overlay provided via shader attribute; ignore per-vertex overlay.
-        return this;
-    }
-
-    @Override
     public VertexConsumer overlay(int u, int v)
     {
         // Overlay provided via shader attribute; ignore per-vertex overlay.
-        return this;
-    }
-
-    @Override
-    public VertexConsumer light(int light)
-    {
-        // Lightmap provided via shader attribute; ignore per-vertex light.
         return this;
     }
 
@@ -103,14 +100,18 @@ public class StructureVAOCollector implements VertexConsumer
         this.vnx = x;
         this.vny = y;
         this.vnz = z;
+        return this;
+    }
 
-        // Treat normal() as the terminal attribute and commit the vertex
+    private void finalizeCurrent()
+    {
         Vtx v = quad[quadIndex];
         v.x = vx; v.y = vy; v.z = vz;
         v.nx = vnx; v.ny = vny; v.nz = vnz;
         v.u = vu; v.v = vv;
 
         quadIndex++;
+        hasCurrent = false;
 
         if (quadIndex == 4)
         {
@@ -119,15 +120,6 @@ public class StructureVAOCollector implements VertexConsumer
             emitTriangle(quad[0], quad[2], quad[3]);
             quadIndex = 0;
         }
-
-        return this;
-    }
-
-    @Override
-    public VertexConsumer normal(MatrixStack.Entry entry, float x, float y, float z)
-    {
-        // Ignore matrix; positions are already in world space for collection.
-        return this.normal(x, y, z);
     }
 
     private void emitTriangle(Vtx a, Vtx b, Vtx c)
@@ -194,6 +186,8 @@ public class StructureVAOCollector implements VertexConsumer
 
     public ModelVAOData toData()
     {
+        // Asegurar volcar último vértice si estaba parcialmente construido
+        if (hasCurrent) finalizeCurrent();
         float[] v = toArray(positions);
         float[] n = toArray(normals);
         float[] t = toArray(tangents);

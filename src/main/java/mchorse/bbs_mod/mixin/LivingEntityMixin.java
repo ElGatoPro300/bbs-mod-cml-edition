@@ -19,8 +19,7 @@ public class LivingEntityMixin
     {
         Entity attacker = source.getAttacker();
 
-        // In 1.21+, DamageSource#isIndirect was removed; approximate "direct" damage by ensuring the source entity equals the attacker
-        if (attacker instanceof ServerPlayerEntity && source.getSource() == attacker)
+        if (source.isDirect() && attacker != null && attacker.getClass() == ServerPlayerEntity.class)
         {
             BBSMod.getActions().addAction((ServerPlayerEntity) attacker, () ->
             {

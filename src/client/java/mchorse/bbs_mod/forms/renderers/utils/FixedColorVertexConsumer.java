@@ -3,7 +3,6 @@ package mchorse.bbs_mod.forms.renderers.utils;
 import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.render.VertexConsumer;
 import org.joml.Matrix4f;
-import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * VertexConsumer que fija un color constante (incluido alpha) en el
@@ -17,34 +16,37 @@ public class FixedColorVertexConsumer implements VertexConsumer
 {
     private final VertexConsumer delegate;
     private final Color color;
+    private final int r, g, b, a;
 
     public FixedColorVertexConsumer(VertexConsumer delegate, Color color)
     {
         this.delegate = delegate;
         this.color = color;
+        this.r = (int)(color.r * 255f);
+        this.g = (int)(color.g * 255f);
+        this.b = (int)(color.b * 255f);
+        this.a = (int)(color.a * 255f);
     }
 
     @Override
     public VertexConsumer vertex(float x, float y, float z)
     {
-        return this.delegate.vertex(x, y, z);
+        // Inyectar color fijo por vértice
+        return this.delegate.vertex(x, y, z).color(r, g, b, a);
     }
 
     @Override
     public VertexConsumer vertex(Matrix4f matrix, float x, float y, float z)
     {
-        return this.delegate.vertex(matrix, x, y, z);
+        // Inyectar color fijo por vértice
+        return this.delegate.vertex(matrix, x, y, z).color(r, g, b, a);
     }
 
     @Override
     public VertexConsumer color(int red, int green, int blue, int alpha)
     {
-        int r = (int)(this.color.r * 255f);
-        int g = (int)(this.color.g * 255f);
-        int b = (int)(this.color.b * 255f);
-        int a = (int)(this.color.a * 255f);
-
-        return this.delegate.color(r, g, b, a);
+        // Con fixedColor activo, este valor no se usará; delegar por seguridad
+        return this.delegate.color(red, green, blue, alpha);
     }
 
     @Override
@@ -54,21 +56,9 @@ public class FixedColorVertexConsumer implements VertexConsumer
     }
 
     @Override
-    public VertexConsumer overlay(int overlay)
-    {
-        return this.delegate.overlay(overlay);
-    }
-
-    @Override
     public VertexConsumer overlay(int u, int v)
     {
         return this.delegate.overlay(u, v);
-    }
-
-    @Override
-    public VertexConsumer light(int light)
-    {
-        return this.delegate.light(light);
     }
 
     @Override
@@ -83,9 +73,5 @@ public class FixedColorVertexConsumer implements VertexConsumer
         return this.delegate.normal(x, y, z);
     }
 
-    @Override
-    public VertexConsumer normal(MatrixStack.Entry entry, float x, float y, float z)
-    {
-        return this.delegate.normal(entry, x, y, z);
-    }
+    // Métodos fixedColor/unfixColor no existen en MC 1.21; la inyección se hace en vertex().
 }

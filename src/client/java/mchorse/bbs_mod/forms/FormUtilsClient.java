@@ -36,7 +36,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.Util;
-import java.util.SequencedMap;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,8 +52,7 @@ public class FormUtilsClient
 
     static
     {
-        SequencedMap<RenderLayer, BufferAllocator> sequencedMap = Util.make(new Object2ObjectLinkedOpenHashMap<RenderLayer, BufferAllocator>(), map -> {
-            // Asignar allocators para capas de entidad relevantes directamente
+        java.util.SequencedMap<RenderLayer, BufferAllocator> sequencedMap = Util.make(new java.util.LinkedHashMap<>(), map -> {
             assignBufferAllocator(map, TexturedRenderLayers.getEntitySolid());
             assignBufferAllocator(map, TexturedRenderLayers.getEntityCutout());
             assignBufferAllocator(map, TexturedRenderLayers.getBannerPatterns());
@@ -70,7 +68,6 @@ public class FormUtilsClient
             assignBufferAllocator(map, TexturedRenderLayers.getSign());
             assignBufferAllocator(map, TexturedRenderLayers.getHangingSign());
             map.put(TexturedRenderLayers.getChest(), new BufferAllocator(786432));
-            // Métodos obsoletos en 1.21: getArmorGlint y getDirectGlint han sido eliminados
             assignBufferAllocator(map, RenderLayer.getArmorEntityGlint());
             assignBufferAllocator(map, RenderLayer.getGlint());
             assignBufferAllocator(map, RenderLayer.getGlintTranslucent());
@@ -97,9 +94,9 @@ public class FormUtilsClient
         register(StructureForm.class, StructureFormRenderer::new);
     }
 
-    private static void assignBufferAllocator(Object2ObjectLinkedOpenHashMap<RenderLayer, BufferAllocator> allocatorStorage, RenderLayer layer)
+    private static void assignBufferAllocator(java.util.SequencedMap<RenderLayer, BufferAllocator> storage, RenderLayer layer)
     {
-        allocatorStorage.put(layer, new BufferAllocator(layer.getExpectedBufferSize()));
+        storage.put(layer, new BufferAllocator(layer.getExpectedBufferSize()));
     }
 
     public static CustomVertexConsumerProvider getProvider()
@@ -107,7 +104,7 @@ public class FormUtilsClient
         return customVertexConsumerProvider;
     }
 
-    private static <T extends Form> void register(Class<T> clazz, IFormRendererFactory<T> function)
+    public static <T extends Form> void register(Class<T> clazz, IFormRendererFactory<T> function)
     {
         map.put(clazz, function);
     }

@@ -239,7 +239,7 @@ public abstract class Form extends ValueGroup
             entity.setHealth(hp);
         }
         if (speed != 0.1F) entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
-        // Step height setter was removed in 1.21; skip adjusting step height
+        // Step height adjustment removed in 1.21; skip
     }
 
     public void onDemorph(LivingEntity entity)
@@ -247,7 +247,7 @@ public abstract class Form extends ValueGroup
         entity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(20F);
         entity.setHealth(20F);
         entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1F);
-        // Step height setter was removed in 1.21; skip resetting step height
+        // Restore default step height skipped in 1.21
     }
 
     /* ID and display name */

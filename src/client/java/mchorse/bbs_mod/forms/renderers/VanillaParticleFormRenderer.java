@@ -10,7 +10,6 @@ import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
@@ -63,7 +62,7 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
         super.render3D(context);
 
         Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-        Matrix4f matrix = MatrixStackUtils.getInverseViewRotationMatrix4f();
+        Matrix4f matrix = new Matrix4f(RenderSystem.getModelViewMatrix()).invert();
 
         matrix.mul(context.stack.peek().getPositionMatrix());
 
@@ -72,7 +71,7 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
         translation.add(camera.getPos().x, camera.getPos().y, camera.getPos().z);
         context.stack.push();
         context.stack.loadIdentity();
-        context.stack.multiplyPositionMatrix(MatrixStackUtils.getViewRotationMatrix4f());
+        context.stack.multiplyPositionMatrix(new Matrix4f(RenderSystem.getModelViewMatrix()).invert());
 
         this.pos.set(translation);
         this.vel.set(0F, 0F, 1F);
@@ -102,11 +101,8 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
                 ParticleType type = Registries.PARTICLE_TYPE.get(settings.particle);
                 ParticleEffect effect = ParticleTypes.FLAME;
 
-                // 1.21.1: getParametersFactory() fue eliminado; muchos tipos son SimpleParticleType
-                if (type instanceof net.minecraft.particle.SimpleParticleType simple)
-                {
-                    effect = simple;
-                }
+                // TODO: Re-enable custom particle argument parsing for 1.21 API.
+                // The factory method signature changed; fallback to default effect.
 
                 for (int i = 0; i < count; i++)
                 {

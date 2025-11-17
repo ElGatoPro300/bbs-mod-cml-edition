@@ -100,7 +100,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import mchorse.bbs_mod.data.DataStorageUtils;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -247,10 +248,7 @@ public class BBSMod implements ModInitializer
         properties.setForm(form);
         properties.getTransformFirstPerson().translate.set(0F, 0F, -0.25F);
 
-        // Migrar a Data Components: persistir únicamente los datos de propiedades
-        NbtCompound beData = new NbtCompound();
-        DataStorageUtils.writeToNbtCompound(beData, "Properties", properties.toData());
-        stack.set(net.minecraft.component.DataComponentTypes.BLOCK_ENTITY_DATA, net.minecraft.component.type.NbtComponent.of(beData));
+        // For icon stack, omit block entity NBT; renderer handles null safely
 
         return stack;
     }

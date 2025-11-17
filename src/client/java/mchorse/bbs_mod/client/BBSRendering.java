@@ -311,7 +311,7 @@ public class BBSRendering
 
         if (menu != null)
         {
-            menu.startRenderFrame(mc.getRenderTickCounter().getTickDelta(false));
+        menu.startRenderFrame(mc.getRenderTickCounter().getTickDelta(false));
         }
 
         renderingWorld = true;
@@ -368,7 +368,7 @@ public class BBSRendering
         toggleFramebuffer(false);
     }
 
-    public static void onRenderChunkLayer(org.joml.Matrix4f positionMatrix, org.joml.Matrix4f projectionMatrix)
+    public static void onRenderChunkLayer(MatrixStack stack)
     {
         WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -380,8 +380,8 @@ public class BBSRendering
             mc.gameRenderer.getCamera(),
             mc.gameRenderer,
             mc.gameRenderer.getLightmapTextureManager(),
-            positionMatrix,
-            projectionMatrix,
+            RenderSystem.getProjectionMatrix(),
+            RenderSystem.getModelViewMatrix(),
             mc.getBufferBuilders().getEntityVertexConsumers(),
             mc.getProfiler(),
             false,
@@ -401,7 +401,7 @@ public class BBSRendering
 
         BBSModClient.getFilms().renderHud(batcher2D, tickDelta);
 
-        if (videoRecorder.isRecording() && BBSSettings.recordingOverlays.get())
+        if (videoRecorder.isRecording() && BBSSettings.recordingOverlays.get() && UIScreen.getCurrentMenu() == null)
         {
             int count = videoRecorder.getCounter();
             String label = UIKeys.FILM_VIDEO_RECORDING.format(

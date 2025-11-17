@@ -54,9 +54,7 @@ public class FilmControllerContext
         this.entity = entity;
         this.replay = replay;
         this.camera = context.camera();
-        // In some render passes (e.g., Iris shadow), matrixStack can be null.
-        // Fall back to a fresh MatrixStack to avoid NPEs in downstream rendering code.
-        this.stack = context.matrixStack() != null ? context.matrixStack() : new MatrixStack();
+        this.stack = context.matrixStack();
         this.consumers = context.consumers();
         this.transition = context.tickCounter().getTickDelta(false);
 

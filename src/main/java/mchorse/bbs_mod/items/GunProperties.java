@@ -73,14 +73,14 @@ public class GunProperties extends ModelProperties
 
     public static GunProperties get(ItemStack stack)
     {
+        NbtComponent custom = stack.get(DataComponentTypes.CUSTOM_DATA);
+        NbtCompound nbt = custom != null ? custom.getNbt() : null;
         GunProperties properties = new GunProperties();
-
-        NbtComponent component = stack.get(DataComponentTypes.CUSTOM_DATA);
-        NbtCompound nbt = component != null ? component.copyNbt() : null;
 
         if (nbt == null)
         {
             setupDefault(properties);
+
             return properties;
         }
 

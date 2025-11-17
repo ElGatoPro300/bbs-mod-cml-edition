@@ -8,7 +8,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import org.lwjgl.opengl.GL11;
 
-import java.util.SequencedMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,7 +37,7 @@ public class CustomVertexConsumerProvider extends VertexConsumerProvider.Immedia
         runnables = null;
     }
 
-    public CustomVertexConsumerProvider(BufferAllocator fallback, SequencedMap<RenderLayer, BufferAllocator> layers)
+    public CustomVertexConsumerProvider(BufferAllocator fallback, java.util.SequencedMap<RenderLayer, BufferAllocator> layers)
     {
         super(fallback, layers);
     }

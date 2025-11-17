@@ -14,11 +14,11 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -98,7 +98,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
         MatrixStack stack = context.stack;
-        Matrix4f camInverse = mchorse.bbs_mod.utils.MatrixStackUtils.getInverseViewRotationMatrix4f();
+        Matrix4f camInverse = new Matrix4f().set(new Matrix3f(RenderSystem.getModelViewMatrix())).invert();
 
         Camera camera = context.camera;
         double baseX = camera.position.x;
@@ -166,7 +166,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
 
         Trail last = null;
         Trail trail;
-            BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         Matrix4f m = stack.peek().getPositionMatrix();
 
         m.set(camInverse);
@@ -200,30 +200,30 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
                     float u1 = trail.tick / length;
                     float u2 = last.tick / length;
 
-                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
-                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
                     /* Other side */
-                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
-                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
                 }
                 else
                 {
                     float u1 = (current - trail.tick) / length;
                     float u2 = (current - last.tick) / length;
 
-                builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
-                builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-                builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-                builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
                     /* Other side */
-                builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
-                builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-                builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-                builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
                 }
             }
             else

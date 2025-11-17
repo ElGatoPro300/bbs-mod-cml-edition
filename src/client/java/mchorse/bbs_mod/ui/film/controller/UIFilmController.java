@@ -38,6 +38,8 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeEditor;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
@@ -67,12 +69,16 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+
+import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -1011,13 +1017,65 @@ public class UIFilmController extends UIElement
 
         this.renderPickingPreview(context, area);
 
+        /* Update and render gizmo overlay based on current bone selection */
+        if (!this.panel.isFlying() && BBSSettings.modelBlockGizmosEnabled.get())
+        {
+            UIPropTransform activeTransform = null;
+
+            UIKeyframeEditor keyframeEditor = this.panel.replayEditor != null ? this.panel.replayEditor.keyframeEditor : null;
+
+            if (keyframeEditor != null)
+            {
+                if (keyframeEditor.editor instanceof UIPoseKeyframeFactory poseFactory)
+                {
+                    activeTransform = poseFactory.poseEditor.transform;
+                }
+                else if (keyframeEditor.editor instanceof mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UITransformKeyframeFactory tfFactory)
+                {
+                    // Obtener el editor de transform para keyframes de transform/transform_overlay
+                    activeTransform = tfFactory.getTransform();
+                }
+            }
+
+            Pair<String, Boolean> boneSel = this.getBone();
+
+            if (activeTransform != null && boneSel != null)
+            {
+                IEntity entity = this.getCurrentEntity();
+
+                if (entity != null && entity.getForm() != null && this.panel.lastProjection != null && this.panel.lastView != null)
+                {
+        float transition = this.worldRenderContext != null ? this.worldRenderContext.tickCounter().getTickDelta(false) : 0F;
+
+                    /* Compute entity's target matrix in world space */
+                    Vector3d cameraPos = this.panel.getCamera().position;
+                    Matrix4f defaultMatrix = BaseFilmController.getMatrixForRenderWithRotation(entity, cameraPos.x, cameraPos.y, cameraPos.z, transition);
+                    Pair<Matrix4f, Float> total = BaseFilmController.getTotalMatrix(this.getEntities(), entity.getForm().anchor.get(), defaultMatrix, cameraPos.x, cameraPos.y, cameraPos.z, transition, 0);
+                    Matrix4f targetMatrix = total != null && total.a != null ? total.a : defaultMatrix;
+
+                    /* Collect bone matrices; when local is true, pass null to collect all */
+                    Form root = entity.getForm();
+                    Map<String, Matrix4f> matrices = FormUtilsClient.getRenderer(root).collectMatrices(entity, boneSel.b ? null : boneSel.a, transition);
+                    Matrix4f boneMatrix = matrices != null ? matrices.get(boneSel.a) : null;
+
+                    if (boneMatrix != null)
+                    {
+                        Matrix4f originRaw = new Matrix4f(targetMatrix).mul(boneMatrix);
+                        Matrix4f origin = MatrixStackUtils.stripScale(originRaw);
+
+                        BoneGizmoSystem.get().update(context, area, origin, this.panel.lastProjection, this.panel.lastView, activeTransform);
+                        BoneGizmoSystem.get().renderOverlay(context.render, area);
+                    }
+                }
+            }
+        }
+
         this.orbit.handleOrbiting(context);
     }
 
     private void renderPickingPreview(UIContext context, Area area)
     {
-        // Evitar render durante vuelo o pase de sombras de Iris
-        if (this.panel.isFlying() || BBSRendering.isIrisShadowPass())
+        if (this.panel.isFlying())
         {
             return;
         }
@@ -1031,21 +1089,30 @@ public class UIFilmController extends UIElement
 
         RenderSystem.setProjectionMatrix(this.panel.lastProjection, VertexSorter.BY_Z);
 
-        /* Render del stencil: puede no haber pose stack en ciertos pases */
+        /* Render the stencil */
         MatrixStack worldStack = this.worldRenderContext.matrixStack();
-        if (worldStack == null)
+        if (worldStack != null)
         {
-            // No hay stack de mundo disponible, omitir picking en este frame
-            MatrixStackUtils.restoreMatrices();
-            RenderSystem.depthFunc(GL11.GL_ALWAYS);
-            return;
+            worldStack.push();
+            worldStack.loadIdentity();
+            MatrixStackUtils.multiply(worldStack, this.panel.lastView);
+            this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
+            worldStack.pop();
         }
+        else
+        {
+            // Fallback: usar el ModelViewStack global cuando no hay MatrixStack del mundo
+            Matrix4fStack mvStack = RenderSystem.getModelViewStack();
+            mvStack.pushMatrix();
+            mvStack.identity();
+            mvStack.set(this.panel.lastView);
+            RenderSystem.applyModelViewMatrix();
 
-        worldStack.push();
-        worldStack.loadIdentity();
-        MatrixStackUtils.multiply(worldStack, this.panel.lastView);
-        this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
-        worldStack.pop();
+            this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
+
+            mvStack.popMatrix();
+            RenderSystem.applyModelViewMatrix();
+        }
 
         /* Return back to orthographic projection */
         MatrixStackUtils.restoreMatrices();
@@ -1224,7 +1291,19 @@ public class UIFilmController extends UIElement
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);
         int y = (int) ((1F - (context.mouseY - viewport.y) / (float) viewport.h) * mainTexture.height);
 
-        this.stencil.pick(x, y);
+        /* Evitar el picking de huesos cuando el mouse está sobre un gizmo
+         * en la vista de cámara de films. Esto prioriza la interacción del
+         * gizmo sobre la selección por stencil. */
+        boolean blockPicking = BBSSettings.modelBlockGizmosEnabled.get() && BoneGizmoSystem.get().isHoveringHandle();
+
+        if (!blockPicking)
+        {
+            this.stencil.pick(x, y);
+        }
+        else
+        {
+            this.stencil.clearPicking();
+        }
         this.stencil.unbind(this.stencilMap);
 
         MinecraftClient.getInstance().getFramebuffer().beginWrite(true);

@@ -20,7 +20,8 @@ public class SuperFakePlayerNetworkHandler extends ServerPlayNetworkHandler
         super(player.getServer(), FAKE_CONNECTION, player, ConnectedClientData.createDefault(player.getGameProfile(), false));
     }
 
-    // No-op; rely on FakeClientConnection to avoid sending any packets
+    public void send(Packet<?> packet)
+    {}
 
     private static final class FakeClientConnection extends ClientConnection
     {
@@ -29,6 +30,7 @@ public class SuperFakePlayerNetworkHandler extends ServerPlayNetworkHandler
             super(NetworkSide.CLIENTBOUND);
         }
 
-        // No-op; keep listener handling inert for the fake connection
+        public void setPacketListener(PacketListener packetListener)
+        {}
     }
 }

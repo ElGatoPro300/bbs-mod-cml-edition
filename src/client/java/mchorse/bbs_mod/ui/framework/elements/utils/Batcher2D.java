@@ -119,32 +119,61 @@ public class Batcher2D
         this.context.draw();
     }
 
+    /**
+     * Draw an anti-aliased-looking line segment by rendering a thin quad between two points.
+     * The line is axis-independent (supports arbitrary angle) with given thickness in pixels.
+     */
+    public void line(float x1, float y1, float x2, float y2, float thickness, int color)
+    {
+        Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
+        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+
+        float dx = x2 - x1;
+        float dy = y2 - y1;
+        float len = (float) Math.sqrt(dx * dx + dy * dy);
+
+        if (len <= 0.0001f)
+        {
+            // Fallback to a small box when points overlap
+            this.box(x1 - thickness * 0.5f, y1 - thickness * 0.5f, x1 + thickness * 0.5f, y1 + thickness * 0.5f, color);
+            return;
+        }
+
+        float nx = -dy / len; // perpendicular
+        float ny =  dx / len;
+        float hw = thickness * 0.5f;
+
+        float x1a = x1 + nx * hw;
+        float y1a = y1 + ny * hw;
+        float x1b = x1 - nx * hw;
+        float y1b = y1 - ny * hw;
+        float x2a = x2 + nx * hw;
+        float y2a = y2 + ny * hw;
+        float x2b = x2 - nx * hw;
+        float y2b = y2 - ny * hw;
+
+        
+        builder.vertex(matrix4f, x1a, y1a, 0).color(color);
+        builder.vertex(matrix4f, x1b, y1b, 0).color(color);
+        builder.vertex(matrix4f, x2b, y2b, 0).color(color);
+        builder.vertex(matrix4f, x2a, y2a, 0).color(color);
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        BufferRenderer.drawWithGlobalProgram(builder.end());
+
+        this.context.draw();
+    }
+
     public void fillRect(BufferBuilder builder, Matrix4f matrix4f, float x, float y, float w, float h, int color1, int color2, int color3, int color4)
     {
         /* c1 ---- c2
          * |        |
          * c3 ---- c4 */
-        try
-        {
-            builder.vertex(matrix4f, x, y, 0).color(color1);
-            builder.vertex(matrix4f, x, y + h, 0).color(color3);
-            builder.vertex(matrix4f, x + w, y + h, 0).color(color4);
-            builder.vertex(matrix4f, x + w, y, 0).color(color2);
-        }
-        catch (IllegalStateException e)
-        {
-            // Defensive fallback: if the passed BufferBuilder isn't in a building state,
-            // render this rectangle immediately using a local builder to avoid crashing.
-            BufferBuilder local = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-            local.vertex(matrix4f, x, y, 0).color(color1);
-            local.vertex(matrix4f, x, y + h, 0).color(color3);
-            local.vertex(matrix4f, x + w, y + h, 0).color(color4);
-            local.vertex(matrix4f, x + w, y, 0).color(color2);
-
-            RenderSystem.enableBlend();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-            BufferRenderer.drawWithGlobalProgram(local.end());
-        }
+        builder.vertex(matrix4f, x, y, 0).color(color1);
+        builder.vertex(matrix4f, x, y + h, 0).color(color3);
+        builder.vertex(matrix4f, x + w, y + h, 0).color(color4);
+        builder.vertex(matrix4f, x + w, y, 0).color(color2);
     }
 
     public void dropShadow(int left, int top, int right, int bottom, int offset, int opaque, int shadow)
@@ -156,6 +185,8 @@ public class Batcher2D
 
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+
+        
 
         /* Draw opaque part */
         builder.vertex(matrix4f, left + offset, top + offset, 0).color(opaque);
@@ -208,18 +239,16 @@ public class Batcher2D
     {
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+        
         builder.vertex(matrix4f, x, y, 0F).color(opaque);
 
         for (int i = 0; i <= segments; i ++)
         {
             double a = i / (double) segments * Math.PI * 2 - Math.PI / 2;
 
-            builder.vertex(matrix4f, (float) (x - Math.cos(a) * radius), (float) (y + Math.sin(a) * radius), 0F).color(shadow);
+        builder.vertex(matrix4f, (float) (x - Math.cos(a) * radius), (float) (y + Math.sin(a) * radius), 0F).color(shadow);
         }
-
-        BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
     public void dropCircleShadow(int x, int y, int radius, int offset, int segments, int opaque, int shadow)
@@ -239,6 +268,7 @@ public class Batcher2D
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         /* Draw opaque base */
+        
         builder.vertex(matrix4f, x, y, 0F).color(opaque);
 
         for (int i = 0; i <= segments; i ++)
@@ -251,25 +281,22 @@ public class Batcher2D
         BufferRenderer.drawWithGlobalProgram(builder.end());
 
         /* Draw outer shadow */
-        BufferBuilder builder2 = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+        
 
         for (int i = 0; i < segments; i ++)
         {
             double alpha1 = i / (double) segments * Math.PI * 2 - Math.PI / 2;
             double alpha2 = (i + 1) / (double) segments * Math.PI * 2 - Math.PI / 2;
 
-            // First triangle: offset2, offset1, radius1
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha2) * offset), (float) (y + Math.sin(alpha2) * offset), 0F).color(opaque);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha1) * offset), (float) (y + Math.sin(alpha1) * offset), 0F).color(opaque);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha1) * radius), (float) (y + Math.sin(alpha1) * radius), 0F).color(shadow);
-
-            // Second triangle: offset2, radius2, radius1
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha2) * offset), (float) (y + Math.sin(alpha2) * offset), 0F).color(opaque);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha2) * radius), (float) (y + Math.sin(alpha2) * radius), 0F).color(shadow);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha1) * radius), (float) (y + Math.sin(alpha1) * radius), 0F).color(shadow);
+        builder.vertex(matrix4f, (float) (x - Math.cos(alpha2) * offset), (float) (y + Math.sin(alpha2) * offset), 0F).color(opaque);
+        builder.vertex(matrix4f, (float) (x - Math.cos(alpha1) * offset), (float) (y + Math.sin(alpha1) * offset), 0F).color(opaque);
+        builder.vertex(matrix4f, (float) (x - Math.cos(alpha1) * radius), (float) (y + Math.sin(alpha1) * radius), 0F).color(shadow);
+        builder.vertex(matrix4f, (float) (x - Math.cos(alpha2) * offset), (float) (y + Math.sin(alpha2) * offset), 0F).color(opaque);
+        builder.vertex(matrix4f, (float) (x - Math.cos(alpha1) * radius), (float) (y + Math.sin(alpha1) * radius), 0F).color(shadow);
+        builder.vertex(matrix4f, (float) (x - Math.cos(alpha2) * radius), (float) (y + Math.sin(alpha2) * radius), 0F).color(shadow);
         }
 
-        BufferRenderer.drawWithGlobalProgram(builder2.end());
+        BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
     /* Outline methods */
@@ -387,6 +414,8 @@ public class Batcher2D
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+
+        
         this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
 
         BufferRenderer.drawWithGlobalProgram(builder.end());
@@ -405,6 +434,8 @@ public class Batcher2D
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
         RenderSystem.setShader(shader);
+
+        
         this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
 
         BufferRenderer.drawWithGlobalProgram(builder.end());
@@ -434,8 +465,6 @@ public class Batcher2D
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.setShaderTexture(0, texture.id);
-
-        
 
         for (int i = 0, c = countX * countY; i < c; i ++)
         {

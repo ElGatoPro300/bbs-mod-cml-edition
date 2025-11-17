@@ -367,6 +367,7 @@ public class UIFilmPreview extends UIElement
 
         stack.pushMatrix();
 
+        // Apply the UI matrix to the global ModelView stack
         stack.mul(context.batcher.getContext().getMatrices().peek().getPositionMatrix());
         stack.translate(area.x + 16, area.ey() - 12, 0F);
         stack.rotate(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));

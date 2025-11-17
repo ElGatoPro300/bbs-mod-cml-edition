@@ -3,7 +3,6 @@ package mchorse.bbs_mod.forms.renderers.utils;
 import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.render.VertexConsumer;
 import org.joml.Matrix4f;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class RecolorVertexConsumer implements VertexConsumer
 {
@@ -48,21 +47,9 @@ public class RecolorVertexConsumer implements VertexConsumer
     }
 
     @Override
-    public VertexConsumer overlay(int overlay)
-    {
-        return this.consumer.overlay(overlay);
-    }
-
-    @Override
     public VertexConsumer overlay(int u, int v)
     {
         return this.consumer.overlay(u, v);
-    }
-
-    @Override
-    public VertexConsumer light(int light)
-    {
-        return this.consumer.light(light);
     }
 
     @Override
@@ -77,9 +64,4 @@ public class RecolorVertexConsumer implements VertexConsumer
         return this.consumer.normal(x, y, z);
     }
 
-    @Override
-    public VertexConsumer normal(MatrixStack.Entry entry, float x, float y, float z)
-    {
-        return this.consumer.normal(entry, x, y, z);
-    }
 }

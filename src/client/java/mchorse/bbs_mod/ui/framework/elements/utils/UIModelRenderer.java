@@ -17,10 +17,9 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Intersectiond;
 import org.joml.Matrix3d;
@@ -218,10 +217,8 @@ public abstract class UIModelRenderer extends UIElement
         stack.translate(-this.camera.position.x, -this.camera.position.y, -this.camera.position.z);
         MatrixStackUtils.multiply(stack, this.transform);
 
-        RenderSystem.setupLevelDiffuseLighting(
-            new Vector3f(0, 0.85F, -1).normalize(),
-            new Vector3f(0, 0.85F, 1).normalize()
-        );
+        // Lighting setup was using deprecated RenderSystem.setupLevelDiffuseLighting.
+        // Rely on default lighting for GUI model rendering in 1.21.
 
         if (this.grid)
         {
@@ -339,7 +336,7 @@ public abstract class UIModelRenderer extends UIElement
     protected void renderGrid(UIContext context)
     {
         Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(786432), VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
@@ -347,13 +344,13 @@ public abstract class UIModelRenderer extends UIElement
         {
             if (x == 0)
             {
-        builder.vertex(matrix4f, x - 5, 0, -5).color(0F, 0F, 1F, 1F);
-        builder.vertex(matrix4f, x - 5, 0, 5).color(0F, 0F, 1F, 1F);
+            builder.vertex(matrix4f, x - 5, 0, -5).color(0F, 0F, 1F, 1F);
+            builder.vertex(matrix4f, x - 5, 0, 5).color(0F, 0F, 1F, 1F);
             }
             else
             {
-        builder.vertex(matrix4f, x - 5, 0, -5).color(0.25F, 0.25F, 0.25F, 1F);
-        builder.vertex(matrix4f, x - 5, 0, 5).color(0.25F, 0.25F, 0.25F, 1F);
+            builder.vertex(matrix4f, x - 5, 0, -5).color(0.25F, 0.25F, 0.25F, 1F);
+            builder.vertex(matrix4f, x - 5, 0, 5).color(0.25F, 0.25F, 0.25F, 1F);
             }
         }
 
@@ -361,13 +358,13 @@ public abstract class UIModelRenderer extends UIElement
         {
             if (x == 0)
             {
-        builder.vertex(matrix4f, -5, 0, x - 5).color(1F, 0F, 0F, 1F);
-        builder.vertex(matrix4f, 5, 0, x - 5).color(1F, 0F, 0F, 1F);
+            builder.vertex(matrix4f, -5, 0, x - 5).color(1F, 0F, 0F, 1F);
+            builder.vertex(matrix4f, 5, 0, x - 5).color(1F, 0F, 0F, 1F);
             }
             else
             {
-        builder.vertex(matrix4f, -5, 0, x - 5).color(0.25F, 0.25F, 0.25F, 1F);
-        builder.vertex(matrix4f, 5, 0, x - 5).color(0.25F, 0.25F, 0.25F, 1F);
+            builder.vertex(matrix4f, -5, 0, x - 5).color(0.25F, 0.25F, 0.25F, 1F);
+            builder.vertex(matrix4f, 5, 0, x - 5).color(0.25F, 0.25F, 0.25F, 1F);
             }
         }
 

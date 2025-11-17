@@ -17,7 +17,7 @@ import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import org.joml.Matrix4f;
@@ -56,11 +56,10 @@ public class UIColorPicker extends UIElement
     public static void renderAlphaPreviewQuad(Batcher2D batcher, int x1, int y1, int x2, int y2, Color color)
     {
         Matrix4f matrix4f = batcher.getContext().getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new net.minecraft.client.util.BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.enableBlend();
-        
 
         builder.vertex(matrix4f, x1, y1, 0F).color(color.r, color.g, color.b, 1);
         builder.vertex(matrix4f, x1, y2, 0F).color(color.r, color.g, color.b, 1);

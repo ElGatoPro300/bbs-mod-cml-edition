@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -54,8 +55,7 @@ public class UIItemStackOverlayPanel extends UIOverlayPanel
         this.stack = stack.copy();
         this.name = new UITextbox(1000, (v) ->
         {
-            // 1.21.1: usar componentes de datos para nombre personalizado
-            this.stack.set(net.minecraft.component.DataComponentTypes.CUSTOM_NAME, Text.literal(v));
+            this.stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(v));
             this.pickItemStack(this.stack);
             this.updateNbt();
         });
@@ -72,13 +72,9 @@ public class UIItemStackOverlayPanel extends UIOverlayPanel
             try
             {
                 NbtCompound nbtCompound = new StringNbtReader(new StringReader(v)).parseCompound();
-                // 1.21.1: aplicar NBT como componente de datos personalizado usando NbtComponent
-                this.stack.set(
-                    net.minecraft.component.DataComponentTypes.CUSTOM_DATA,
-                    net.minecraft.component.type.NbtComponent.of(nbtCompound)
-                );
+                ItemStack itemStack = ItemStack.CODEC.parse(NbtOps.INSTANCE, nbtCompound).result().orElse(ItemStack.EMPTY);
 
-                this.pickItemStack(this.stack);
+                this.pickItemStack(itemStack);
                 this.itemList.list.setCurrentScroll(Registries.ITEM.getId(this.stack.getItem()).toString());
             }
             catch (Exception e)

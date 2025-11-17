@@ -124,7 +124,7 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
 
             this.updateTexture(context.getTransition());
 
-            Matrix4f matrix = MatrixStackUtils.getInverseViewRotationMatrix4f();
+            Matrix4f matrix = new Matrix4f(RenderSystem.getModelViewMatrix()).invert();
 
             matrix.mul(context.stack.peek().getPositionMatrix());
 
@@ -138,7 +138,7 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
 
             context.stack.push();
             context.stack.loadIdentity();
-            context.stack.multiplyPositionMatrix(MatrixStackUtils.getViewRotationMatrix4f());
+            context.stack.multiplyPositionMatrix(new Matrix4f(RenderSystem.getModelViewMatrix()).invert());
 
             emitter.lastGlobal.set(translation);
             emitter.rotation.set(matrix);

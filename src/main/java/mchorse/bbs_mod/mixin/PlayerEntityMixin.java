@@ -42,5 +42,30 @@ public class PlayerEntityMixin
         }
     }
 
-    
+    @Inject(method = "getBaseDimensions", at = @At("RETURN"), cancellable = true)
+    public void onGetDimensions(EntityPose pose, CallbackInfoReturnable<EntityDimensions> info)
+    {
+        if (this instanceof IMorphProvider provider)
+        {
+            Form form = provider.getMorph().getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                PlayerEntity player = (PlayerEntity) (Object) this;
+                EntityDimensions dimensions = info.getReturnValue();
+                float height = form.hitboxHeight.get() * (player.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
+
+                if (dimensions.fixed())
+                {
+                    info.setReturnValue(EntityDimensions.fixed(form.hitboxWidth.get(), height));
+                }
+                else
+                {
+                    info.setReturnValue(EntityDimensions.changing(form.hitboxWidth.get(), height));
+                }
+            }
+        }
+    }
+
+    // Eye height is handled in EntityMixin for 1.21.1
 }

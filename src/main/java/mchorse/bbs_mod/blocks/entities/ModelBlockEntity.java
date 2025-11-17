@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
@@ -70,11 +69,14 @@ public class ModelBlockEntity extends BlockEntity
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
-    // 1.21: La firma de toInitialChunkDataNbt cambió para aceptar WrapperLookup.
-    // No es necesario sobrescribirla aquí; usar la implementación por defecto.
+    @Override
+    public NbtCompound toInitialChunkDataNbt(net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
+    {
+        return this.createNbtWithId(registryLookup);
+    }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
+    protected void writeNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
     {
         super.writeNbt(nbt, registryLookup);
 
@@ -84,7 +86,7 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup)
+    public void readNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
     {
         super.readNbt(nbt, registryLookup);
 

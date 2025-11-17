@@ -51,7 +51,9 @@ public class UIScreen extends Screen implements IFileDropListener
         super(title);
 
         MinecraftClient mc = MinecraftClient.getInstance();
-        // Asegura que Screen#client no sea null antes del primer render/narrator
+
+        // Asegurar que el campo heredado `client` no sea nulo antes de `init()`
+        // evitando NPEs en rutas de render donde se consulta el tick counter.
         this.client = mc;
 
         this.menu = menu;
@@ -196,11 +198,8 @@ public class UIScreen extends Screen implements IFileDropListener
     {
         super.render(context, mouseX, mouseY, delta);
 
-        // 1.21.1: getTickDelta() fue reemplazado por RenderTickCounter
-        // En algunos flujos de render, Screen#client puede ser null brevemente.
-        // Usamos un fallback seguro al MinecraftClient global para evitar NPE.
-        MinecraftClient mc = this.client != null ? this.client : MinecraftClient.getInstance();
-        this.menu.context.setTransition(mc.getRenderTickCounter().getLastFrameDuration());
+        // Usar `client` ya inicializado para obtener el tick delta de render
+        this.menu.context.setTransition(this.client.getRenderTickCounter().getTickDelta(false));
         this.menu.renderMenu(this.context, mouseX, mouseY);
         this.menu.context.render.executeRunnables();
     }

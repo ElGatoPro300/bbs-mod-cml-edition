@@ -19,10 +19,10 @@ import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.util.math.BlockPos;
 
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
 
                 RenderSystem.enableDepthTest();
                 FormUtilsClient.render(form, new FormRenderingContext()
-            .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 RenderSystem.disableDepthTest();
 
@@ -92,19 +92,19 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
             return this.map.get(stack);
         }
 
-        NbtComponent beComponent = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-        NbtCompound nbt = beComponent != null ? beComponent.copyNbt() : null;
         ModelBlockEntity entity = new ModelBlockEntity(BlockPos.ORIGIN, BBSMod.MODEL_BLOCK.getDefaultState());
         Item item = new Item(entity);
 
         this.map.put(stack, item);
 
-        if (nbt == null)
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
+        if (nbtComponent == null)
         {
             return item;
         }
 
-        net.minecraft.client.world.ClientWorld world = MinecraftClient.getInstance().world;
+        NbtCompound nbt = nbtComponent.getNbt();
+        var world = MinecraftClient.getInstance().world;
         if (world != null)
         {
             entity.readNbt(nbt, world.getRegistryManager());

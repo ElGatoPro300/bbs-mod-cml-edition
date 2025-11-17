@@ -2,8 +2,8 @@ package mchorse.bbs_mod.mixin;
 
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.morphing.IMorphProvider;
+import mchorse.bbs_mod.morphing.Morph;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,62 +14,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Entity.class)
 public class EntityMixin
 {
-    @Inject(method = "getDimensions", at = @At("RETURN"), cancellable = true)
-    public void bbs$onGetDimensions(EntityPose pose, CallbackInfoReturnable<EntityDimensions> cir)
-    {
-        if (((Object) this) instanceof IMorphProvider provider)
-        {
-            Form form = provider.getMorph().getForm();
-
-            if (form != null && form.hitbox.get())
-            {
-                EntityDimensions dimensions = cir.getReturnValue();
-                float height;
-
-                if (((Object) this) instanceof PlayerEntity)
-                {
-                    PlayerEntity player = (PlayerEntity) (Object) this;
-                    height = form.hitboxHeight.get() * (player.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
-                }
-                else
-                {
-                    height = form.hitboxHeight.get();
-                }
-
-                if (dimensions.fixed())
-                {
-                    cir.setReturnValue(EntityDimensions.fixed(form.hitboxWidth.get(), height));
-                }
-                else
-                {
-                    cir.setReturnValue(EntityDimensions.changing(form.hitboxWidth.get(), height));
-                }
-            }
-        }
-    }
-    
     @Inject(method = "getEyeHeight", at = @At("HEAD"), cancellable = true)
-    public void bbs$getEyeHeight(EntityPose pose, CallbackInfoReturnable<Float> cir)
+    public void getEyeHeight(EntityPose pose, CallbackInfoReturnable<Float> info)
     {
-        if (((Object) this) instanceof IMorphProvider provider)
+        if (this instanceof IMorphProvider provider)
         {
-            Form form = provider.getMorph().getForm();
+            Morph morph = provider.getMorph();
 
-            if (form != null && form.hitbox.get())
+            if (morph != null)
             {
-                float height;
+                Form form = morph.getForm();
 
-                if (((Object) this) instanceof PlayerEntity)
+                if (form != null && form.hitbox.get())
                 {
                     PlayerEntity player = (PlayerEntity) (Object) this;
-                    height = form.hitboxHeight.get() * (player.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
-                }
-                else
-                {
-                    height = form.hitboxHeight.get();
-                }
+                    float height = form.hitboxHeight.get() * (player.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
 
-                cir.setReturnValue(form.hitboxEyeHeight.get() * height);
+                    info.setReturnValue(form.hitboxEyeHeight.get() * height);
+                }
             }
         }
     }

@@ -51,7 +51,7 @@ public class WorldRendererMixin
     {
         if (layer == RenderLayer.getSolid())
         {
-            BBSRendering.onRenderChunkLayer(positionMatrix, projectionMatrix);
+            BBSRendering.onRenderChunkLayer(new MatrixStack());
         }
     }
 

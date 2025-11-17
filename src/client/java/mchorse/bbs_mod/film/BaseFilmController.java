@@ -16,6 +16,8 @@ import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.graphics.Draw;
+import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
+import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
@@ -70,12 +72,6 @@ public abstract class BaseFilmController
         IEntity entity = context.entity;
         Camera camera = context.camera;
         MatrixStack stack = context.stack;
-        /* Guard against null matrix stack in special render passes (e.g., shadow).
-           If it's null, skip rendering this entity to avoid NPE. */
-        if (stack == null)
-        {
-            return;
-        }
         float transition = context.transition;
 
         Form form = entity.getForm();
@@ -164,7 +160,14 @@ public abstract class BaseFilmController
             {
                 stack.push();
                 MatrixStackUtils.multiply(stack, matrix);
-                Draw.coolerAxes(stack, 0.25F, 0.01F, 0.26F, 0.02F);
+                if (BBSSettings.modelBlockGizmosEnabled.get())
+                {
+                    BoneGizmoSystem.get().render3D(stack);
+                }
+                else
+                {
+                    Draw.coolerAxes(stack, 0.25F, 0.01F, 0.26F, 0.02F);
+                }
                 RenderSystem.enableDepthTest();
                 stack.pop();
             }
@@ -641,7 +644,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+        filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
 
             renderEntity(filmContext);
         }

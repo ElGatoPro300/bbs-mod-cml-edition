@@ -1,6 +1,8 @@
 package mchorse.bbs_mod.cubic.render.vanilla;
 
 import com.google.common.collect.Maps;
+import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
+import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.cubic.model.ArmorType;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import net.minecraft.client.model.ModelPart;
@@ -17,12 +19,12 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -76,7 +78,7 @@ public class ArmorRenderer
                     this.renderArmorParts(part, matrices, vertexConsumers, light, armorItem, innerModel, 1F, 1F, 1F, null);
                 }
 
-                ArmorTrim trim = itemStack.get(net.minecraft.component.DataComponentTypes.TRIM);
+                ArmorTrim trim = itemStack.get(DataComponentTypes.TRIM);
                 if (trim != null)
                 {
                     this.renderTrim(part, armorItem.getMaterial(), matrices, vertexConsumers, light, trim, innerModel);
@@ -120,18 +122,9 @@ public class ArmorRenderer
     private void renderArmorParts(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorItem item, boolean secondTextureLayer, float red, float green, float blue, String overlay)
     {
         VertexConsumer base = vertexConsumers.getBuffer(RenderLayer.getArmorCutoutNoCull(this.getArmorTexture(item, secondTextureLayer, overlay)));
+        VertexConsumer vertexConsumer = new RecolorVertexConsumer(base, new Color(red, green, blue, 1F));
 
-        if (overlay == null)
-        {
-            mchorse.bbs_mod.utils.colors.Color color = new mchorse.bbs_mod.utils.colors.Color(red, green, blue, 1F);
-            net.minecraft.client.render.VertexConsumer wrapped = new mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer(base, color);
-
-            part.render(matrices, wrapped, light, OverlayTexture.DEFAULT_UV);
-        }
-        else
-        {
-            part.render(matrices, base, light, OverlayTexture.DEFAULT_UV);
-        }
+        part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
     }
 
     private void renderTrim(ModelPart part, RegistryEntry<ArmorMaterial> material, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorTrim trim, boolean leggings)
@@ -159,10 +152,16 @@ public class ArmorRenderer
 
     private Identifier getArmorTexture(ArmorItem item, boolean secondLayer, String overlay)
     {
-        // 1.21.1: ArmorItem#getMaterial returns RegistryEntry<ArmorMaterial>
-        String materialPath = net.minecraft.registry.Registries.ARMOR_MATERIAL.getId(item.getMaterial().value()).getPath();
-        String id = "textures/models/armor/" + materialPath + "_layer_" + (secondLayer ? 2 : 1) + (overlay == null ? "" : "_" + overlay) + ".png";
+        String materialName = item.getMaterial().getKey().map(k -> k.getValue().getPath()).orElse("unknown");
+        String id = "textures/models/armor/" + materialName + "_layer_" + (secondLayer ? 2 : 1) + (overlay == null ? "" : "_" + overlay) + ".png";
 
-        return ARMOR_TEXTURE_CACHE.computeIfAbsent(id, s -> Identifier.of(s));
+        Identifier found = ARMOR_TEXTURE_CACHE.get(id);
+        if (found == null)
+        {
+            found = Identifier.of("minecraft", id);
+            ARMOR_TEXTURE_CACHE.put(id, found);
+        }
+
+        return found;
     }
 }
