@@ -55,6 +55,12 @@ public class FilmControllerContext
         this.replay = replay;
         this.camera = context.camera();
         this.stack = context.matrixStack();
+        if (this.stack == null)
+        {
+            // Fallback: create a MatrixStack and apply current ModelView matrix
+            this.stack = new net.minecraft.client.util.math.MatrixStack();
+            mchorse.bbs_mod.utils.MatrixStackUtils.multiply(this.stack, com.mojang.blaze3d.systems.RenderSystem.getModelViewMatrix());
+        }
         this.consumers = context.consumers();
         this.transition = context.tickCounter().getTickDelta(false);
 

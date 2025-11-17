@@ -236,6 +236,7 @@ public abstract class UIModelRenderer extends UIElement
 
         RenderSystem.viewport(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
         MatrixStackUtils.restoreMatrices();
+        context.resetMatrix();
 
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 

@@ -1,5 +1,7 @@
 package mchorse.bbs_mod;
 
+import mchorse.bbs_mod.client.BBSShaders;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
@@ -583,6 +585,8 @@ public class BBSModClient implements ClientModInitializer
         });
 
         BBSRendering.setup();
+        // Ensure BBS shader programs are initialized at client startup
+        BBSShaders.setup();
 
         /* Network */
         ClientNetwork.setup();
