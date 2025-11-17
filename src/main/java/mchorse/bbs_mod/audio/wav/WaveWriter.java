@@ -14,11 +14,10 @@ public class WaveWriter
         write(new FileOutputStream(file), wave);
     }
 
-    // Write WAVE file with RIFF header
     public static void write(OutputStream stream, Wave wave) throws IOException
     {
         writeString(stream, "RIFF");
-        // RIFF chunk size calculation
+        /* RIFF chunk size calculation */
         writeInt(stream, 36 + wave.data.length);
         writeString(stream, "WAVE");
 
@@ -40,7 +39,6 @@ public class WaveWriter
         stream.close();
     }
 
-    // Write string to stream
     private static void writeString(OutputStream stream, String string) throws IOException
     {
         byte[] bytes = new byte[string.length()];
@@ -53,7 +51,6 @@ public class WaveWriter
         stream.write(bytes);
     }
 
-    // Write integer to stream
     private static void writeInt(OutputStream stream, int integer) throws IOException
     {
         byte[] bytes = new byte[4];
@@ -66,7 +63,6 @@ public class WaveWriter
         stream.write(bytes);
     }
 
-    // Write short to stream
     private static void writeShort(OutputStream stream, int integer) throws IOException
     {
         byte[] bytes = new byte[2];

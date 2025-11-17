@@ -130,7 +130,8 @@ public class AudioRenderer
 
         int byteRate = sampleRate * 2;
         int totalBytes = (int) Math.ceil(total * byteRate);
-        // 确保缓冲区大小足够容纳所有音频数据，并保持字节对齐
+        /* Ensure the buffer size is large enough to hold all
+         * audio data and maintain byte alignment. */
         byte[] bytes = new byte[totalBytes + (totalBytes % 2)];
         Wave finalWave = new Wave(1, 1, sampleRate, 16, bytes);
         ByteBuffer buffer = MemoryUtil.memAlloc(2);
