@@ -26,6 +26,7 @@ import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
 import mchorse.bbs_mod.utils.pose.Transform;
@@ -49,6 +50,20 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         if (FormUtils.getForm(sheet.property) instanceof ModelForm modelForm)
         {
             ModelInstance model = ((ModelFormRenderer) FormUtilsClient.getRenderer(modelForm)).getModel();
+
+            /* Hacer que el selector de textura del hueso abra la carpeta
+             * de la textura base del modelo cuando no haya override */
+            this.poseEditor.setDefaultTextureSupplier(() ->
+            {
+                Link base = modelForm.texture.get();
+                if (base != null)
+                {
+                    return base;
+                }
+
+                ModelInstance m = ((ModelFormRenderer) FormUtilsClient.getRenderer(modelForm)).getModel();
+                return m != null ? m.texture : null;
+            });
 
             if (model != null)
             {
@@ -83,9 +98,10 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
     {
         this.poseEditor.removeAll();
 
-        /* Construir disposición según estado de anclaje */
+        /* Construir disposición según estado de anclaje y ajuste global */
         UIKeyframeSheet sheet = this.editor.getGraph().getSheet(this.keyframe);
-        boolean isAnchored = BBSSettings.boneAnchoringEnabled.get() && sheet != null && sheet.anchoredBone != null;
+        boolean anchoringEnabled = BBSSettings.boneAnchoringEnabled.get();
+        boolean isAnchored = anchoringEnabled && sheet != null && sheet.anchoredBone != null;
 
         if (isAnchored)
         {
@@ -96,6 +112,17 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         else
         {
             this.poseEditor.anchoredLegend.setVisible(false);
+            /* Si el anclaje está deshabilitado globalmente, ocultar botones de anclaje */
+            if (!anchoringEnabled)
+            {
+                this.poseEditor.anchorBone.setVisible(false);
+                this.poseEditor.unanchorBone.setVisible(false);
+            }
+            else
+            {
+                this.poseEditor.anchorBone.setVisible(true);
+                this.poseEditor.unanchorBone.setVisible(true);
+            }
         }
 
         if (this.getFlex().getW() > 240)
@@ -105,11 +132,23 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
             UIElement right;
             if (isAnchored)
             {
-                right = UI.column(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.anchoredLegend, this.poseEditor.unanchorBone);
+                /* En anclado, mantener visible el botón de textura usando el hueso anclado */
+                this.poseEditor.pickTexture.w(1F);
+                right = UI.column(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.anchoredLegend, this.poseEditor.pickTexture, this.poseEditor.unanchorBone);
             }
             else
             {
-                right = UI.column(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.groups, this.poseEditor.anchorBone);
+                /* Insertar botón de textura de hueso entre la lista y el anclaje */
+                this.poseEditor.pickTexture.w(1F);
+                if (anchoringEnabled)
+                {
+                    right = UI.column(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.groups, this.poseEditor.pickTexture, this.poseEditor.anchorBone);
+                }
+                else
+                {
+                    /* Anclaje deshabilitado: no mostrar botón de anclar */
+                    right = UI.column(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.groups, this.poseEditor.pickTexture);
+                }
             }
 
             this.poseEditor.add(UI.row(left, right));
@@ -118,13 +157,24 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         {
             if (isAnchored)
             {
-                this.poseEditor.add(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.anchoredLegend, this.poseEditor.unanchorBone,
+                /* En estrecho y anclado, conservar el botón de textura */
+                this.poseEditor.add(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.anchoredLegend, this.poseEditor.pickTexture, this.poseEditor.unanchorBone,
                     UI.label(UIKeys.POSE_CONTEXT_FIX), this.poseEditor.fix, UI.row(this.poseEditor.color, this.poseEditor.lighting), this.poseEditor.transform);
             }
             else
             {
-                this.poseEditor.add(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.groups, this.poseEditor.anchorBone,
-                    UI.label(UIKeys.POSE_CONTEXT_FIX), this.poseEditor.fix, UI.row(this.poseEditor.color, this.poseEditor.lighting), this.poseEditor.transform);
+                /* En modo estrecho, también colocar el botón antes del anclaje */
+                if (anchoringEnabled)
+                {
+                    this.poseEditor.add(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.groups, this.poseEditor.pickTexture, this.poseEditor.anchorBone,
+                        UI.label(UIKeys.POSE_CONTEXT_FIX), this.poseEditor.fix, UI.row(this.poseEditor.color, this.poseEditor.lighting), this.poseEditor.transform);
+                }
+                else
+                {
+                    /* Anclaje deshabilitado: ocultar botón de anclar */
+                    this.poseEditor.add(UI.label(UIKeys.FORMS_EDITOR_BONE), this.poseEditor.groups, this.poseEditor.pickTexture,
+                        UI.label(UIKeys.POSE_CONTEXT_FIX), this.poseEditor.fix, UI.row(this.poseEditor.color, this.poseEditor.lighting), this.poseEditor.transform);
+                }
             }
         }
 
@@ -335,6 +385,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 poseT.scale.set(1F, 1F, 1F);
                 poseT.rotate.set(0F, 0F, 0F);
                 poseT.rotate2.set(0F, 0F, 0F);
+                poseT.pivot.set(0F, 0F, 0F);
             });
             this.refillTransform();
         }
@@ -364,6 +415,13 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         public void pasteRotation2(Vector3d rotation)
         {
             UIPoseFactoryEditor.apply(this.editor.editor, this.editor.keyframe, this.editor.getGroup(), (poseT) -> poseT.rotate2.set(Vectors.toRad(rotation)));
+            this.refillTransform();
+        }
+
+        @Override
+        public void pastePivot(Vector3d pivot)
+        {
+            UIPoseFactoryEditor.apply(this.editor.editor, this.editor.keyframe, this.editor.getGroup(), (poseT) -> poseT.pivot.set((float) pivot.x, (float) pivot.y, (float) pivot.z));
             this.refillTransform();
         }
 
@@ -428,6 +486,22 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 poseT.rotate2.x += dx;
                 poseT.rotate2.y += dy;
                 poseT.rotate2.z += dz;
+            });
+        }
+
+        @Override
+        public void setP(Axis axis, double x, double y, double z)
+        {
+            Transform transform = this.getTransform();
+            float dx = (float) x - transform.pivot.x;
+            float dy = (float) y - transform.pivot.y;
+            float dz = (float) z - transform.pivot.z;
+
+            UIPoseFactoryEditor.apply(this.editor.editor, this.editor.keyframe, this.editor.getGroup(), (poseT) ->
+            {
+                poseT.pivot.x += dx;
+                poseT.pivot.y += dy;
+                poseT.pivot.z += dz;
             });
         }
     }

@@ -637,11 +637,7 @@
 "bbs.ui.forms.editors.structure.pick_structure": "Pick structure...",
 "bbs.ui.forms.editors.structure.pick_biome": "Pick biome...",
     "bbs.ui.forms.editors.structure.tint": "Tint",
-    "bbs.ui.forms.editors.structure.pivot.title": "Pivot",
-    "bbs.ui.forms.editors.structure.pivot.x": "X",
-    "bbs.ui.forms.editors.structure.pivot.y": "Y",
-    "bbs.ui.forms.editors.structure.pivot.z": "Z",
-    "bbs.ui.forms.editors.structure.pivot.auto": "Auto pivot",
+    "bbs.ui.transforms.pivot.title": "Pivot",
     "bbs.ui.forms.editors.structure.pivot.calculate_center": "Calculate center",
     "bbs.ui.forms.list.context.focus": "Focus search",
     "bbs.ui.forms.list.edit": "Edit",
@@ -1215,5 +1211,7 @@
     "bbs.ui.gizmos.keys.toggle_rotation_channel": "Toggle rotation channel",
     "keybinds.config.gizmos.title": "Gizmos",
     "keybinds.config.gizmos.tooltip": "Keybinds that control bone gizmos (translate/rotate/scale)",
-    "bbs.ui.supporters.cml_intro": "This version of BBS CML Edition was made possible thanks to the support of the CML Discord server!!"
+    "bbs.ui.supporters.cml_intro": "This version of BBS CML Edition was made possible thanks to the support of the CML Discord server!!",
+    "bbs.ui.supporters.cml_animators": "Colaboradores De BBS CML Edition",
+    "bbs.ui.texture.pick.bone.texture": "Pick bone texture"
 }
