@@ -207,13 +207,6 @@ public class ActionPlayback
         armature.apply(target, this.action, tick, blend, transition, skipInitial);
     }
 
-    public void postApply(IEntity target, IModel armature, float transition)
-    {
-        float tick = this.getTick(transition);
-
-        armature.postApply(target, this.action, tick, transition);
-    }
-
     public static enum Fade
     {
         OUT, FINISHED, IN

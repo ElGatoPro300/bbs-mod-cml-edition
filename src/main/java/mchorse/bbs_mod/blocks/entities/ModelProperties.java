@@ -35,7 +35,7 @@ public class ModelProperties implements IMapSerializable
         return this.form;
     }
 
-    protected Form processForm(Form form)
+    private Form processForm(Form form)
     {
         if (form != null)
         {

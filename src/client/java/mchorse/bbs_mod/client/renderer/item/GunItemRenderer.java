@@ -57,18 +57,18 @@ public class GunItemRenderer implements BuiltinItemRendererRegistry.DynamicItemR
             GunProperties properties = item.properties;
             Form form = properties.getForm(mode);
             Transform transform = properties.getTransform(mode);
-            boolean zoom = mode.isFirstPerson() && BBSModClient.getGunZoom() != null && properties.getZoomForm() != null;
+            boolean zoom = mode.isFirstPerson() && BBSModClient.getGunZoom() != null && properties.zoomForm != null;
 
             if (zoom)
             {
-                form = properties.getZoomForm();
+                form = properties.zoomForm;
                 transform = properties.zoomTransform;
             }
 
             /* Preview zoom form */
             if (UIScreen.getCurrentMenu() instanceof UIModelBlockEditorMenu editorMenu && editorMenu.currentSection == editorMenu.sectionZoom)
             {
-                form = editorMenu.getGunProperties().getZoomForm();
+                form = editorMenu.getGunProperties().zoomForm;
                 transform = editorMenu.getGunProperties().zoomTransform;
             }
 

@@ -261,7 +261,6 @@ public class UIKeyframes extends UIElement
         if (this.changeCallback != null)
         {
             this.changeCallback.run();
-
         }
     }
 

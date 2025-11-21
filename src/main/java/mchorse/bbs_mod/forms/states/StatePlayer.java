@@ -41,9 +41,11 @@ public class StatePlayer
     {
         this.tick += 1;
 
-        if ((this.state.main.get() || this.state.looping.get()) && this.tick >= this.state.duration.get())
+        boolean main = this.state.main.get();
+
+        if ((main || this.state.looping.get()) && this.tick >= this.state.duration.get())
         {
-            this.tick = this.state.offset.get();
+            this.tick = main ? 0 : this.state.offset.get();
             this.first = false;
         }
 
