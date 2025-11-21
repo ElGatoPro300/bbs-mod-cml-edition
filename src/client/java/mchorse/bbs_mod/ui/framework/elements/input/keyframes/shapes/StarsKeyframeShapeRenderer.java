@@ -56,10 +56,17 @@ public class StarsKeyframeShapeRenderer implements IKeyframeShapeRenderer
             float tipRight_x = (float) x + fOffset * cos + tipWidth * sin;
             float tipRight_y = (float) y + fOffset * sin - tipWidth * cos;
 
+<<<<<<< HEAD
             builder.vertex(matrix, baseLeft_x, baseLeft_y, 0).color(c);
             builder.vertex(matrix, tipLeft_x, tipLeft_y, 0).color(c);
             builder.vertex(matrix, tipRight_x, tipRight_y, 0).color(c);
             builder.vertex(matrix, baseRight_x, baseRight_y, 0).color(c);
+=======
+            builder.vertex(matrix, baseLeft_x, baseLeft_y, 0).color(c).next();
+            builder.vertex(matrix, tipLeft_x, tipLeft_y, 0).color(c).next();
+            builder.vertex(matrix, tipRight_x, tipRight_y, 0).color(c).next();
+            builder.vertex(matrix, baseRight_x, baseRight_y, 0).color(c).next();
+>>>>>>> master
         }
     }
 
@@ -69,9 +76,16 @@ public class StarsKeyframeShapeRenderer implements IKeyframeShapeRenderer
         float centerSize = offset * 0.2F;
         float half = centerSize * 1.25F;
 
+<<<<<<< HEAD
         builder.vertex(matrix, x - half, y - half, 0F).color(c);
         builder.vertex(matrix, x - half, y + half, 0F).color(c);
         builder.vertex(matrix, x + half, y + half, 0F).color(c);
         builder.vertex(matrix, x + half, y - half, 0F).color(c);
+=======
+        builder.vertex(matrix, x - half, y - half, 0F).color(c).next();
+        builder.vertex(matrix, x - half, y + half, 0F).color(c).next();
+        builder.vertex(matrix, x + half, y + half, 0F).color(c).next();
+        builder.vertex(matrix, x + half, y - half, 0F).color(c).next();
+>>>>>>> master
     }
 }

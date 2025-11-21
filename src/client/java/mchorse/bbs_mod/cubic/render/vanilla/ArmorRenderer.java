@@ -1,8 +1,11 @@
 package mchorse.bbs_mod.cubic.render.vanilla;
 
 import com.google.common.collect.Maps;
+<<<<<<< HEAD
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
 import mchorse.bbs_mod.utils.colors.Color;
+=======
+>>>>>>> master
 import mchorse.bbs_mod.cubic.model.ArmorType;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import net.minecraft.client.model.ModelPart;
@@ -19,12 +22,19 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
+<<<<<<< HEAD
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.trim.ArmorTrim;
 import net.minecraft.registry.entry.RegistryEntry;
+=======
+import net.minecraft.item.DyeableArmorItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.trim.ArmorTrim;
+>>>>>>> master
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -62,10 +72,16 @@ public class ArmorRenderer
                 part.pitch = part.yaw = part.roll = 0F;
                 part.xScale = part.yScale = part.zScale = 1F;
 
+<<<<<<< HEAD
                 DyedColorComponent dyed = itemStack.get(DataComponentTypes.DYED_COLOR);
                 if (dyed != null)
                 {
                     int color = dyed.rgb();
+=======
+                if (armorItem instanceof DyeableArmorItem dyeableArmorItem)
+                {
+                    int color = dyeableArmorItem.getColor(itemStack);
+>>>>>>> master
                     float r = (float)(color >> 16 & 255) / 255.0F;
                     float g = (float)(color >> 8 & 255) / 255.0F;
                     float b = (float)(color & 255) / 255.0F;
@@ -78,11 +94,18 @@ public class ArmorRenderer
                     this.renderArmorParts(part, matrices, vertexConsumers, light, armorItem, innerModel, 1F, 1F, 1F, null);
                 }
 
+<<<<<<< HEAD
                 ArmorTrim trim = itemStack.get(DataComponentTypes.TRIM);
                 if (trim != null)
                 {
                     this.renderTrim(part, armorItem.getMaterial(), matrices, vertexConsumers, light, trim, innerModel);
                 }
+=======
+                ArmorTrim.getTrim(entity.getWorld().getRegistryManager(), itemStack, true).ifPresent((trim) ->
+                {
+                    this.renderTrim(part, armorItem.getMaterial(), matrices, vertexConsumers, light, trim, innerModel);
+                });
+>>>>>>> master
 
                 if (itemStack.hasGlint())
                 {
@@ -121,6 +144,7 @@ public class ArmorRenderer
 
     private void renderArmorParts(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorItem item, boolean secondTextureLayer, float red, float green, float blue, String overlay)
     {
+<<<<<<< HEAD
         VertexConsumer base = vertexConsumers.getBuffer(RenderLayer.getArmorCutoutNoCull(this.getArmorTexture(item, secondTextureLayer, overlay)));
         VertexConsumer vertexConsumer = new RecolorVertexConsumer(base, new Color(red, green, blue, 1F));
 
@@ -128,16 +152,32 @@ public class ArmorRenderer
     }
 
     private void renderTrim(ModelPart part, RegistryEntry<ArmorMaterial> material, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorTrim trim, boolean leggings)
+=======
+        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getArmorCutoutNoCull(this.getArmorTexture(item, secondTextureLayer, overlay)));
+
+        part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, red, green, blue, 1F);
+    }
+
+    private void renderTrim(ModelPart part, ArmorMaterial material, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorTrim trim, boolean leggings)
+>>>>>>> master
     {
         Sprite sprite = this.armorTrimsAtlas.getSprite(leggings ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material));
         VertexConsumer vertexConsumer = sprite.getTextureSpecificVertexConsumer(vertexConsumers.getBuffer(TexturedRenderLayers.getArmorTrims(trim.getPattern().value().decal())));
 
+<<<<<<< HEAD
         part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+=======
+        part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1F, 1F, 1F, 1F);
+>>>>>>> master
     }
 
     private void renderGlint(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
     {
+<<<<<<< HEAD
         part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getArmorEntityGlint()), light, OverlayTexture.DEFAULT_UV);
+=======
+        part.render(matrices, vertexConsumers.getBuffer(RenderLayer.getArmorEntityGlint()), light, OverlayTexture.DEFAULT_UV, 1F, 1F, 1F, 1F);
+>>>>>>> master
     }
 
     private BipedEntityModel getModel(EquipmentSlot slot)
@@ -152,6 +192,7 @@ public class ArmorRenderer
 
     private Identifier getArmorTexture(ArmorItem item, boolean secondLayer, String overlay)
     {
+<<<<<<< HEAD
         String materialName = item.getMaterial().getKey().map(k -> k.getValue().getPath()).orElse("unknown");
         String id = "textures/models/armor/" + materialName + "_layer_" + (secondLayer ? 2 : 1) + (overlay == null ? "" : "_" + overlay) + ".png";
 
@@ -163,5 +204,11 @@ public class ArmorRenderer
         }
 
         return found;
+=======
+        String materialName = item.getMaterial().getName();
+        String id = "textures/models/armor/" + materialName + "_layer_" + (secondLayer ? 2 : 1) + (overlay == null ? "" : "_" + overlay) + ".png";
+
+        return ARMOR_TEXTURE_CACHE.computeIfAbsent(id, Identifier::new);
+>>>>>>> master
     }
 }

@@ -72,7 +72,11 @@ public class WorldFilmController extends BaseFilmController
         }
 
         this.context.clipData.clear();
+<<<<<<< HEAD
         this.context.setup(tick, context.tickCounter().getTickDelta(false));
+=======
+        this.context.setup(tick, context.tickDelta());
+>>>>>>> master
 
         for (Clip clip : clips)
         {

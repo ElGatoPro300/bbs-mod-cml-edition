@@ -1,7 +1,10 @@
 package mchorse.bbs_mod;
 
+<<<<<<< HEAD
 import mchorse.bbs_mod.client.BBSShaders;
 
+=======
+>>>>>>> master
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
@@ -72,7 +75,11 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
+<<<<<<< HEAD
 import net.minecraft.client.util.BufferAllocator;
+=======
+import net.minecraft.client.render.Tessellator;
+>>>>>>> master
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.InputUtil;
@@ -418,7 +425,13 @@ public class BBSModClient implements ClientModInitializer
                     stack.translate(0F, 0F, -d);
 
                     RenderSystem.enableDepthTest();
+<<<<<<< HEAD
                     BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+=======
+                    BufferBuilder builder = Tessellator.getInstance().getBuffer();
+
+                    builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+>>>>>>> master
 
                     float fov = MinecraftClient.getInstance().options.getFov().getValue();
                     float dd = d * (float) Math.pow(fov / 40F, 2F);
@@ -540,11 +553,19 @@ public class BBSModClient implements ClientModInitializer
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
         {
+<<<<<<< HEAD
             BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(false));
 
             if (gunZoom != null)
             {
                 gunZoom.update(keyZoom.isPressed(), tickCounter.getLastFrameDuration());
+=======
+            BBSRendering.renderHud(drawContext, tickDelta);
+
+            if (gunZoom != null)
+            {
+                gunZoom.update(keyZoom.isPressed(), MinecraftClient.getInstance().getLastFrameDuration());
+>>>>>>> master
 
                 if (gunZoom.canBeRemoved())
                 {

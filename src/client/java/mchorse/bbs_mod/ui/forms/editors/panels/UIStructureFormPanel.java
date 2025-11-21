@@ -23,7 +23,11 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtIo;
+<<<<<<< HEAD
 import net.minecraft.nbt.NbtSizeTracker;
+=======
+import net.minecraft.nbt.NbtTagSizeTracker;
+>>>>>>> master
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;

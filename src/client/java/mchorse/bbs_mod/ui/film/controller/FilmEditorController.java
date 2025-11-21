@@ -172,7 +172,11 @@ public class FilmEditorController extends BaseFilmController
                     this.renderOnion(replay, pose.getKeyframes().indexOf(segment.b), 1, pose, onionSkin.postColor.get(), onionSkin.postFrames.get(), context, isPlaying, entity);
 
                     replay.keyframes.apply(ticks, entity);
+<<<<<<< HEAD
         float tick = ticks + this.getTransition(entity, context.tickCounter().getTickDelta(false));
+=======
+                    float tick = ticks + this.getTransition(entity, context.tickDelta());
+>>>>>>> master
                     Form form = entity.getForm();
                     replay.properties.applyProperties(form, tick);
 
@@ -227,7 +231,11 @@ public class FilmEditorController extends BaseFilmController
         Pair<String, Boolean> bone = this.isCurrent(entity) && !this.controller.panel.recorder.isRecording() ? this.controller.getBone() : null;
 
         return super.getFilmControllerContext(context, replay, entity)
+<<<<<<< HEAD
             .transition(this.getTransition(entity, context.tickCounter().getTickDelta(false)))
+=======
+            .transition(this.getTransition(entity, context.tickDelta()))
+>>>>>>> master
             .bone(bone == null ? null : bone.a, bone != null && bone.b);
     }
 

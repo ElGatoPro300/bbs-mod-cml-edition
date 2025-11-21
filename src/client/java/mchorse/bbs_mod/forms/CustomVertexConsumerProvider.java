@@ -3,7 +3,11 @@ package mchorse.bbs_mod.forms;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
+<<<<<<< HEAD
 import net.minecraft.client.util.BufferAllocator;
+=======
+import net.minecraft.client.render.BufferBuilder;
+>>>>>>> master
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;

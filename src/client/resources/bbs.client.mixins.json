@@ -22,6 +22,10 @@
         "ResourceReloadLoggerMixin",
         "RenderLayerMixin",
         "ClientWorldPropertiesMixin",
+<<<<<<< HEAD
+=======
+        "sodium.SodiumBufferBuilderAccessor",
+>>>>>>> master
         "sodium.ColorAttributeMixin",
         "iris.EntityVertexMixin",
         "KeyboardInputMixin",

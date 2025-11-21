@@ -70,7 +70,10 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+<<<<<<< HEAD
 import org.joml.Matrix4fStack;
+=======
+>>>>>>> master
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
@@ -1045,7 +1048,11 @@ public class UIFilmController extends UIElement
 
                 if (entity != null && entity.getForm() != null && this.panel.lastProjection != null && this.panel.lastView != null)
                 {
+<<<<<<< HEAD
         float transition = this.worldRenderContext != null ? this.worldRenderContext.tickCounter().getTickDelta(false) : 0F;
+=======
+                    float transition = this.worldRenderContext != null ? this.worldRenderContext.tickDelta() : 0F;
+>>>>>>> master
 
                     /* Compute entity's target matrix in world space */
                     Vector3d cameraPos = this.panel.getCamera().position;
@@ -1108,11 +1115,19 @@ public class UIFilmController extends UIElement
             mvStack.set(this.panel.lastView);
             RenderSystem.applyModelViewMatrix();
 
+<<<<<<< HEAD
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
 
             mvStack.popMatrix();
             RenderSystem.applyModelViewMatrix();
         }
+=======
+        worldStack.push();
+        worldStack.loadIdentity();
+        MatrixStackUtils.multiply(worldStack, this.panel.lastView);
+        this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
+        worldStack.pop();
+>>>>>>> master
 
         /* Return back to orthographic projection */
         MatrixStackUtils.restoreMatrices();
@@ -1272,7 +1287,11 @@ public class UIFilmController extends UIElement
 
                 BaseFilmController.renderEntity(FilmControllerContext.instance
                     .setup(this.getEntities(), entry.getValue(), replay, renderContext)
+<<<<<<< HEAD
             .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+=======
+                    .transition(isPlaying ? renderContext.tickDelta() : 0)
+>>>>>>> master
                     .stencil(this.stencilMap)
                     .relative(replay.relative.get()));
             }
@@ -1283,7 +1302,11 @@ public class UIFilmController extends UIElement
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
+<<<<<<< HEAD
             .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+=======
+                .transition(isPlaying ? renderContext.tickDelta() : 0)
+>>>>>>> master
                 .stencil(this.stencilMap)
                 .relative(replay.relative.get()));
         }

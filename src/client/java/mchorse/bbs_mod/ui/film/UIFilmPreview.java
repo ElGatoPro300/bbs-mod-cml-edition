@@ -363,6 +363,7 @@ public class UIFilmPreview extends UIElement
     private void renderCursor(UIContext context)
     {
         net.minecraft.client.render.Camera mcCamera = MinecraftClient.getInstance().gameRenderer.getCamera();
+<<<<<<< HEAD
         org.joml.Matrix4fStack stack = RenderSystem.getModelViewStack();
 
         stack.pushMatrix();
@@ -372,11 +373,25 @@ public class UIFilmPreview extends UIElement
         stack.translate(area.x + 16, area.ey() - 12, 0F);
         stack.rotate(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
         stack.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
+=======
+        MatrixStack stack = RenderSystem.getModelViewStack();
+
+        stack.push();
+
+        stack.multiplyPositionMatrix(context.batcher.getContext().getMatrices().peek().getPositionMatrix());
+        stack.translate(area.x + 16, area.ey() - 12, 0F);
+        stack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
+        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
+>>>>>>> master
         stack.scale(-1F, -1F, -1F);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.renderCrosshair(10);
 
+<<<<<<< HEAD
         stack.popMatrix();
+=======
+        stack.pop();
+>>>>>>> master
         RenderSystem.applyModelViewMatrix();
     }
 }

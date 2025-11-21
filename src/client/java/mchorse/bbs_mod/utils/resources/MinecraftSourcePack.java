@@ -75,13 +75,21 @@ public class MinecraftSourcePack implements ISourcePack
     @Override
     public boolean hasAsset(Link link)
     {
+<<<<<<< HEAD
         return this.manager.getResource(Identifier.of(link.toString())).isPresent();
+=======
+        return this.manager.getResource(new Identifier(link.toString())).isPresent();
+>>>>>>> master
     }
 
     @Override
     public InputStream getAsset(Link link) throws IOException
     {
+<<<<<<< HEAD
         Optional<Resource> resource = this.manager.getResource(Identifier.of(link.toString()));
+=======
+        Optional<Resource> resource = this.manager.getResource(new Identifier(link.toString()));
+>>>>>>> master
 
         if (resource.isPresent())
         {

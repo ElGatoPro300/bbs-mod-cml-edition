@@ -15,7 +15,11 @@ import mchorse.bbs_mod.utils.Timer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
+<<<<<<< HEAD
 import net.minecraft.client.util.BufferAllocator;
+=======
+import net.minecraft.client.render.Tessellator;
+>>>>>>> master
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -1038,7 +1042,12 @@ public class BoneGizmoSystem
         // rotación adicional del transform local aquí para evitar invertir o
         // duplicar la orientación del gizmo.
 
+<<<<<<< HEAD
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+=======
+        BufferBuilder builder = Tessellator.getInstance().getBuffer();
+        builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+>>>>>>> master
 
         float baseLength = 0.25F;
         float length = baseLength * this.gizmoScale;     // longitud de cada eje
@@ -1556,6 +1565,7 @@ public class BoneGizmoSystem
                 }
 
                 // Triángulos del quad
+<<<<<<< HEAD
         builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F);
         builder.vertex(mat, x12, y12, z12).color(r, g, b, 1F);
         builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F);
@@ -1563,6 +1573,15 @@ public class BoneGizmoSystem
         builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F);
         builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F);
         builder.vertex(mat, x21, y21, z21).color(r, g, b, 1F);
+=======
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F).next();
+                builder.vertex(mat, x12, y12, z12).color(r, g, b, 1F).next();
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F).next();
+
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F).next();
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F).next();
+                builder.vertex(mat, x21, y21, z21).color(r, g, b, 1F).next();
+>>>>>>> master
             }
         }
 
@@ -1640,6 +1659,7 @@ public class BoneGizmoSystem
                         y22 = (float) (hr * Math.sin(v2));
                     }
 
+<<<<<<< HEAD
         builder.vertex(mat, x11, y11, z11).color(1F, 1F, 1F, ha);
         builder.vertex(mat, x12, y12, z12).color(1F, 1F, 1F, ha);
         builder.vertex(mat, x22, y22, z22).color(1F, 1F, 1F, ha);
@@ -1647,6 +1667,15 @@ public class BoneGizmoSystem
         builder.vertex(mat, x11, y11, z11).color(1F, 1F, 1F, ha);
         builder.vertex(mat, x22, y22, z22).color(1F, 1F, 1F, ha);
         builder.vertex(mat, x21, y21, z21).color(1F, 1F, 1F, ha);
+=======
+                    builder.vertex(mat, x11, y11, z11).color(1F, 1F, 1F, ha).next();
+                    builder.vertex(mat, x12, y12, z12).color(1F, 1F, 1F, ha).next();
+                    builder.vertex(mat, x22, y22, z22).color(1F, 1F, 1F, ha).next();
+
+                    builder.vertex(mat, x11, y11, z11).color(1F, 1F, 1F, ha).next();
+                    builder.vertex(mat, x22, y22, z22).color(1F, 1F, 1F, ha).next();
+                    builder.vertex(mat, x21, y21, z21).color(1F, 1F, 1F, ha).next();
+>>>>>>> master
                 }
             }
         }
@@ -1743,6 +1772,7 @@ public class BoneGizmoSystem
             }
 
             // Cara lateral: ápice -> p1 -> p2
+<<<<<<< HEAD
         builder.vertex(mat, ax, ay, az).color(r, g, b, a);
         builder.vertex(mat, x1, y1, z1).color(r, g, b, a);
         builder.vertex(mat, x2, y2, z2).color(r, g, b, a);
@@ -1752,6 +1782,17 @@ public class BoneGizmoSystem
         builder.vertex(mat, bx, by, bz).color(r, g, b, aa);
         builder.vertex(mat, x2, y2, z2).color(r, g, b, aa);
         builder.vertex(mat, x1, y1, z1).color(r, g, b, aa);
+=======
+            builder.vertex(mat, ax, ay, az).color(r, g, b, a).next();
+            builder.vertex(mat, x1, y1, z1).color(r, g, b, a).next();
+            builder.vertex(mat, x2, y2, z2).color(r, g, b, a).next();
+
+            // Disco de base (opcional, ligeramente más transparente)
+            float aa = Math.max(0F, a - 0.2F);
+            builder.vertex(mat, bx, by, bz).color(r, g, b, aa).next();
+            builder.vertex(mat, x2, y2, z2).color(r, g, b, aa).next();
+            builder.vertex(mat, x1, y1, z1).color(r, g, b, aa).next();
+>>>>>>> master
         }
     }
 

@@ -644,7 +644,11 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
+<<<<<<< HEAD
         filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+=======
+            filmContext.transition = getTransition(entity, context.tickDelta());
+>>>>>>> master
 
             renderEntity(filmContext);
         }
