@@ -3,10 +3,7 @@ package mchorse.bbs_mod.cubic.render.vao;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
-<<<<<<< HEAD
 import net.minecraft.client.render.GameRenderer;
-=======
->>>>>>> master
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -16,7 +13,6 @@ public class ModelVAORenderer
 {
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
-<<<<<<< HEAD
         // Guard against null shader: try a safe fallback compatible with VAO format
         if (shader == null)
         {
@@ -31,8 +27,6 @@ public class ModelVAORenderer
             shader = fallback;
         }
 
-=======
->>>>>>> master
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
@@ -74,18 +68,12 @@ public class ModelVAORenderer
             normalUniform.set(stack.peek().getNormalMatrix());
         }
 
-<<<<<<< HEAD
         // 1.21.1: viewRotationMat was removed; try optional uniform by name
         GlUniform viewRot = shader.getUniform("IViewRotMat");
         if (viewRot != null)
         {
             // Use identity; billboard renderers adjust matrices separately
             viewRot.set(new org.joml.Matrix4f().identity());
-=======
-        if (shader.viewRotationMat != null)
-        {
-            shader.viewRotationMat.set(RenderSystem.getInverseViewRotationMatrix());
->>>>>>> master
         }
 
         if (shader.fogStart != null)

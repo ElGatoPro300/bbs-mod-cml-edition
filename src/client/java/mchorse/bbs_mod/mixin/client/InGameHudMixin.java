@@ -29,11 +29,7 @@ public class InGameHudMixin
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-<<<<<<< HEAD
     public void onRenderEnd(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo info)
-=======
-    public void onRenderEnd(CallbackInfo info)
->>>>>>> master
     {
         BBSRendering.onRenderBeforeScreen();
     }

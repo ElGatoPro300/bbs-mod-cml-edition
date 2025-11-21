@@ -62,11 +62,7 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
         super.render3D(context);
 
         Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-<<<<<<< HEAD
         Matrix4f matrix = new Matrix4f(RenderSystem.getModelViewMatrix()).invert();
-=======
-        Matrix4f matrix = new Matrix4f(RenderSystem.getInverseViewRotationMatrix());
->>>>>>> master
 
         matrix.mul(context.stack.peek().getPositionMatrix());
 
@@ -75,11 +71,7 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
         translation.add(camera.getPos().x, camera.getPos().y, camera.getPos().z);
         context.stack.push();
         context.stack.loadIdentity();
-<<<<<<< HEAD
         context.stack.multiplyPositionMatrix(new Matrix4f(RenderSystem.getModelViewMatrix()).invert());
-=======
-        context.stack.multiplyPositionMatrix(new Matrix4f(RenderSystem.getInverseViewRotationMatrix()).invert());
->>>>>>> master
 
         this.pos.set(translation);
         this.vel.set(0F, 0F, 1F);
@@ -109,20 +101,8 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
                 ParticleType type = Registries.PARTICLE_TYPE.get(settings.particle);
                 ParticleEffect effect = ParticleTypes.FLAME;
 
-<<<<<<< HEAD
                 // TODO: Re-enable custom particle argument parsing for 1.21 API.
                 // The factory method signature changed; fallback to default effect.
-=======
-                try
-                {
-                    if (type != null)
-                    {
-                        effect = type.getParametersFactory().read(type, new StringReader(" " + settings.arguments));
-                    }
-                }
-                catch (Exception e)
-                {}
->>>>>>> master
 
                 for (int i = 0; i < count; i++)
                 {

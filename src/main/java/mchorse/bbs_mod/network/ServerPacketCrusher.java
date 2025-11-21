@@ -5,7 +5,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-<<<<<<< HEAD
 import net.minecraft.network.packet.CustomPayload;
 
 public class ServerPacketCrusher extends PacketCrusher
@@ -19,14 +18,5 @@ public class ServerPacketCrusher extends PacketCrusher
     protected void sendBuffer(PlayerEntity entity, Identifier identifier, PacketByteBuf buf)
     {
         ServerPlayNetworking.send((ServerPlayerEntity) entity, ServerNetwork.BufPayload.from(buf, idFor(identifier)));
-=======
-
-public class ServerPacketCrusher extends PacketCrusher
-{
-    @Override
-    protected void sendBuffer(PlayerEntity entity, Identifier identifier, PacketByteBuf buf)
-    {
-        ServerPlayNetworking.send((ServerPlayerEntity) entity, identifier, buf);
->>>>>>> master
     }
 }

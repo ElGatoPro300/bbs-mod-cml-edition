@@ -19,17 +19,10 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.ProjectileEntity;
-<<<<<<< HEAD
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
-=======
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.tag.EntityTypeTags;
->>>>>>> master
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -98,15 +91,10 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
     }
 
     @Override
-<<<<<<< HEAD
     protected void initDataTracker(DataTracker.Builder builder)
     {
         // No custom tracked data
     }
-=======
-    protected void initDataTracker()
-    {}
->>>>>>> master
 
     public GunProperties getProperties()
     {
@@ -339,14 +327,8 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         DamageSource source = this.getDamageSources().magic();
 
         int fireTicks = entity.getFireTicks();
-<<<<<<< HEAD
 
         if (this.isOnFire())
-=======
-        boolean deflectsArrows = entity.getType().isIn(EntityTypeTags.DEFLECTS_ARROWS);
-
-        if (this.isOnFire() && !deflectsArrows)
->>>>>>> master
         {
             entity.setOnFireFor(5);
         }
@@ -366,26 +348,11 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
                     }
                 }
 
-<<<<<<< HEAD
                 // Enchantment event hooks removed/changed in 1.21.1; skipping old calls
-=======
-                if (owner instanceof LivingEntity)
-                {
-                    EnchantmentHelper.onUserDamaged(livingEntity, owner);
-                    EnchantmentHelper.onTargetDamaged((LivingEntity)owner, livingEntity);
-                }
->>>>>>> master
 
                 this.onHit(livingEntity);
             }
         }
-<<<<<<< HEAD
-=======
-        else if (deflectsArrows)
-        {
-            this.deflect();
-        }
->>>>>>> master
         else
         {
             entity.setFireTicks(fireTicks);

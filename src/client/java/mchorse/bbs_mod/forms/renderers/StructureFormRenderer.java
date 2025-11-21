@@ -41,11 +41,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.nbt.NbtIo;
-<<<<<<< HEAD
 import net.minecraft.nbt.NbtSizeTracker;
-=======
-import net.minecraft.nbt.NbtTagSizeTracker;
->>>>>>> master
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
@@ -165,11 +161,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             boolean shaders = this.isShadersActive();
             net.minecraft.client.render.VertexConsumerProvider consumers = shaders
                 ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-<<<<<<< HEAD
                 : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
-=======
-                : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
->>>>>>> master
 
             try
             {
@@ -228,11 +220,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
                     net.minecraft.client.render.VertexConsumerProvider consumersTint = shadersEnabled
                         ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-<<<<<<< HEAD
                         : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
-=======
-                        : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
->>>>>>> master
 
                     FormRenderingContext tintContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -251,11 +239,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
                     net.minecraft.client.render.VertexConsumerProvider consumersAnim = shadersEnabled
                         ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-<<<<<<< HEAD
                         : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
-=======
-                        : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
->>>>>>> master
 
                     FormRenderingContext animContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -329,11 +313,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 boolean shaders = this.isShadersActive();
                 net.minecraft.client.render.VertexConsumerProvider consumers = shaders
                     ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-<<<<<<< HEAD
                     : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
-=======
-                    : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
->>>>>>> master
 
                 // Alinear el manejo de estados con el camino VAO para evitar fugas
                 // de estado que afectan al primer modelo renderizado después.
@@ -412,11 +392,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 // Pase adicional: bloques con tinte por bioma
                 try
                 {
-<<<<<<< HEAD
                     net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
-=======
-                    net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
->>>>>>> master
                     renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
                     tintConsumers.draw();
                 }
@@ -425,11 +401,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 // Pase adicional: bloques animados (portal/fluido) con capa moving block
                 try
                 {
-<<<<<<< HEAD
                     net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
-=======
-                    net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
->>>>>>> master
                     renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
                     animConsumers.draw();
                 }
@@ -1239,11 +1211,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-<<<<<<< HEAD
         NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtSizeTracker.ofUnlimitedBytes());
-=======
-                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtTagSizeTracker.ofUnlimitedBytes());
->>>>>>> master
                 parseStructure(root);
                 return;
             }
@@ -1258,11 +1226,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-<<<<<<< HEAD
         NbtCompound root = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
-=======
-                NbtCompound root = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
->>>>>>> master
                 parseStructure(root);
             }
             catch (IOException e)
@@ -1447,11 +1411,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         try
         {
-<<<<<<< HEAD
         Identifier id = Identifier.of(name);
-=======
-            Identifier id = new Identifier(name);
->>>>>>> master
             block = Registries.BLOCK.get(id);
             if (block == null)
             {

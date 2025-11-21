@@ -39,11 +39,7 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity>
     @Override
     public Identifier getTexture(ActorEntity entity)
     {
-<<<<<<< HEAD
         return Identifier.of("minecraft:textures/entity/player/wide/steve.png");
-=======
-        return new Identifier("minecraft:textures/entity/player/wide/steve.png");
->>>>>>> master
     }
 
     @Override

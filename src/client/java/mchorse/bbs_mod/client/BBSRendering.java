@@ -305,21 +305,13 @@ public class BBSRendering
     public static void onWorldRenderBegin()
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-<<<<<<< HEAD
         BBSModClient.getFilms().startRenderFrame(mc.getRenderTickCounter().getTickDelta(false));
-=======
-        BBSModClient.getFilms().startRenderFrame(mc.getTickDelta());
->>>>>>> master
 
         UIBaseMenu menu = UIScreen.getCurrentMenu();
 
         if (menu != null)
         {
-<<<<<<< HEAD
         menu.startRenderFrame(mc.getRenderTickCounter().getTickDelta(false));
-=======
-            menu.startRenderFrame(mc.getTickDelta());
->>>>>>> master
         }
 
         renderingWorld = true;

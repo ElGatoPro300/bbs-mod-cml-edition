@@ -391,12 +391,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
             builder.vertex(matrix, vertex.x, vertex.y, vertex.z)
                 .texture(u, v)
                 .color(particle.r, particle.g, particle.b, particle.a)
-<<<<<<< HEAD
                 .light(this.light);
-=======
-                .light(this.light)
-                .next();
->>>>>>> master
         }
         else
         {
@@ -406,12 +401,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
                 .texture(u, v)
                 .overlay(overlay)
                 .light(this.light)
-<<<<<<< HEAD
                 .normal(this.n.x, this.n.y, this.n.z);
-=======
-                .normal(this.n.x, this.n.y, this.n.z)
-                .next();
->>>>>>> master
         }
     }
 

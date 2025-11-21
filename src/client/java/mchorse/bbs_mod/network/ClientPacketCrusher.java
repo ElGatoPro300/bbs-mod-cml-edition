@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-<<<<<<< HEAD
 import net.minecraft.network.packet.CustomPayload;
 
 public class ClientPacketCrusher extends PacketCrusher
@@ -19,14 +18,5 @@ public class ClientPacketCrusher extends PacketCrusher
     protected void sendBuffer(PlayerEntity entity, Identifier identifier, PacketByteBuf buf)
     {
         ClientPlayNetworking.send(ServerNetwork.BufPayload.from(buf, idFor(identifier)));
-=======
-
-public class ClientPacketCrusher extends PacketCrusher
-{
-    @Override
-    protected void sendBuffer(PlayerEntity entity, Identifier identifier, PacketByteBuf buf)
-    {
-        ClientPlayNetworking.send(identifier, buf);
->>>>>>> master
     }
 }

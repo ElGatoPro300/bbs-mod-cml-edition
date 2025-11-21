@@ -20,11 +20,7 @@ public class ParticleSettings implements IMapSerializable
     @Override
     public void fromData(MapType data)
     {
-<<<<<<< HEAD
         this.particle = Identifier.of(data.getString("particle"));
-=======
-        this.particle = new Identifier(data.getString("particle"));
->>>>>>> master
         this.arguments = data.getString("args");
     }
 

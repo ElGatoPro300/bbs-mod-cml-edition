@@ -485,10 +485,6 @@ public class ParticleEmitter
             BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, format);
 
             this.bindTexture();
-<<<<<<< HEAD
-=======
-            builder.begin(VertexFormat.DrawMode.TRIANGLES, format);
->>>>>>> master
 
             for (Particle particle : this.particles)
             {
