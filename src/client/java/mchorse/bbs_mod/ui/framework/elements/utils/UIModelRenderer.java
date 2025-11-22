@@ -12,7 +12,6 @@ import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.utils.Factor;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
-import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -29,6 +28,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
+
 
 /**
  * Model renderer GUI element
@@ -220,10 +220,6 @@ public abstract class UIModelRenderer extends UIElement
 
         Vector3f a = new Vector3f(0F, 0.85F, -1F).normalize();
         Vector3f b = new Vector3f(0F, 0.85F, 1F).normalize();
-        Matrix3f c = Matrices.TEMP_3F.set(this.camera.view);
-
-        c.transform(a);
-        c.transform(b);
         
         RenderSystem.setupLevelDiffuseLighting(a, b);
 

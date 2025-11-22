@@ -19,9 +19,13 @@ import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.render.DiffuseLighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Vector3f;
+import org.joml.Matrix3f;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,7 +214,7 @@ public class UIFormList extends UIElement
             this.setSelected(selected);
         }
 
-        Vector3f a = new Vector3f(0F, 1F, -0.2F).normalize();
+        Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
         Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
 
         RenderSystem.setupLevelDiffuseLighting(a, b);
