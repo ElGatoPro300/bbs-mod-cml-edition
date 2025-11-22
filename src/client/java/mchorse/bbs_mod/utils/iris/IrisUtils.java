@@ -137,7 +137,14 @@ public class IrisUtils
 
     public static void setup()
     {
-        PBRTextureLoaderRegistry.INSTANCE.register(IrisTextureWrapper.class, new IrisTextureWrapperLoader());
+        try
+        {
+            PBRTextureLoaderRegistry.INSTANCE.register(IrisTextureWrapper.class, new IrisTextureWrapperLoader());
+        }
+        catch (Throwable t)
+        {
+            System.err.println("[BBS] PBRTextureLoader not available in current Iris; PBR wrappers disabled: " + t);
+        }
     }
 
     public static void trackTexture(Texture texture)

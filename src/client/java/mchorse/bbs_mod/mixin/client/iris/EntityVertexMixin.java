@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(EntityVertex.class)
 public class EntityVertexMixin
 {
-    @ModifyVariable(method = "write2", at = @At("HEAD"), ordinal = 0, remap = false)
+    @ModifyVariable(method = "write2", at = @At("HEAD"), ordinal = 0, remap = false, require = 0)
     private static int onWrite2(int color)
     {
         if (RecolorVertexConsumer.newColor != null)

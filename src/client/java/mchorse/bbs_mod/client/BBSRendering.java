@@ -198,7 +198,14 @@ public class BBSRendering
             return;
         }
 
-        IrisUtils.setup();
+        try
+        {
+            IrisUtils.setup();
+        }
+        catch (Throwable t)
+        {
+            System.err.println("[BBS] Iris integration setup failed; continuing without PBR hooks: " + t);
+        }
     }
 
     /* Framebuffers */

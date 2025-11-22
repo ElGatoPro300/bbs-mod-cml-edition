@@ -22,7 +22,7 @@ public class WorldRendererMixin
     @Shadow
     public Framebuffer entityOutlinesFramebuffer;
 
-    @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true, require = 0)
     public void onRenderSky(CallbackInfo info)
     {
         if (BBSSettings.chromaSkyEnabled.get())
