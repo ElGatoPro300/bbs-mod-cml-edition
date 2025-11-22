@@ -1839,13 +1839,13 @@ public class BoneGizmoSystem
                 float y22 = cy + (float) (radius * Math.cos(u2));
                 float z22 = cz + (float) (radius * Math.sin(u2) * Math.sin(v2));
 
-                builder.vertex(mat, x11, y11, z11).color(r, g, b, a).next();
-                builder.vertex(mat, x21, y21, z21).color(r, g, b, a).next();
-                builder.vertex(mat, x22, y22, z22).color(r, g, b, a).next();
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, a);
+                builder.vertex(mat, x21, y21, z21).color(r, g, b, a);
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, a);
 
-                builder.vertex(mat, x11, y11, z11).color(r, g, b, a).next();
-                builder.vertex(mat, x22, y22, z22).color(r, g, b, a).next();
-                builder.vertex(mat, x12, y12, z12).color(r, g, b, a).next();
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, a);
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, a);
+                builder.vertex(mat, x12, y12, z12).color(r, g, b, a);
             }
         }
     }
