@@ -12,6 +12,7 @@ import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.utils.Factor;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
+import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -217,8 +218,14 @@ public abstract class UIModelRenderer extends UIElement
         stack.translate(-this.camera.position.x, -this.camera.position.y, -this.camera.position.z);
         MatrixStackUtils.multiply(stack, this.transform);
 
-        // Lighting setup was using deprecated RenderSystem.setupLevelDiffuseLighting.
-        // Rely on default lighting for GUI model rendering in 1.21.
+        Vector3f a = new Vector3f(0F, 0.85F, -1F).normalize();
+        Vector3f b = new Vector3f(0F, 0.85F, 1F).normalize();
+        Matrix3f c = Matrices.TEMP_3F.set(this.camera.view);
+
+        c.transform(a);
+        c.transform(b);
+        
+        RenderSystem.setupLevelDiffuseLighting(a, b);
 
         if (this.grid)
         {
