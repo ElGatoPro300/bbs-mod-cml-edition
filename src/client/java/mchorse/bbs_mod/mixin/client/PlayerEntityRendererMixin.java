@@ -5,11 +5,13 @@ import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.renderers.FormRenderer;
 import mchorse.bbs_mod.morphing.Morph;
 import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,27 +23,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin
 {
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void onRender(EntityRenderState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info)
-    {
-        // 1.21.4: Player rendering now uses EntityRenderState; keep default rendering
-        // If morph rendering is needed, it should be adapted to state-based pipeline.
-    }
+    // Note: PlayerEntityRenderer no longer overrides render() in 1.21.4,
+    // so injecting into it here fails. Rendering hooks are handled via
+    // LivingEntityRendererMixin and specific arm/offset injections below.
 
-    @Inject(method = "getPositionOffset", at = @At("HEAD"), cancellable = true)
-    public void onPositionOffset(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, CallbackInfoReturnable<Vec3d> info)
-    {
-        Morph morph = Morph.getMorph(abstractClientPlayerEntity);
-
-        if (morph != null && morph.getForm() != null)
-        {
-            info.setReturnValue(Vec3d.ZERO);
-        }
-    }
+    // Removed position offset hook for 1.21.4; PlayerEntityRenderState no longer
+    // exposes the backing entity, and this adjustment is not critical.
 
     @Inject(method = "renderArm", at = @At("HEAD"), cancellable = true)
-    public void onRenderArmBegin(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, ModelPart arm, ModelPart sleeve, CallbackInfo info)
+    public void onRenderArmBegin(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, Identifier texture, ModelPart arm, boolean withSleeve, CallbackInfo info)
     {
+        AbstractClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+        if (player == null)
+        {
+            return;
+        }
+
         Morph morph = Morph.getMorph(player);
 
         if (morph != null)

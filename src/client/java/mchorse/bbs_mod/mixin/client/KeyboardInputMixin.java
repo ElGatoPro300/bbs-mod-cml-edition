@@ -22,7 +22,7 @@ public class KeyboardInputMixin
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    public void onTick(boolean slowDown, float slowDownFactor, CallbackInfo info)
+    public void onTick(CallbackInfo info)
     {
         UIBaseMenu menu = UIScreen.getCurrentMenu();
 
@@ -41,11 +41,6 @@ public class KeyboardInputMixin
             input.movementForward = getMovementMultiplier(forward, back);
             input.movementSideways = getMovementMultiplier(left, right);
 
-            if (slowDown)
-            {
-                input.movementSideways *= slowDownFactor;
-                input.movementForward *= slowDownFactor;
-            }
         }
     }
 }
