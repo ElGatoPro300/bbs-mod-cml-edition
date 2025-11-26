@@ -77,7 +77,7 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
 
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR_LIGHT, GameRenderer::getParticleProgram, stack, OverlayTexture.DEFAULT_UV, context.getTransition());
+        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR_LIGHT, mchorse.bbs_mod.client.BBSShaders::getPickerParticlesProgram, stack, OverlayTexture.DEFAULT_UV, context.getTransition());
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
 
@@ -111,7 +111,7 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
         this.calculate(1, 1, a, b, c, d);
         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
         RenderSystem.disableCull();
         BufferRenderer.drawWithGlobalProgram(builder.end());
         RenderSystem.enableCull();

@@ -36,19 +36,19 @@ public class MatrixStackUtils
 
         Matrix4fStack mvStack = RenderSystem.getModelViewStack();
         mvStack.identity();
-        RenderSystem.applyModelViewMatrix();
+        // applyModelViewMatrix removed in 1.21.4; push/identity suffices
     }
 
     public static void restoreMatrices()
     {
         /* Return back to orthographic projection */
-        RenderSystem.setProjectionMatrix(oldProjection, VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(oldProjection, null);
         // Ya no aplicamos explícitamente la inversa de rotación; restauramos el ModelView completo abajo
 
         Matrix4fStack mvStack = RenderSystem.getModelViewStack();
         // Restore the ModelView matrix from the cached value
         mvStack.set(oldMV);
-        RenderSystem.applyModelViewMatrix();
+        // applyModelViewMatrix removed in 1.21.4; pop suffices
     }
 
     public static void applyTransform(MatrixStack stack, Transform transform)

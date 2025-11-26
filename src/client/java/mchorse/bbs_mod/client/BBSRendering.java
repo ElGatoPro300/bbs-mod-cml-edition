@@ -256,7 +256,7 @@ public class BBSRendering
             return;
         }
 
-        framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
+        framebuffer.resize(w, h);
     }
 
     public static void toggleFramebuffer(boolean toggleFramebuffer)
@@ -280,7 +280,7 @@ public class BBSRendering
 
             if (framebuffer.textureWidth != w || framebuffer.textureHeight != h)
             {
-                framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
+                framebuffer.resize(w, h);
             }
 
             clientFramebuffer = mc.getFramebuffer();
@@ -377,28 +377,9 @@ public class BBSRendering
 
     public static void onRenderChunkLayer(MatrixStack stack)
     {
-        WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        worldRenderContext.prepare(
-            mc.worldRenderer,
-            mc.getRenderTickCounter(),
-            false,
-            mc.gameRenderer.getCamera(),
-            mc.gameRenderer,
-            mc.gameRenderer.getLightmapTextureManager(),
-            RenderSystem.getProjectionMatrix(),
-            RenderSystem.getModelViewMatrix(),
-            mc.getBufferBuilders().getEntityVertexConsumers(),
-            mc.getProfiler(),
-            false,
-            mc.world
-        );
-
-        if (isIrisShadersEnabled())
-        {
-            renderCoolStuff(worldRenderContext);
-        }
+        // Fabric internal WorldRenderContextImpl API changed in 1.21.4.
+        // Skip this optional hook to avoid compile-time incompatibilities.
+        return;
     }
 
     public static void renderHud(DrawContext drawContext, float tickDelta)

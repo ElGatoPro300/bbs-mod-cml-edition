@@ -524,10 +524,7 @@ public abstract class BaseFilmController
                                 accessor.bbs$setIsSneakingPose(sneaking);
                             }
 
-                            if (player instanceof ClientPlayerEntity playerEntity)
-                            {
-                                playerEntity.input.sneaking = sneaking;
-                            }
+                            // Client input 'sneaking' flag removed in 1.21.4; already handled via setSneaking
 
                             player.fallDistance = replay.keyframes.fall.interpolate(ticks).floatValue();
                         }

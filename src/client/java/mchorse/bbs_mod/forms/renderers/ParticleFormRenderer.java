@@ -149,8 +149,8 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
 
                 VertexFormat format = shadersEnabled ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR_LIGHT;
                 Supplier<ShaderProgram> shader = shadersEnabled
-                    ? this.getShader(context, GameRenderer::getRenderTypeEntityTranslucentProgram, BBSShaders::getPickerBillboardProgram)
-                    : this.getShader(context, GameRenderer::getParticleProgram, BBSShaders::getPickerParticlesProgram);
+                    ? this.getShader(context, BBSShaders::getPickerBillboardProgram, BBSShaders::getPickerBillboardProgram)
+                    : this.getShader(context, BBSShaders::getPickerParticlesProgram, BBSShaders::getPickerParticlesProgram);
 
                 emitter.setupCameraProperties(context.camera);
                 emitter.render(format, shader, context.stack, context.overlay, context.getTransition());

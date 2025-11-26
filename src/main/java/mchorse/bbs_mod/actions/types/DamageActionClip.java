@@ -32,7 +32,7 @@ public class DamageActionClip extends ActionClip
 
         if (actor != null)
         {
-            actor.damage(player.getWorld().getDamageSources().mobAttack(player), damage);
+            actor.damage((net.minecraft.server.world.ServerWorld) player.getWorld(), player.getWorld().getDamageSources().mobAttack(player), damage);
         }
     }
 

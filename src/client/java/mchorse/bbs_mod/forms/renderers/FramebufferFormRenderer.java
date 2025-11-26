@@ -93,10 +93,9 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
 
         GL30.glCullFace(GL30.GL_FRONT);
         RenderSystem.setShaderLights(new Vector3f(0F, 0F, 1F), new Vector3f(0F, 0F, 1F));
-        RenderSystem.setProjectionMatrix(new Matrix4f().setOrtho(-1F, 1F, 1F, -1F, -500F, 500F), VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(new Matrix4f().setOrtho(-1F, 1F, 1F, -1F, -500F, 500F), null);
         RenderSystem.getModelViewStack().pushMatrix();
         RenderSystem.getModelViewStack().identity();
-        RenderSystem.applyModelViewMatrix();
 
         framebuffer.apply();
 
@@ -121,13 +120,12 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
 
         RenderSystem.setShaderLights(light0, light1);
         RenderSystem.getModelViewStack().popMatrix();
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(projectionMatrix, null);
         GL30.glCullFace(GL30.GL_BACK);
 
         boolean shading = !context.isPicking();
         VertexFormat format = shading ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR;
-        Supplier<ShaderProgram> shader = shading ? GameRenderer::getRenderTypeEntityTranslucentProgram : GameRenderer::getPositionTexColorProgram;
+        Supplier<ShaderProgram> shader = shading ? mchorse.bbs_mod.client.BBSShaders::getPickerBillboardProgram : mchorse.bbs_mod.client.BBSShaders::getPickerPreviewProgram;
 
         this.renderModel(framebuffer.getMainTexture(), format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
     }
@@ -182,7 +180,7 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
         }
 
         BBSModClient.getTextures().bindTexture(texture);
-        RenderSystem.setShader(shader);
+        RenderSystem.setShader(shader.get());
 
         texture.bind();
         texture.setFilterMipmap(false, false);

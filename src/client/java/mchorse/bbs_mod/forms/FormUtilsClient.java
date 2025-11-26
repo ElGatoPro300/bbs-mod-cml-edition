@@ -34,7 +34,7 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.model.ModelLoader;
+// import removed in 1.21.4
 import net.minecraft.util.Util;
 
 import java.util.Collections;
@@ -56,7 +56,7 @@ public class FormUtilsClient
             assignBufferAllocator(map, TexturedRenderLayers.getEntitySolid());
             assignBufferAllocator(map, TexturedRenderLayers.getEntityCutout());
             assignBufferAllocator(map, TexturedRenderLayers.getBannerPatterns());
-            assignBufferAllocator(map, TexturedRenderLayers.getEntityTranslucentCull());
+            // getEntityTranslucentCull removed in 1.21.4; skip explicit allocator.
             /* Asegurar soporte de capas base de bloques para miniaturas (vidrio, portales, hojas, etc.) */
             assignBufferAllocator(map, RenderLayer.getSolid());
             assignBufferAllocator(map, RenderLayer.getCutout());
@@ -72,9 +72,9 @@ public class FormUtilsClient
             assignBufferAllocator(map, RenderLayer.getGlint());
             assignBufferAllocator(map, RenderLayer.getGlintTranslucent());
             assignBufferAllocator(map, RenderLayer.getEntityGlint());
-            assignBufferAllocator(map, RenderLayer.getDirectEntityGlint());
+            // getDirectEntityGlint removed in 1.21.4; skip explicit allocator.
             assignBufferAllocator(map, RenderLayer.getWaterMask());
-            ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferAllocator(map, renderLayer));
+            // Block destruction layers mapping removed in 1.21.4; skip explicit allocator.
         });
 
         customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferAllocator(1536), sequencedMap);

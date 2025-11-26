@@ -1098,7 +1098,7 @@ public class UIFilmController extends UIElement
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.panel.lastProjection, VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(this.panel.lastProjection, null);
 
         /* Render the stencil */
         MatrixStack worldStack = this.worldRenderContext.matrixStack();
@@ -1117,12 +1117,12 @@ public class UIFilmController extends UIElement
             mvStack.pushMatrix();
             mvStack.identity();
             mvStack.set(this.panel.lastView);
-            RenderSystem.applyModelViewMatrix();
+        // applyModelViewMatrix removed in 1.21.4
 
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
 
             mvStack.popMatrix();
-            RenderSystem.applyModelViewMatrix();
+        // applyModelViewMatrix removed in 1.21.4
         }
 
         /* Return back to orthographic projection */

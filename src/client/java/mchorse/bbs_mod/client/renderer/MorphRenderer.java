@@ -46,7 +46,7 @@ public class MorphRenderer
                 RenderSystem.enableDepthTest();
 
                 float bodyYaw = Lerps.lerp(player.prevBodyYaw, player.bodyYaw, g);
-                int overlay = LivingEntityRenderer.getOverlay(player, 0F);
+                int overlay = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
 
                 matrixStack.push();
                 matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));

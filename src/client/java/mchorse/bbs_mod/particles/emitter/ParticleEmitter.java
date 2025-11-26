@@ -456,7 +456,7 @@ public class ParticleEmitter
                 render.renderUI(this.uiParticle, builder, matrix, transition);
             }
 
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
             RenderSystem.disableCull();
             BufferRenderer.drawWithGlobalProgram(builder.end());
             RenderSystem.enableCull();
@@ -498,7 +498,7 @@ public class ParticleEmitter
                 }
             }
 
-            RenderSystem.setShader(program);
+        RenderSystem.setShader(program.get());
             RenderSystem.disableBlend();
             RenderSystem.disableCull();
             BufferRenderer.drawWithGlobalProgram(builder.end());

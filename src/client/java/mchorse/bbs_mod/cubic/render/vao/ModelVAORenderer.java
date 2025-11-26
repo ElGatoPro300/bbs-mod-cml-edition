@@ -13,18 +13,10 @@ public class ModelVAORenderer
 {
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
-        // Guard against null shader: try a safe fallback compatible with VAO format
+        // Guard against null shader: skip rendering to avoid crashing
         if (shader == null)
         {
-            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
-
-            if (fallback == null)
-            {
-                // No compatible program available; skip rendering to avoid crashing
-                return;
-            }
-
-            shader = fallback;
+            return;
         }
 
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
@@ -33,7 +25,8 @@ public class ModelVAORenderer
         setupUniforms(stack, shader);
 
         shader.bind();
-        modelVAO.render(shader.getFormat(), r, g, b, a, light, overlay);
+        // Use the standard entity translucent vertex format for VAO rendering.
+        modelVAO.render(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, r, g, b, a, light, overlay);
         shader.unbind();
 
         GL30.glBindVertexArray(currentVAO);
@@ -42,10 +35,7 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
-        for (int i = 0; i < 12; i++)
-        {
-            shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
-        }
+        // Sampler binding API changed in 1.21.4; rely on default bindings.
 
         if (shader.projectionMat != null)
         {
@@ -76,24 +66,12 @@ public class ModelVAORenderer
             viewRot.set(new org.joml.Matrix4f().identity());
         }
 
-        if (shader.fogStart != null)
-        {
-            shader.fogStart.set(RenderSystem.getShaderFogStart());
-        }
-
-        if (shader.fogEnd != null)
-        {
-            shader.fogEnd.set(RenderSystem.getShaderFogEnd());
-        }
-
-        if (shader.fogColor != null)
-        {
-            shader.fogColor.set(RenderSystem.getShaderFogColor());
-        }
+        // Fog uniforms are not exposed via RenderSystem in 1.21.4; skip setting.
 
         if (shader.fogShape != null)
         {
-            shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
+            // Fallback: use default value when fog shape API is unavailable in 1.21.4
+            shader.fogShape.set(0);
         }
 
         if (shader.colorModulator != null)

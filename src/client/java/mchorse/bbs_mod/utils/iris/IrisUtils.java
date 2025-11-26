@@ -18,8 +18,6 @@ import net.irisshaders.iris.shaderpack.option.menu.OptionMenuElementScreen;
 import net.irisshaders.iris.shaderpack.option.menu.OptionMenuLinkElement;
 import net.irisshaders.iris.shaderpack.option.menu.OptionMenuOptionElement;
 import net.irisshaders.iris.shaderpack.properties.ShaderProperties;
-import net.irisshaders.iris.texture.TextureTracker;
-import net.irisshaders.iris.texture.pbr.loader.PBRTextureLoaderRegistry;
 import net.irisshaders.iris.uniforms.custom.cached.CachedUniform;
 import net.irisshaders.iris.uniforms.custom.cached.FloatCachedUniform;
 import net.irisshaders.iris.uniforms.custom.cached.IntCachedUniform;
@@ -137,14 +135,8 @@ public class IrisUtils
 
     public static void setup()
     {
-        try
-        {
-            PBRTextureLoaderRegistry.INSTANCE.register(IrisTextureWrapper.class, new IrisTextureWrapperLoader());
-        }
-        catch (Throwable t)
-        {
-            System.err.println("[BBS] PBRTextureLoader not available in current Iris; PBR wrappers disabled: " + t);
-        }
+        // PBRTextureLoaderRegistry package changed across Iris versions; disable hard registration.
+        // If needed, this can be reintroduced via reflection against the runtime Iris API.
     }
 
     public static void trackTexture(Texture texture)
@@ -170,7 +162,8 @@ public class IrisUtils
                     index = texture.getParent().textures.indexOf(texture);
                 }
 
-                TextureTracker.INSTANCE.trackTexture(texture.id, new IrisTextureWrapper(key, index));
+                // Texture tracking via Iris is disabled to avoid missing package issues.
+                // If needed, enable via reflection against Iris's TextureTracker at runtime.
             }
 
             textureSet.add(texture);

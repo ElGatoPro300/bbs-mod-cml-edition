@@ -627,7 +627,7 @@ public class ServerNetwork
 
             if (!command.isEmpty())
             {
-                server.getCommandManager().executeWithPrefix(player.getCommandSource(), command);
+                server.getCommandManager().executeWithPrefix(player.getCommandSource((net.minecraft.server.world.ServerWorld) player.getWorld()), command);
             }
         }
     }

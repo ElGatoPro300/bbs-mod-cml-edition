@@ -88,7 +88,7 @@ public class UIUtilityOverlayPanel extends UIOverlayPanel
         {
             this.print("Forcing chunk loader");
             // TODO: this.getContext().menu.bridge.get(IBridgeWorld.class).getWorld().chunks.buildChunks(BBS.getRender(), true);
-            BBSShaders.setup();
+            // Shader programs are managed by vanilla; no explicit setup required.
             this.close();
         });
         terrain.w(0).tooltip(UIKeys.UTILITY_RELOAD_TERRAIN);

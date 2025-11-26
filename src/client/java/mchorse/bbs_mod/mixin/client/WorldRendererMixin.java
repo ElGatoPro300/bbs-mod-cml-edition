@@ -31,7 +31,7 @@ public class WorldRendererMixin
 
             GL11.glClearColor(color.r, color.g, color.b, 1F);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            RenderSystem.setShaderFogColor(color.r, color.g, color.b, 1F);
+            /* Fog color API changed in 1.21.4; skipping explicit fog color set. */
 
             info.cancel();
         }

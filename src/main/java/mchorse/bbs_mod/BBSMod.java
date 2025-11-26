@@ -85,7 +85,7 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.AbstractBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -104,6 +104,8 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -152,7 +154,7 @@ public class BBSMod implements ModInitializer
             .dimensions(EntityDimensions.fixed(0.6F, 1.8F))
             .trackRangeBlocks(256)
             .trackedUpdateRate(1)
-            .build());
+            .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, "actor"))));
 
     public static final EntityType<GunProjectileEntity> GUN_PROJECTILE_ENTITY = Registry.register(
         Registries.ENTITY_TYPE,
@@ -161,10 +163,9 @@ public class BBSMod implements ModInitializer
             .dimensions(EntityDimensions.fixed(0.25F, 0.25F))
             .trackRangeChunks(24)
             .trackedUpdateRate(1)
-            .build());
+            .build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, Identifier.of(MOD_ID, "gun_projectile"))));
 
-    public static final Block MODEL_BLOCK = new ModelBlock(FabricBlockSettings.create()
-        .noBlockBreakParticles()
+    public static final Block MODEL_BLOCK = new ModelBlock(AbstractBlock.Settings.create()
         .dropsNothing()
         .noCollision()
         .nonOpaque()
@@ -229,8 +230,7 @@ public class BBSMod implements ModInitializer
 
     private static Block createChromaBlock()
     {
-        return new Block(FabricBlockSettings.create()
-            .noBlockBreakParticles()
+        return new Block(AbstractBlock.Settings.create()
             .dropsNothing()
             .requiresTool()
             .strength(-1F, 3600000F));
