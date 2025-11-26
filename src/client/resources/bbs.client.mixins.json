@@ -6,7 +6,7 @@
         "CameraMixin",
         "GameRendererMixin",
         "MouseMixin",
-        "EntityRendererDispatcherInvoker",
+        
         "PlayerEntityRendererMixin",
         "RenderTickCounterMixin",
         "IntegratedServerMixin",
@@ -29,7 +29,7 @@
         "ClientPlayerEntityAccessor",
         "iris.IrisRenderingPipelineAccessor",
         "iris.CustomUniformsBuilderMixin",
-        "iris.CustomUniformsAccessor",
+        
         "iris.JcppProcessorMixin",
         "iris.ShaderPackMixin",
         "iris.IrisMixin",
@@ -38,7 +38,7 @@
         "SimpleOptionMixin",
         "BlockEntityRenderDispatcherMixin",
         "WorldMixin",
-        "LivingEntityRendererInvoker",
+        
         "EntityRenderDispatcherMixin"
     ],
     "injectors": {
