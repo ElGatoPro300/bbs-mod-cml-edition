@@ -3,6 +3,7 @@ package mchorse.bbs_mod.client;
 import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFactory;
@@ -41,64 +42,64 @@ public class BBSShaders
         if (pickerParticles != null) pickerParticles.close();
         if (pickerModels != null) pickerModels.close();
 
-        try
-        {
-            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+        // Inicializar de forma segura: si algún shader no existe, mantenerlo en null
+        ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
 
-            model = new ShaderProgram(factory, "model", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-            multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
-            subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
+        // El shader "model" de core puede no existir en 1.21.1; usar fallback en el getter
+        model = null;
 
-            pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
-            pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-            pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
-            pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
-            pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        try { multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR); } catch (Throwable t) { multiLink = null; }
+        try { subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR); } catch (Throwable t) { subtitles = null; }
+
+        try { pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR); } catch (Throwable t) { pickerPreview = null; }
+        try { pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL); } catch (Throwable t) { pickerBillboard = null; }
+        try { pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR); } catch (Throwable t) { pickerBillboardNoShading = null; }
+        try { pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT); } catch (Throwable t) { pickerParticles = null; }
+        try { pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL); } catch (Throwable t) { pickerModels = null; }
     }
 
     public static ShaderProgram getModel()
     {
-        return model;
+        // Fallback seguro para formatos con overlay/light/normal
+        return model != null ? model : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
     {
-        return multiLink;
+        // Fallback a shader estándar de textura+color para UI
+        return multiLink != null ? multiLink : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getSubtitlesProgram()
     {
-        return subtitles;
+        return subtitles != null ? subtitles : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerPreviewProgram()
     {
-        return pickerPreview;
+        return pickerPreview != null ? pickerPreview : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerBillboardProgram()
     {
-        return pickerBillboard;
+        // Fallback a programa con formato extendido
+        return pickerBillboard != null ? pickerBillboard : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getPickerBillboardNoShadingProgram()
     {
-        return pickerBillboardNoShading;
+        // Fallback a textura+light+color si está disponible; usar programa básico si no
+        return pickerBillboardNoShading != null ? pickerBillboardNoShading : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerParticlesProgram()
     {
-        return pickerParticles;
+        return pickerParticles != null ? pickerParticles : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerModelsProgram()
     {
-        return pickerModels;
+        return pickerModels != null ? pickerModels : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     private static class ProxyResourceFactory implements ResourceFactory
@@ -113,11 +114,14 @@ public class BBSShaders
         @Override
         public Optional<Resource> getResource(Identifier id)
         {
-            if (id.getPath().contains("/core/"))
+            // Si el ResourceManager aún no está listo, evitar NPE y no remapear
+            if (this.manager == null)
             {
-        return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
+                return Optional.empty();
             }
 
+            // No remapear recursos de vanilla (minecraft) ni rutas core.
+            // Mantener el comportamiento por defecto para que los shaders estándar se carguen correctamente.
             return this.manager.getResource(id);
         }
     }

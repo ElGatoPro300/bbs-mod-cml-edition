@@ -177,6 +177,13 @@ public abstract class FormRenderer <T extends Form>
 
     protected void setupTarget(FormRenderingContext context, ShaderProgram program)
     {
+        /* Guard against null shader program (e.g., when picking shader isn't available).
+         * In such cases, skip setting the Target uniform to avoid NPEs during UI rendering. */
+        if (program == null)
+        {
+            return;
+        }
+
         GlUniform target = program.getUniform("Target");
 
         if (target != null)

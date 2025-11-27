@@ -213,6 +213,20 @@ public class BOBJModelVAO
 
     public void render(ShaderProgram shader, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
     {
+        // Ensure we have a valid shader program; pick a safe fallback
+        if (shader == null)
+        {
+            ShaderProgram fallback = net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+
+            if (fallback == null)
+            {
+                // No program available; skip rendering to avoid crash in UI contexts
+                return;
+            }
+
+            shader = fallback;
+        }
+
         boolean hasShaders = BBSRendering.isIrisShadersEnabled();
 
         GL30.glVertexAttrib4f(Attributes.COLOR, r, g, b, a);

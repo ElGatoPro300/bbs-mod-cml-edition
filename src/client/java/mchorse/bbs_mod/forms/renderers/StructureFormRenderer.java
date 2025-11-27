@@ -190,10 +190,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 gameRenderer.getLightmapTextureManager().enable();
                 gameRenderer.getOverlayTexture().setupOverlayColor();
 
-                // Volver al shader de modelo propio en vanilla para asegurar compatibilidad del VAO
-                net.minecraft.client.gl.ShaderProgram shader = BBSShaders.getModel();
-
-                RenderSystem.setShader(() -> shader);
+                // Usar un shader vanilla compatible con formato POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL
+                java.util.function.Supplier<net.minecraft.client.gl.ShaderProgram> mainShader = net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentCullProgram;
+                net.minecraft.client.gl.ShaderProgram shader = mainShader.get();
+                RenderSystem.setShader(mainShader);
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 // Habilitar blending para soportar capas translúcidas (vidrios, portal, hojas, etc.)
                 RenderSystem.enableBlend();

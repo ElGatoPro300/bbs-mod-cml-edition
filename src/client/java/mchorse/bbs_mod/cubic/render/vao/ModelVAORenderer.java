@@ -42,6 +42,12 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
+        if (shader == null)
+        {
+            // Nothing to setup; caller must handle fallback/binding
+            return;
+        }
+
         for (int i = 0; i < 12; i++)
         {
             shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
