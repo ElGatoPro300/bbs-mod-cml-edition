@@ -141,6 +141,8 @@
     "bbs.config.structures.visualize_structures": "Visualize structures",
     "bbs.config.structures.visualize_structures-comment": "Show the Structures category (.nbt assets). Disabled by default",
 
+    "bbs.config.recording.camera_preview": "Camera preview",
+    "bbs.config.recording.camera_preview-comment": "Allows to toggle rendering of camera boundaries in the film editor (when the camera mode isn't \"Camera\")",
     "bbs.config.recording.countdown": "Recording countdown",
     "bbs.config.recording.countdown-comment": "Recording countdown (in seconds)",
     "bbs.config.recording.overlays": "Overlays",
@@ -1090,6 +1092,9 @@
     "bbs.ui.transforms.uniform_scale": "Toggle uniform scale",
     "bbs.ui.upload": "Upload",
     "bbs.ui.video_settings.args": "Encoder arguments",
+    "bbs.ui.video_settings.audio": "Export audio",
+    "bbs.ui.video_settings.audio-tooltip": "This option exports audio clips as audio and then pieces it together with the recorded video (no Minecraft sounds)",
+    "bbs.ui.video_settings.audio_args": "Encoder arguments (audio)",
     "bbs.ui.video_settings.edit": "Edit settings...",
     "bbs.ui.video_settings.frame_rate": "Frame rate",
     "bbs.ui.video_settings.height": "Height",
