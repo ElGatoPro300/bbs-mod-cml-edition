@@ -7,7 +7,6 @@
 	"scale": [0.9375, 0.9375, 0.9375],
 	"look_at": {
 		"head": "head",
-		"anchor": "anchor",
 		"pitch": true,
 		"head_limit": 45
 	},

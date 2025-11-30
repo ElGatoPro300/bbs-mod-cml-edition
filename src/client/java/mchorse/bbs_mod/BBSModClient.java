@@ -254,6 +254,12 @@ public class BBSModClient implements ClientModInitializer
         }
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+        if (player == null || MinecraftClient.getInstance().currentScreen != null)
+        {
+            return;
+        }
+
         Morph morph = Morph.getMorph(player);
 
         /* Animation state trigger */
@@ -265,25 +271,22 @@ public class BBSModClient implements ClientModInitializer
             return;
 
         /* Animation state trigger for items*/
-        if (player != null)
+        ModelProperties main = getItemStackProperties(player.getStackInHand(Hand.MAIN_HAND));
+        ModelProperties offhand = getItemStackProperties(player.getStackInHand(Hand.OFF_HAND));
+
+        if (main != null && main.getForm() != null && main.getForm().findState(key, (form, state) ->
         {
-            ModelProperties main = getItemStackProperties(player.getStackInHand(Hand.MAIN_HAND));
-            ModelProperties offhand = getItemStackProperties(player.getStackInHand(Hand.OFF_HAND));
+            ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_MAIN_HAND_ITEM);
+            form.playState(state);
+        }))
+            return;
 
-            if (main != null && main.getForm() != null && main.getForm().findState(key, (form, state) ->
-            {
-                ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_MAIN_HAND_ITEM);
-                form.playState(state);
-            }))
-                return;
-
-            if (offhand != null && offhand.getForm() != null && offhand.getForm().findState(key, (form, state) ->
-            {
-                ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_OFF_HAND_ITEM);
-                form.playState(state);
-            }))
-                return;
-        }
+        if (offhand != null && offhand.getForm() != null && offhand.getForm().findState(key, (form, state) ->
+        {
+            ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_OFF_HAND_ITEM);
+            form.playState(state);
+        }))
+            return;
 
         /* Change form based on the hotkey */
         for (Form form : BBSModClient.getFormCategories().getRecentForms().getCategories().get(0).getForms())

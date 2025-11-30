@@ -1201,7 +1201,7 @@ public class UIFilmController extends UIElement
 
             int povMode = this.panel.getController().getPovMode();
 
-            if (povMode != UIFilmController.CAMERA_MODE_CAMERA)
+            if (povMode != UIFilmController.CAMERA_MODE_CAMERA && BBSSettings.recordingCameraPreview.get())
             {
                 Recorder.renderCameraPreview(this.panel.getRunner().getPosition(), context.camera(), context.matrixStack());
             }
