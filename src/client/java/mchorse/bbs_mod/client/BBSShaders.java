@@ -3,6 +3,7 @@ package mchorse.bbs_mod.client;
 import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFactory;
@@ -78,27 +79,29 @@ public class BBSShaders
 
     public static ShaderProgram getPickerPreviewProgram()
     {
-        return pickerPreview;
+        return pickerPreview != null ? pickerPreview : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerBillboardProgram()
     {
-        return pickerBillboard;
+        return pickerBillboard != null ? pickerBillboard : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getPickerBillboardNoShadingProgram()
     {
-        return pickerBillboardNoShading;
+        // Fallback compatible en 1.21.1: usar PositionTexColor
+        return pickerBillboardNoShading != null ? pickerBillboardNoShading : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerParticlesProgram()
     {
-        return pickerParticles;
+        // Fallback compatible en 1.21.1: usar PositionTexColor
+        return pickerParticles != null ? pickerParticles : GameRenderer.getPositionTexColorProgram();
     }
 
     public static ShaderProgram getPickerModelsProgram()
     {
-        return pickerModels;
+        return pickerModels != null ? pickerModels : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     private static class ProxyResourceFactory implements ResourceFactory
