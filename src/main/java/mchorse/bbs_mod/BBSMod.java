@@ -44,6 +44,9 @@ import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
 import mchorse.bbs_mod.camera.clips.overwrite.PathClip;
 import mchorse.bbs_mod.entity.ActorEntity;
 import mchorse.bbs_mod.entity.GunProjectileEntity;
+import mchorse.bbs_mod.events.EventBus;
+import mchorse.bbs_mod.events.register.RegisterSettingsEvent;
+import mchorse.bbs_mod.events.register.RegisterSourcePacksEvent;
 import mchorse.bbs_mod.film.FilmManager;
 import mchorse.bbs_mod.forms.FormArchitect;
 import mchorse.bbs_mod.forms.forms.AnchorForm;
@@ -118,6 +121,8 @@ import java.util.function.Consumer;
 public class BBSMod implements ModInitializer
 {
     public static final String MOD_ID = "bbs";
+
+    public static final EventBus events = new EventBus();
 
     private static ActionManager actions;
 
@@ -386,6 +391,8 @@ public class BBSMod implements ModInitializer
         provider.registerFirst(new mchorse.bbs_mod.resources.packs.WorldStructuresSourcePack());
         provider.register(new InternalAssetsSourcePack());
 
+        events.post(new RegisterSourcePacksEvent(provider));
+
         settings = new SettingsManager();
         forms = new FormArchitect();
         forms
@@ -449,6 +456,8 @@ public class BBSMod implements ModInitializer
             .register(Link.bbs("swipe"), SwipeActionClip.class, new ClipFactoryData(Icons.LIMB, Colors.ORANGE));
 
         setupConfig(Icons.PROCESSOR, "bbs", new File(settingsFolder, "bbs.json"), BBSSettings::register);
+
+        events.post(new RegisterSettingsEvent());
 
         /* Networking */
         ServerNetwork.setup();
