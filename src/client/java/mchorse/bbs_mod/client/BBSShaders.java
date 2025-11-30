@@ -64,7 +64,7 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        return model;
+        return model != null ? model : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
