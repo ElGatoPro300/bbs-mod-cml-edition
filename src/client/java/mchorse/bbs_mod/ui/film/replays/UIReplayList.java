@@ -379,9 +379,17 @@ public class UIReplayList extends UIList<Replay>
                     UIKeyframes.PastedKeyframes pastedKeyframes = entry.getValue();
                     KeyframeChannel channel = (KeyframeChannel) replay.keyframes.get(id);
 
-                    if (channel == null || channel.getFactory() != pastedKeyframes.factory)
+                    /* Si el canal no existe en los keyframes estándar, o la fábrica no coincide,
+                     * intenta obtener o crear el canal como propiedad del formulario. */
+                    if (channel == null || (pastedKeyframes.factory != null && channel.getFactory() != pastedKeyframes.factory))
                     {
-                        channel = (KeyframeChannel) replay.properties.get(id);
+                        channel = replay.properties.getOrCreate(replay.form.get(), id);
+                    }
+
+                    /* Si aún no hay canal compatible, omite este id para evitar NPE */
+                    if (channel == null || (pastedKeyframes.factory != null && channel.getFactory() != pastedKeyframes.factory))
+                    {
+                        continue;
                     }
 
                     float min = Integer.MAX_VALUE;
