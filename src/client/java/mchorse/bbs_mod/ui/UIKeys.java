@@ -463,6 +463,7 @@ public class UIKeys
     public static final IKey GENERAL_FFMPEG_ERROR_DESCRIPTION = L10n.lang("bbs.ui.ffmpeg.error-description");
     public static final IKey GENERAL_FFMPEG_ERROR_GUIDE = L10n.lang("bbs.ui.ffmpeg.error-guide");
     public static final IKey GENERAL_FFMPEG_ERROR_GUIDE_LINK = L10n.lang("bbs.ui.ffmpeg.error-guide_link");
+    public static final IKey GENERAL_FFMPEG_FIND = L10n.lang("bbs.ui.ffmpeg.find");
     public static final IKey GENERAL_NONE = L10n.lang("bbs.ui.none");
     public static final IKey GENERAL_OK = L10n.lang("bbs.ui.ok");
     public static final IKey GENERAL_PASTE = L10n.lang("bbs.ui.paste");
