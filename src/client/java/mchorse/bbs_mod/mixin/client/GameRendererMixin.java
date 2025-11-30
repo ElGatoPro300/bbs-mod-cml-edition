@@ -7,7 +7,6 @@ import mchorse.bbs_mod.camera.controller.PlayCameraController;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.items.GunZoom;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
@@ -82,13 +81,13 @@ public class GameRendererMixin
     }
 
     @Inject(at = @At("HEAD"), method = "renderWorld")
-    private void onWorldRenderBegin(RenderTickCounter tickCounter, CallbackInfo callbackInfo)
+    private void onWorldRenderBegin(CallbackInfo callbackInfo)
     {
         BBSRendering.onWorldRenderBegin();
     }
 
     @Inject(at = @At("RETURN"), method = "renderWorld")
-    private void onWorldRenderEnd(RenderTickCounter tickCounter, CallbackInfo callbackInfo)
+    private void onWorldRenderEnd(CallbackInfo callbackInfo)
     {
         BBSRendering.onWorldRenderEnd();
     }

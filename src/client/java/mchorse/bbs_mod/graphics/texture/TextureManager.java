@@ -158,8 +158,6 @@ public class TextureManager implements IWatchDogListener
 
     public Pixels getPixels(Link link) throws Exception
     {
-
-
         Pixels pixels;
 
         if (link instanceof MultiLink)

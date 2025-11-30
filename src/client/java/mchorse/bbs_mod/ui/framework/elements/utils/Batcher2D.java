@@ -513,36 +513,9 @@ public class Batcher2D
 
     public void text(String label, float x, float y, int color, boolean shadow)
     {
-        /* Vaciar capas previas y preparar blending */
-        RenderSystem.enableBlend();
-        this.flush();
+        this.context.drawText(this.font.getRenderer(), label, (int) x, (int) y, color, shadow);
+        this.context.draw();
 
-        /* Dibujar texto directamente con TextRenderer y controlar el flush */
-        net.minecraft.client.font.TextRenderer textRenderer = this.font.getRenderer();
-        org.joml.Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
-        net.minecraft.client.render.VertexConsumerProvider.Immediate vcs = (net.minecraft.client.render.VertexConsumerProvider.Immediate) this.context.getVertexConsumers();
-
-        /* Seleccionar un shader seguro para texto en GUI antes del flush */
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-
-        /* Render del texto en el provider actual */
-        textRenderer.draw(
-            label,
-            (int) x,
-            (int) y,
-            color,
-            shadow,
-            matrix,
-            vcs,
-            net.minecraft.client.font.TextRenderer.TextLayerType.NORMAL,
-            0,
-            15728880
-        );
-
-        /* Vaciar sólo el texto con el shader adecuado */
-        vcs.draw();
-
-        /* Mantener el pipeline consistente tras el texto */
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
     }
 
@@ -607,13 +580,6 @@ public class Batcher2D
 
     public void flush()
     {
-        /* Si por alguna razón el shader global está nulo (Iris/Sodium),
-         * establece un shader seguro para capas GUI antes de vaciar. */
-        if (com.mojang.blaze3d.systems.RenderSystem.getShader() == null)
-        {
-            com.mojang.blaze3d.systems.RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
-        }
-
         this.context.draw();
     }
 }

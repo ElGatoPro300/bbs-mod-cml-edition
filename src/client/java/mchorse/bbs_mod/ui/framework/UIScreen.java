@@ -198,15 +198,6 @@ public class UIScreen extends Screen implements IFileDropListener
     {
         super.render(context, mouseX, mouseY, delta);
 
-        /* Asegurar un shader global válido sólo si está nulo antes de cualquier
-         * flush interno de DrawContext (draw/tryDraw/drawText). Algunos
-         * pipelines (Iris/Sodium) pueden dejar el shader global en nulo. */
-        if (com.mojang.blaze3d.systems.RenderSystem.getShader() == null)
-        {
-            com.mojang.blaze3d.systems.RenderSystem.enableBlend();
-            com.mojang.blaze3d.systems.RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
-        }
-
         // Usar `client` ya inicializado para obtener el tick delta de render
         this.menu.context.setTransition(this.client.getRenderTickCounter().getTickDelta(false));
         this.menu.renderMenu(this.context, mouseX, mouseY);

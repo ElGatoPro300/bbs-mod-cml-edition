@@ -227,25 +227,13 @@ public class UIMultiLinkEditor extends UICanvasEditor
 
                 if (needsMultLinkShader)
                 {
-                    ShaderProgram multilink = BBSShaders.getMultilinkProgram();
+                    shader = BBSShaders.getMultilinkProgram();
 
-                    if (multilink != null)
-                    {
-                        shader = multilink;
+                    GlUniform size = shader.getUniform("Size");
+                    GlUniform filters = shader.getUniform("Filters");
 
-                        GlUniform size = multilink.getUniform("Size");
-                        GlUniform filters = multilink.getUniform("Filters");
-
-                        if (size != null)
-                        {
-                            size.set((float) ow, (float) oh);
-                        }
-
-                        if (filters != null)
-                        {
-                            filters.set((float) child.pixelate, child.erase ? 1F : 0F, 0F, 0F);
-                        }
-                    }
+                    size.set((float) ow, (float) oh);
+                    filters.set((float) child.pixelate, child.erase ? 1F : 0F, 0F, 0F);
                 }
 
                 RenderSystem.setShaderTexture(3, context.render.getTextures().getTexture(Icons.ATLAS).id);
