@@ -1152,7 +1152,7 @@ public class UIFilmController extends UIElement
                 context.batcher.textCard(label, context.mouseX + 12, context.mouseY + 8);
             }
         }
-        else if (pair != null && pair.a != null)
+        else if (pair != null)
         {
             String label = pair.a.getFormIdOrName();
 
@@ -1185,7 +1185,7 @@ public class UIFilmController extends UIElement
 
             int povMode = this.panel.getController().getPovMode();
 
-            if (povMode != UIFilmController.CAMERA_MODE_CAMERA && BBSSettings.recordingCameraPreview.get())
+            if (povMode != UIFilmController.CAMERA_MODE_CAMERA)
             {
                 Recorder.renderCameraPreview(this.panel.getRunner().getPosition(), context.camera(), context.matrixStack());
             }
@@ -1275,14 +1275,12 @@ public class UIFilmController extends UIElement
         else
         {
             Replay replay = CollectionUtils.getSafe(this.panel.getData().replays.getList(), this.panel.replayEditor.replays.replays.getIndex());
-            Pair<String, Boolean> bone = this.getBone();
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
                 .transition(isPlaying ? renderContext.tickDelta() : 0)
                 .stencil(this.stencilMap)
-                .relative(replay.relative.get())
-                .bone(bone == null ? null : bone.a, bone != null && bone.b));
+                .relative(replay.relative.get()));
         }
 
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);

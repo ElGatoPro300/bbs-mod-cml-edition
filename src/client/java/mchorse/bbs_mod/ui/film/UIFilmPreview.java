@@ -206,7 +206,15 @@ public class UIFilmPreview extends UIElement
     private void renderAudio()
     {
         Clips camera = this.panel.getData().camera;
-        List<AudioClip> audioClips = camera.getClips(AudioClip.class);
+        List<AudioClip> audioClips = new ArrayList<>();
+
+        for (Clip clip : camera.get())
+        {
+            if (clip instanceof AudioClip audioClip)
+            {
+                audioClips.add(audioClip);
+            }
+        }
 
         String name = StringUtils.createTimestampFilename() + ".wav";
         File videos = BBSRendering.getVideoFolder();

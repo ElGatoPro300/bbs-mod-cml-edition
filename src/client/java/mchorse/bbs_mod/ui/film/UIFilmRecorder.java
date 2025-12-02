@@ -3,8 +3,6 @@ package mchorse.bbs_mod.ui.film;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.actions.ActionState;
-import mchorse.bbs_mod.audio.AudioRenderer;
-import mchorse.bbs_mod.camera.clips.misc.AudioClip;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -14,15 +12,8 @@ import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.utils.UIUtils;
-import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.VideoRecorder;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.Clips;
 import org.lwjgl.glfw.GLFW;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UIFilmRecorder extends UIElement
 {
@@ -90,23 +81,7 @@ public class UIFilmRecorder extends UIElement
 
         try
         {
-            File audioFile = null;
-
-            if (BBSSettings.videoSettings.audio.get())
-            {
-                Clips camera = this.editor.getData().camera;
-                List<AudioClip> audioClips = camera.getClips(AudioClip.class);
-
-                String name = StringUtils.createTimestampFilename() + ".wav";
-                File file = new File(BBSRendering.getVideoFolder(), name);
-
-                if (AudioRenderer.renderAudio(file, audioClips, camera.calculateDuration(), 48000))
-                {
-                    audioFile = file;
-                }
-            }
-
-            recorder.startRecording(audioFile, id, w, h);
+            recorder.startRecording(id, w, h);
         }
         catch (Exception e)
         {

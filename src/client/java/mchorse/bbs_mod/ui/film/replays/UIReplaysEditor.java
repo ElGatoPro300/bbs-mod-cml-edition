@@ -45,7 +45,6 @@ import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIKeyframeSheetFilterOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIAnimationToPoseOverlayPanel;
 import mchorse.bbs_mod.ui.utils.Area;
-import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.ui.utils.Scale;
 import mchorse.bbs_mod.ui.utils.StencilFormFramebuffer;
 import mchorse.bbs_mod.ui.utils.context.ContextMenuManager;
@@ -909,11 +908,6 @@ public class UIReplaysEditor extends UIElement
                 if (!this.isVisible())
                 {
                     this.filmPanel.showPanel(this);
-                }
-
-                if (Gizmo.INSTANCE.start(stencil.getIndex(), context.mouseX, context.mouseY, UIReplaysEditorUtils.getEditableTransform(this.keyframeEditor)))
-                {
-                    return true;
                 }
 
                 if (context.mouseButton == 0)
