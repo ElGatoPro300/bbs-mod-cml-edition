@@ -108,18 +108,21 @@ public class Gizmo
 
         if (this.mode == Mode.ROTATE)
         {
-            float outlinePad = 0.015F;
-            float radius = 0.22F;
-            float thicknessRing = 0.025F;
+            float outlinePad = 0.015F * scale;
+            float radius = 0.22F * scale;
+            float thicknessRing = 0.025F * scale;
 
-             Draw.arc3D(builder, stack, Axis.Z, radius, thicknessRing + outlinePad, 0F, 0F, 0F);
-             Draw.arc3D(builder, stack, Axis.Z, radius, thicknessRing, 0F, 0F, 1F);
+            Draw.arc3D(builder, stack, Axis.Z, radius, thicknessRing + outlinePad, 0F, 0F, 0F);
+            Draw.arc3D(builder, stack, Axis.Z, radius, thicknessRing, 0F, 0F, 1F);
 
-             Draw.arc3D(builder, stack, Axis.X, radius, thicknessRing + outlinePad, 0F, 0F, 0F);
-             Draw.arc3D(builder, stack, Axis.X, radius, thicknessRing, 1F, 0F, 0F);
+            Draw.arc3D(builder, stack, Axis.X, radius, thicknessRing + outlinePad, 0F, 0F, 0F);
+            Draw.arc3D(builder, stack, Axis.X, radius, thicknessRing, 1F, 0F, 0F);
 
-             Draw.arc3D(builder, stack, Axis.Y, radius, thicknessRing + outlinePad, 0F, 0F, 0F);
-             Draw.arc3D(builder, stack, Axis.Y, radius, thicknessRing, 0F, 1F, 0F);
+            Draw.arc3D(builder, stack, Axis.Y, radius, thicknessRing + outlinePad, 0F, 0F, 0F);
+            Draw.arc3D(builder, stack, Axis.Y, radius, thicknessRing, 0F, 1F, 0F);
+
+            Draw.fillBox(builder, stack, -outlineOffset, -outlineOffset, -outlineOffset, outlineOffset, outlineOffset, outlineOffset, 0F, 0F, 0F);
+            Draw.fillBox(builder, stack, -axisOffset, -axisOffset, -axisOffset, axisOffset, axisOffset, axisOffset, 1F, 1F, 1F);
         }
         else
         {
@@ -186,9 +189,9 @@ public class Gizmo
 
         if (this.mode == Mode.ROTATE)
         {
-            float outlinePad = 0.015F;
-            float radius = 0.22F;
-            float thicknessRing = 0.025F;
+            float outlinePad = 0.015F * scale;
+            float radius = 0.22F * scale;
+            float thicknessRing = 0.025F * scale;
 
             Draw.arc3D(builder, stack, Axis.Z, radius, thicknessRing + outlinePad, STENCIL_Z / 255F, 0F, 0F);
             Draw.arc3D(builder, stack, Axis.X, radius, thicknessRing + outlinePad, STENCIL_X / 255F, 0F, 0F);
