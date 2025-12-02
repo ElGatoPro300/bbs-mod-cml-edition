@@ -1,6 +1,4 @@
 {
-	"texture": "assets:models/player/steve_bends_3d/steve.png",
-	"pose_group": "player/steve",
 	"procedural": true,
 	"culling": false,
 	"items_main": ["right_arm_item"],
@@ -8,7 +6,6 @@
 	"scale": [0.9375, 0.9375, 0.9375],
 	"look_at": {
 		"head": "head",
-		"anchor": "anchor",
 		"pitch": true,
 		"head_limit": 45
 	},
