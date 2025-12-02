@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class UITransformKeyframeFactory extends UIKeyframeFactory<Transform>
 {
-    public UIPropTransform transform;
+    private UIPropTransform transform;
 
     public UITransformKeyframeFactory(Keyframe<Transform> keyframe, UIKeyframes editor)
     {

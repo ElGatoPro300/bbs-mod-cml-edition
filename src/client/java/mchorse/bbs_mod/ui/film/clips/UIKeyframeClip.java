@@ -15,7 +15,6 @@ import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.clips.Clips;
 import mchorse.bbs_mod.utils.joml.Matrices;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import org.joml.Vector3f;
@@ -113,14 +112,14 @@ public class UIKeyframeClip extends UIClip<KeyframeClip>
         this.insertKeyframe(tick, this.clip.fov, newPos.angle.fov);
     }
 
-    private void insertKeyframe(long tick, KeyframeChannel<Double> channel, double x)
+    private void insertKeyframe(long tick, KeyframeChannel<Double> keyframe, double x)
     {
-        KeyframeSegment<Double> segment = channel.findSegment(tick);
-        int insert = channel.insert(tick, x);
+        KeyframeSegment<Double> segment = keyframe.findSegment(tick);
+        int insert = keyframe.insert(tick, x);
 
         if (segment != null)
         {
-            channel.get(insert).copyOverExtra(segment.a);
+            keyframe.get(insert).getInterpolation().copy(segment.a.getInterpolation());
         }
     }
 

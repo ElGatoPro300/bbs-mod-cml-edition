@@ -21,7 +21,6 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
-import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
@@ -150,7 +149,7 @@ public abstract class BaseFilmController
         MatrixStackUtils.multiply(stack, target);
         FormUtilsClient.render(form, formContext);
 
-        if (UIBaseMenu.renderAxes && context.bone != null)
+        if (context.bone != null && UIBaseMenu.renderAxes)
         {
             Form root = FormUtils.getRoot(form);
             Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, context.local ? null : context.bone, transition);
@@ -175,16 +174,6 @@ public abstract class BaseFilmController
                 {
                     Draw.coolerAxes(stack, 0.25F, 0.01F, 0.26F, 0.02F);
                 }
-
-                if (context.map == null)
-                {
-                    Gizmo.INSTANCE.render(stack);
-                }
-                else
-                {
-                    Gizmo.INSTANCE.renderStencil(stack, context.map);
-                }
-
                 RenderSystem.enableDepthTest();
                 stack.pop();
             }

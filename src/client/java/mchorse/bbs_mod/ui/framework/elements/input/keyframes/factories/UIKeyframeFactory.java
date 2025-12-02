@@ -125,7 +125,7 @@ public abstract class UIKeyframeFactory <T> extends UIElement
             }
         });
         this.color.setColor(keyframe.getColor() == null ? 0 : keyframe.getColor().getRGBColor());
-        this.color.tooltip(UIKeys.KEYFRAMES_CHANGE_COLOR);
+        this.color.noLabel().w(40).tooltip(UIKeys.KEYFRAMES_CHANGE_COLOR);
         this.color.context((menu) ->
         {
             menu.action(Icons.COLOR, UIKeys.KEYFRAMES_RESET_COLOR, () ->
@@ -164,8 +164,7 @@ public abstract class UIKeyframeFactory <T> extends UIElement
         });
         this.shape.tooltip(UIKeys.KEYFRAMES_CHANGE_SHAPE);
 
-        this.scroll.add(UI.row(this.interp, this.tick, this.duration));
-        this.scroll.add(UI.row(this.shape, this.color));
+        this.scroll.add(UI.row(this.interp, this.tick, this.duration, this.color, this.shape));
 
         this.add(this.scroll);
 

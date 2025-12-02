@@ -95,7 +95,7 @@ public interface IUIKeyframeGraph
     public default Keyframe addKeyframe(UIKeyframeSheet sheet, float tick, Object value)
     {
         KeyframeSegment segment = sheet.channel.find(tick);
-        Keyframe extra = null;
+        Interpolation interpolation = null;
         BaseValueBasic property = sheet.property;
 
         if (value == null)
@@ -103,7 +103,7 @@ public interface IUIKeyframeGraph
             if (segment != null)
             {
                 value = segment.createInterpolated();
-                extra = segment.a;
+                interpolation = segment.a.getInterpolation();
             }
             else if (property != null)
             {
@@ -118,9 +118,9 @@ public interface IUIKeyframeGraph
         int index = sheet.channel.insert(tick, value);
         Keyframe keyframe = sheet.channel.get(index);
 
-        if (extra != null)
+        if (interpolation != null)
         {
-            keyframe.copyOverExtra(extra);
+            keyframe.getInterpolation().copy(interpolation);
         }
 
         this.clearSelection();

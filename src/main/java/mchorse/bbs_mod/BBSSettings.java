@@ -85,7 +85,6 @@ public class BBSSettings
     public static ValueBoolean recordingSwipeDamage;
     public static ValueBoolean recordingOverlays;
     public static ValueInt recordingPoseTransformOverlays;
-    public static ValueBoolean recordingCameraPreview;
 
     public static ValueBoolean renderAllModelBlocks;
     public static ValueBoolean clickModelBlocks;
@@ -147,6 +146,22 @@ public class BBSSettings
 
     public static void register(SettingsBuilder builder)
     {
+        builder.category("appearance");
+
+        builder.register(language = new ValueLanguage("language"));
+        primaryColor = builder.getInt("primary_color", Colors.ACTIVE).color();
+        enableTrackpadIncrements = builder.getBoolean("trackpad_increments", true);
+        enableTrackpadScrolling = builder.getBoolean("trackpad_scrolling", true);
+        userIntefaceScale = builder.getInt("ui_scale", 2, 0, 4);
+        tooltipStyle = builder.getInt("tooltip_style", 1);
+        fov = builder.getFloat("fov", 40, 0, 180);
+        hsvColorPicker = builder.getBoolean("hsv_color_picker", true);
+        forceQwerty = builder.getBoolean("force_qwerty", false);
+        freezeModels = builder.getBoolean("freeze_models", false);
+        axesScale = builder.getFloat("axes_scale", 1F, 0F, 2F);
+        uniformScale = builder.getBoolean("uniform_scale", false);
+        clickSound = builder.getBoolean("click_sound", false);
+
         HashSet<String> defaultFilters = new HashSet<>();
 
         defaultFilters.add("item_off_hand");
@@ -167,61 +182,40 @@ public class BBSSettings
         defaultFilters.add("extra2_x");
         defaultFilters.add("extra2_y");
 
-        builder.category("appearance");
-        builder.register(language = new ValueLanguage("language"));
-        primaryColor = builder.getInt("primary_color", Colors.ACTIVE).color();
-        enableTrackpadIncrements = builder.getBoolean("trackpad_increments", true);
-        enableTrackpadScrolling = builder.getBoolean("trackpad_scrolling", true);
-        userIntefaceScale = builder.getInt("ui_scale", 2, 0, 4);
-        tooltipStyle = builder.getInt("tooltip_style", 1);
-        fov = builder.getFloat("fov", 40, 0, 180);
-        hsvColorPicker = builder.getBoolean("hsv_color_picker", true);
-        forceQwerty = builder.getBoolean("force_qwerty", false);
-        freezeModels = builder.getBoolean("freeze_models", false);
-        axesScale = builder.getFloat("axes_scale", 1F, 0F, 2F);
-        uniformScale = builder.getBoolean("uniform_scale", false);
-        clickSound = builder.getBoolean("click_sound", false);
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
         disabledSheets.set(defaultFilters);
         builder.register(favoriteColors);
         builder.register(disabledSheets);
 
-        builder.category("tutorials");
-        enableCursorRendering = builder.getBoolean("cursor", false);
+        enableCursorRendering = builder.category("tutorials").getBoolean("cursor", false);
         enableMouseButtonRendering = builder.getBoolean("mouse_buttons", false);
         enableKeystrokeRendering = builder.getBoolean("keystrokes", false);
         keystrokeOffset = builder.getInt("keystrokes_offset", 10, 0, 20);
         keystrokeMode = builder.getInt("keystrokes_position", 1);
 
-        builder.category("background");
-        backgroundImage = builder.getRL("image", null);
+        backgroundImage = builder.category("background").getRL("image", null);
         backgroundColor = builder.getInt("color", Colors.A75).colorAlpha();
 
-        builder.category("chroma_sky");
-        chromaSkyEnabled = builder.getBoolean("enabled", false);
+        chromaSkyEnabled = builder.category("chroma_sky").getBoolean("enabled", false);
         chromaSkyColor = builder.getInt("color", Colors.A75).color();
         chromaSkyTerrain = builder.getBoolean("terrain", true);
         chromaSkyBillboard = builder.getFloat("billboard", 0F, 0F, 256F);
 
-        builder.category("scrollbars");
-        scrollbarShadow = builder.getInt("shadow", Colors.A50).colorAlpha();
+        scrollbarShadow = builder.category("scrollbars").getInt("shadow", Colors.A50).colorAlpha();
         scrollbarWidth = builder.getInt("width", 4, 2, 10);
         scrollingSensitivity = builder.getFloat("sensitivity", 1F, 0F, 10F);
         scrollingSensitivityHorizontal = builder.getFloat("sensitivity_horizontal", 1F, 0F, 10F);
         scrollingSmoothness = builder.getBoolean("smoothness", true);
 
-        builder.category("multiskin");
-        multiskinMultiThreaded = builder.getBoolean("multithreaded", true);
+        multiskinMultiThreaded = builder.category("multiskin").getBoolean("multithreaded", true);
 
-        builder.category("video");
-        videoEncoderPath = builder.getString("encoder_path", "ffmpeg");
+        videoEncoderPath = builder.category("video").getString("encoder_path", "ffmpeg");
         videoEncoderLog = builder.getBoolean("log", true);
         builder.register(videoSettings = new ValueVideoSettings("settings"));
 
         /* Camera editor */
-        builder.category("editor");
-        editorCameraSpeed = builder.getFloat("speed", 1F, 0.1F, 100F);
+        editorCameraSpeed = builder.category("editor").getFloat("speed", 1F, 0.1F, 100F);
         editorCameraAngleSpeed = builder.getFloat("angle_speed", 1F, 0.1F, 100F);
         duration = builder.getInt("duration", 30, 1, 1000);
         editorJump = builder.getInt("jump", 5, 1, 1000);
@@ -241,15 +235,12 @@ public class BBSSettings
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
 
-        builder.category("recording");
-        recordingCountdown = builder.getFloat("countdown", 1.5F, 0F, 30F);
+        recordingCountdown = builder.category("recording").getFloat("countdown", 1.5F, 0F, 30F);
         recordingSwipeDamage = builder.getBoolean("swipe_damage", false);
         recordingOverlays = builder.getBoolean("overlays", true);
         recordingPoseTransformOverlays = builder.getInt("pose_transform_overlays", 0, 0, 42);
-        recordingCameraPreview = builder.getBoolean("camera_preview", true);
 
-        builder.category("model_blocks");
-        renderAllModelBlocks = builder.getBoolean("render_all", true);
+        renderAllModelBlocks = builder.category("model_blocks").getBoolean("render_all", true);
         clickModelBlocks = builder.getBoolean("click", true);
         /* Panel de categorías en editores de pose (afecta editor y timeline) */
         modelBlockCategoriesPanelEnabled = builder.getBoolean("categories_panel_enabled", false);
@@ -273,14 +264,11 @@ public class BBSSettings
         structureOptimization = builder.getBoolean("structure_optimization", true);
         visualizeStructures = builder.getBoolean("visualize_structures", false);
 
-        builder.category("entity_selectors");
-        entitySelectorsPropertyWhitelist = builder.getString("whitelist", "CustomName,Name");
+        entitySelectorsPropertyWhitelist = builder.category("entity_selectors").getString("whitelist", "CustomName,Name");
 
-        builder.category("dc");
-        damageControl = builder.getBoolean("enabled", true);
+        damageControl = builder.category("dc").getBoolean("enabled", true);
 
-        builder.category("shader_curves");
-        shaderCurvesEnabled = builder.getBoolean("enabled", true);
+        shaderCurvesEnabled = builder.category("shader_curves").getBoolean("enabled", true);
 
         builder.category("audio");
         audioWaveformVisible = builder.getBoolean("waveform_visible", true);
