@@ -48,8 +48,14 @@ Here we have:
 
 ### Organization
 
+* The structure of any class must have the following order:
+    * Fields: constants, static, instance
+    * Static constructor
+    * Static methods
+    * Instance constructors
+    * Methods
+    * Nested classes, interfaces, enums and records
 * Any **dead code** (check for the name being gray in IDE, or references) must be deleted!
-* Nested classes, interfaces, enums and records **must be at the end of the class**!
 * One line constructions are allowed only **if they look very similar** (look harmonious).
 * Multiple `if` constructions in a row must be separated with a new line to not mistake it for `else if`s!
 * Blocks of variable definitions must be cluttered together (first go objects then primitives, unless it's impossible due to algorithm).
@@ -67,6 +73,7 @@ Here we have:
 * No generic type provided where can be omitted (i.e. `new ArrayList<>()`).
 * Float `1F`, double `2D` and long `3L` number specifiers must be in capital letters always, and if there is no decimal, period must be absent!
 * No full references to the classes in the code (i.e. `new org.joml.Vector3f()`, unless there are conflicting names)!
+* No `var`!
 
 ### Comments
 
