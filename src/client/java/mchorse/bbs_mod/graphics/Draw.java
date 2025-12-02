@@ -230,13 +230,13 @@ public class Draw
                 float z22 = (float) (cos2 * Math.sin(u2));
                 float y22 = (float) (tubeR * Math.sin(v2));
 
-                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F).next();
-                builder.vertex(mat, x12, y12, z12).color(r, g, b, 1F).next();
-                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F).next();
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F);
+                builder.vertex(mat, x12, y12, z12).color(r, g, b, 1F);
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F);
 
-                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F).next();
-                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F).next();
-                builder.vertex(mat, x21, y21, z21).color(r, g, b, 1F).next();
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F);
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F);
+                builder.vertex(mat, x21, y21, z21).color(r, g, b, 1F);
             }
         }
 
