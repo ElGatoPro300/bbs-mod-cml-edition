@@ -1,5 +1,4 @@
 {
-	"texture": "assets:models/player/alex_3d/alex.png",
 	"pose_group": "player/steve",
 	"procedural": true,
 	"culling": false,
