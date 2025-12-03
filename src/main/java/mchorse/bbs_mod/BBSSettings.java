@@ -34,6 +34,7 @@ public class BBSSettings
     public static ValueFloat axesScale;
     public static ValueBoolean uniformScale;
     public static ValueBoolean clickSound;
+    public static ValueBoolean gizmos;
 
     public static ValueBoolean enableCursorRendering;
     public static ValueBoolean enableMouseButtonRendering;
@@ -182,6 +183,21 @@ public class BBSSettings
         defaultFilters.add("extra2_x");
         defaultFilters.add("extra2_y");
 
+        builder.category("appearance");
+        builder.register(language = new ValueLanguage("language"));
+        primaryColor = builder.getInt("primary_color", Colors.ACTIVE).color();
+        enableTrackpadIncrements = builder.getBoolean("trackpad_increments", true);
+        enableTrackpadScrolling = builder.getBoolean("trackpad_scrolling", true);
+        userIntefaceScale = builder.getInt("ui_scale", 2, 0, 4);
+        tooltipStyle = builder.getInt("tooltip_style", 1);
+        fov = builder.getFloat("fov", 40, 0, 180);
+        hsvColorPicker = builder.getBoolean("hsv_color_picker", true);
+        forceQwerty = builder.getBoolean("force_qwerty", false);
+        freezeModels = builder.getBoolean("freeze_models", false);
+        axesScale = builder.getFloat("axes_scale", 1F, 0F, 2F);
+        uniformScale = builder.getBoolean("uniform_scale", false);
+        clickSound = builder.getBoolean("click_sound", false);
+        gizmos = builder.getBoolean("gizmos", true);
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
         disabledSheets.set(defaultFilters);

@@ -316,7 +316,7 @@ public class UIPropTransform extends UITransform
         }
         else if (this.mode == 2)
         {
-            return this.local ? this.transform.rotate2 : this.transform.rotate;
+            return this.local && BBSSettings.gizmos.get() ? this.transform.rotate2 : this.transform.rotate;
         }
 
         return this.transform.translate;
@@ -510,7 +510,7 @@ public class UIPropTransform extends UITransform
                     if (this.mode == 1) this.setS(null, vector3f.x, vector3f.y, vector3f.z);
                     if (this.mode == 2)
                     {
-                        if (this.local) this.setR2(null, vector3f.x, vector3f.y, vector3f.z);
+                        if (this.local && BBSSettings.gizmos.get()) this.setR2(null, vector3f.x, vector3f.y, vector3f.z);
                         else this.setR(null, vector3f.x, vector3f.y, vector3f.z);
                     }
                 }
