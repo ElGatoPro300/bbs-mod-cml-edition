@@ -39,6 +39,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
+import org.joml.Matrix4f;
 
 import java.io.File;
 import java.util.Collections;
@@ -59,6 +60,13 @@ public class BBSRendering
 
     public static boolean renderingWorld;
     public static int lastAction;
+
+    /*
+     * Cámara del mundo (matriz de vista) capturada durante setupFrustum.
+     * Usada por el pase de stencil/picking en previews de film para alinear
+     * correctamente el render con la vista del mundo.
+     */
+    public static final Matrix4f camera = new Matrix4f();
 
     private static boolean customSize;
     private static boolean iris;

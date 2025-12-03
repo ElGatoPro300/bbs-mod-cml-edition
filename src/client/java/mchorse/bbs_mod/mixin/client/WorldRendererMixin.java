@@ -8,6 +8,7 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,6 +55,16 @@ public class WorldRendererMixin
         {
             BBSRendering.onRenderChunkLayer(new MatrixStack());
         }
+    }
+
+    /**
+     * Captura la matriz de cámara (vista) al configurar el frustum para replicar
+     * el comportamiento del ORIGINAL en el picking de films.
+     */
+    @Inject(method = "setupFrustum", at = @At("HEAD"))
+    public void onSetupFrustum(Vec3d vec3d, Matrix4f matrix4f, Matrix4f positionMatrix, CallbackInfo info)
+    {
+        BBSRendering.camera.set(matrix4f);
     }
 
     @Inject(at = @At("RETURN"), method = "loadEntityOutlinePostProcessor")

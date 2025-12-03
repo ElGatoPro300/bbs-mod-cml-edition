@@ -601,8 +601,6 @@ public class BBSModClient implements ClientModInitializer
         });
 
         BBSRendering.setup();
-        // Ensure BBS shader programs are initialized at client startup
-        BBSShaders.setup();
 
         /* Network */
         ClientNetwork.setup();

@@ -1106,7 +1106,8 @@ public class UIFilmController extends UIElement
         {
             worldStack.push();
             worldStack.loadIdentity();
-            MatrixStackUtils.multiply(worldStack, this.panel.lastView);
+            // Usar la matriz de cámara capturada en setupFrustum para replicar el ORIGINAL
+            MatrixStackUtils.multiply(worldStack, BBSRendering.camera);
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
             worldStack.pop();
         }
@@ -1116,7 +1117,8 @@ public class UIFilmController extends UIElement
             Matrix4fStack mvStack = RenderSystem.getModelViewStack();
             mvStack.pushMatrix();
             mvStack.identity();
-            mvStack.set(this.panel.lastView);
+            // Mantener la vista sincronizada con la cámara del mundo
+            mvStack.set(BBSRendering.camera);
             RenderSystem.applyModelViewMatrix();
 
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);

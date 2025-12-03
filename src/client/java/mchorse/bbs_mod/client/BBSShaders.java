@@ -15,7 +15,6 @@ import java.util.Optional;
 
 public class BBSShaders
 {
-    private static ShaderProgram model;
     private static ShaderProgram multiLink;
     private static ShaderProgram subtitles;
 
@@ -32,7 +31,6 @@ public class BBSShaders
 
     public static void setup()
     {
-        if (model != null) model.close();
         if (subtitles != null) subtitles.close();
         if (subtitles != null) subtitles.close();
 
@@ -45,8 +43,6 @@ public class BBSShaders
         try
         {
             ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
-
-            model = new ShaderProgram(factory, "model", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
             multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
             subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
 
@@ -64,7 +60,8 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        return model != null ? model : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
+        return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
@@ -79,29 +76,27 @@ public class BBSShaders
 
     public static ShaderProgram getPickerPreviewProgram()
     {
-        return pickerPreview != null ? pickerPreview : GameRenderer.getPositionTexColorProgram();
+        return pickerPreview;
     }
 
     public static ShaderProgram getPickerBillboardProgram()
     {
-        return pickerBillboard != null ? pickerBillboard : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        return pickerBillboard;
     }
 
     public static ShaderProgram getPickerBillboardNoShadingProgram()
     {
-        // Fallback compatible en 1.21.1: usar PositionTexColor
-        return pickerBillboardNoShading != null ? pickerBillboardNoShading : GameRenderer.getPositionTexColorProgram();
+        return pickerBillboardNoShading;
     }
 
     public static ShaderProgram getPickerParticlesProgram()
     {
-        // Fallback compatible en 1.21.1: usar PositionTexColor
-        return pickerParticles != null ? pickerParticles : GameRenderer.getPositionTexColorProgram();
+        return pickerParticles;
     }
 
     public static ShaderProgram getPickerModelsProgram()
     {
-        return pickerModels != null ? pickerModels : GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        return pickerModels;
     }
 
     private static class ProxyResourceFactory implements ResourceFactory
