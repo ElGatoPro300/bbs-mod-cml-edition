@@ -9,6 +9,8 @@
     "bbs.config.appearance.fov-comment": "Diese Option kontrolliert das Sichtfeld für die Kamera im Welt-Menü und Animations-Panel",
     "bbs.config.appearance.freeze_models": "Modelle einfrieren",
     "bbs.config.appearance.freeze_models-comment": "Wenn aktiviert folgen Modelle in der Form-Auswahl nicht der Maus",
+    "bbs.config.appearance.gizmos": "Gizmos",
+    "bbs.config.appearance.gizmos-comment": "Ob greifbare Achsen für Position, Größe und Rotation aktiviert sein sollen",
     "bbs.config.appearance.hsv_color_picker": "HSV Wähler",
     "bbs.config.appearance.hsv_color_picker-comment": "Wenn aktiviert ändert diese Option alle Farbwähler sodass sie das HSV Farbmodell verwenden, statt RGB, was intuitiver ist.",
     "bbs.config.appearance.language": "Sprache",
