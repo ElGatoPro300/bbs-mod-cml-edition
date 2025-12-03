@@ -221,6 +221,24 @@ public class Clips extends ValueGroup
         return Collections.unmodifiableList(this.clips);
     }
 
+    /**
+     * Get all clips that are instances of the given type.
+     */
+    public <T extends Clip> List<T> getClips(Class<T> type)
+    {
+        List<T> result = new ArrayList<>();
+
+        for (Clip clip : this.clips)
+        {
+            if (type.isInstance(clip))
+            {
+                result.add(type.cast(clip));
+            }
+        }
+
+        return result;
+    }
+
     public int findNextTick(int tick)
     {
         int output = Integer.MAX_VALUE;
