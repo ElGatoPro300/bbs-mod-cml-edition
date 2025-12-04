@@ -403,6 +403,38 @@ public class BBSRendering
             mc.world
         );
 
+        if (!isIrisShadersEnabled())
+        {
+            renderCoolStuff(worldRenderContext);
+        }
+    }
+
+    /**
+     * Render hook para el pase de terreno cuando Iris está activo.
+     * Usa las matrices entregadas por WorldRenderer (model-view y proyección)
+     * en lugar de leerlas de RenderSystem, para evitar desalineaciones.
+     */
+    public static void onRenderChunkLayer(org.joml.Matrix4f positionMatrix, org.joml.Matrix4f projectionMatrix)
+    {
+        WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        worldRenderContext.prepare(
+            mc.worldRenderer,
+            mc.getRenderTickCounter(),
+            false,
+            mc.gameRenderer.getCamera(),
+            mc.gameRenderer,
+            mc.gameRenderer.getLightmapTextureManager(),
+            positionMatrix,
+            projectionMatrix,
+            mc.getBufferBuilders().getEntityVertexConsumers(),
+            mc.getProfiler(),
+            false,
+            mc.world
+        );
+
+        // Con Iris activo, re-renderizamos nuestros elementos en el pase correcto
         if (isIrisShadersEnabled())
         {
             renderCoolStuff(worldRenderContext);

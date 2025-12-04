@@ -411,10 +411,9 @@ public class BBSModClient implements ClientModInitializer
 
         WorldRenderEvents.AFTER_ENTITIES.register((context) ->
         {
-            if (!BBSRendering.isIrisShadersEnabled())
-            {
-                BBSRendering.renderCoolStuff(context);
-            }
+            // Siempre renderizamos nuestros elementos después de las entidades.
+            // Bajo Iris, este punto mantiene las matrices correctas del mundo.
+            BBSRendering.renderCoolStuff(context);
 
             if (BBSSettings.chromaSkyEnabled.get())
             {

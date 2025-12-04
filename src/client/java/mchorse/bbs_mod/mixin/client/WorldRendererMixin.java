@@ -48,14 +48,8 @@ public class WorldRendererMixin
         }
     }
 
-    @Inject(method = "renderLayer", at = @At("TAIL"))
-    public void onRenderChunkLayer(RenderLayer layer, double x, double y, double z, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info)
-    {
-        if (layer == RenderLayer.getSolid())
-        {
-            BBSRendering.onRenderChunkLayer(new MatrixStack());
-        }
-    }
+    // Eliminado el render dentro de renderLayer para evitar duplicados.
+    // Bajo Iris y vanilla, ahora usamos WorldRenderEvents.AFTER_ENTITIES.
 
     /**
      * Captura la matriz de cámara (vista) al configurar el frustum para replicar
