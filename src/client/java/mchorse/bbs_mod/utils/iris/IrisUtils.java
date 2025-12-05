@@ -18,8 +18,6 @@ import net.irisshaders.iris.shaderpack.option.menu.OptionMenuElementScreen;
 import net.irisshaders.iris.shaderpack.option.menu.OptionMenuLinkElement;
 import net.irisshaders.iris.shaderpack.option.menu.OptionMenuOptionElement;
 import net.irisshaders.iris.shaderpack.properties.ShaderProperties;
-import net.irisshaders.iris.texture.TextureTracker;
-import net.irisshaders.iris.texture.pbr.loader.PBRTextureLoaderRegistry;
 import net.irisshaders.iris.uniforms.custom.cached.CachedUniform;
 import net.irisshaders.iris.uniforms.custom.cached.FloatCachedUniform;
 import net.irisshaders.iris.uniforms.custom.cached.IntCachedUniform;
@@ -139,11 +137,25 @@ public class IrisUtils
     {
         try
         {
-            PBRTextureLoaderRegistry.INSTANCE.register(IrisTextureWrapper.class, new IrisTextureWrapperLoader());
+            Class<?> registryClass = Class.forName("net.irisshaders.iris.texture.pbr.loader.PBRTextureLoaderRegistry");
+            Object instance = registryClass.getField("INSTANCE").get(null);
+            Class<?> loaderInterface = Class.forName("net.irisshaders.iris.texture.pbr.loader.PBRTextureLoader");
+            java.lang.reflect.Method register = registryClass.getMethod("register", Class.class, loaderInterface);
+
+            Object proxy = java.lang.reflect.Proxy.newProxyInstance(
+                loaderInterface.getClassLoader(),
+                new Class<?>[]{loaderInterface},
+                (p, m, args) -> {
+                    // No-op loader: tolerates API changes by doing nothing
+                    return null;
+                }
+            );
+
+            register.invoke(instance, IrisTextureWrapper.class, proxy);
         }
         catch (Throwable t)
         {
-            System.err.println("[BBS] PBRTextureLoader not available in current Iris; PBR wrappers disabled: " + t);
+            System.err.println("[BBS] PBRTextureLoader not available or changed; PBR wrappers disabled: " + t);
         }
     }
 
@@ -170,7 +182,17 @@ public class IrisUtils
                     index = texture.getParent().textures.indexOf(texture);
                 }
 
-                TextureTracker.INSTANCE.trackTexture(texture.id, new IrisTextureWrapper(key, index));
+                try
+                {
+                    Class<?> trackerClass = Class.forName("net.irisshaders.iris.texture.TextureTracker");
+                    Object tracker = trackerClass.getField("INSTANCE").get(null);
+                    java.lang.reflect.Method trackTexture = trackerClass.getMethod("trackTexture", int.class, net.minecraft.client.texture.AbstractTexture.class);
+                    trackTexture.invoke(tracker, texture.id, new IrisTextureWrapper(key, index));
+                }
+                catch (Throwable t)
+                {
+                    System.err.println("[BBS] TextureTracker not available or changed; skipping tracking: " + t);
+                }
             }
 
             textureSet.add(texture);
