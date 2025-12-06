@@ -62,20 +62,29 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
         super.render3D(context);
 
         Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-        Matrix4f matrix = new Matrix4f(RenderSystem.getModelViewMatrix()).invert();
 
-        matrix.mul(context.stack.peek().getPositionMatrix());
+        Matrix4f positionMatrix = new Matrix4f(context.stack.peek().getPositionMatrix());
+        // Usar la rotación inversa de la cámara para llevar la matriz local a espacio mundial
+        org.joml.Quaternionf cameraRotation = camera.getRotation();
+        org.joml.Quaternionf inverseCameraRotation = new org.joml.Quaternionf(cameraRotation).conjugate();
+        Matrix4f inverseViewRotation = new Matrix4f().rotation(inverseCameraRotation);
+        Matrix4f worldMatrix = new Matrix4f(inverseViewRotation).mul(positionMatrix);
 
-        Vector3d translation = new Vector3d(matrix.getTranslation(Vectors.TEMP_3F));
+        Vector3f worldOffset = worldMatrix.getTranslation(new Vector3f());
+        Vector3d translation = new Vector3d(
+            worldOffset.x + camera.getPos().x,
+            worldOffset.y + camera.getPos().y,
+            worldOffset.z + camera.getPos().z
+        );
 
-        translation.add(camera.getPos().x, camera.getPos().y, camera.getPos().z);
         context.stack.push();
         context.stack.loadIdentity();
-        context.stack.multiplyPositionMatrix(new Matrix4f(RenderSystem.getModelViewMatrix()).invert());
+        // Reaplicar la rotación de vista para dibujar correctamente respecto a la cámara
+        context.stack.multiplyPositionMatrix(new Matrix4f(inverseViewRotation).invert());
 
         this.pos.set(translation);
         this.vel.set(0F, 0F, 1F);
-        this.rot.set(matrix).transform(this.vel);
+        this.rot.set(worldMatrix).transform(this.vel);
 
         context.stack.pop();
     }
@@ -98,11 +107,14 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
                 Matrix3f m = Matrices.TEMP_3F;
                 Vector3f v = Vectors.TEMP_3F;
                 ParticleSettings settings = this.form.settings.get();
-                ParticleType type = Registries.PARTICLE_TYPE.get(settings.particle);
+                ParticleType<?> type = Registries.PARTICLE_TYPE.get(settings.particle);
                 ParticleEffect effect = ParticleTypes.FLAME;
 
-                // TODO: Re-enable custom particle argument parsing for 1.21 API.
-                // The factory method signature changed; fallback to default effect.
+                // Crear el efecto a partir del tipo seleccionado (soporta tipos simples en 1.21.1)
+                if (type instanceof net.minecraft.particle.SimpleParticleType simple)
+                {
+                    effect = simple;
+                }
 
                 for (int i = 0; i < count; i++)
                 {
