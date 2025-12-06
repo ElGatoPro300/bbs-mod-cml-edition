@@ -47,9 +47,9 @@ public abstract class UIBaseMenu
         this.overlay = new UIElement();
         this.overlay.full(this.viewport);
         this.overlay.keys().register(Keys.TRANSFORMATIONS_TOGGLE_AXES, () -> renderAxes = !renderAxes);
-        /* Alternar modo de gizmo desde el overlay (solo cuando los gizmos 3D están activos) */
+        /* Alternar modo de gizmo desde el overlay (solo cuando los gizmos están activos) */
         this.overlay.keys().register(Keys.GIZMOS_TOGGLE_ENABLED, () -> {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().cycleMode(true);
             }
