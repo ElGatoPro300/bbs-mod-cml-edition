@@ -978,6 +978,7 @@ public class UIKeys
     public static final IKey GIZMOS_KEYS_FREE_ROTATE_ZY = L10n.lang("bbs.ui.gizmos.keys.free_rotate_zy");
     /* Gizmo design mode labels */
     public static final IKey GIZMOS_DESIGN_DEFAULT = L10n.lang("bbs.gizmos.design.default");
+    public static final IKey GIZMOS_DESIGN_CML = L10n.lang("bbs.gizmos.design.cml");
     public static final IKey GIZMOS_DESIGN_CLASSIC = L10n.lang("bbs.gizmos.design.classic");
     public static final IKey GIZMOS_DESIGN_BLOCKBENCH = L10n.lang("bbs.gizmos.design.blockbench");
 

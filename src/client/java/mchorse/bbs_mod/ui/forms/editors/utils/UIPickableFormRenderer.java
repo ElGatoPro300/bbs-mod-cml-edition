@@ -98,7 +98,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
         /* Dar prioridad al gizmo: si el cursor está sobre un handle del gizmo,
          * consumimos el clic para evitar seleccionar otro hueso o arrastrar la cámara. */
         if (
-            BBSSettings.modelBlockGizmosEnabled.get() &&
+            BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 &&
             this.area.isInside(context) &&
             BoneGizmoSystem.get().isHoveringHandle()
         )
@@ -180,7 +180,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
         Matrix4f viewWithTranslation = new Matrix4f(this.camera.view)
             .translate(-(float) this.camera.position.x, -(float) this.camera.position.y, -(float) this.camera.position.z);
 
-        if (BBSSettings.modelBlockGizmosEnabled.get())
+        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
         {
             BoneGizmoSystem.get().update(context, this.area, origin, this.camera.projection, viewWithTranslation, activeTransform);
         }
@@ -196,7 +196,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
             /* Evitar el picking de huesos cuando el mouse está sobre un gizmo.
              * Esto permite manipular el gizmo sin seleccionar otro hueso por accidente. */
-            boolean blockPicking = BBSSettings.modelBlockGizmosEnabled.get() && BoneGizmoSystem.get().isHoveringHandle();
+            boolean blockPicking = BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 && BoneGizmoSystem.get().isHoveringHandle();
 
             if (!blockPicking)
             {
@@ -247,7 +247,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
         }
 
         /* Draw axes (desactivar cuando el gizmo nuevo está activo) */
-        if (UIBaseMenu.renderAxes && !BBSSettings.modelBlockGizmosEnabled.get())
+        if (UIBaseMenu.renderAxes && (!BBSSettings.gizmos.get() || BBSSettings.gizmoDesign.get() == 0))
         {
             RenderSystem.disableDepthTest();
             Gizmo.INSTANCE.render(stack);
@@ -255,7 +255,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
         }
 
         /* Render gizmos 3D en el origen del modelo cuando están habilitados */
-        if (BBSSettings.modelBlockGizmosEnabled.get())
+        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
         {
             BoneGizmoSystem.get().render3D(stack);
         }
@@ -295,7 +295,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
         /* Render overlay del gizmo al final para que siempre quede por encima
          * de cualquier overlay de previsualización del picker. */
-        if (BBSSettings.modelBlockGizmosEnabled.get())
+        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
         {
             BoneGizmoSystem.get().renderOverlay(context.render, this.area);
         }
