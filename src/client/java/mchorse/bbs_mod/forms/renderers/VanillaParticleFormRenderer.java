@@ -61,32 +61,19 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
     {
         super.render3D(context);
 
-        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-
         Matrix4f positionMatrix = new Matrix4f(context.stack.peek().getPositionMatrix());
-        // Usar la rotación inversa de la cámara para llevar la matriz local a espacio mundial
-        org.joml.Quaternionf cameraRotation = camera.getRotation();
-        org.joml.Quaternionf inverseCameraRotation = new org.joml.Quaternionf(cameraRotation).conjugate();
-        Matrix4f inverseViewRotation = new Matrix4f().rotation(inverseCameraRotation);
-        Matrix4f worldMatrix = new Matrix4f(inverseViewRotation).mul(positionMatrix);
+        Vector3f translation = positionMatrix.getTranslation(new Vector3f());
 
-        Vector3f worldOffset = worldMatrix.getTranslation(new Vector3f());
-        Vector3d translation = new Vector3d(
-            worldOffset.x + camera.getPos().x,
-            worldOffset.y + camera.getPos().y,
-            worldOffset.z + camera.getPos().z
+        this.pos.set(
+            translation.x + context.camera.position.x,
+            translation.y + context.camera.position.y,
+            translation.z + context.camera.position.z
         );
 
-        context.stack.push();
-        context.stack.loadIdentity();
-        // Reaplicar la rotación de vista para dibujar correctamente respecto a la cámara
-        context.stack.multiplyPositionMatrix(new Matrix4f(inverseViewRotation).invert());
+        positionMatrix.get3x3(this.rot);
 
-        this.pos.set(translation);
         this.vel.set(0F, 0F, 1F);
-        this.rot.set(worldMatrix).transform(this.vel);
-
-        context.stack.pop();
+        this.rot.transform(this.vel);
     }
 
     @Override

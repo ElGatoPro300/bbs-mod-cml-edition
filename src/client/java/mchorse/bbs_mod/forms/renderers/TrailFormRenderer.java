@@ -98,7 +98,8 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
         MatrixStack stack = context.stack;
-        Matrix4f camInverse = new Matrix4f().set(new Matrix3f(RenderSystem.getModelViewMatrix())).invert();
+        // Tomar solo la rotación de la vista y invertirla (API 1.21.1)
+        Matrix4f camInverse = new Matrix4f().set(new Matrix3f(context.camera.view)).invert();
 
         Camera camera = context.camera;
         double baseX = camera.position.x;
@@ -200,30 +201,30 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
                     float u1 = trail.tick / length;
                     float u2 = last.tick / length;
 
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
                     /* Other side */
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
                 }
                 else
                 {
                     float u1 = (current - trail.tick) / length;
                     float u2 = (current - last.tick) / length;
 
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
                     /* Other side */
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
                 }
             }
             else
