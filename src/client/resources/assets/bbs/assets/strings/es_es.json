@@ -27,6 +27,18 @@
     "bbs.config.appearance.ui_scale-comment": "Esta opción escala la apariencia de los elementos de la Interfaz de Usuario (UI) y la Información en Pantalla (HUD) según un factor determinado",
     "bbs.config.appearance.uniform_scale": "Escala uniforme",
     "bbs.config.appearance.uniform_scale-comment": "Esta opción fuerza un escalado uniforme para los campos de transformación cuando todas las coordenadas de escala son iguales",
+
+    "bbs.config.appearance.enabled": "Activado",
+    "bbs.config.appearance.enabled-comment": "Activa los gizmos 3D",
+    "bbs.config.appearance.dynamic": "Gizmo dinámico",
+    "bbs.config.appearance.dynamic-comment": "Escala automáticamente según la distancia de la cámara",
+    "bbs.config.appearance.scale": "Escala del gizmo",
+    "bbs.config.appearance.scale-comment": "Tamaño base cuando el modo dinámico está apagado",
+    "bbs.config.appearance.design": "Diseño de gizmo",
+    "bbs.config.appearance.design-comment": "Elige el aspecto del gizmo (Predeterminado, Clásico, Blockbench)",
+    "bbs.config.appearance.planes": "Planos",
+    "bbs.config.appearance.planes-comment": "Mostrar controladores de plano para mover/pivote",
+    
     "bbs.config.audio.tooltip": "Opciones para la función de sincronización de audio en el juego",
     "bbs.config.audio.waveform_density": "Densidad de la forma de onda",
     "bbs.config.audio.waveform_density-comment": "Cuántos píxeles de la forma de onda de audio deben mostrarse por segundo",
@@ -1136,6 +1148,7 @@
     "bbs.ui.gizmos.keys.free_rotate_xy": "Rotación libre XY",
     "bbs.ui.gizmos.keys.free_rotate_zy": "Rotación libre ZY",
     "bbs.gizmos.design.default": "Predeterminado",
+    "bbs.gizmos.design.cml": "CML",
     "bbs.gizmos.design.classic": "Clásico",
     "bbs.gizmos.design.blockbench": "Blockbench",
     "bbs.ui.texture.pick.bone.texture": "Elegir textura de hueso"

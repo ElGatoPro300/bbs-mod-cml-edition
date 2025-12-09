@@ -1018,7 +1018,7 @@ public class UIFilmController extends UIElement
         this.renderPickingPreview(context, area);
 
         /* Update and render gizmo overlay based on current bone selection */
-        if (!this.panel.isFlying() && BBSSettings.modelBlockGizmosEnabled.get())
+        if (!this.panel.isFlying() && BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
         {
             UIPropTransform activeTransform = null;
 
@@ -1159,7 +1159,7 @@ public class UIFilmController extends UIElement
 
         if (altPressed)
         {
-            int stencilIndex = this.stencil.getIndex() - 1;
+            int stencilIndex = this.stencil.getIndex() - 7;
 
             this.hoveredEntity = this.getEntities().get(stencilIndex);
 
@@ -1309,7 +1309,7 @@ public class UIFilmController extends UIElement
         /* Evitar el picking de huesos cuando el mouse está sobre un gizmo
          * en la vista de cámara de films. Esto prioriza la interacción del
          * gizmo sobre la selección por stencil. */
-        boolean blockPicking = BBSSettings.modelBlockGizmosEnabled.get() && BoneGizmoSystem.get().isHoveringHandle();
+        boolean blockPicking = BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 && BoneGizmoSystem.get().isHoveringHandle();
 
         if (!blockPicking)
         {

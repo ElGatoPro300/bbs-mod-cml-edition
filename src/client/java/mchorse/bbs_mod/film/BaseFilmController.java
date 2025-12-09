@@ -167,7 +167,7 @@ public abstract class BaseFilmController
             {
                 stack.push();
                 MatrixStackUtils.multiply(stack, matrix);
-                if (BBSSettings.modelBlockGizmosEnabled.get())
+                if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
                 {
                     BoneGizmoSystem.get().render3D(stack);
                 }

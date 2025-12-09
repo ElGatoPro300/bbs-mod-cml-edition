@@ -144,7 +144,7 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
     {
         super.renderGrid(context);
 
-        if (UIBaseMenu.renderAxes)
+        if (UIBaseMenu.renderAxes && (!BBSSettings.gizmos.get() || BBSSettings.gizmoDesign.get() == 0))
         {
             Draw.coolerAxes(context.batcher.getContext().getMatrices(), 1F, 0.01F, 1.01F, 0.02F);
         }

@@ -183,6 +183,11 @@ public class BBSSettings
         uniformScale = builder.getBoolean("uniform_scale", false);
         clickSound = builder.getBoolean("click_sound", false);
         gizmos = builder.getBoolean("gizmos", true);
+        
+        // gizmoDynamic = builder.getBoolean("dynamic", false);
+        gizmoDesign = builder.getInt("design", 0);
+        gizmoPlanes = builder.getBoolean("planes", false);
+
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
         disabledSheets.set(defaultFilters);
@@ -255,20 +260,6 @@ public class BBSSettings
         clickModelBlocks = builder.getBoolean("click", true);
         /* Panel de categorías en editores de pose (afecta editor y timeline) */
         modelBlockCategoriesPanelEnabled = builder.getBoolean("categories_panel_enabled", false);
-
-        /* Nueva categoría: Gizmos */
-        builder.category("gizmos");
-        /* Activado: visibilidad/uso de gizmos 3D */
-        modelBlockGizmosEnabled = builder.getBoolean("enabled", false);
-        /* Gizmo dinámico: escala según distancia */
-        gizmoDynamic = builder.getBoolean("dynamic", false);
-        /* Escala de gizmo: usado cuando dinámico está apagado */
-        gizmoScale = builder.getFloat("scale", 1F, 0.1F, 4F);
-        /* Diseño del gizmo (int con modos) */
-        gizmoDesign = builder.getInt("design", 0);
-        /* Planos de desplazamiento visibles */
-        gizmoPlanes = builder.getBoolean("planes", false);
-
 
         /* Estructuras: modo de renderizado */
         builder.category("structures");

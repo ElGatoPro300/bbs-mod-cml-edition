@@ -7,6 +7,7 @@ import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.UIRenderingContext;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 import mchorse.bbs_mod.ui.utils.Area;
@@ -146,8 +147,36 @@ public class BoneGizmoSystem
         /* Detectar eje hovered (y submodo/planos si corresponde) */
         this.hoveredAxis = detectHoveredAxis(input.mouseX, input.mouseY);
 
-        /* Inicio de arrastre (edge detection del botón derecho) */
-        boolean mouseDown = Window.isMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+        /* Delegar al gizmo clásico SOLO cuando el diseño seleccionado es el clásico (0) */
+        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() == 0)
+        {
+            // Mantener sincronizado el modo del gizmo clásico
+            Gizmo.Mode classicMode = switch (this.mode)
+            {
+                case TRANSLATE -> Gizmo.Mode.TRANSLATE;
+                case SCALE -> Gizmo.Mode.SCALE;
+                case ROTATE, UNIVERSAL, PIVOT -> Gizmo.Mode.ROTATE;
+            };
+            Gizmo.INSTANCE.setMode(classicMode);
+
+            // Intentar consumir el click iniciando Gizmo.start cuando hay un handle hovered
+            boolean mouseDown = Window.isMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+            if (!this.lastMouseDown && mouseDown)
+            {
+                int index = this.mapHoveredToStencilIndex();
+                if (index != -1 && Gizmo.INSTANCE.start(index, input.mouseX, input.mouseY, this.target))
+                {
+                    this.lastMouseDown = mouseDown;
+                    return; // Consumimos el click y no iniciamos lógica de arrastre propia
+                }
+            }
+
+            this.lastMouseDown = mouseDown;
+            return; // No operar arrastre interno bajo flujo clásico
+        }
+
+        /* Inicio de arrastre (usar botón izquierdo como en gizmos de mchorse) */
+        boolean mouseDown = Window.isMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
         if (!this.dragging && mouseDown && !this.lastMouseDown && this.hoveredAxis != null)
         {
             this.dragging = true;
@@ -175,27 +204,28 @@ public class BoneGizmoSystem
         {
             this.dragging = false;
             this.activeAxis = null;
+            if (this.target != null)
+            {
+                this.target.acceptChanges();
+            }
 
             /* Fin de arrastre: sin cambios en el modo de cursor */
         }
 
-        /* Durante arrastre: aplicar delta con bucle (mismo patrón que UIPropTransform) */
+        /* Durante arrastre: aplicar delta con bucle horizontal (igual que UIPropTransform/Gizmo clásico) */
         if (this.dragging && this.target != null && this.target.getTransform() != null)
         {
             boolean warped = false;
 
             if (this.wrapChecker.isTime())
             {
-                /* Implementar bucle horizontal y vertical del cursor */
+                /* Implementar bucle horizontal del cursor (no vertical) */
                 GLFW.glfwGetCursorPos(Window.getWindow(), CURSOR_X, CURSOR_Y);
                 MinecraftClient mc = MinecraftClient.getInstance();
                 int w = mc.getWindow().getWidth();
-                int h = mc.getWindow().getHeight();
 
                 double rawX = CURSOR_X[0];
-                double rawY = CURSOR_Y[0];
                 double fx = Math.ceil(w / (double) input.menu.width);
-                double fy = Math.ceil(h / (double) input.menu.height);
                 int border = 5;
                 int borderPadding = border + 1;
 
@@ -210,21 +240,6 @@ public class BoneGizmoSystem
                 {
                     Window.moveCursor(borderPadding, (int) mc.mouse.getY());
                     this.lastX = (int) (borderPadding / fx);
-                    this.wrapChecker.mark();
-                    warped = true;
-                }
-
-                if (rawY <= border)
-                {
-                    Window.moveCursor((int) mc.mouse.getX(), h - borderPadding);
-                    this.lastY = input.menu.height - (int) (borderPadding / fy);
-                    this.wrapChecker.mark();
-                    warped = true;
-                }
-                else if (rawY >= h - border)
-                {
-                    Window.moveCursor((int) mc.mouse.getX(), borderPadding);
-                    this.lastY = (int) (borderPadding / fy);
                     this.wrapChecker.mark();
                     warped = true;
                 }
@@ -298,7 +313,8 @@ public class BoneGizmoSystem
                 if (this.activePlane == null)
                 {
                     if (this.activeAxis == Axis.X) x = this.dragStart.translate.x + delta;
-                    if (this.activeAxis == Axis.Y) y = this.dragStart.translate.y - this.accumDy * factor; /* Y hacia arriba */
+                    /* Alinear con Gizmo de mchorse: usar movimiento horizontal también para Y */
+                    if (this.activeAxis == Axis.Y) y = this.dragStart.translate.y + delta;
                     if (this.activeAxis == Axis.Z) z = this.dragStart.translate.z + delta;
                 }
                 else
@@ -413,8 +429,40 @@ public class BoneGizmoSystem
 
         if (origin != null && projection != null && view != null)
         {
+            /* Cuando el diseño clásico (0) está activo y los gizmos están habilitados,
+             * delegamos la interacción al gizmo clásico de mchorse y evitamos
+             * el arrastre interno del sistema. Para otros diseños (CML/Clásico delgado/Blockbench),
+             * usamos la lógica propia de BoneGizmoSystem. */
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() == 0)
+            {
+                // Calcular hovered axis mediante nuestro método 3D (para fines de UI) y sincronizar modo
+                this.hoveredAxis = detectHoveredAxis3D(input, viewport, origin, projection, view);
+
+                Gizmo.Mode classicMode = switch (this.mode)
+                {
+                    case TRANSLATE -> Gizmo.Mode.TRANSLATE;
+                    case SCALE -> Gizmo.Mode.SCALE;
+                    case ROTATE, UNIVERSAL, PIVOT -> Gizmo.Mode.ROTATE;
+                };
+                Gizmo.INSTANCE.setMode(classicMode);
+
+                boolean mouseDown = Window.isMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+                if (!this.lastMouseDown && mouseDown)
+                {
+                    int index = this.mapHoveredToStencilIndex();
+                    if (index != -1 && Gizmo.INSTANCE.start(index, input.mouseX, input.mouseY, this.target))
+                    {
+                        this.lastMouseDown = mouseDown;
+                        return; // Consumimos el click y salimos
+                    }
+                }
+
+                this.lastMouseDown = mouseDown;
+                return; // No seguir con arrastre interno
+            }
+
             // Cuando el gizmo 3D está activo, usar picking 3D por rayos
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get())
             {
                 this.hoveredAxis = detectHoveredAxis3D(input, viewport, origin, projection, view);
 
@@ -430,37 +478,47 @@ public class BoneGizmoSystem
                     this.centerY = viewport.y + (int) (((-ndcYc + 1F) * 0.5F) * viewport.h);
                 }
 
-                /* Escala del gizmo: dinámica (según distancia) o estática desde ajustes */
-                if (BBSSettings.gizmoDynamic.get())
+                /* Escala del gizmo
+                 * - Diseño 0 (clásico): respeta dinámica/estática originales
+                 * - Diseños ≠0 (CML/Clásico delgado/Blockbench): usar sólo axesScale, neutralizando gizmoScale */
+                if (BBSSettings.gizmoDesign.get() == 0)
                 {
-                    try
+                    if (BBSSettings.gizmoDynamic.get())
                     {
-                        org.joml.Vector4f camW4 = new org.joml.Vector4f(0, 0, 0, 1);
-                        org.joml.Vector4f camWorld = new Matrix4f(view).invert(new Matrix4f()).transform(camW4);
-                        camWorld.div(camWorld.w);
+                        try
+                        {
+                            org.joml.Vector4f camW4 = new org.joml.Vector4f(0, 0, 0, 1);
+                            org.joml.Vector4f camWorld = new Matrix4f(view).invert(new Matrix4f()).transform(camW4);
+                            camWorld.div(camWorld.w);
 
-                        org.joml.Vector4f pivotW4 = new org.joml.Vector4f(0, 0, 0, 1);
-                        org.joml.Vector4f pivotWorld = new Matrix4f(origin).transform(pivotW4);
-                        pivotWorld.div(pivotWorld.w);
+                            org.joml.Vector4f pivotW4 = new org.joml.Vector4f(0, 0, 0, 1);
+                            org.joml.Vector4f pivotWorld = new Matrix4f(origin).transform(pivotW4);
+                            pivotWorld.div(pivotWorld.w);
 
-                        float dx = camWorld.x - pivotWorld.x;
-                        float dy = camWorld.y - pivotWorld.y;
-                        float dz = camWorld.z - pivotWorld.z;
-                        float dist = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
+                            float dx = camWorld.x - pivotWorld.x;
+                            float dy = camWorld.y - pivotWorld.y;
+                            float dz = camWorld.z - pivotWorld.z;
+                            float dist = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-                        float s = dist * scaleSlope;
-                        if (s < minGizmoScale) s = minGizmoScale;
-                        if (s > maxGizmoScale) s = maxGizmoScale;
-                        this.gizmoScale = s;
+                            float s = dist * scaleSlope;
+                            if (s < minGizmoScale) s = minGizmoScale;
+                            if (s > maxGizmoScale) s = maxGizmoScale;
+                            this.gizmoScale = s;
+                        }
+                        catch (Throwable t)
+                        {
+                            this.gizmoScale = 1F;
+                        }
                     }
-                    catch (Throwable t)
+                    else
                     {
-                        this.gizmoScale = 1F;
+                        this.gizmoScale = clampScale(BBSSettings.gizmoScale.get());
                     }
                 }
                 else
                 {
-                    this.gizmoScale = clampScale(BBSSettings.gizmoScale.get());
+                    // Neutralizar gizmoScale para nuestros diseños: sólo axesScale debe influir
+                    this.gizmoScale = 1F;
                 }
 
                 // Iniciar/terminar arrastre basado en 3D hover
@@ -527,6 +585,10 @@ public class BoneGizmoSystem
                     /* Finalizar arrastre y fijar el estado actual como base */
                     this.dragging = false;
                     this.activeAxis = null;
+                    if (this.target != null)
+                    {
+                        this.target.acceptChanges();
+                    }
                     if (this.target != null && this.target.getTransform() != null)
                     {
                         this.dragStart.copy(this.target.getTransform());
@@ -598,7 +660,8 @@ public class BoneGizmoSystem
                         if (this.activePlane == null)
                         {
                             if (this.activeAxis == Axis.X) x = this.dragStart.translate.x + delta;
-                            if (this.activeAxis == Axis.Y) y = this.dragStart.translate.y - this.accumDy * factor;
+                            /* Consistencia con Gizmo: Y también usa delta horizontal */
+                            if (this.activeAxis == Axis.Y) y = this.dragStart.translate.y + delta;
                             if (this.activeAxis == Axis.Z) z = this.dragStart.translate.z + delta;
                         }
                         else
@@ -744,7 +807,7 @@ public class BoneGizmoSystem
                 this.centerY = py;
 
                 /* Calcular endpoints de ejes (locales o globales) */
-                float axisLen = 0.6F; // longitud más corta para que los handles queden cerca del pivote
+                float axisLen = 0.6F * BBSSettings.axesScale.get(); // escala basada en configuración
                 // Posición mundial del origen
                 org.joml.Vector4f p0World = new org.joml.Vector4f(0, 0, 0, 1);
                 origin.transform(p0World);
@@ -754,7 +817,7 @@ public class BoneGizmoSystem
 
                 org.joml.Vector4f dx = new org.joml.Vector4f(axisLen, 0, 0, useLocal ? 0 : 0);
                 org.joml.Vector4f dy = new org.joml.Vector4f(0, axisLen, 0, useLocal ? 0 : 0);
-        org.joml.Vector4f dz = new org.joml.Vector4f(0, 0, axisLen, useLocal ? 0 : 0);
+                org.joml.Vector4f dz = new org.joml.Vector4f(0, 0, axisLen, useLocal ? 0 : 0);
 
                 if (useLocal)
                 {
@@ -815,12 +878,13 @@ public class BoneGizmoSystem
                 this.centerX = viewport.mx();
                 this.centerY = viewport.my();
                 // Fallback: handles alrededor del centro
-                this.endXx = this.centerX + handleLen;
+                int hl = Math.round(handleLen * BBSSettings.axesScale.get());
+                this.endXx = this.centerX + hl;
                 this.endXy = this.centerY;
                 this.endYx = this.centerX;
-                this.endYy = this.centerY - handleLen;
+                this.endYy = this.centerY - hl;
                 this.endZx = this.centerX;
-                this.endZy = this.centerY + handleLen;
+                this.endZy = this.centerY + hl;
             }
         }
         else
@@ -828,12 +892,13 @@ public class BoneGizmoSystem
             this.centerX = viewport.mx();
             this.centerY = viewport.my();
             // Fallback: handles alrededor del centro
-            this.endXx = this.centerX + handleLen;
+            int hl = Math.round(handleLen * BBSSettings.axesScale.get());
+            this.endXx = this.centerX + hl;
             this.endXy = this.centerY;
             this.endYx = this.centerX;
-            this.endYy = this.centerY - handleLen;
+            this.endYy = this.centerY - hl;
             this.endZx = this.centerX;
-            this.endZy = this.centerY + handleLen;
+            this.endZy = this.centerY + hl;
         }
 
         /* Detectar eje hovered (y submodo/planos si corresponde) */
@@ -864,11 +929,15 @@ public class BoneGizmoSystem
         {
             this.dragging = false;
             this.activeAxis = null;
+            if (this.target != null)
+            {
+                this.target.acceptChanges();
+            }
 
             /* Fin de arrastre: sin cambios en el modo de cursor */
         }
 
-        /* Durante arrastre: aplicar delta con bucle de mouse como en UIPropTransform */
+        /* Durante arrastre: aplicar delta con bucle horizontal como en UIPropTransform */
         if (this.dragging && this.target != null && this.target.getTransform() != null)
         {
             boolean warped = false;
@@ -878,12 +947,9 @@ public class BoneGizmoSystem
                 GLFW.glfwGetCursorPos(Window.getWindow(), CURSOR_X, CURSOR_Y);
                 MinecraftClient mc = MinecraftClient.getInstance();
                 int w = mc.getWindow().getWidth();
-                int h = mc.getWindow().getHeight();
 
                 double rawX = CURSOR_X[0];
-                double rawY = CURSOR_Y[0];
                 double fx = Math.ceil(w / (double) input.menu.width);
-                double fy = Math.ceil(h / (double) input.menu.height);
                 int border = 5;
                 int borderPadding = border + 1;
 
@@ -900,23 +966,6 @@ public class BoneGizmoSystem
                     Window.moveCursor(borderPadding, (int) mc.mouse.getY());
 
                     this.lastX = (int) (borderPadding / fx);
-                    this.wrapChecker.mark();
-                    warped = true;
-                }
-
-                if (rawY <= border)
-                {
-                    Window.moveCursor((int) mc.mouse.getX(), h - borderPadding);
-
-                    this.lastY = input.menu.height - (int) (borderPadding / fy);
-                    this.wrapChecker.mark();
-                    warped = true;
-                }
-                else if (rawY >= h - border)
-                {
-                    Window.moveCursor((int) mc.mouse.getX(), borderPadding);
-
-                    this.lastY = (int) (borderPadding / fy);
                     this.wrapChecker.mark();
                     warped = true;
                 }
@@ -959,7 +1008,8 @@ public class BoneGizmoSystem
                 if (this.activePlane == null)
                 {
                     if (this.activeAxis == Axis.X) x = this.dragStart.translate.x + delta;
-                    if (this.activeAxis == Axis.Y) y = this.dragStart.translate.y - this.accumDy * factor; /* Y hacia arriba */
+                    /* Consistencia con Gizmo: Y también usa delta horizontal */
+                    if (this.activeAxis == Axis.Y) y = this.dragStart.translate.y + delta;
                     if (this.activeAxis == Axis.Z) z = this.dragStart.translate.z + delta;
                 }
                 else
@@ -1053,6 +1103,32 @@ public class BoneGizmoSystem
         this.lastMouseDown = mouseDown;
     }
 
+    /** Mapea el hovered actual (eje o plano) a un índice de stencil del gizmo clásico. */
+    private int mapHoveredToStencilIndex()
+    {
+        if (this.hoveredAxis == null && this.hoveredPlane == null)
+        {
+            return -1;
+        }
+
+        if (this.hoveredPlane != null)
+        {
+            return switch (this.hoveredPlane)
+            {
+                case XY -> Gizmo.STENCIL_XY;
+                case YZ -> Gizmo.STENCIL_ZY;
+                case ZX -> Gizmo.STENCIL_XZ;
+            };
+        }
+
+        return switch (this.hoveredAxis)
+        {
+            case X -> Gizmo.STENCIL_X;
+            case Y -> Gizmo.STENCIL_Y;
+            case Z -> Gizmo.STENCIL_Z;
+        };
+    }
+
     /** Returns true when all keys in the combo are currently held down. */
     private boolean isComboHeld(KeyCombo combo)
     {
@@ -1102,16 +1178,17 @@ public class BoneGizmoSystem
         boolean blockbench = (design == 2);
         boolean thinDesign = (design == 1) || blockbench;
         float baseLength = blockbench ? 0.35F : 0.25F;
-        float length = baseLength * this.gizmoScale;     // longitud de cada eje
-        float thickness = (blockbench ? 0.010F : (thinDesign ? 0.012F : 0.02F)) * this.gizmoScale;   // barras más delgadas en Blockbench
-        float outlinePad = (thinDesign ? 0F : 0.01F) * this.gizmoScale;          // contorno negro opcional (no en Classic/Blockbench)
-        float slabThick = (blockbench ? 0.010F : (thinDesign ? 0.012F : 0.018F)) * this.gizmoScale;  // losas más delgadas en Blockbench
+        float axesScale = BBSSettings.axesScale.get();
+        float length = baseLength * this.gizmoScale * axesScale;     // longitud de cada eje
+        float thickness = (blockbench ? 0.010F : (thinDesign ? 0.012F : 0.02F)) * this.gizmoScale * axesScale;   // barras más delgadas en Blockbench
+        float outlinePad = (thinDesign ? 0F : 0.01F) * this.gizmoScale * axesScale;          // contorno negro opcional (no en Classic/Blockbench)
+        float slabThick = (blockbench ? 0.010F : (thinDesign ? 0.012F : 0.018F)) * this.gizmoScale * axesScale;  // losas más delgadas en Blockbench
 
         // Ajuste dinámico para asegurar que la barra toque el cubo en el extremo.
         // Usamos el tamaño del cubo del extremo + el grosor de la barra para
         // evitar gaps en perspectiva o por redondeos.
-        float cubeSmall = 0.022F * this.gizmoScale;
-        float cubeBig = 0.045F * this.gizmoScale;
+        float cubeSmall = 0.022F * this.gizmoScale * axesScale;
+        float cubeBig = 0.045F * this.gizmoScale * axesScale;
         // Ajuste por modo: en TRANSLATE conectamos a la base de la flecha;
         // en SCALE nos internamos en el cubo para evitar gaps visuales.
         float connectFudge = (this.mode == Mode.TRANSLATE)
@@ -1264,9 +1341,9 @@ public class BoneGizmoSystem
             // Controladores de plano como losas planas separadas del pivote y de las barras
             if (BBSSettings.gizmoPlanes.get())
             {
-            float offset = 0.08F * this.gizmoScale;    // mitad de la distancia previa
-            float planeHalf = 0.020F * this.gizmoScale; // semitamaño del cuadrado
-            float planeThick = 0.004F * this.gizmoScale; // grosor perpendicular
+            float offset = 0.08F * this.gizmoScale * axesScale;    // mitad de la distancia previa
+            float planeHalf = 0.020F * this.gizmoScale * axesScale; // semitamaño del cuadrado
+            float planeThick = 0.004F * this.gizmoScale * axesScale; // grosor perpendicular
             boolean hXY = (this.hoveredPlane == Plane.XY) || (this.activePlane == Plane.XY);
             boolean hZX = (this.hoveredPlane == Plane.ZX) || (this.activePlane == Plane.ZX);
             boolean hYZ = (this.hoveredPlane == Plane.YZ) || (this.activePlane == Plane.YZ);
@@ -1456,7 +1533,7 @@ public class BoneGizmoSystem
             // Anillos de rotación — iguales al gizmo de ROTATE
             if (usingSub == null || usingSub == Mode.ROTATE)
             {
-                float radius = 0.22F; float thicknessRing = ((BBSSettings.gizmoDesign.get() == 1) ? 0.006F : 0.01F); float sweep = 360F;
+                float radius = 0.22F * axesScale; float thicknessRing = (((BBSSettings.gizmoDesign.get() == 1) ? 0.006F : 0.01F) * axesScale); float sweep = 360F;
                 RenderSystem.disableCull();
                 drawEndCube(builder, stack, 0, 0, 0, 0.022F + outlinePad, 0F, 0F, 0F);
                 drawEndCube(builder, stack, 0, 0, 0, 0.022F, 1F, 1F, 1F);
@@ -1467,7 +1544,7 @@ public class BoneGizmoSystem
             }
 
             // Losas planas (UNIVERSAL): mismos offsets que TRANSLATE
-            float offset = 0.08F; float planeHalf = 0.020F; float planeThick = 0.004F;
+            float offset = 0.08F * axesScale; float planeHalf = 0.020F * axesScale; float planeThick = 0.004F * axesScale;
             boolean hXY = (this.hoveredPlane == Plane.XY) || (this.activePlane == Plane.XY);
             boolean hZX = (this.hoveredPlane == Plane.ZX) || (this.activePlane == Plane.ZX);
             boolean hYZ = (this.hoveredPlane == Plane.YZ) || (this.activePlane == Plane.YZ);
@@ -1489,7 +1566,7 @@ public class BoneGizmoSystem
         }
         else if (this.mode == Mode.ROTATE)
         {
-            float radius = 0.22F * this.gizmoScale;
+            float radius = 0.22F * this.gizmoScale * BBSSettings.axesScale.get();
             float sweep = 360F;
             float offZ = 0F;
             float offX = 0F;
@@ -1928,15 +2005,16 @@ public class BoneGizmoSystem
 
         if (this.mode == Mode.UNIVERSAL)
         {
+            float axesScale = BBSSettings.axesScale.get();
             // Priorizar anillos de rotación
             Axis rot = detectHoveredAxis3DRotate(rayO, rayD);
             if (rot != null) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return rot; }
 
             // Solo los cubos de escala al final de cada eje
-            float len = 0.25F * this.gizmoScale;
-            float[] txS = rayBoxIntersect(rayO, rayD, new Vector3f(len - (0.02F * this.gizmoScale), -(0.045F * this.gizmoScale), -(0.045F * this.gizmoScale)), new Vector3f(len + (0.02F * this.gizmoScale), (0.045F * this.gizmoScale), (0.045F * this.gizmoScale)));
-            float[] tyS = rayBoxIntersect(rayO, rayD, new Vector3f(-(0.045F * this.gizmoScale), len - (0.02F * this.gizmoScale), -(0.045F * this.gizmoScale)), new Vector3f((0.045F * this.gizmoScale), len + (0.02F * this.gizmoScale), (0.045F * this.gizmoScale)));
-            float[] tzS = rayBoxIntersect(rayO, rayD, new Vector3f(-(0.045F * this.gizmoScale), -(0.045F * this.gizmoScale), len - (0.02F * this.gizmoScale)), new Vector3f((0.045F * this.gizmoScale), (0.045F * this.gizmoScale), len + (0.02F * this.gizmoScale)));
+            float len = 0.25F * this.gizmoScale * axesScale;
+            float[] txS = rayBoxIntersect(rayO, rayD, new Vector3f(len - (0.02F * this.gizmoScale * axesScale), -(0.045F * this.gizmoScale * axesScale), -(0.045F * this.gizmoScale * axesScale)), new Vector3f(len + (0.02F * this.gizmoScale * axesScale), (0.045F * this.gizmoScale * axesScale), (0.045F * this.gizmoScale * axesScale)));
+            float[] tyS = rayBoxIntersect(rayO, rayD, new Vector3f(-(0.045F * this.gizmoScale * axesScale), len - (0.02F * this.gizmoScale * axesScale), -(0.045F * this.gizmoScale * axesScale)), new Vector3f((0.045F * this.gizmoScale * axesScale), len + (0.02F * this.gizmoScale * axesScale), (0.045F * this.gizmoScale * axesScale)));
+            float[] tzS = rayBoxIntersect(rayO, rayD, new Vector3f(-(0.045F * this.gizmoScale * axesScale), -(0.045F * this.gizmoScale * axesScale), len - (0.02F * this.gizmoScale * axesScale)), new Vector3f((0.045F * this.gizmoScale * axesScale), (0.045F * this.gizmoScale * axesScale), len + (0.02F * this.gizmoScale * axesScale)));
 
             float bt = Float.POSITIVE_INFINITY; Axis ba = null;
             if (txS != null && txS[0] >= 0 && txS[0] < bt) { bt = txS[0]; ba = Axis.X; }
@@ -1950,10 +2028,11 @@ public class BoneGizmoSystem
         // Definir AABB por eje (mover/escalar)
         int design = BBSSettings.gizmoDesign.get();
         boolean blockbenchDesign = (design == 2);
-        float length = (blockbenchDesign ? 0.35F : 0.25F) * this.gizmoScale; // igual al render
+        float axesScale = BBSSettings.axesScale.get();
+        float length = (blockbenchDesign ? 0.35F : 0.25F) * this.gizmoScale * axesScale; // igual al render
         // Grosor de picking más generoso en Blockbench para facilitar clics
-        float thickness = ((this.mode == Mode.SCALE) ? 0.045F : ((blockbenchDesign && (this.mode == Mode.TRANSLATE || this.mode == Mode.PIVOT)) ? 0.025F : 0.015F)) * this.gizmoScale;
-        float fudge = (((this.mode == Mode.TRANSLATE) || (this.mode == Mode.PIVOT)) ? 0.06F : ((this.mode == Mode.SCALE) ? 0.045F : 0.02F)) * this.gizmoScale;
+        float thickness = ((this.mode == Mode.SCALE) ? 0.045F : ((blockbenchDesign && (this.mode == Mode.TRANSLATE || this.mode == Mode.PIVOT)) ? 0.025F : 0.015F)) * this.gizmoScale * axesScale;
+        float fudge = (((this.mode == Mode.TRANSLATE) || (this.mode == Mode.PIVOT)) ? 0.06F : ((this.mode == Mode.SCALE) ? 0.045F : 0.02F)) * this.gizmoScale * axesScale;
 
         float[] tx = rayBoxIntersect(rayO, rayD, new Vector3f(0F, -thickness/2F, -thickness/2F), new Vector3f(length + fudge, thickness/2F, thickness/2F));
         float[] ty = rayBoxIntersect(rayO, rayD, new Vector3f(-thickness/2F, 0F, -thickness/2F), new Vector3f(thickness/2F, length + fudge, thickness/2F));
@@ -1969,7 +2048,7 @@ public class BoneGizmoSystem
         // En modo TRANSLATE, también permitir picking de los planos cercanos al origen
         if (this.mode == Mode.TRANSLATE || this.mode == Mode.PIVOT)
         {
-            float po = 0.08F * this.gizmoScale; float ps = 0.020F * this.gizmoScale; float pt = 0.004F * this.gizmoScale;
+            float po = 0.08F * this.gizmoScale * axesScale; float ps = 0.020F * this.gizmoScale * axesScale; float pt = 0.004F * this.gizmoScale * axesScale;
             float[] pXY = rayBoxIntersect(rayO, rayD,
                     new Vector3f(po - ps, po - ps, -pt), new Vector3f(po + ps, po + ps, pt));
             float[] pZX = rayBoxIntersect(rayO, rayD,
@@ -1990,12 +2069,13 @@ public class BoneGizmoSystem
     /** Picking 3D para el gizmo de rotación: intersección rayo-plano y banda alrededor del radio. */
     private Axis detectHoveredAxis3DRotate(Vector3f rayO, Vector3f rayD)
     {
-        float radius = 0.22F * this.gizmoScale;
+        float axesScale = BBSSettings.axesScale.get();
+        float radius = 0.22F * this.gizmoScale * axesScale;
         // Grosor coherente con el render
         boolean thinDesign = (BBSSettings.gizmoDesign.get() == 1);
-        float baseThickness = ((this.mode == Mode.ROTATE) ? (thinDesign ? 0.008F : 0.015F) : (thinDesign ? 0.007F : 0.01F)) * this.gizmoScale;
+        float baseThickness = ((this.mode == Mode.ROTATE) ? (thinDesign ? 0.008F : 0.015F) : (thinDesign ? 0.007F : 0.01F)) * this.gizmoScale * axesScale;
         float thickness = baseThickness;        // ancho visual del anillo
-        float band = thickness * 0.5F + (0.002F * this.gizmoScale); // cubrir todo el color del anillo
+        float band = thickness * 0.5F + (0.002F * this.gizmoScale * axesScale); // cubrir todo el color del anillo
 
         class Hit { Axis a; float t; }
         Hit hitBest = null;
@@ -2138,7 +2218,7 @@ public class BoneGizmoSystem
         /* Si el gizmo 3D está habilitado, evitamos dibujar los manejadores 2D
          * para no crear inconsistencias visuales (las barras/cubos 3D son la
          * referencia principal). Mantengo etiqueta y borde de depuración. */
-        if (BBSSettings.modelBlockGizmosEnabled.get())
+        if (BBSSettings.gizmos.get())
         {
             // Con gizmo 3D activo, no dibujamos el pixel/box de pivote 2D.
             RenderSystem.enableDepthTest();
@@ -2149,7 +2229,8 @@ public class BoneGizmoSystem
         /* Render dependiendo del modo activo (modo 2D clásico) */
         int cx = this.centerX;
         int cy = this.centerY;
-        float thickness = this.handleThickness;
+        float axesScale = BBSSettings.axesScale.get();
+        float thickness = this.handleThickness * axesScale;
 
         if (this.mode == Mode.TRANSLATE || this.mode == Mode.PIVOT)
         {
@@ -2297,9 +2378,12 @@ public class BoneGizmoSystem
             int xColor = (Colors.A100 | Colors.RED);
             int yColor = (Colors.A100 | Colors.GREEN);
             int zColor = (Colors.A100 | Colors.BLUE);
-            if (showX) drawRing(context, cx, cy, this.ringRX, thickness, xColor);
-            if (showY) drawRing(context, cx, cy, this.ringRY, thickness, yColor);
-            if (showZ) drawRing(context, cx, cy, this.ringRZ, thickness, zColor);
+            int rX = Math.round(this.ringRX * axesScale);
+            int rY = Math.round(this.ringRY * axesScale);
+            int rZ = Math.round(this.ringRZ * axesScale);
+            if (showX) drawRing(context, cx, cy, rX, thickness, xColor);
+            if (showY) drawRing(context, cx, cy, rY, thickness, yColor);
+            if (showZ) drawRing(context, cx, cy, rZ, thickness, zColor);
         }
         else if (this.mode == Mode.UNIVERSAL)
         {
@@ -2340,9 +2424,12 @@ public class BoneGizmoSystem
                 int xRing = (Colors.A100 | Colors.RED);
                 int yRing = (Colors.A100 | Colors.GREEN);
                 int zRing = (Colors.A100 | Colors.BLUE);
-                if (showX) drawRing(context, cx, cy, this.ringRX, thickness, xRing);
-                if (showY) drawRing(context, cx, cy, this.ringRY, thickness, yRing);
-                if (showZ) drawRing(context, cx, cy, this.ringRZ, thickness, zRing);
+                int rX = Math.round(this.ringRX * axesScale);
+                int rY = Math.round(this.ringRY * axesScale);
+                int rZ = Math.round(this.ringRZ * axesScale);
+                if (showX) drawRing(context, cx, cy, rX, thickness, xRing);
+                if (showY) drawRing(context, cx, cy, rY, thickness, yRing);
+                if (showZ) drawRing(context, cx, cy, rZ, thickness, zRing);
             }
 
             // Sin controladores de plano en modo UNIVERSAL
@@ -2375,6 +2462,9 @@ public class BoneGizmoSystem
 
     private Axis detectHoveredAxis(int mx, int my)
     {
+        // Escala de ejes desde la configuración (usada para radios y tolerancias)
+        float axesScale = BBSSettings.axesScale.get();
+
         if (this.mode == Mode.ROTATE)
         {
             /* Picking por distancia al anillo (radio +/- tolerancia) */
@@ -2383,26 +2473,32 @@ public class BoneGizmoSystem
             double dx = mx - cx;
             double dy = my - cy;
             double d = Math.sqrt(dx * dx + dy * dy);
-            int tol = Math.max(6, this.handleThickness * 2);
+            int tol = Math.max(6, (int)(this.handleThickness * axesScale) * 2);
 
-            if (Math.abs(d - this.ringRX) <= tol) return Axis.X;
-            if (Math.abs(d - this.ringRY) <= tol) return Axis.Y;
-            if (Math.abs(d - this.ringRZ) <= tol) return Axis.Z;
+            int rX = Math.round(this.ringRX * axesScale);
+            int rY = Math.round(this.ringRY * axesScale);
+            int rZ = Math.round(this.ringRZ * axesScale);
+            if (Math.abs(d - rX) <= tol) return Axis.X;
+            if (Math.abs(d - rY) <= tol) return Axis.Y;
+            if (Math.abs(d - rZ) <= tol) return Axis.Z;
             return null;
         }
 
         /* Mover/Escalar/Universal: picking por proximidad a líneas, endpoints y anillos */
         int cx = this.centerX;
         int cy = this.centerY;
-        int tol = Math.max(6, this.handleThickness + 4);
+        int tol = Math.max(6, (int)(this.handleThickness * axesScale) + 4);
         if (this.mode == Mode.UNIVERSAL)
         {
             // Solo rotación y escala en modo universal
             double dx = mx - cx; double dy = my - cy; double d = Math.sqrt(dx * dx + dy * dy);
-            int tolRing = Math.max(6, this.handleThickness * 2);
-            if (Math.abs(d - this.ringRX) <= tolRing) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return Axis.X; }
-            if (Math.abs(d - this.ringRY) <= tolRing) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return Axis.Y; }
-            if (Math.abs(d - this.ringRZ) <= tolRing) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return Axis.Z; }
+            int tolRing = Math.max(6, (int)(this.handleThickness * axesScale) * 2);
+            int rX = Math.round(this.ringRX * axesScale);
+            int rY = Math.round(this.ringRY * axesScale);
+            int rZ = Math.round(this.ringRZ * axesScale);
+            if (Math.abs(d - rX) <= tolRing) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return Axis.X; }
+            if (Math.abs(d - rY) <= tolRing) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return Axis.Y; }
+            if (Math.abs(d - rZ) <= tolRing) { this.hoveredSubMode = Mode.ROTATE; this.hoveredPlane = null; return Axis.Z; }
 
             // Endpoints: cubos -> SCALE
             if (isNear(mx, my, endXx, endXy, hitRadius)) { this.hoveredSubMode = Mode.SCALE; this.hoveredPlane = null; return Axis.X; }
@@ -2419,16 +2515,17 @@ public class BoneGizmoSystem
             int[] cXY = planeCenterScreen(Plane.XY);
             int[] cZX = planeCenterScreen(Plane.ZX);
             int[] cYZ = planeCenterScreen(Plane.YZ);
-            int pr = hitRadius;
+            int pr = Math.max(6, Math.round(this.hitRadius * axesScale));
             if (isNear(mx, my, cXY[0], cXY[1], pr)) { this.hoveredPlane = Plane.XY; this.hoveredSubMode = Mode.TRANSLATE; return Axis.X; }
             if (isNear(mx, my, cZX[0], cZX[1], pr)) { this.hoveredPlane = Plane.ZX; this.hoveredSubMode = Mode.TRANSLATE; return Axis.Z; }
             if (isNear(mx, my, cYZ[0], cYZ[1], pr)) { this.hoveredPlane = Plane.YZ; this.hoveredSubMode = Mode.TRANSLATE; return Axis.Y; }
             this.hoveredPlane = null;
         }
 
-        if (isNearLine(mx, my, cx, cy, endXx, endXy, tol) || isNear(mx, my, endXx, endXy, hitRadius)) return Axis.X;
-        if (isNearLine(mx, my, cx, cy, endYx, endYy, tol) || isNear(mx, my, endYx, endYy, hitRadius)) return Axis.Y;
-        if (isNearLine(mx, my, cx, cy, endZx, endZy, tol) || isNear(mx, my, endZx, endZy, hitRadius)) return Axis.Z;
+        int hr = Math.max(6, Math.round(this.hitRadius * axesScale));
+        if (isNearLine(mx, my, cx, cy, endXx, endXy, tol) || isNear(mx, my, endXx, endXy, hr)) return Axis.X;
+        if (isNearLine(mx, my, cx, cy, endYx, endYy, tol) || isNear(mx, my, endYx, endYy, hr)) return Axis.Y;
+        if (isNearLine(mx, my, cx, cy, endZx, endZy, tol) || isNear(mx, my, endZx, endZy, hr)) return Axis.Z;
 
         return null;
     }
