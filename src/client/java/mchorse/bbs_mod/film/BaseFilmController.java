@@ -21,6 +21,7 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
@@ -150,7 +151,7 @@ public abstract class BaseFilmController
         MatrixStackUtils.multiply(stack, target);
         FormUtilsClient.render(form, formContext);
 
-        if (UIBaseMenu.renderAxes && context.bone != null)
+        if (UIBaseMenu.renderAxes)
         {
             Form root = FormUtils.getRoot(form);
             Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, context.local ? null : context.bone, transition);
@@ -188,6 +189,8 @@ public abstract class BaseFilmController
                 RenderSystem.enableDepthTest();
                 stack.pop();
             }
+            if (context.bone != null) renderAxes(context.bone, context.local, context.map, form, entity, transition, stack);
+            if (context.bone2 != null && context.map == null) renderAxes(context.bone2, context.local2, context.map, form, entity, transition, stack);
         }
 
         stack.pop();
@@ -213,6 +216,32 @@ public abstract class BaseFilmController
         }
 
         RenderSystem.enableDepthTest();
+    }
+
+    private static void renderAxes(String bone, boolean local, StencilMap stencilMap, Form form, IEntity entity, float transition, MatrixStack stack)
+    {
+        Form root = FormUtils.getRoot(form);
+        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, local ? null : bone, transition);
+
+        Matrix4f matrix = map.get(bone);
+
+        if (matrix != null)
+        {
+            stack.push();
+            MatrixStackUtils.multiply(stack, matrix);
+
+            if (stencilMap == null)
+            {
+                Gizmo.INSTANCE.render(stack);
+            }
+            else
+            {
+                Gizmo.INSTANCE.renderStencil(stack, stencilMap);
+            }
+
+            RenderSystem.enableDepthTest();
+            stack.pop();
+        }
     }
 
     public static Pair<Matrix4f, Float> getTotalMatrix(IntObjectMap<IEntity> entities, Anchor value, Matrix4f defaultMatrix, double cx, double cy, double cz, float transition, int i)
