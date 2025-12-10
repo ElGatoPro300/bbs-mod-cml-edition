@@ -306,12 +306,27 @@ public abstract class BaseFilmController
                 }
 
                 Map<String, Matrix4f> map = FormUtilsClient.getRenderer(form).collectMatrices(entity, null, transition);
-                // Preferir el origen del hueso para anclajes en replays/overlays
-                Matrix4f matrix = map.get(anchor.attachment + "#origin");
+                Matrix4f matrix;
 
-                if (matrix == null)
+                if (anchor.translate)
                 {
+                    // Preferir solo el origen (traslación en el pivote) cuando se solicita "Trasladar"
+                    matrix = map.get(anchor.attachment + "#origin");
+
+                    if (matrix == null)
+                    {
+                        matrix = map.get(anchor.attachment);
+                    }
+                }
+                else
+                {
+                    // Preferir la transformación completa del hueso para heredar rotación
                     matrix = map.get(anchor.attachment);
+
+                    if (matrix == null)
+                    {
+                        matrix = map.get(anchor.attachment + "#origin");
+                    }
                 }
 
                 if (matrix != null)
