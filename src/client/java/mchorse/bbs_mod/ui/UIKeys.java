@@ -78,6 +78,7 @@ public class UIKeys
     public static final IKey CAMERA_PANELS_AUDIO_EXTEND_DURATION = L10n.lang("bbs.ui.camera.panels.audio.extend_duration");
     public static final IKey CAMERA_PANELS_AUDIO_OFFSET = L10n.lang("bbs.ui.camera.panels.audio.offset");
     public static final IKey CAMERA_PANELS_AUDIO_PICK_AUDIO = L10n.lang("bbs.ui.camera.panels.audio.pick_audio");
+    public static final IKey CAMERA_PANELS_AUDIO_VOLUME = L10n.lang("bbs.ui.camera.panels.audio.volume");
     public static final IKey CAMERA_PANELS_BLOCK = L10n.lang("bbs.ui.camera.panels.block");
     public static final IKey CAMERA_PANELS_CONTEXT_COPY_ANGLE = L10n.lang("bbs.ui.camera.panels.context.copy_angle");
     public static final IKey CAMERA_PANELS_CONTEXT_COPY_POINT = L10n.lang("bbs.ui.camera.panels.context.copy_point");
