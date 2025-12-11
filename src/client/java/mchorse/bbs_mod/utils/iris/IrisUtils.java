@@ -137,25 +137,152 @@ public class IrisUtils
     {
         try
         {
-            Class<?> registryClass = Class.forName("net.irisshaders.iris.texture.pbr.loader.PBRTextureLoaderRegistry");
-            Object instance = registryClass.getField("INSTANCE").get(null);
-            Class<?> loaderInterface = Class.forName("net.irisshaders.iris.texture.pbr.loader.PBRTextureLoader");
+            Class<?> registryClass;
+            Class<?> loaderInterface;
+
+            try
+            {
+                registryClass = Class.forName("net.irisshaders.iris.pbr.loader.PBRTextureLoaderRegistry");
+                loaderInterface = Class.forName("net.irisshaders.iris.pbr.loader.PBRTextureLoader");
+            }
+            catch (ClassNotFoundException e)
+            {
+                registryClass = Class.forName("net.irisshaders.iris.texture.pbr.loader.PBRTextureLoaderRegistry");
+                loaderInterface = Class.forName("net.irisshaders.iris.texture.pbr.loader.PBRTextureLoader");
+            }
+
+            Object registryInstance = registryClass.getField("INSTANCE").get(null);
             java.lang.reflect.Method register = registryClass.getMethod("register", Class.class, loaderInterface);
+
+            Class<?> pbrTypeClass;
+            try
+            {
+                pbrTypeClass = Class.forName("net.irisshaders.iris.pbr.texture.PBRType");
+            }
+            catch (ClassNotFoundException e1)
+            {
+                try
+                {
+                    pbrTypeClass = Class.forName("net.irisshaders.iris.pbr.PBRType");
+                }
+                catch (ClassNotFoundException e2)
+                {
+                    pbrTypeClass = Class.forName("net.irisshaders.iris.texture.pbr.PBRType");
+                }
+            }
+
+            Class<?> singleColorClass = Class.forName("net.irisshaders.iris.targets.backed.NativeImageBackedSingleColorTexture");
+
+            java.lang.reflect.Method loadMethod = null;
+            for (java.lang.reflect.Method m : loaderInterface.getMethods())
+            {
+                if (m.getName().equals("load") && m.getParameterTypes().length == 3)
+                {
+                    loadMethod = m;
+                    break;
+                }
+            }
+
+            final java.lang.reflect.Method finalLoadMethod = loadMethod;
+            final Class<?> consumerClass = loadMethod != null ? loadMethod.getParameterTypes()[2] : null;
+            final java.lang.reflect.Method acceptNormal;
+            final java.lang.reflect.Method acceptSpecular;
+            java.lang.reflect.Method acceptGeneric = null;
+            if (consumerClass != null)
+            {
+                java.lang.reflect.Method aNormal = null;
+                java.lang.reflect.Method aSpec = null;
+                for (java.lang.reflect.Method mth : consumerClass.getMethods())
+                {
+                    Class<?>[] pts = mth.getParameterTypes();
+                    if (pts.length == 1 && net.minecraft.client.texture.AbstractTexture.class.isAssignableFrom(pts[0]))
+                    {
+                        String nm = mth.getName().toLowerCase();
+                        if (nm.contains("normal")) aNormal = mth;
+                        if (nm.contains("specular")) aSpec = mth;
+                    }
+                    else if (pts.length == 2 && pts[0].isEnum() && net.minecraft.client.texture.AbstractTexture.class.isAssignableFrom(pts[1]))
+                    {
+                        acceptGeneric = mth;
+                    }
+                }
+                acceptNormal = aNormal;
+                acceptSpecular = aSpec;
+            }
+            else
+            {
+                acceptNormal = null;
+                acceptSpecular = null;
+            }
+
+            final java.lang.reflect.Method getDefaultValue = pbrTypeClass.getMethod("getDefaultValue");
+            final Object normalEnum = java.lang.Enum.valueOf((Class<java.lang.Enum>) pbrTypeClass.asSubclass(java.lang.Enum.class), "NORMAL");
+            final Object specularEnum = java.lang.Enum.valueOf((Class<java.lang.Enum>) pbrTypeClass.asSubclass(java.lang.Enum.class), "SPECULAR");
+
+            final Object[] defaults = new Object[2];
+
+            final java.lang.reflect.Method finalAcceptGeneric = acceptGeneric;
 
             Object proxy = java.lang.reflect.Proxy.newProxyInstance(
                 loaderInterface.getClassLoader(),
                 new Class<?>[]{loaderInterface},
                 (p, m, args) -> {
-                    // No-op loader: tolerates API changes by doing nothing
+                    if (finalLoadMethod != null && m.getName().equals("load") && args != null && args.length == 3)
+                    {
+                        Object textureObj = args[0];
+                        Object consumer = args[2];
+
+                        if (defaults[0] == null || defaults[1] == null)
+                        {
+                            Object normalDefault = getDefaultValue.invoke(normalEnum);
+                            Object specDefault = getDefaultValue.invoke(specularEnum);
+
+                            java.lang.reflect.Constructor<?> chosenN = null;
+                            java.lang.reflect.Constructor<?> chosenS = null;
+                            for (java.lang.reflect.Constructor<?> c : singleColorClass.getConstructors())
+                            {
+                                Class<?>[] pt = c.getParameterTypes();
+                                if (pt.length == 1)
+                                {
+                                    if (chosenN == null) chosenN = c;
+                                    if (chosenS == null) chosenS = c;
+                                }
+                            }
+
+                            defaults[0] = chosenN != null ? chosenN.newInstance(normalDefault) : null;
+                            defaults[1] = chosenS != null ? chosenS.newInstance(specDefault) : null;
+                        }
+
+                        if (textureObj instanceof IrisTextureWrapper wrapper)
+                        {
+                            IrisTextureWrapperLoader helper = new IrisTextureWrapperLoader();
+                            Link normalKey = helper.createPrefixedCopy(wrapper.texture, "_n.png");
+                            Link specularKey = helper.createPrefixedCopy(wrapper.texture, "_s.png");
+
+                            IrisTextureWrapper normalWrapper = new IrisTextureWrapper(normalKey, (net.minecraft.client.texture.AbstractTexture) defaults[0], wrapper.index);
+                            IrisTextureWrapper specWrapper = new IrisTextureWrapper(specularKey, (net.minecraft.client.texture.AbstractTexture) defaults[1], wrapper.index);
+
+                            if (acceptNormal != null) acceptNormal.invoke(consumer, normalWrapper);
+                            if (acceptSpecular != null) acceptSpecular.invoke(consumer, specWrapper);
+                            if (finalAcceptGeneric != null)
+                            {
+                                finalAcceptGeneric.invoke(consumer, normalEnum, normalWrapper);
+                                finalAcceptGeneric.invoke(consumer, specularEnum, specWrapper);
+                            }
+                        }
+
+                        return null;
+                    }
+
                     return null;
                 }
             );
 
-            register.invoke(instance, IrisTextureWrapper.class, proxy);
+            register.invoke(registryInstance, IrisTextureWrapper.class, proxy);
         }
         catch (Throwable t)
         {
-            System.err.println("[BBS] PBRTextureLoader not available or changed; PBR wrappers disabled: " + t);
+            System.err.println("[BBS] PBRTextureLoader registration failed; wrappers disabled: " + t);
         }
     }
 
@@ -184,10 +311,53 @@ public class IrisUtils
 
                 try
                 {
-                    Class<?> trackerClass = Class.forName("net.irisshaders.iris.texture.TextureTracker");
+                    Class<?> trackerClass;
+                    try
+                    {
+                        trackerClass = Class.forName("net.irisshaders.iris.pbr.TextureTracker");
+                    }
+                    catch (ClassNotFoundException e)
+                    {
+                        try
+                        {
+                            trackerClass = Class.forName("net.irisshaders.iris.texture.TextureTracker");
+                        }
+                        catch (ClassNotFoundException e2)
+                        {
+                            trackerClass = Class.forName("net.irisshaders.iris.texture.tracking.TextureTracker");
+                        }
+                    }
+
                     Object tracker = trackerClass.getField("INSTANCE").get(null);
-                    java.lang.reflect.Method trackTexture = trackerClass.getMethod("trackTexture", int.class, net.minecraft.client.texture.AbstractTexture.class);
-                    trackTexture.invoke(tracker, texture.id, new IrisTextureWrapper(key, index));
+
+                    java.lang.reflect.Method trackMethod = null;
+                    for (java.lang.reflect.Method m : trackerClass.getMethods())
+                    {
+                        Class<?>[] p = m.getParameterTypes();
+                        if (m.getName().equals("trackTexture") && p.length == 2 && p[0] == int.class)
+                        {
+                            trackMethod = m;
+                            break;
+                        }
+                    }
+
+                    if (trackMethod == null)
+                    {
+                        for (java.lang.reflect.Method m : trackerClass.getDeclaredMethods())
+                        {
+                            Class<?>[] p = m.getParameterTypes();
+                            if (m.getName().equals("trackTexture") && p.length == 2 && p[0] == int.class)
+                            {
+                                trackMethod = m;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (trackMethod != null)
+                    {
+                        trackMethod.invoke(tracker, texture.id, new IrisTextureWrapper(key, index));
+                    }
                 }
                 catch (Throwable t)
                 {
