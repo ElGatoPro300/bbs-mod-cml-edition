@@ -32,20 +32,6 @@ public class ModelBlockEntity extends BlockEntity
     public ModelBlockEntity(BlockPos pos, BlockState state)
     {
         super(BBSMod.MODEL_BLOCK_ENTITY, pos, state);
-
-        /* Default form: billboard with assets:textures/icon.png
-         * This restores the behavior from 1.20.4 where placing a
-         * new Model Block shows a billboard with the icon texture. */
-        if (this.properties.getForm() == null)
-        {
-            BillboardForm form = new BillboardForm();
-            form.texture.set(Link.assets("textures/model_block.png"));
-            form.billboard.set(false);
-            form.transform.get().translate.set(0F, 0.5F, 0F);
-
-            this.properties.setForm(form);
-            this.properties.getTransformFirstPerson().translate.set(0F, 0F, -0.25F);
-        }
     }
 
     public String getName()
