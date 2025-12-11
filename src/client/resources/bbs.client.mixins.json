@@ -39,7 +39,8 @@
         "BlockEntityRenderDispatcherMixin",
         "WorldMixin",
         "LivingEntityRendererInvoker",
-        "EntityRenderDispatcherMixin"
+        "EntityRenderDispatcherMixin",
+        "iris.ShadowRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
