@@ -154,7 +154,7 @@ public class UIFilmController extends UIElement
             HitResult result = RayTracing.rayTrace(
                 world,
                 RayTracing.fromVector3d(camera.position),
-                RayTracing.fromVector3f(camera.getMouseDirection(context.mouseX, context.mouseY, area.x, area.y, area.w, area.h)),
+                RayTracing.fromVector3f(camera.getMouseDirectionFov(context.mouseX, context.mouseY, area.x, area.y, area.w, area.h)),
                 512F
             );
 
