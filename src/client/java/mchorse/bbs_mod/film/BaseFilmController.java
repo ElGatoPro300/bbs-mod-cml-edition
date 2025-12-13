@@ -195,7 +195,8 @@ public abstract class BaseFilmController
 
         stack.pop();
 
-        if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F)
+        /* No renderizar sombra cuando el modelo está oculto (visible=false) */
+        if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F && form.visible.get())
         {
             stack.push();
             stack.translate(position.x - cx, position.y - cy, position.z - cz);
