@@ -195,7 +195,8 @@ public abstract class BaseFilmController
 
         stack.pop();
 
-        if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F)
+        /* No renderizar sombra cuando el modelo está oculto (visible=false) */
+        if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F && form.visible.get())
         {
             stack.push();
             stack.translate(position.x - cx, position.y - cy, position.z - cz);
@@ -306,26 +307,26 @@ public abstract class BaseFilmController
                 }
 
                 Map<String, Matrix4f> map = FormUtilsClient.getRenderer(form).collectMatrices(entity, null, transition);
+                // Normalizar el nombre del adjunto para ignorar sufijo "#origin" en anclajes antiguos
+                String core = anchor.attachment == null ? null : anchor.attachment.replace("#origin", "");
                 Matrix4f matrix;
 
                 if (anchor.translate)
                 {
-                    // Preferir solo el origen (traslación en el pivote) cuando se solicita "Trasladar"
-                    matrix = map.get(anchor.attachment + "#origin");
-
+                    // Heredar solo traslación: preferir matriz de origen
+                    matrix = map.get(core + "#origin");
                     if (matrix == null)
                     {
-                        matrix = map.get(anchor.attachment);
+                        matrix = map.get(core);
                     }
                 }
                 else
                 {
-                    // Preferir la transformación completa del hueso para heredar rotación
-                    matrix = map.get(anchor.attachment);
-
+                    // Heredar rotación y traslación: preferir matriz completa
+                    matrix = map.get(core);
                     if (matrix == null)
                     {
-                        matrix = map.get(anchor.attachment + "#origin");
+                        matrix = map.get(core + "#origin");
                     }
                 }
 

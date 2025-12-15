@@ -75,6 +75,16 @@ public class UIAnchorKeyframeFactory extends UIKeyframeFactory<Anchor>
         Map<String, Matrix4f> map = FormUtilsClient.getRenderer(form).collectMatrices(entity, null, 0F);
         List<String> attachments = new ArrayList<>(map.keySet());
 
+        // Ocultar entradas que terminan con "#origin" para evitar duplicados en el panel
+        for (int i = attachments.size() - 1; i >= 0; i--)
+        {
+            String name = attachments.get(i);
+            if (name.endsWith("#origin"))
+            {
+                attachments.remove(i);
+            }
+        }
+
         attachments.sort(String::compareToIgnoreCase);
 
         /* Collect labels (substitute track names) */
@@ -96,6 +106,8 @@ public class UIAnchorKeyframeFactory extends UIKeyframeFactory<Anchor>
             return;
         }
 
+        String normalized = value == null ? null : value.replace("#origin", "");
+
         panel.getContext().replaceContextMenu((menu) ->
         {
             for (int i = 0; i < attachments.size(); i++)
@@ -103,7 +115,7 @@ public class UIAnchorKeyframeFactory extends UIKeyframeFactory<Anchor>
                 String attachment = attachments.get(i);
                 String label = labels.get(i);
 
-                menu.action(Icons.LIMB, IKey.constant(label), attachment.equals(value), () -> consumer.accept(attachment));
+                menu.action(Icons.LIMB, IKey.constant(label), attachment.equals(normalized), () -> consumer.accept(attachment));
             }
         });
     }
