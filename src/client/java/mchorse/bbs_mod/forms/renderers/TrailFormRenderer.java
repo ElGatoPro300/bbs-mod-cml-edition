@@ -98,7 +98,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
         MatrixStack stack = context.stack;
-        // Tomar solo la rotación de la vista y invertirla (API 1.21.1)
+        // Derivar la rotación desde el contexto (soporta cámaras de replays/no jugador)
         Matrix4f camInverse = new Matrix4f().set(new Matrix3f(context.camera.view)).invert();
 
         Camera camera = context.camera;
@@ -169,7 +169,6 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         Trail trail;
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         Matrix4f m = stack.peek().getPositionMatrix();
-
         m.set(camInverse);
         m.invert();
 

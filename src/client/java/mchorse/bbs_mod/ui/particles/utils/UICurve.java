@@ -25,6 +25,7 @@ import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.BufferAllocator;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
 
@@ -259,7 +260,7 @@ public class UICurve extends UIElement
         Matrix4f matrix = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
         int c = this.curve.nodes.size();
 
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
         /* Top and bottom */
         builder.vertex(matrix, this.area.x, this.graph.y, 0F).color(0.5F, 0.5F, 0.5F, 0.5F);
