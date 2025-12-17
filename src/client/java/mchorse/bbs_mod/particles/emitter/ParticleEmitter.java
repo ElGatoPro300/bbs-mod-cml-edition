@@ -537,8 +537,8 @@ public class ParticleEmitter
 
     public void setupCameraProperties(net.minecraft.client.render.Camera camera)
     {
-        this.cYaw = camera.getYaw();
-        this.cPitch = camera.getPitch();
+        this.cYaw = 180 - camera.getYaw();
+        this.cPitch = -camera.getPitch();
         this.cX = camera.getPos().x;
         this.cY = camera.getPos().y;
         this.cZ = camera.getPos().z;

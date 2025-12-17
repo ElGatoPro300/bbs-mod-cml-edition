@@ -124,11 +124,22 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
 
             this.updateTexture(context.getTransition());
 
-            Matrix4f matrix = new Matrix4f().rotation(MinecraftClient.getInstance().gameRenderer.getCamera().getRotation());
+            boolean useGameCamera = !context.modelRenderer && context.type != FormRenderType.PREVIEW;
+            
+            if (useGameCamera)
+            {
+                /* For game rendering, use the main camera for emitter properties to ensure
+                 * correct yaw/pitch for billboards (avoiding 180 degree flip in Camera wrapper) */
+                emitter.setupCameraProperties(MinecraftClient.getInstance().gameRenderer.getCamera());
+            }
+            else
+            {
+                emitter.setupCameraProperties(context.camera);
+            }
 
-            matrix.mul(context.stack.peek().getPositionMatrix());
-
-            Vector3d translation = new Vector3d(matrix.getTranslation(Vectors.TEMP_3F));
+            Matrix4f modelMatrix = new Matrix4f(context.stack.peek().getPositionMatrix());
+            Vector3d translation = new Vector3d(modelMatrix.getTranslation(Vectors.TEMP_3F));
+            
             translation.add(context.camera.position.x, context.camera.position.y, context.camera.position.z);
 
             GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
@@ -138,11 +149,10 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
 
             context.stack.push();
             context.stack.loadIdentity();
-            context.stack.multiplyPositionMatrix(new Matrix4f().rotation(MinecraftClient.getInstance().gameRenderer.getCamera().getRotation()).invert());
 
             emitter.lastGlobal.set(translation);
-            emitter.rotation.set(matrix);
-
+            emitter.rotation.set(modelMatrix);
+            
             if (!BBSRendering.isIrisShadowPass())
             {
                 boolean shadersEnabled = BBSRendering.isIrisShadersEnabled();
@@ -152,7 +162,6 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
                     ? this.getShader(context, GameRenderer::getRenderTypeEntityTranslucentProgram, BBSShaders::getPickerBillboardProgram)
                     : this.getShader(context, GameRenderer::getParticleProgram, BBSShaders::getPickerParticlesProgram);
 
-                emitter.setupCameraProperties(context.camera);
                 emitter.render(format, shader, context.stack, context.overlay, context.getTransition());
             }
 
