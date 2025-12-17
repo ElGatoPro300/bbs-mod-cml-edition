@@ -112,6 +112,7 @@ public class MatrixStackUtils
         position.m22(position.m22() / max);
     }
 
+<<<<<<< HEAD
     /**
      * Devuelve una copia de la matriz con la escala normalizada a 1 en cada eje
      * (X, Y, Z), preservando la traslación y la rotación.
@@ -132,22 +133,52 @@ public class MatrixStackUtils
             out.m00(out.m00() / sx);
             out.m10(out.m10() / sx);
             out.m20(out.m20() / sx);
+=======
+    public static Matrix4f stripScale(Matrix4f matrix)
+    {
+        Matrix4f m = new Matrix4f(matrix);
+
+        float sx = (float) Math.sqrt(m.m00() * m.m00() + m.m01() * m.m01() + m.m02() * m.m02());
+        float sy = (float) Math.sqrt(m.m10() * m.m10() + m.m11() * m.m11() + m.m12() * m.m12());
+        float sz = (float) Math.sqrt(m.m20() * m.m20() + m.m21() * m.m21() + m.m22() * m.m22());
+
+        if (sx != 0F)
+        {
+            m.m00(m.m00() / sx);
+            m.m01(m.m01() / sx);
+            m.m02(m.m02() / sx);
+>>>>>>> master
         }
 
         if (sy != 0F)
         {
+<<<<<<< HEAD
             out.m01(out.m01() / sy);
             out.m11(out.m11() / sy);
             out.m21(out.m21() / sy);
+=======
+            m.m10(m.m10() / sy);
+            m.m11(m.m11() / sy);
+            m.m12(m.m12() / sy);
+>>>>>>> master
         }
 
         if (sz != 0F)
         {
+<<<<<<< HEAD
             out.m02(out.m02() / sz);
             out.m12(out.m12() / sz);
             out.m22(out.m22() / sz);
         }
 
         return out;
+=======
+            m.m20(m.m20() / sz);
+            m.m21(m.m21() / sz);
+            m.m22(m.m22() / sz);
+        }
+
+        return m;
+>>>>>>> master
     }
 }

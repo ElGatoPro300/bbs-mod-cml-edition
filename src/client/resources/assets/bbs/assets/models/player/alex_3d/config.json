@@ -1,4 +1,8 @@
 {
+<<<<<<< HEAD
+=======
+	"texture": "assets:models/player/alex_3d/alex.png",
+>>>>>>> master
 	"pose_group": "player/steve",
 	"procedural": true,
 	"culling": false,
@@ -7,7 +11,10 @@
 	"scale": [0.9375, 0.9375, 0.9375],
 	"look_at": {
 		"head": "head",
+<<<<<<< HEAD
 		"anchor": "anchor",
+=======
+>>>>>>> master
 		"pitch": true,
 		"head_limit": 45
 	},

@@ -60,6 +60,7 @@ public class UIKeyframeClip extends UIClip<KeyframeClip>
         {
             this.editor.embedView(this.keyframes);
             this.keyframes.view.resetView();
+            this.keyframes.view.getGraph().clearSelection();
         });
         this.edit.keys().register(Keys.FORMS_EDIT, () -> this.edit.clickItself());
     }
@@ -112,14 +113,14 @@ public class UIKeyframeClip extends UIClip<KeyframeClip>
         this.insertKeyframe(tick, this.clip.fov, newPos.angle.fov);
     }
 
-    private void insertKeyframe(long tick, KeyframeChannel<Double> keyframe, double x)
+    private void insertKeyframe(long tick, KeyframeChannel<Double> channel, double x)
     {
-        KeyframeSegment<Double> segment = keyframe.findSegment(tick);
-        int insert = keyframe.insert(tick, x);
+        KeyframeSegment<Double> segment = channel.findSegment(tick);
+        int insert = channel.insert(tick, x);
 
         if (segment != null)
         {
-            keyframe.get(insert).getInterpolation().copy(segment.a.getInterpolation());
+            channel.get(insert).copyOverExtra(segment.a);
         }
     }
 

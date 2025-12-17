@@ -1,8 +1,11 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
 import net.minecraft.client.render.VertexConsumer;
+<<<<<<< HEAD
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+=======
+>>>>>>> master
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +30,14 @@ public class StructureVAOCollector implements VertexConsumer
 
     private final Vtx[] quad = new Vtx[4];
     private int quadIndex = 0;
+<<<<<<< HEAD
     private boolean hasCurrent = false;
 
     // working per-vertex state until endVertex()
+=======
+
+    // working per-vertex state until next()
+>>>>>>> master
     private float vx, vy, vz;
     private float vnx, vny, vnz;
     private float vu, vv;
@@ -40,6 +48,7 @@ public class StructureVAOCollector implements VertexConsumer
     }
 
     @Override
+<<<<<<< HEAD
     public VertexConsumer vertex(float x, float y, float z)
     {
         // Finalizar vértice previo si existía
@@ -62,6 +71,13 @@ public class StructureVAOCollector implements VertexConsumer
         this.vy = v.y;
         this.vz = v.z;
         this.hasCurrent = true;
+=======
+    public VertexConsumer vertex(double x, double y, double z)
+    {
+        this.vx = (float) x;
+        this.vy = (float) y;
+        this.vz = (float) z;
+>>>>>>> master
         return this;
     }
 
@@ -103,7 +119,12 @@ public class StructureVAOCollector implements VertexConsumer
         return this;
     }
 
+<<<<<<< HEAD
     private void finalizeCurrent()
+=======
+    @Override
+    public void next()
+>>>>>>> master
     {
         Vtx v = quad[quadIndex];
         v.x = vx; v.y = vy; v.z = vz;
@@ -111,7 +132,10 @@ public class StructureVAOCollector implements VertexConsumer
         v.u = vu; v.v = vv;
 
         quadIndex++;
+<<<<<<< HEAD
         hasCurrent = false;
+=======
+>>>>>>> master
 
         if (quadIndex == 4)
         {
@@ -174,11 +198,19 @@ public class StructureVAOCollector implements VertexConsumer
         return new float[]{tx / len, ty / len, tz / len};
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> master
     public void fixedColor(int red, int green, int blue, int alpha)
     {
         // no-op
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+>>>>>>> master
     public void unfixColor()
     {
         // no-op
@@ -186,8 +218,11 @@ public class StructureVAOCollector implements VertexConsumer
 
     public ModelVAOData toData()
     {
+<<<<<<< HEAD
         // Asegurar volcar último vértice si estaba parcialmente construido
         if (hasCurrent) finalizeCurrent();
+=======
+>>>>>>> master
         float[] v = toArray(positions);
         float[] n = toArray(normals);
         float[] t = toArray(tangents);

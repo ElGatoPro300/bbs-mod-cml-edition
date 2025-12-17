@@ -70,7 +70,10 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+<<<<<<< HEAD
 import org.joml.Matrix4fStack;
+=======
+>>>>>>> master
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
@@ -1045,7 +1048,11 @@ public class UIFilmController extends UIElement
 
                 if (entity != null && entity.getForm() != null && this.panel.lastProjection != null && this.panel.lastView != null)
                 {
+<<<<<<< HEAD
         float transition = this.worldRenderContext != null ? this.worldRenderContext.tickCounter().getTickDelta(false) : 0F;
+=======
+                    float transition = this.worldRenderContext != null ? this.worldRenderContext.tickDelta() : 0F;
+>>>>>>> master
 
                     /* Compute entity's target matrix in world space */
                     Vector3d cameraPos = this.panel.getCamera().position;
@@ -1168,7 +1175,7 @@ public class UIFilmController extends UIElement
                 context.batcher.textCard(label, context.mouseX + 12, context.mouseY + 8);
             }
         }
-        else if (pair != null)
+        else if (pair != null && pair.a != null)
         {
             String label = pair.a.getFormIdOrName();
 
@@ -1201,7 +1208,7 @@ public class UIFilmController extends UIElement
 
             int povMode = this.panel.getController().getPovMode();
 
-            if (povMode != UIFilmController.CAMERA_MODE_CAMERA)
+            if (povMode != UIFilmController.CAMERA_MODE_CAMERA && BBSSettings.recordingCameraPreview.get())
             {
                 Recorder.renderCameraPreview(this.panel.getRunner().getPosition(), context.camera(), context.matrixStack());
             }
@@ -1277,7 +1284,7 @@ public class UIFilmController extends UIElement
         {
             for (Map.Entry<Integer, IEntity> entry : this.getEntities().entrySet())
             {
-                this.stencilMap.objectIndex = entry.getKey() + 1;
+                this.stencilMap.objectIndex = entry.getKey() + 7;
 
                 Replay replay = CollectionUtils.getSafe(this.panel.getData().replays.getList(), entry.getKey());
 
@@ -1291,12 +1298,14 @@ public class UIFilmController extends UIElement
         else
         {
             Replay replay = CollectionUtils.getSafe(this.panel.getData().replays.getList(), this.panel.replayEditor.replays.replays.getIndex());
+            Pair<String, Boolean> bone = this.getBone();
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
             .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
                 .stencil(this.stencilMap)
-                .relative(replay.relative.get()));
+                .relative(replay.relative.get())
+                .bone(bone == null ? null : bone.a, bone != null && bone.b));
         }
 
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);

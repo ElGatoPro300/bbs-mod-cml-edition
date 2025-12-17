@@ -73,7 +73,11 @@ public class CustomVertexConsumerProvider extends VertexConsumerProvider.Immedia
                 || renderLayer == TexturedRenderLayers.getEntityCutout()
                 || renderLayer == TexturedRenderLayers.getBannerPatterns())
             {
+<<<<<<< HEAD
                 selectedLayer = RenderLayer.getTranslucent();
+=======
+                selectedLayer = shadersEnabled ? TexturedRenderLayers.getEntityTranslucentCull() : RenderLayer.getTranslucent();
+>>>>>>> master
             }
         }
 

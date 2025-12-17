@@ -16,7 +16,7 @@ import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -73,7 +73,7 @@ public class ModelBlockItemRenderer
                 /* Usar luz máxima para que el modelo de estructura como ítem no se vea oscuro */
                 int maxLight = LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getTickDelta())
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 RenderSystem.disableDepthTest();
 

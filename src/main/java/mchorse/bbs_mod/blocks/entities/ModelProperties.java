@@ -23,12 +23,16 @@ public class ModelProperties implements IMapSerializable
     private boolean enabled = true;
     private boolean global;
     private boolean shadow;
+<<<<<<< HEAD
     private boolean lookAt; // Face the player/camera when rendering
 
     /* Runtime-only state for continuous look-at yaw unwrapping (not serialized) */
     private boolean lookYawInitialized;
     private float lookYawLastAbs;
     private float lookYawContinuous;
+=======
+    private boolean lookAt;
+>>>>>>> master
 
     public Form getForm()
     {
@@ -140,6 +144,7 @@ public class ModelProperties implements IMapSerializable
         this.lookAt = lookAt;
     }
 
+<<<<<<< HEAD
     /* Runtime helpers */
     public boolean isLookYawInitialized()
     {
@@ -189,6 +194,8 @@ public class ModelProperties implements IMapSerializable
         this.lookYawContinuous = baseYaw;
     }
 
+=======
+>>>>>>> master
     public Form getForm(ModelTransformationMode mode)
     {
         Form form = this.form;

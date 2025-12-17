@@ -54,6 +54,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public static boolean toggleRendering;
 
     public UIScrollView scrollView;
+    public UIElement editor;
     public UIModelBlockEntityList modelBlocks;
     public UINestedEdit pickEdit;
     public UIToggle enabled;
@@ -147,13 +148,22 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             this.modelBlock.getProperties().setGlobal(b.getValue());
             MinecraftClient.getInstance().worldRenderer.reload();
         });
+        this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
+
+        this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
 
         this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
 
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
+<<<<<<< HEAD
         this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.transform);
+=======
+        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.transform);
+
+        this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
+>>>>>>> master
         this.scrollView.scroll.opposite().cancelScrolling();
         this.scrollView.relative(this).w(200).h(1F);
 
@@ -305,12 +315,16 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             this.fillData();
         }
 
+<<<<<<< HEAD
         this.pickEdit.setVisible(modelBlock != null);
         this.enabled.setVisible(modelBlock != null);
         this.shadow.setVisible(modelBlock != null);
         this.global.setVisible(modelBlock != null);
         this.lookAt.setVisible(modelBlock != null);
         this.transform.setVisible(modelBlock != null);
+=======
+        this.editor.setVisible(modelBlock != null);
+>>>>>>> master
 
         if (select)
         {
