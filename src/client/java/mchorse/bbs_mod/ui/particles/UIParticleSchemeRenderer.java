@@ -91,27 +91,31 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
     private void renderPlane(UIContext context, float a, float b, float c, float d)
     {
         Matrix4f matrix = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
-        final float alpha = 0.5F;
 
-        this.calculate(0, 0, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(0, 1, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(1, 0, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+        try (BufferAllocator allocator = new BufferAllocator(1536))
+        {
+            BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+            final float alpha = 0.5F;
 
-        this.calculate(1, 0, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(0, 1, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(1, 1, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(0, 0, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(0, 1, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(1, 0, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.disableCull();
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-        RenderSystem.enableCull();
+            this.calculate(1, 0, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(0, 1, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(1, 1, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
+        }
     }
 
     private void calculate(float i, float j, float a, float b, float c, float d)

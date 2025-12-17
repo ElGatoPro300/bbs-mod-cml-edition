@@ -449,17 +449,21 @@ public class ParticleEmitter
             this.setParticleVariables(this.uiParticle, transition);
 
             Matrix4f matrix = stack.peek().getPositionMatrix();
-            BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-            for (IComponentParticleRender render : list)
+            try (BufferAllocator allocator = new BufferAllocator(1536))
             {
-                render.renderUI(this.uiParticle, builder, matrix, transition);
-            }
+                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-            RenderSystem.disableCull();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            RenderSystem.enableCull();
+                for (IComponentParticleRender render : list)
+                {
+                    render.renderUI(this.uiParticle, builder, matrix, transition);
+                }
+
+                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+                RenderSystem.disableCull();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
+                RenderSystem.enableCull();
+            }
         }
     }
 
@@ -483,26 +487,30 @@ public class ParticleEmitter
         if (!this.particles.isEmpty())
         {
             Matrix4f matrix = stack.peek().getPositionMatrix();
-            BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, format);
 
-            this.bindTexture();
-
-            for (Particle particle : this.particles)
+            try (BufferAllocator allocator = new BufferAllocator(1536))
             {
-                this.setEmitterVariables(transition);
-                this.setParticleVariables(particle, transition);
+                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, format);
 
-                for (IComponentParticleRender component : renders)
+                this.bindTexture();
+
+                for (Particle particle : this.particles)
                 {
-                    component.render(this, format, particle, builder, matrix, overlay, transition);
-                }
-            }
+                    this.setEmitterVariables(transition);
+                    this.setParticleVariables(particle, transition);
 
-            RenderSystem.setShader(program);
-            RenderSystem.disableBlend();
-            RenderSystem.disableCull();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            RenderSystem.enableCull();
+                    for (IComponentParticleRender component : renders)
+                    {
+                        component.render(this, format, particle, builder, matrix, overlay, transition);
+                    }
+                }
+
+                RenderSystem.setShader(program);
+                RenderSystem.disableBlend();
+                RenderSystem.disableCull();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
+                RenderSystem.enableCull();
+            }
         }
 
         for (IComponentParticleRender component : renders)
