@@ -180,9 +180,10 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
             if (!BBSRendering.isIrisShadowPass())
             {
                 boolean shadersEnabled = BBSRendering.isIrisShadersEnabled();
+                boolean billboard = shadersEnabled;
 
-                VertexFormat format = shadersEnabled ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR_LIGHT;
-                Supplier<ShaderProgram> shader = shadersEnabled
+                VertexFormat format = billboard ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR_LIGHT;
+                Supplier<ShaderProgram> shader = billboard
                     ? this.getShader(context, GameRenderer::getRenderTypeEntityTranslucentProgram, BBSShaders::getPickerBillboardProgram)
                     : this.getShader(context, GameRenderer::getParticleProgram, BBSShaders::getPickerParticlesProgram);
 
