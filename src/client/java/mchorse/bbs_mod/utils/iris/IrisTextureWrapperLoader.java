@@ -6,13 +6,14 @@ import mchorse.bbs_mod.utils.resources.FilteredLink;
 import mchorse.bbs_mod.utils.resources.MultiLink;
 
 /**
- * Stubbed IrisTextureWrapperLoader for 1.21.4 migration.
- * The Iris PBR loader API changed; this class remains as a placeholder
- * to keep compilation working without a hard dependency on Iris internals.
+ * Compile-safe helper for constructing prefixed texture links.
+ * PBR integration is handled reflectively in IrisUtils.setup() and may be a no-op.
  */
 public class IrisTextureWrapperLoader
 {
-    private Link createPrefixedCopy(Link link, String suffix)
+    public IrisTextureWrapperLoader() {}
+
+    public Link createPrefixedCopy(Link link, String suffix)
     {
         if (link instanceof MultiLink multiLink)
         {

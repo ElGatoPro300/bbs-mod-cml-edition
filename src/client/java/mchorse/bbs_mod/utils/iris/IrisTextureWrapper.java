@@ -28,6 +28,7 @@ public class IrisTextureWrapper extends AbstractTexture
         this.index = index;
     }
 
+    @Override
     public void load(ResourceManager manager) throws IOException
     {}
 

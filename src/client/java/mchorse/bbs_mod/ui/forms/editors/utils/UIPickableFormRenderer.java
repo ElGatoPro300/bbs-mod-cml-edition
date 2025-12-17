@@ -206,8 +206,6 @@ public class UIPickableFormRenderer extends UIFormRenderer
             {
                 this.stencil.clearPicking();
             }
-<<<<<<< HEAD
-=======
             Matrix4f matrix = this.formEditor.getOrigin(context.getTransition());
             MatrixStack stack = context.render.batcher.getContext().getMatrices();
 
@@ -223,7 +221,6 @@ public class UIPickableFormRenderer extends UIFormRenderer
             stack.pop();
 
             this.stencil.pickGUI(context, this.area);
->>>>>>> master
             this.stencil.unbind(this.stencilMap);
 
             MinecraftClient.getInstance().getFramebuffer().beginWrite(true);

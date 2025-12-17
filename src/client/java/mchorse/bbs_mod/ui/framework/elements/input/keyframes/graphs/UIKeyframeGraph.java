@@ -698,7 +698,7 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
         }
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 

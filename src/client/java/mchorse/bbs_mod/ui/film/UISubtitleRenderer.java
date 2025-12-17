@@ -104,7 +104,7 @@ public class UISubtitleRenderer
             int fw = (int) ((w + 10) * scale);
             int fh = (int) ((h + 10) * scale);
 
-        RenderSystem.setProjectionMatrix(new Matrix4f().ortho(0, w + 10, 0, h + 10, -100, 100), null);
+            RenderSystem.setProjectionMatrix(new Matrix4f().ortho(0, w + 10, 0, h + 10, -100, 100), VertexSorter.BY_Z);
 
             framebuffer.resize(fw, fh);
             framebuffer.applyClear();
@@ -132,7 +132,7 @@ public class UISubtitleRenderer
             /* Render the texture */
             fb.beginWrite(true);
 
-        RenderSystem.setProjectionMatrix(ortho, null);
+            RenderSystem.setProjectionMatrix(ortho, VertexSorter.BY_Z);
 
             Transform transform = new Transform();
 
@@ -160,7 +160,7 @@ public class UISubtitleRenderer
             stack.pop();
         }
 
-        RenderSystem.setProjectionMatrix(cache, null);
+        RenderSystem.setProjectionMatrix(cache, VertexSorter.BY_Z);
         RenderSystem.enableCull();
     }
 }

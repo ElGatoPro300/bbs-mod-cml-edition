@@ -61,23 +61,19 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
     {
         super.render3D(context);
 
-        Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-        Matrix4f matrix = new Matrix4f(RenderSystem.getModelViewMatrix()).invert();
+        Matrix4f positionMatrix = new Matrix4f(context.stack.peek().getPositionMatrix());
+        Vector3f translation = positionMatrix.getTranslation(new Vector3f());
 
-        matrix.mul(context.stack.peek().getPositionMatrix());
+        this.pos.set(
+            translation.x + context.camera.position.x,
+            translation.y + context.camera.position.y,
+            translation.z + context.camera.position.z
+        );
 
-        Vector3d translation = new Vector3d(matrix.getTranslation(Vectors.TEMP_3F));
+        positionMatrix.get3x3(this.rot);
 
-        translation.add(camera.getPos().x, camera.getPos().y, camera.getPos().z);
-        context.stack.push();
-        context.stack.loadIdentity();
-        context.stack.multiplyPositionMatrix(new Matrix4f(RenderSystem.getModelViewMatrix()).invert());
-
-        this.pos.set(translation);
         this.vel.set(0F, 0F, 1F);
-        this.rot.set(matrix).transform(this.vel);
-
-        context.stack.pop();
+        this.rot.transform(this.vel);
     }
 
     @Override
@@ -98,11 +94,14 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
                 Matrix3f m = Matrices.TEMP_3F;
                 Vector3f v = Vectors.TEMP_3F;
                 ParticleSettings settings = this.form.settings.get();
-                ParticleType type = Registries.PARTICLE_TYPE.get(settings.particle);
+                ParticleType<?> type = Registries.PARTICLE_TYPE.get(settings.particle);
                 ParticleEffect effect = ParticleTypes.FLAME;
 
-                // TODO: Re-enable custom particle argument parsing for 1.21 API.
-                // The factory method signature changed; fallback to default effect.
+                // Crear el efecto a partir del tipo seleccionado (soporta tipos simples en 1.21.1)
+                if (type instanceof net.minecraft.particle.SimpleParticleType simple)
+                {
+                    effect = simple;
+                }
 
                 for (int i = 0; i < count; i++)
                 {
@@ -132,7 +131,7 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
                     double y = this.pos.y + temp3f.y;
                     double z = this.pos.z + temp3f.z;
 
-                    world.addParticle(effect, true, true, x, y, z, v.x, v.y, v.z);
+                    world.addParticle(effect, true, x, y, z, v.x, v.y, v.z);
                 }
 
                 this.tick = frequency;

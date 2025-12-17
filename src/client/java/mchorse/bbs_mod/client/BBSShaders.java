@@ -1,112 +1,72 @@
 package mchorse.bbs_mod.client;
 
+import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceFactory;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.util.Optional;
 
 public class BBSShaders
 {
-    private static ShaderProgram model;
-    private static ShaderProgram multilink;
+    private static ShaderProgram multiLink;
     private static ShaderProgram subtitles;
+
     private static ShaderProgram pickerPreview;
     private static ShaderProgram pickerBillboard;
     private static ShaderProgram pickerBillboardNoShading;
     private static ShaderProgram pickerParticles;
     private static ShaderProgram pickerModels;
 
-    /**
-     * Preload custom BBS shader programs from assets (assets/bbs/shaders/core/*).
-     * Must be called once during client startup.
-     */
+    static
+    {
+        setup();
+    }
+
     public static void setup()
     {
+        if (subtitles != null) subtitles.close();
+        if (subtitles != null) subtitles.close();
+
+        if (pickerPreview != null) pickerPreview.close();
+        if (pickerBillboard != null) pickerBillboard.close();
+        if (pickerBillboardNoShading != null) pickerBillboardNoShading.close();
+        if (pickerParticles != null) pickerParticles.close();
+        if (pickerModels != null) pickerModels.close();
+
         try
         {
-            Class<?> callbackClass = Class.forName("net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback");
-            Field eventField = callbackClass.getField("EVENT");
-            Object event = eventField.get(null);
+            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+            multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
+            subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
 
-            InvocationHandler handler = (proxy, method, args) -> {
-                Object context = args[0];
-                try
-                {
-                    Method register = context.getClass().getMethod("register", Identifier.class, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL.getClass());
-                }
-                catch (NoSuchMethodException ex)
-                {
-                    // Fallback: try generic signature (Identifier, Object)
-                }
-
-                try
-                {
-                    Method registerMethod = null;
-                    for (Method m : context.getClass().getMethods())
-                    {
-                        if (m.getName().equals("register") && m.getParameterCount() == 2 && Identifier.class.isAssignableFrom(m.getParameterTypes()[0]))
-                        {
-                            registerMethod = m;
-                            break;
-                        }
-                    }
-
-                    if (registerMethod == null)
-                    {
-                        throw new NoSuchMethodException("No se encontró método register en RegistrationContext");
-                    }
-
-                    model = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "model"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-                    multilink = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "multilink"), VertexFormats.POSITION_TEXTURE_COLOR);
-                    subtitles = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "subtitles"), VertexFormats.POSITION_TEXTURE_COLOR);
-                    pickerPreview = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "picker_preview"), VertexFormats.POSITION_TEXTURE_COLOR);
-                    pickerBillboard = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "picker_billboard"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-                    pickerBillboardNoShading = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "picker_billboard_no_shading"), VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
-                    pickerParticles = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "picker_particles"), VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
-                    pickerModels = (ShaderProgram) registerMethod.invoke(context, Identifier.of("bbs", "picker_models"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-                }
-                catch (Exception e)
-                {
-                    throw new RuntimeException("Error registrando shaders de BBS via reflexión", e);
-                }
-
-                return null;
-            };
-
-            Object proxy = Proxy.newProxyInstance(
-                BBSShaders.class.getClassLoader(),
-                new Class<?>[] { callbackClass },
-                handler
-            );
-
-            Method registerEvent = event.getClass().getMethod("register", Object.class);
-            registerEvent.invoke(event, proxy);
+            pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
+            pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
+            pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
         }
-        catch (ClassNotFoundException e)
+        catch (IOException e)
         {
-            // Desde 1.21.2+, Fabric eliminó CoreShaderRegistrationCallback. Los core shaders de mods se cargan
-            // automáticamente por vanilla desde assets/<modid>/shaders/core, sin necesidad de este callback.
-            // Aquí no hacemos nada, y los shaders deberán resolverse cuando se usen.
-        }
-        catch (Throwable t)
-        {
-            throw new RuntimeException("Error inicializando registro de shaders", t);
+            e.printStackTrace();
         }
     }
 
     public static ShaderProgram getModel()
     {
-        return model;
+        // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
+        return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
     {
-        return multilink;
+        return multiLink;
     }
 
     public static ShaderProgram getSubtitlesProgram()
@@ -137,5 +97,26 @@ public class BBSShaders
     public static ShaderProgram getPickerModelsProgram()
     {
         return pickerModels;
+    }
+
+    private static class ProxyResourceFactory implements ResourceFactory
+    {
+        private ResourceManager manager;
+
+        public ProxyResourceFactory(ResourceManager manager)
+        {
+            this.manager = manager;
+        }
+
+        @Override
+        public Optional<Resource> getResource(Identifier id)
+        {
+            if (id.getPath().contains("/core/"))
+            {
+        return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
+            }
+
+            return this.manager.getResource(id);
+        }
     }
 }

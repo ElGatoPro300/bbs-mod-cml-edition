@@ -45,8 +45,12 @@ public class MorphRenderer
             {
                 RenderSystem.enableDepthTest();
 
+                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
+                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
+
                 float bodyYaw = Lerps.lerp(player.prevBodyYaw, player.bodyYaw, g);
-                int overlay = net.minecraft.client.render.OverlayTexture.DEFAULT_UV;
+                int overlay = LivingEntityRenderer.getOverlay(player, 0F);
 
                 matrixStack.push();
                 matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));

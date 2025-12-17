@@ -22,6 +22,7 @@ import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.BufferAllocator;
@@ -281,11 +282,11 @@ public class UICurve extends UIElement
             Vector2d last = this.getVector(c - 2, this.range.x, this.range.y);
 
             /* Hermite bounds */
-        builder.vertex(matrix, (float) first.x, this.graph.y, 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
-        builder.vertex(matrix, (float) first.x, this.graph.ey(), 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
+            builder.vertex(matrix, (float) first.x, this.graph.y, 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
+            builder.vertex(matrix, (float) first.x, this.graph.ey(), 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
 
-        builder.vertex(matrix, (float) last.x, this.graph.y, 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
-        builder.vertex(matrix, (float) last.x, this.graph.ey(), 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
+            builder.vertex(matrix, (float) last.x, this.graph.y, 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
+            builder.vertex(matrix, (float) last.x, this.graph.ey(), 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
         }
 
         BufferRenderer.drawWithGlobalProgram(builder.end());

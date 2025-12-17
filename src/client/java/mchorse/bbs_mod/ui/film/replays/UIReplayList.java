@@ -950,7 +950,11 @@ public class UIReplayList extends UIList<Replay>
 
             y -= 10;
 
+            org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
+            org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+            com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
             FormUtilsClient.renderUI(form, context, x, y, x + 40, y + 40);
+            net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
 
             context.batcher.unclip(context);
 
@@ -1425,8 +1429,4 @@ public class UIReplayList extends UIList<Replay>
         this.update();
         this.panel.replayEditor.updateChannelsList();
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master

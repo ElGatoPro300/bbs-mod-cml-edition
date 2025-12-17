@@ -38,7 +38,7 @@ public class Draw
         float t = 1 / 96F + (float) (Math.sqrt(w * w + h + h + d + d) / 2000);
 
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         /* Pillars: fillBox(builder, -t, -t, -t, t, t, t, r, g, b, a); */
         fillBox(builder, stack, -t, -t, -t, t, t + fh, t, r, g, b, a);
@@ -151,26 +151,6 @@ public class Draw
         fillQuad(builder, stack, x1, y1, z2, x2, y1, z2, x2, y2, z2, x1, y2, z2, r, g, b, a);
     }
 
-<<<<<<< HEAD
-    public static void axes(MatrixStack stack, float length, float thickness)
-    {
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
-        Draw.axes(builder, stack, length, thickness);
-
-        RenderSystem.disableDepthTest();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-    }
-
-    public static void axes(BufferBuilder builder, MatrixStack stack, float length, float thickness)
-    {
-        fillBox(builder, stack, thickness, -thickness, -thickness, length, thickness, thickness, 1, 0, 0, 1);
-        fillBox(builder, stack, -thickness, -thickness, -thickness, thickness, length, thickness, 0, 1, 0, 1);
-        fillBox(builder, stack, -thickness, -thickness, thickness, thickness, thickness, length, 0, 0, 1, 1);
-    }
-
-=======
->>>>>>> master
     public static void coolerAxes(MatrixStack stack, float axisSize, float axisOffset, float outlineSize, float outlineOffset)
     {
         float scale = BBSSettings.axesScale.get();
@@ -192,14 +172,11 @@ public class Draw
         fillBox(builder, stack, -axisOffset, -axisOffset, 0, axisOffset, axisOffset, axisSize, 0, 0, 1);
         fillBox(builder, stack, -axisOffset, -axisOffset, -axisOffset, axisOffset, axisOffset, axisOffset, 1, 1, 1);
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.disableDepthTest();
 
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
-<<<<<<< HEAD
-}
-=======
 
     public static void arc3D(BufferBuilder builder, MatrixStack stack, Axis axis, float radius, float thickness, float r, float g, float b)
     {
@@ -253,17 +230,16 @@ public class Draw
                 float z22 = (float) (cos2 * Math.sin(u2));
                 float y22 = (float) (tubeR * Math.sin(v2));
 
-                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F).next();
-                builder.vertex(mat, x12, y12, z12).color(r, g, b, 1F).next();
-                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F).next();
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F);
+                builder.vertex(mat, x12, y12, z12).color(r, g, b, 1F);
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F);
 
-                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F).next();
-                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F).next();
-                builder.vertex(mat, x21, y21, z21).color(r, g, b, 1F).next();
+                builder.vertex(mat, x11, y11, z11).color(r, g, b, 1F);
+                builder.vertex(mat, x22, y22, z22).color(r, g, b, 1F);
+                builder.vertex(mat, x21, y21, z21).color(r, g, b, 1F);
             }
         }
 
         stack.pop();
     }
 }
->>>>>>> master

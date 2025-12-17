@@ -220,8 +220,6 @@ public class UIPropTransform extends UITransform
         this.keys().register(Keys.TRANSFORMATIONS_X, () -> this.axis = Axis.X).active(axisActive).category(UIKeys.TRANSFORMS_KEYS_CATEGORY);
         this.keys().register(Keys.TRANSFORMATIONS_Y, () -> this.axis = Axis.Y).active(axisActive).category(UIKeys.TRANSFORMS_KEYS_CATEGORY);
         this.keys().register(Keys.TRANSFORMATIONS_Z, () -> this.axis = Axis.Z).active(axisActive).category(UIKeys.TRANSFORMS_KEYS_CATEGORY);
-<<<<<<< HEAD
-=======
         this.keys().register(Keys.TRANSFORMATIONS_TRANSLATE, () -> this.enableMode(0)).category(category);
         this.keys().register(Keys.TRANSFORMATIONS_SCALE, () -> this.enableMode(1)).category(category);
         this.keys().register(Keys.TRANSFORMATIONS_ROTATE, () -> this.enableMode(2)).category(category);
@@ -233,7 +231,6 @@ public class UIPropTransform extends UITransform
             this.toggleLocal();
             UIUtils.playClick();
         }).category(category);
->>>>>>> master
 
         return this;
     }

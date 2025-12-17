@@ -40,51 +40,74 @@ public class SuperFakePlayer extends ServerPlayerEntity
         this.networkHandler = new SuperFakePlayerNetworkHandler(this);
     }
 
-    // Permissions and command output toggles changed in 1.21; remove overrides
-    public int getPermissionLevel()
+    @Override
+    protected int getPermissionLevel()
     {
         return 2;
     }
 
+    @Override
+    public boolean shouldBroadcastConsoleToOps()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean shouldReceiveFeedback()
+    {
+        return false;
+    }
+
+    @Override
     public void tick()
     {}
 
+    @Override
     public void setClientOptions(SyncedClientOptions settings)
     {}
 
+    @Override
     public void increaseStat(Stat<?> stat, int amount)
     {}
 
+    @Override
     public void resetStat(Stat<?> stat)
     {}
 
+    @Override
     public boolean isInvulnerableTo(DamageSource damageSource)
     {
         return true;
     }
 
     @Nullable
+    @Override
     public Team getScoreboardTeam()
     {
         return null;
     }
 
+    @Override
     public void sleep(BlockPos pos)
     {}
 
+    @Override
     public boolean startRiding(Entity entity, boolean force)
     {
         return false;
     }
 
+    @Override
     public void openEditSignScreen(SignBlockEntity sign, boolean front)
     {}
 
+    @Override
     public OptionalInt openHandledScreen(@Nullable NamedScreenHandlerFactory factory)
     {
         return OptionalInt.empty();
     }
 
+    @Override
     public void openHorseInventory(AbstractHorseEntity horse, Inventory inventory)
     {}
 

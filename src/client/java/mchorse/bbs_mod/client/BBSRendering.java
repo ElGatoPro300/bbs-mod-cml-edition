@@ -39,6 +39,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
+import org.joml.Matrix4f;
 
 import java.io.File;
 import java.util.Collections;
@@ -59,6 +60,13 @@ public class BBSRendering
 
     public static boolean renderingWorld;
     public static int lastAction;
+
+    /*
+     * Cámara del mundo (matriz de vista) capturada durante setupFrustum.
+     * Usada por el pase de stencil/picking en previews de film para alinear
+     * correctamente el render con la vista del mundo.
+     */
+    public static final Matrix4f camera = new Matrix4f();
 
     private static boolean customSize;
     private static boolean iris;
@@ -256,7 +264,7 @@ public class BBSRendering
             return;
         }
 
-        framebuffer.resize(w, h);
+        framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
     }
 
     public static void toggleFramebuffer(boolean toggleFramebuffer)
@@ -280,7 +288,7 @@ public class BBSRendering
 
             if (framebuffer.textureWidth != w || framebuffer.textureHeight != h)
             {
-                framebuffer.resize(w, h);
+                framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
             }
 
             clientFramebuffer = mc.getFramebuffer();
@@ -377,9 +385,60 @@ public class BBSRendering
 
     public static void onRenderChunkLayer(MatrixStack stack)
     {
-        // Fabric internal WorldRenderContextImpl API changed in 1.21.4.
-        // Skip this optional hook to avoid compile-time incompatibilities.
-        return;
+        WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        worldRenderContext.prepare(
+            mc.worldRenderer,
+            mc.getRenderTickCounter(),
+            false,
+            mc.gameRenderer.getCamera(),
+            mc.gameRenderer,
+            mc.gameRenderer.getLightmapTextureManager(),
+            RenderSystem.getProjectionMatrix(),
+            RenderSystem.getModelViewMatrix(),
+            mc.getBufferBuilders().getEntityVertexConsumers(),
+            mc.getProfiler(),
+            false,
+            mc.world
+        );
+
+        if (!isIrisShadersEnabled())
+        {
+            renderCoolStuff(worldRenderContext);
+        }
+    }
+
+    /**
+     * Render hook para el pase de terreno cuando Iris está activo.
+     * Usa las matrices entregadas por WorldRenderer (model-view y proyección)
+     * en lugar de leerlas de RenderSystem, para evitar desalineaciones.
+     */
+    public static void onRenderChunkLayer(org.joml.Matrix4f positionMatrix, org.joml.Matrix4f projectionMatrix)
+    {
+        WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        worldRenderContext.prepare(
+            mc.worldRenderer,
+            mc.getRenderTickCounter(),
+            false,
+            mc.gameRenderer.getCamera(),
+            mc.gameRenderer,
+            mc.gameRenderer.getLightmapTextureManager(),
+            positionMatrix,
+            projectionMatrix,
+            mc.getBufferBuilders().getEntityVertexConsumers(),
+            mc.getProfiler(),
+            false,
+            mc.world
+        );
+
+        // Con Iris activo, re-renderizamos nuestros elementos en el pase correcto
+        if (isIrisShadersEnabled())
+        {
+            renderCoolStuff(worldRenderContext);
+        }
     }
 
     public static void renderHud(DrawContext drawContext, float tickDelta)

@@ -113,11 +113,11 @@ public class Batcher2D
         this.fillRect(builder, matrix4f, x, y, w, h, color1, color2, color3, color4);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
         builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
         RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         this.context.draw();
     }
@@ -160,52 +160,6 @@ public class Batcher2D
         builder.vertex(matrix4f, x1b, y1b, 0).color(color);
         builder.vertex(matrix4f, x2b, y2b, 0).color(color);
         builder.vertex(matrix4f, x2a, y2a, 0).color(color);
-
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-
-        this.context.draw();
-    }
-
-    /**
-     * Draw an anti-aliased-looking line segment by rendering a thin quad between two points.
-     * The line is axis-independent (supports arbitrary angle) with given thickness in pixels.
-     */
-    public void line(float x1, float y1, float x2, float y2, float thickness, int color)
-    {
-        Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = Tessellator.getInstance().getBuffer();
-
-        float dx = x2 - x1;
-        float dy = y2 - y1;
-        float len = (float) Math.sqrt(dx * dx + dy * dy);
-
-        if (len <= 0.0001f)
-        {
-            // Fallback to a small box when points overlap
-            this.box(x1 - thickness * 0.5f, y1 - thickness * 0.5f, x1 + thickness * 0.5f, y1 + thickness * 0.5f, color);
-            return;
-        }
-
-        float nx = -dy / len; // perpendicular
-        float ny =  dx / len;
-        float hw = thickness * 0.5f;
-
-        float x1a = x1 + nx * hw;
-        float y1a = y1 + ny * hw;
-        float x1b = x1 - nx * hw;
-        float y1b = y1 - ny * hw;
-        float x2a = x2 + nx * hw;
-        float y2a = y2 + ny * hw;
-        float x2b = x2 - nx * hw;
-        float y2b = y2 - ny * hw;
-
-        builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        builder.vertex(matrix4f, x1a, y1a, 0).color(color).next();
-        builder.vertex(matrix4f, x1b, y1b, 0).color(color).next();
-        builder.vertex(matrix4f, x2b, y2b, 0).color(color).next();
-        builder.vertex(matrix4f, x2a, y2a, 0).color(color).next();
 
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
@@ -268,7 +222,7 @@ public class Batcher2D
         builder.vertex(matrix4f,right, top, 0).color(shadow);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
@@ -299,7 +253,7 @@ public class Batcher2D
         builder.vertex(matrix4f, (float) (x - Math.cos(a) * radius), (float) (y + Math.sin(a) * radius), 0F).color(shadow);
         }
         RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
@@ -317,7 +271,7 @@ public class Batcher2D
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         /* Draw opaque base */
         
@@ -467,7 +421,7 @@ public class Batcher2D
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
 
         
         this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
@@ -477,7 +431,7 @@ public class Batcher2D
 
     public void texturedBox(int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        this.texturedBox(mchorse.bbs_mod.client.BBSShaders::getPickerPreviewProgram, texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
+        this.texturedBox(GameRenderer::getPositionTexColorProgram, texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
     }
 
     public void texturedBox(Supplier<ShaderProgram> shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
@@ -487,7 +441,7 @@ public class Batcher2D
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        RenderSystem.setShader(shader.get());
+        RenderSystem.setShader(shader);
 
         
         this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
@@ -517,7 +471,7 @@ public class Batcher2D
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.setShaderTexture(0, texture.id);
 
         for (int i = 0, c = countX * countY; i < c; i ++)

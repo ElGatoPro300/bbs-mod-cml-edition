@@ -63,6 +63,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -255,6 +256,12 @@ public class BBSModClient implements ClientModInitializer
         }
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+        if (player == null || MinecraftClient.getInstance().currentScreen != null)
+        {
+            return;
+        }
+
         Morph morph = Morph.getMorph(player);
 
         /* Animation state trigger */
@@ -266,25 +273,22 @@ public class BBSModClient implements ClientModInitializer
             return;
 
         /* Animation state trigger for items*/
-        if (player != null)
+        ModelProperties main = getItemStackProperties(player.getStackInHand(Hand.MAIN_HAND));
+        ModelProperties offhand = getItemStackProperties(player.getStackInHand(Hand.OFF_HAND));
+
+        if (main != null && main.getForm() != null && main.getForm().findState(key, (form, state) ->
         {
-            ModelProperties main = getItemStackProperties(player.getStackInHand(Hand.MAIN_HAND));
-            ModelProperties offhand = getItemStackProperties(player.getStackInHand(Hand.OFF_HAND));
+            ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_MAIN_HAND_ITEM);
+            form.playState(state);
+        }))
+            return;
 
-            if (main != null && main.getForm() != null && main.getForm().findState(key, (form, state) ->
-            {
-                ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_MAIN_HAND_ITEM);
-                form.playState(state);
-            }))
-                return;
-
-            if (offhand != null && offhand.getForm() != null && offhand.getForm().findState(key, (form, state) ->
-            {
-                ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_OFF_HAND_ITEM);
-                form.playState(state);
-            }))
-                return;
-        }
+        if (offhand != null && offhand.getForm() != null && offhand.getForm().findState(key, (form, state) ->
+        {
+            ClientNetwork.sendFormTrigger(state.id.get(), ServerNetwork.STATE_TRIGGER_OFF_HAND_ITEM);
+            form.playState(state);
+        }))
+            return;
 
         /* Change form based on the hotkey */
         for (Form form : BBSModClient.getFormCategories().getRecentForms().getCategories().get(0).getForms())
@@ -408,10 +412,9 @@ public class BBSModClient implements ClientModInitializer
 
         WorldRenderEvents.AFTER_ENTITIES.register((context) ->
         {
-            if (!BBSRendering.isIrisShadersEnabled())
-            {
-                BBSRendering.renderCoolStuff(context);
-            }
+            // Siempre renderizamos nuestros elementos después de las entidades.
+            // Bajo Iris, este punto mantiene las matrices correctas del mundo.
+            BBSRendering.renderCoolStuff(context);
 
             if (BBSSettings.chromaSkyEnabled.get())
             {
@@ -444,7 +447,7 @@ public class BBSModClient implements ClientModInitializer
                         color.r, color.g, color.b, 1F
                     );
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
                     RenderSystem.disableDepthTest();
@@ -598,8 +601,6 @@ public class BBSModClient implements ClientModInitializer
         });
 
         BBSRendering.setup();
-        // Ensure BBS shader programs are initialized at client startup
-        BBSShaders.setup();
 
         /* Network */
         ClientNetwork.setup();
@@ -610,9 +611,8 @@ public class BBSModClient implements ClientModInitializer
 
         BlockEntityRendererRegistryImpl.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
 
-        // BuiltinItemRendererRegistry was removed in Fabric API 1.21.4.
-        // Item renderers are now registered via SpecialModelTypes; until migrated,
-        // keep custom renderers for UI workflows and previews only.
+        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();

@@ -84,7 +84,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
             Draw.fillBox(builder, stack, -outlineOffset, -outlineSize, -outlineOffset, outlineOffset, outlineSize, outlineOffset, 0, 0, 0);
             Draw.fillBox(builder, stack, -axisOffset, -axisSize, -axisOffset, axisOffset, axisSize, axisOffset, 0, 1, 0);
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             RenderSystem.disableDepthTest();
 
             BufferRenderer.drawWithGlobalProgram(builder.end());
@@ -98,7 +98,8 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
         MatrixStack stack = context.stack;
-        Matrix4f camInverse = new Matrix4f().set(new Matrix3f(RenderSystem.getModelViewMatrix())).invert();
+        // Derivar la rotación desde el contexto (soporta cámaras de replays/no jugador)
+        Matrix4f camInverse = new Matrix4f().set(new Matrix3f(context.camera.view)).invert();
 
         Camera camera = context.camera;
         double baseX = camera.position.x;
@@ -168,7 +169,6 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         Trail trail;
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         Matrix4f m = stack.peek().getPositionMatrix();
-
         m.set(camInverse);
         m.invert();
 
@@ -200,30 +200,30 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
                     float u1 = trail.tick / length;
                     float u2 = last.tick / length;
 
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
                     /* Other side */
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
                 }
                 else
                 {
                     float u1 = (current - trail.tick) / length;
                     float u2 = (current - last.tick) / length;
 
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
                     /* Other side */
-        builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
-        builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
-        builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
-        builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
+                    builder.vertex(m, (float) x4, (float) y4, (float) z4).texture(u2, 0F);
+                    builder.vertex(m, (float) x3, (float) y3, (float) z3).texture(u2, 1F);
+                    builder.vertex(m, (float) x2, (float) y2, (float) z2).texture(u1, 1F);
+                    builder.vertex(m, (float) x1, (float) y1, (float) z1).texture(u1, 0F);
                 }
             }
             else
@@ -232,7 +232,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
             }
         }
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableBlend();
         BufferRenderer.drawWithGlobalProgram(builder.end());

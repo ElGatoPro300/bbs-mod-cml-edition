@@ -11,18 +11,18 @@ import mchorse.bbs_mod.utils.MathUtils;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -86,15 +86,13 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
     {
         if (!command.isEmpty())
         {
-            this.getServer().getCommandManager().executeWithPrefix(this.getCommandSource((net.minecraft.server.world.ServerWorld) this.getWorld()), command);
+            this.getServer().getCommandManager().executeWithPrefix(this.getCommandSource(), command);
         }
     }
 
     @Override
     protected void initDataTracker(DataTracker.Builder builder)
-    {
-        // No custom tracked data
-    }
+    {}
 
     public GunProperties getProperties()
     {
@@ -135,11 +133,13 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         return this.properties.useTarget ? this.target : this.stub;
     }
 
+    @Override
     protected int getPermissionLevel()
     {
         return 2;
     }
 
+    @Override
     public boolean shouldReceiveFeedback()
     {
         return false;
@@ -268,6 +268,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
 
             this.setVelocity(v.multiply(friction).subtract(0, gravity, 0));
             this.setPosition(x, y, z);
+            this.checkBlockCollision();
         }
     }
 
@@ -324,19 +325,20 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         DamageSource source = this.getDamageSources().magic();
 
         int fireTicks = entity.getFireTicks();
+        boolean deflectsArrows = entity.getType().isIn(EntityTypeTags.DEFLECTS_PROJECTILES);
 
-        if (this.isOnFire())
+        if (this.isOnFire() && !deflectsArrows)
         {
             entity.setOnFireFor(5);
         }
 
-        if (entity.damage((net.minecraft.server.world.ServerWorld) this.getWorld(), source, (float) damage))
+        if (entity.damage(source, (float) damage))
         {
             if (entity instanceof LivingEntity livingEntity)
             {
                 if (this.properties.knockback > 0)
                 {
-                    double resistanceFactor = Math.max(0D, 1D - livingEntity.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
+                    double resistanceFactor = Math.max(0D, 1D - livingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
                     Vec3d punchVector = this.getVelocity().multiply(1D).normalize().multiply(this.properties.knockback * 0.6D * resistanceFactor);
 
                     if (punchVector.lengthSquared() > 0D)
@@ -345,10 +347,15 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
                     }
                 }
 
-                // Enchantment event hooks removed/changed in 1.21.1; skipping old calls
+                // EnchantmentHelper methods for damage events were removed in 1.21
+                // The enchantment system now handles this automatically through attribute modifiers
 
                 this.onHit(livingEntity);
             }
+        }
+        else if (deflectsArrows)
+        {
+            this.deflect();
         }
         else
         {

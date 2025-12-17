@@ -194,10 +194,7 @@ public class UIPlayerInventoryPanel extends UIOverlayPanel
                 int itemX = this.area.x + 1;
                 int itemY = this.area.y + 1;
                 context.batcher.getContext().drawItem(stack, itemX, itemY);
-<<<<<<< HEAD
-=======
                 context.batcher.getContext().drawItemInSlot(context.batcher.getFont().getRenderer(), stack, itemX, itemY);
->>>>>>> master
 
                 if (hovered)
                 {
@@ -244,8 +241,4 @@ public class UIPlayerInventoryPanel extends UIOverlayPanel
             super.render(context);
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master

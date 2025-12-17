@@ -1,17 +1,14 @@
 package mchorse.bbs_mod.mixin.client.iris;
 
-import java.util.Collections;
+import net.irisshaders.iris.uniforms.custom.CustomUniforms;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 import java.util.List;
 
+@Mixin(CustomUniforms.class)
 public interface CustomUniformsAccessor
 {
-    default List bbs$uniforms()
-    {
-        return Collections.emptyList();
-    }
-
-    default List bbs$uniformOrder()
-    {
-        return Collections.emptyList();
-    }
+    @Accessor(value = "uniformOrder", remap = false)
+    public List bbs$uniformOrder();
 }

@@ -23,11 +23,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtIo;
-<<<<<<< HEAD
 import net.minecraft.nbt.NbtSizeTracker;
-=======
-import net.minecraft.nbt.NbtTagSizeTracker;
->>>>>>> master
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
@@ -111,11 +107,7 @@ public class UIStructureFormPanel extends UIFormPanel<StructureForm>
         {
             if (MinecraftClient.getInstance().world != null)
             {
-<<<<<<< HEAD
-                Registry<Biome> reg = MinecraftClient.getInstance().world.getRegistryManager().getOrThrow(RegistryKeys.BIOME);
-=======
                 Registry<Biome> reg = MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.BIOME);
->>>>>>> master
                 for (Identifier id : reg.getIds())
                 {
                     ids.add(id.toString());
@@ -177,8 +169,4 @@ public class UIStructureFormPanel extends UIFormPanel<StructureForm>
         this.lightIntensity.setValue((double) intensity);
         // Pivot controls removed
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master

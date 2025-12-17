@@ -6,6 +6,7 @@ import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -213,6 +214,19 @@ public class BOBJModelVAO
 
     public void render(ShaderProgram shader, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
     {
+        // Guard against null shader: choose a safe fallback to avoid NPE
+        if (shader == null)
+        {
+            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+
+            if (fallback == null)
+            {
+                return;
+            }
+
+            shader = fallback;
+        }
+
         boolean hasShaders = BBSRendering.isIrisShadersEnabled();
 
         GL30.glVertexAttrib4f(Attributes.COLOR, r, g, b, a);

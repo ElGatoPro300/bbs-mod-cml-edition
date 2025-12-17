@@ -151,19 +151,11 @@ public class VirtualBlockRenderView implements BlockRenderView
 
         try
         {
-<<<<<<< HEAD
         this.biomeOverrideId = Identifier.of(biomeId);
             // Resolver preferentemente desde el mundo del cliente
             if (MinecraftClient.getInstance().world != null)
             {
-                Registry<Biome> reg = MinecraftClient.getInstance().world.getRegistryManager().getOrThrow(RegistryKeys.BIOME);
-=======
-            this.biomeOverrideId = new Identifier(biomeId);
-            // Resolver preferentemente desde el mundo del cliente
-            if (MinecraftClient.getInstance().world != null)
-            {
                 Registry<Biome> reg = MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.BIOME);
->>>>>>> master
                 this.biomeOverride = reg.get(this.biomeOverrideId);
             }
             else
@@ -235,20 +227,14 @@ public class VirtualBlockRenderView implements BlockRenderView
         return Math.min(lum, this.lightIntensity);
     }
 
-<<<<<<< HEAD
-=======
     @Override
->>>>>>> master
     public int getMaxLightLevel()
     {
         return 15;
     }
 
     // BlockRenderView
-<<<<<<< HEAD
-=======
     @Override
->>>>>>> master
     public float getBrightness(Direction direction, boolean shaded)
     {
         if (MinecraftClient.getInstance().world != null)
@@ -259,10 +245,7 @@ public class VirtualBlockRenderView implements BlockRenderView
         return 1.0F;
     }
 
-<<<<<<< HEAD
-=======
     @Override
->>>>>>> master
     public LightingProvider getLightingProvider()
     {
         if (MinecraftClient.getInstance().world != null)
@@ -366,34 +349,21 @@ public class VirtualBlockRenderView implements BlockRenderView
     // Método retirado: ahora usamos el mapa precomputado O(1)
 
     // HeightLimitView
-<<<<<<< HEAD
-=======
     @Override
->>>>>>> master
     public int getBottomY()
     {
         return this.bottomY;
     }
 
-<<<<<<< HEAD
-=======
     @Override
->>>>>>> master
     public int getTopY()
     {
         return this.topY;
     }
 
-<<<<<<< HEAD
-=======
     @Override
->>>>>>> master
     public int getHeight()
     {
         return this.topY - this.bottomY + 1;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> master

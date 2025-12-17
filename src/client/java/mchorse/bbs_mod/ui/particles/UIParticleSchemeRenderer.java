@@ -14,11 +14,11 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import org.joml.Matrix3f;
+import net.minecraft.client.util.BufferAllocator;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -70,14 +70,11 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
 
         stack.push();
         stack.loadIdentity();
-        // En 1.21 no existe getInverseViewRotationMatrix; extraemos la rotación del ModelView
-        Matrix3f rotation = new Matrix3f(RenderSystem.getModelViewMatrix());
-        Matrix4f invRotation = new Matrix4f().set(rotation).invert();
-        stack.multiplyPositionMatrix(invRotation);
+        stack.multiplyPositionMatrix(this.camera.view);
 
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR_LIGHT, mchorse.bbs_mod.client.BBSShaders::getPickerParticlesProgram, stack, OverlayTexture.DEFAULT_UV, context.getTransition());
+        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR, GameRenderer::getPositionTexColorProgram, stack, OverlayTexture.DEFAULT_UV, context.getTransition());
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
 
@@ -94,27 +91,31 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
     private void renderPlane(UIContext context, float a, float b, float c, float d)
     {
         Matrix4f matrix = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
-        final float alpha = 0.5F;
 
-        this.calculate(0, 0, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(0, 1, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(1, 0, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+        try (BufferAllocator allocator = new BufferAllocator(1536))
+        {
+            BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+            final float alpha = 0.5F;
 
-        this.calculate(1, 0, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(0, 1, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
-        this.calculate(1, 1, a, b, c, d);
-        builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(0, 0, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(0, 1, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(1, 0, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
-        RenderSystem.disableCull();
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-        RenderSystem.enableCull();
+            this.calculate(1, 0, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(0, 1, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+            this.calculate(1, 1, a, b, c, d);
+            builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
+
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
+        }
     }
 
     private void calculate(float i, float j, float a, float b, float c, float d)

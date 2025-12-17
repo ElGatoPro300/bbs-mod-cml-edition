@@ -20,11 +20,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtIo;
-<<<<<<< HEAD
 import net.minecraft.nbt.NbtSizeTracker;
-=======
-import net.minecraft.nbt.NbtTagSizeTracker;
->>>>>>> master
 import net.minecraft.client.MinecraftClient;
 
 /**
@@ -93,11 +89,7 @@ public class UIPivotSettingsKeyframeFactory extends UIKeyframeFactory<PivotSetti
 
         try (java.io.InputStream is = BBSMod.getProvider().getAsset(Link.assets(path)))
         {
-<<<<<<< HEAD
         NbtCompound root = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
-=======
-            NbtCompound root = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
->>>>>>> master
 
             int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
             int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;

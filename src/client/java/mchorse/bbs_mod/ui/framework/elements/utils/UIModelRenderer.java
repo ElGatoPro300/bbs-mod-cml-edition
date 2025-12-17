@@ -217,7 +217,7 @@ public abstract class UIModelRenderer extends UIElement
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.camera.projection, null);
+        RenderSystem.setProjectionMatrix(this.camera.projection, VertexSorter.BY_Z);
 
         /* Rendering begins... */
         stack.push();
@@ -349,7 +349,7 @@ public abstract class UIModelRenderer extends UIElement
         Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPickerPreviewProgram());
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         for (int x = 0; x <= 10; x ++)
         {
@@ -382,4 +382,3 @@ public abstract class UIModelRenderer extends UIElement
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 }
- 

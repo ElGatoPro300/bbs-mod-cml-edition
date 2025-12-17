@@ -5,7 +5,6 @@ import mchorse.bbs_mod.actions.types.AttackActionClip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LivingEntityMixin
 {
     @Inject(method = "applyDamage", at = @At("HEAD"))
-    public void onApplyDamage(ServerWorld world, DamageSource source, float amount, CallbackInfo info)
+    public void onApplyDamage(DamageSource source, float amount, CallbackInfo info)
     {
         Entity attacker = source.getAttacker();
 

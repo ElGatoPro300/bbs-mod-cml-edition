@@ -1043,12 +1043,9 @@
     "bbs.ui.transforms.uniform_scale": "Переключить равномерный масштаб",
     "bbs.ui.upload": "Загрузить",
     "bbs.ui.video_settings.args": "Аргумента кодировшика",
-<<<<<<< HEAD
-=======
     "bbs.ui.video_settings.audio": "Экспортировать аудио",
     "bbs.ui.video_settings.audio-tooltip": "Эта опция позволяет экспортировать аудио клипы в одну дорожку и склеивает её с записанным видео (без Майнкрафт звуков)",
     "bbs.ui.video_settings.audio_args": "Аргумента кодировшика (аудио)",
->>>>>>> master
     "bbs.ui.video_settings.edit": "Редактировать настройки...",
     "bbs.ui.video_settings.frame_rate": "Частота кадров",
     "bbs.ui.video_settings.height": "Высота",

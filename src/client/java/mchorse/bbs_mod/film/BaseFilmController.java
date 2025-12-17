@@ -176,8 +176,6 @@ public abstract class BaseFilmController
                 {
                     Draw.coolerAxes(stack, 0.25F, 0.01F, 0.26F, 0.02F);
                 }
-<<<<<<< HEAD
-=======
 
                 if (context.map == null)
                 {
@@ -188,7 +186,6 @@ public abstract class BaseFilmController
                     Gizmo.INSTANCE.renderStencil(stack, context.map);
                 }
 
->>>>>>> master
                 RenderSystem.enableDepthTest();
                 stack.pop();
             }
@@ -583,7 +580,10 @@ public abstract class BaseFilmController
                                 accessor.bbs$setIsSneakingPose(sneaking);
                             }
 
-                            // Client input 'sneaking' flag removed in 1.21.4; already handled via setSneaking
+                            if (player instanceof ClientPlayerEntity playerEntity)
+                            {
+                                playerEntity.input.sneaking = sneaking;
+                            }
 
                             player.fallDistance = replay.keyframes.fall.interpolate(ticks).floatValue();
                         }

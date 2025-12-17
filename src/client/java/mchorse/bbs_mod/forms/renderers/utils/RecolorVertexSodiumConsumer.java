@@ -1,10 +1,12 @@
 package mchorse.bbs_mod.forms.renderers.utils;
 
 import mchorse.bbs_mod.utils.colors.Color;
+import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexConsumer;
 import org.lwjgl.system.MemoryStack;
 
-public class RecolorVertexSodiumConsumer extends RecolorVertexConsumer
+public class RecolorVertexSodiumConsumer extends RecolorVertexConsumer implements VertexBufferWriter
 {
     public RecolorVertexSodiumConsumer(VertexConsumer consumer, Color color)
     {
@@ -13,5 +15,12 @@ public class RecolorVertexSodiumConsumer extends RecolorVertexConsumer
         newColor = color;
     }
 
-    // Sodium integration removed for 1.21.4 compile; VertexBufferWriter is optional
+    @Override
+    public void push(MemoryStack memoryStack, long l, int i, VertexFormat vertexFormat)
+    {
+        if (this.consumer instanceof VertexBufferWriter writer)
+        {
+            writer.push(memoryStack, l, i, vertexFormat);
+        }
+    }
 }

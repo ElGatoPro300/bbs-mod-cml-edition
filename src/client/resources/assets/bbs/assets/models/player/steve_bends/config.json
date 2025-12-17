@@ -8,10 +8,6 @@
 	"scale": [0.9375, 0.9375, 0.9375],
 	"look_at": {
 		"head": "head",
-<<<<<<< HEAD
-		"anchor": "anchor",
-=======
->>>>>>> master
 		"pitch": true,
 		"head_limit": 45
 	},

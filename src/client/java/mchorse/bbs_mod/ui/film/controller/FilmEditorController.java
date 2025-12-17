@@ -245,14 +245,9 @@ public class FilmEditorController extends BaseFilmController
         }
 
         return super.getFilmControllerContext(context, replay, entity)
-<<<<<<< HEAD
             .transition(this.getTransition(entity, context.tickCounter().getTickDelta(false)))
-            .bone(bone == null ? null : bone.a, bone != null && bone.b);
-=======
-            .transition(this.getTransition(entity, context.tickDelta()))
             .bone(aBone, local)
             .bone2(aBone2, local2);
->>>>>>> master
     }
 
     private boolean isCurrent(IEntity entity)

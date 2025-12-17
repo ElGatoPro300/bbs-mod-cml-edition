@@ -13,26 +13,25 @@ import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEntity, EntityRenderState>
+public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEntity>
 {
-    private GunProjectileEntity currentEntity;
-    private float currentTickDelta;
     public GunProjectileEntityRenderer(EntityRendererFactory.Context ctx)
     {
         super(ctx);
     }
 
+    @Override
     public Identifier getTexture(GunProjectileEntity entity)
     {
-        return Identifier.of("minecraft:textures/entity/player/wide/steve.png");
+        return Identifier.of("minecraft", "textures/entity/player/wide/steve.png");
     }
 
+    @Override
     public void render(GunProjectileEntity projectile, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
     {
         matrices.push();
@@ -57,50 +56,6 @@ public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEnt
 
         matrices.pop();
 
-        // Skip base rendering; custom form rendering handles visuals.
-    }
-
-    public EntityRenderState createRenderState()
-    {
-        return new EntityRenderState();
-    }
-
-    public void updateRenderState(GunProjectileEntity entity, float tickDelta, EntityRenderState state)
-    {
-        this.currentEntity = entity;
-        this.currentTickDelta = tickDelta;
-    }
-
-    public void render(EntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
-    {
-        GunProjectileEntity projectile = this.currentEntity;
-        float tickDelta = this.currentTickDelta;
-
-        if (projectile == null)
-        {
-            return;
-        }
-
-        matrices.push();
-
-        GunProperties properties = projectile.getProperties();
-        int out = properties.lifeSpan - 2;
-
-        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, projectile.prevYaw, projectile.getYaw());
-        float pitch = MathHelper.lerpAngleDegrees(tickDelta, projectile.prevPitch, projectile.getPitch());
-        float scale = Lerps.envelope(projectile.age + tickDelta, 0, properties.fadeIn, out - properties.fadeOut, out);
-
-        if (properties.yaw) matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(bodyYaw));
-        if (properties.pitch) matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-pitch));
-        matrices.scale(scale, scale, scale);
-        MatrixStackUtils.applyTransform(matrices, properties.projectileTransform);
-
-        RenderSystem.enableDepthTest();
-        FormUtilsClient.render(projectile.getForm(), new FormRenderingContext()
-            .set(FormRenderType.ENTITY, projectile.getEntity(), matrices, light, OverlayTexture.DEFAULT_UV, tickDelta)
-            .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-        RenderSystem.disableDepthTest();
-
-        matrices.pop();
+        super.render(projectile, yaw, tickDelta, matrices, vertexConsumers, light);
     }
 }

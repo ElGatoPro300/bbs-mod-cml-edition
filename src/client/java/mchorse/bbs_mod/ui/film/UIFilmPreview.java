@@ -222,15 +222,7 @@ public class UIFilmPreview extends UIElement
     private void renderAudio()
     {
         Clips camera = this.panel.getData().camera;
-        List<AudioClip> audioClips = new ArrayList<>();
-
-        for (Clip clip : camera.get())
-        {
-            if (clip instanceof AudioClip audioClip)
-            {
-                audioClips.add(audioClip);
-            }
-        }
+        List<AudioClip> audioClips = camera.getClips(AudioClip.class);
 
         String name = StringUtils.createTimestampFilename() + ".wav";
         File videos = BBSRendering.getVideoFolder();
@@ -389,10 +381,10 @@ public class UIFilmPreview extends UIElement
         stack.rotate(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
         stack.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
         stack.scale(-1F, -1F, -1F);
-        // applyModelViewMatrix removed in 1.21.4
+        RenderSystem.applyModelViewMatrix();
         RenderSystem.renderCrosshair(10);
 
         stack.popMatrix();
-        // applyModelViewMatrix removed in 1.21.4
+        RenderSystem.applyModelViewMatrix();
     }
 }

@@ -1,9 +1,6 @@
 {
-<<<<<<< HEAD
-=======
 	"texture": "assets:models/player/steve_3d/steve.png",
 	"pose_group": "player/steve",
->>>>>>> master
 	"procedural": true,
 	"culling": false,
 	"items_main": ["right_arm_item"],
@@ -11,10 +8,6 @@
 	"scale": [0.9375, 0.9375, 0.9375],
 	"look_at": {
 		"head": "head",
-<<<<<<< HEAD
-		"anchor": "anchor",
-=======
->>>>>>> master
 		"pitch": true,
 		"head_limit": 45
 	},

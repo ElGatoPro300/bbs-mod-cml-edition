@@ -8,6 +8,7 @@ import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.items.GunZoom;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import org.objectweb.asm.Opcodes;
@@ -36,13 +37,13 @@ public class GameRendererMixin
      * This injection replaces the camera FOV when camera controller takes over
      */
     @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
-    public void onGetFov(CallbackInfoReturnable<Float> info)
+    public void onGetFov(CallbackInfoReturnable<Double> info)
     {
         GunZoom gunZoom = BBSModClient.getGunZoom();
 
         if (gunZoom != null)
         {
-            info.setReturnValue(gunZoom.getFOV(info.getReturnValue()));
+            info.setReturnValue((double) gunZoom.getFOV(info.getReturnValue().floatValue()));
 
             return;
         }
@@ -51,7 +52,7 @@ public class GameRendererMixin
 
         if (controller.getCurrent() != null && !BBSRendering.isIrisShadowPass())
         {
-            info.setReturnValue((float) controller.getFOV());
+            info.setReturnValue(controller.getFOV());
         }
     }
 
@@ -93,12 +94,9 @@ public class GameRendererMixin
     {
         BBSRendering.onWorldRenderEnd();
     }
-<<<<<<< HEAD
-}
-=======
 
     @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;hudHidden:Z", opcode = Opcodes.GETFIELD, ordinal = 0))
-    private void onBeforeHudRendering(float tickDelta, long startTime, boolean tick, CallbackInfo info)
+    private void onBeforeHudRendering(RenderTickCounter tickCounter, boolean tick, CallbackInfo info)
     {
         ICameraController current = BBSModClient.getCameraController().getCurrent();
 
@@ -108,4 +106,3 @@ public class GameRendererMixin
         }
     }
 }
->>>>>>> master
