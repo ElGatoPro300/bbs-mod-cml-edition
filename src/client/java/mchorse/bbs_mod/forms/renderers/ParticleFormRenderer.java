@@ -134,13 +134,37 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
             }
             else
             {
-                emitter.setupCameraProperties(context.camera);
+                if (context.modelRenderer)
+                {
+                    float originalPitch = context.camera.rotation.x;
+                    float originalYaw = context.camera.rotation.y;
+                    double originalX = context.camera.position.x;
+                    double originalY = context.camera.position.y;
+                    double originalZ = context.camera.position.z;
+
+                    context.camera.rotation.set(0, 0, 0);
+                    context.camera.position.set(0, 0, 0);
+
+                    emitter.setupCameraProperties(context.camera);
+
+                    context.camera.rotation.x = originalPitch;
+                    context.camera.rotation.y = originalYaw;
+                    context.camera.position.set(originalX, originalY, originalZ);
+                }
+                else
+                {
+                    emitter.setupCameraProperties(context.camera);
+                }
             }
 
             Matrix4f modelMatrix = new Matrix4f(context.stack.peek().getPositionMatrix());
+
             Vector3d translation = new Vector3d(modelMatrix.getTranslation(Vectors.TEMP_3F));
             
-            translation.add(context.camera.position.x, context.camera.position.y, context.camera.position.z);
+            if (!context.modelRenderer)
+            {
+                translation.add(context.camera.position.x, context.camera.position.y, context.camera.position.z);
+            }
 
             GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
 

@@ -393,6 +393,13 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
                 .color(particle.r, particle.g, particle.b, particle.a)
                 .light(this.light);
         }
+        else if (format == VertexFormats.POSITION_TEXTURE_COLOR)
+        {
+            /* VertexFormats.POSITION_TEXTURE_COLOR */
+            builder.vertex(matrix, vertex.x, vertex.y, vertex.z)
+                .texture(u, v)
+                .color(particle.r, particle.g, particle.b, particle.a);
+        }
         else
         {
             /* VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL */
