@@ -78,6 +78,7 @@ public class UIKeys
     public static final IKey CAMERA_PANELS_AUDIO_EXTEND_DURATION = L10n.lang("bbs.ui.camera.panels.audio.extend_duration");
     public static final IKey CAMERA_PANELS_AUDIO_OFFSET = L10n.lang("bbs.ui.camera.panels.audio.offset");
     public static final IKey CAMERA_PANELS_AUDIO_PICK_AUDIO = L10n.lang("bbs.ui.camera.panels.audio.pick_audio");
+    public static final IKey CAMERA_PANELS_AUDIO_VOLUME = L10n.lang("bbs.ui.camera.panels.audio.volume");
     public static final IKey CAMERA_PANELS_BLOCK = L10n.lang("bbs.ui.camera.panels.block");
     public static final IKey CAMERA_PANELS_CONTEXT_COPY_ANGLE = L10n.lang("bbs.ui.camera.panels.context.copy_angle");
     public static final IKey CAMERA_PANELS_CONTEXT_COPY_POINT = L10n.lang("bbs.ui.camera.panels.context.copy_point");
@@ -273,6 +274,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_ANIMATION_TO_POSE_ONLY_KEYFRAMES_TOOLTIP = L10n.lang("bbs.ui.film.replay.animation_to_pose.only_keyframes-tooltip");
     public static final IKey FILM_REPLAY_ANIMATION_TO_POSE_STEP = L10n.lang("bbs.ui.film.replay.animation_to_pose.step");
     public static final IKey FILM_REPLAY_ANIMATION_TO_POSE_TITLE = L10n.lang("bbs.ui.film.replay.animation_to_pose.title");
+    public static final IKey FILM_REPLAY_AXES_PREVIEW = L10n.lang("bbs.ui.film.replay.axes_preview");
     public static final IKey FILM_REPLAY_CONTEXT_ADD = L10n.lang("bbs.ui.film.replay.context.add");
     public static final IKey FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES = L10n.lang("bbs.ui.film.replay.context.animation_to_keyframes");
     public static final IKey FILM_REPLAY_CONTEXT_MOVE_HERE = L10n.lang("bbs.ui.film.replay.context.move_here");
@@ -292,6 +294,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_ORBIT_ORBIT = L10n.lang("bbs.ui.film.replay.orbit.orbit");
     public static final IKey FILM_REPLAY_ORBIT_THIRD_PERSON_BACK = L10n.lang("bbs.ui.film.replay.orbit.third_person_back");
     public static final IKey FILM_REPLAY_ORBIT_THIRD_PERSON_FRONT = L10n.lang("bbs.ui.film.replay.orbit.third_person_front");
+    public static final IKey FILM_REPLAY_PICK_AXES_PREVIEW = L10n.lang("bbs.ui.film.replay.pick_axes_preview");
     public static final IKey FILM_REPLAY_RECORD = L10n.lang("bbs.ui.film.replay.record");
     public static final IKey FILM_REPLAY_RELATIVE_TOOLTIP = L10n.lang("bbs.ui.film.replay.relative-tooltip");
     public static final IKey FILM_REPLAY_REPLAY = L10n.lang("bbs.ui.film.replay.replay");
@@ -975,6 +978,7 @@ public class UIKeys
     public static final IKey GIZMOS_KEYS_FREE_ROTATE_ZY = L10n.lang("bbs.ui.gizmos.keys.free_rotate_zy");
     /* Gizmo design mode labels */
     public static final IKey GIZMOS_DESIGN_DEFAULT = L10n.lang("bbs.gizmos.design.default");
+    public static final IKey GIZMOS_DESIGN_CML = L10n.lang("bbs.gizmos.design.cml");
     public static final IKey GIZMOS_DESIGN_CLASSIC = L10n.lang("bbs.gizmos.design.classic");
     public static final IKey GIZMOS_DESIGN_BLOCKBENCH = L10n.lang("bbs.gizmos.design.blockbench");
 

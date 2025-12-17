@@ -149,7 +149,7 @@ public class UIPropTransform extends UITransform
          * y se desactiva el flujo de edición por teclado/ratón de UIPropTransform. */
         this.keys().register(Keys.GIZMOS_TRANSLATE, () ->
         {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().setMode(BoneGizmoSystem.Mode.TRANSLATE);
             }
@@ -161,7 +161,7 @@ public class UIPropTransform extends UITransform
 
         this.keys().register(Keys.GIZMOS_SCALE, () ->
         {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().setMode(BoneGizmoSystem.Mode.SCALE);
             }
@@ -173,7 +173,7 @@ public class UIPropTransform extends UITransform
 
         this.keys().register(Keys.GIZMOS_ROTATE, () ->
         {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().setMode(BoneGizmoSystem.Mode.ROTATE);
             }
@@ -186,7 +186,7 @@ public class UIPropTransform extends UITransform
         /* Alternar modo de gizmo (ciclo entre Trasladar/Escalar/Rotar) */
         this.keys().register(Keys.GIZMOS_TOGGLE_ENABLED, () ->
         {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().cycleMode(true);
             }
@@ -199,24 +199,24 @@ public class UIPropTransform extends UITransform
         /* Pivote (solo cuando gizmos están activados) */
         this.keys().register(Keys.GIZMOS_PIVOT, () ->
         {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().setMode(BoneGizmoSystem.Mode.PIVOT);
             }
-        }).active(() -> BBSSettings.modelBlockGizmosEnabled.get()).category(UIKeys.GIZMOS_KEYS_CATEGORY);
+        }).active(() -> BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0).category(UIKeys.GIZMOS_KEYS_CATEGORY);
 
         /* Toggle entre canal de rotación principal (R) y secundario (R2) para el gizmo */
         this.keys().register(Keys.GIZMOS_TOGGLE_ROTATION_CHANNEL, () ->
         {
-            if (BBSSettings.modelBlockGizmosEnabled.get())
+            if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
             {
                 BoneGizmoSystem.get().toggleRotationChannel();
             }
-        }).active(() -> BBSSettings.modelBlockGizmosEnabled.get()).category(UIKeys.GIZMOS_KEYS_CATEGORY);
+        }).active(() -> BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0).category(UIKeys.GIZMOS_KEYS_CATEGORY);
 
         /* Las teclas de eje X/Y/Z solo aplican cuando se está editando
          * y los gizmos están desactivados (flujo clásico). */
-        Supplier<Boolean> axisActive = () -> this.editing && !BBSSettings.modelBlockGizmosEnabled.get();
+        Supplier<Boolean> axisActive = () -> this.editing && (!BBSSettings.gizmos.get() || BBSSettings.gizmoDesign.get() == 0);
         this.keys().register(Keys.TRANSFORMATIONS_X, () -> this.axis = Axis.X).active(axisActive).category(UIKeys.TRANSFORMS_KEYS_CATEGORY);
         this.keys().register(Keys.TRANSFORMATIONS_Y, () -> this.axis = Axis.Y).active(axisActive).category(UIKeys.TRANSFORMS_KEYS_CATEGORY);
         this.keys().register(Keys.TRANSFORMATIONS_Z, () -> this.axis = Axis.Z).active(axisActive).category(UIKeys.TRANSFORMS_KEYS_CATEGORY);
@@ -319,7 +319,7 @@ public class UIPropTransform extends UITransform
         }
         else if (this.mode == 2)
         {
-            return this.local && BBSSettings.gizmos.get() ? this.transform.rotate2 : this.transform.rotate;
+            return this.local && BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 ? this.transform.rotate2 : this.transform.rotate;
         }
 
         return this.transform.translate;
@@ -486,9 +486,9 @@ public class UIPropTransform extends UITransform
             {
                 int dx = context.mouseX - this.lastX;
                 Vector3f vector = this.getValue();
-                boolean all = Window.isAltPressed();
-
-                float factor = this.mode == 0 ? 0.05F : (this.mode == 1 ? 0.01F : 0.5F);
+                boolean all = this.mode == 1 && Window.isCtrlPressed();
+                UITrackpad reference = this.mode == 0 ? this.tx : (this.mode == 1 ? this.sx : this.rx);
+                float factor = (float) reference.getValueModifier();
 
                 if (this.local && this.mode == 0)
                 {
@@ -566,6 +566,14 @@ public class UIPropTransform extends UITransform
             }
             
             return super.subMouseClicked(context);
+        }
+
+        @Override
+        protected boolean subMouseScrolled(UIContext context)
+        {
+            UITrackpad.updateAmplifier(context);
+
+            return true;
         }
     }
 }

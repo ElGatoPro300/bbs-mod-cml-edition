@@ -44,6 +44,7 @@ public class GunItemRenderer
 
             item.expiration -= 1;
             item.properties.update(item.formEntity);
+            item.formEntity.update();
         }
     }
 

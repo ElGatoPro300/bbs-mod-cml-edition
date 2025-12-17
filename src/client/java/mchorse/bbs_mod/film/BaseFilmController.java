@@ -21,6 +21,7 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
@@ -150,7 +151,7 @@ public abstract class BaseFilmController
         MatrixStackUtils.multiply(stack, target);
         FormUtilsClient.render(form, formContext);
 
-        if (UIBaseMenu.renderAxes && context.bone != null)
+        if (UIBaseMenu.renderAxes)
         {
             Form root = FormUtils.getRoot(form);
             Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, context.local ? null : context.bone, transition);
@@ -167,7 +168,7 @@ public abstract class BaseFilmController
             {
                 stack.push();
                 MatrixStackUtils.multiply(stack, matrix);
-                if (BBSSettings.modelBlockGizmosEnabled.get())
+                if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
                 {
                     BoneGizmoSystem.get().render3D(stack);
                 }
@@ -191,11 +192,14 @@ public abstract class BaseFilmController
                 RenderSystem.enableDepthTest();
                 stack.pop();
             }
+            if (context.bone != null) renderAxes(context.bone, context.local, context.map, form, entity, transition, stack);
+            if (context.bone2 != null && context.map == null) renderAxes(context.bone2, context.local2, context.map, form, entity, transition, stack);
         }
 
         stack.pop();
 
-        if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F)
+        /* No renderizar sombra cuando el modelo está oculto (visible=false) */
+        if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F && form.visible.get())
         {
             stack.push();
             stack.translate(position.x - cx, position.y - cy, position.z - cz);
@@ -216,6 +220,32 @@ public abstract class BaseFilmController
         }
 
         RenderSystem.enableDepthTest();
+    }
+
+    private static void renderAxes(String bone, boolean local, StencilMap stencilMap, Form form, IEntity entity, float transition, MatrixStack stack)
+    {
+        Form root = FormUtils.getRoot(form);
+        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, local ? null : bone, transition);
+
+        Matrix4f matrix = map.get(bone);
+
+        if (matrix != null)
+        {
+            stack.push();
+            MatrixStackUtils.multiply(stack, matrix);
+
+            if (stencilMap == null)
+            {
+                Gizmo.INSTANCE.render(stack);
+            }
+            else
+            {
+                Gizmo.INSTANCE.renderStencil(stack, stencilMap);
+            }
+
+            RenderSystem.enableDepthTest();
+            stack.pop();
+        }
     }
 
     public static Pair<Matrix4f, Float> getTotalMatrix(IntObjectMap<IEntity> entities, Anchor value, Matrix4f defaultMatrix, double cx, double cy, double cz, float transition, int i)
@@ -280,12 +310,27 @@ public abstract class BaseFilmController
                 }
 
                 Map<String, Matrix4f> map = FormUtilsClient.getRenderer(form).collectMatrices(entity, null, transition);
-                // Preferir el origen del hueso para anclajes en replays/overlays
-                Matrix4f matrix = map.get(anchor.attachment + "#origin");
+                // Normalizar el nombre del adjunto para ignorar sufijo "#origin" en anclajes antiguos
+                String core = anchor.attachment == null ? null : anchor.attachment.replace("#origin", "");
+                Matrix4f matrix;
 
-                if (matrix == null)
+                if (anchor.translate)
                 {
-                    matrix = map.get(anchor.attachment);
+                    // Heredar solo traslación: preferir matriz de origen
+                    matrix = map.get(core + "#origin");
+                    if (matrix == null)
+                    {
+                        matrix = map.get(core);
+                    }
+                }
+                else
+                {
+                    // Heredar rotación y traslación: preferir matriz completa
+                    matrix = map.get(core);
+                    if (matrix == null)
+                    {
+                        matrix = map.get(core + "#origin");
+                    }
                 }
 
                 if (matrix != null)

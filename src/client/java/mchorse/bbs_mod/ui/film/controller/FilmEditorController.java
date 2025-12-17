@@ -225,10 +225,34 @@ public class FilmEditorController extends BaseFilmController
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
     {
         Pair<String, Boolean> bone = this.isCurrent(entity) && !this.controller.panel.recorder.isRecording() ? this.controller.getBone() : null;
+        String aBone = bone == null ? null : bone.a;
+        boolean local = bone != null && bone.b;
+        String aBone2 = null;
+        boolean local2 = false;
+
+        if (replay.axesPreview.get())
+        {
+            aBone2 = replay.axesPreviewBone.get();
+            local2 = true;
+        }
+
+        if (this.controller.panel.recorder.isRecording())
+        {
+            aBone = null;
+            local = false;
+            aBone2 = null;
+            local2 = false;
+        }
 
         return super.getFilmControllerContext(context, replay, entity)
+<<<<<<< HEAD
             .transition(this.getTransition(entity, context.tickCounter().getTickDelta(false)))
             .bone(bone == null ? null : bone.a, bone != null && bone.b);
+=======
+            .transition(this.getTransition(entity, context.tickDelta()))
+            .bone(aBone, local)
+            .bone2(aBone2, local2);
+>>>>>>> master
     }
 
     private boolean isCurrent(IEntity entity)
