@@ -1074,9 +1074,10 @@ public class UIFilmController extends UIElement
                     {
                         Matrix4f originRaw = new Matrix4f(targetMatrix).mul(boneMatrix);
                         Matrix4f origin = MatrixStackUtils.stripScale(originRaw);
+                        Area fullScreen = new Area(0, 0, context.menu.width, context.menu.height);
 
-                        BoneGizmoSystem.get().update(context, area, origin, this.panel.lastProjection, this.panel.lastView, activeTransform);
-                        BoneGizmoSystem.get().renderOverlay(context.render, area);
+                        BoneGizmoSystem.get().update(context, fullScreen, origin, this.panel.lastProjection, BBSRendering.camera, activeTransform);
+                        BoneGizmoSystem.get().renderOverlay(context.render, fullScreen);
                     }
                 }
             }
