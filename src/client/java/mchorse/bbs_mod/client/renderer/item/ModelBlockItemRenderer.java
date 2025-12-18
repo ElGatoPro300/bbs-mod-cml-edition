@@ -63,7 +63,7 @@ public class ModelBlockItemRenderer // implements BuiltinItemRendererRegistry.Dy
                 // com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
                 net.minecraft.client.render.DiffuseLighting.enableGuiDepthLighting();
                 /* Usar luz máxima para que el modelo como ítem no se vea oscuro */
-                int maxLight = net.minecraft.client.render.LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
+                int maxLight = 15728880; // LightmapTextureManager.pack(15, 15)
                 FormUtilsClient.render(form, new FormRenderingContext()
                     .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
