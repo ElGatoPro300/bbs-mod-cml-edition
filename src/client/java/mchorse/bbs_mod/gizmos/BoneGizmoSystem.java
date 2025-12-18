@@ -111,6 +111,59 @@ public class BoneGizmoSystem
         return INSTANCE;
     }
 
+    /**
+     * Inicia el arrastre desde un índice de stencil (usado por el editor de películas).
+     */
+    public boolean start(int index, int mouseX, int mouseY, UIPropTransform target)
+    {
+        this.target = target;
+        Axis axis = null;
+        Plane plane = null;
+
+        if (index == Gizmo.STENCIL_X) axis = Axis.X;
+        else if (index == Gizmo.STENCIL_Y) axis = Axis.Y;
+        else if (index == Gizmo.STENCIL_Z) axis = Axis.Z;
+        else if (index == Gizmo.STENCIL_XY) plane = Plane.XY;
+        else if (index == Gizmo.STENCIL_XZ) plane = Plane.ZX;
+        else if (index == Gizmo.STENCIL_ZY) plane = Plane.YZ;
+
+        if (axis == null && plane == null)
+        {
+            return false;
+        }
+
+        this.dragging = true;
+        this.activeAxis = axis;
+        this.activePlane = plane;
+        
+        /* Determinar submodo activo (especialmente para UNIVERSAL) */
+        this.activeSubMode = (this.mode == Mode.UNIVERSAL) ? Mode.ROTATE : this.mode;
+        if (this.activePlane != null && this.mode == Mode.UNIVERSAL)
+        {
+             this.activeSubMode = Mode.TRANSLATE;
+        }
+
+        this.dragStartX = mouseX;
+        this.dragStartY = mouseY;
+        this.lastX = mouseX;
+        this.lastY = mouseY;
+        this.accumDx = 0F;
+        this.accumDy = 0F;
+        
+        if (this.target != null && this.target.getTransform() != null)
+        {
+            this.dragStart.copy(this.target.getTransform());
+        }
+
+        /* No podemos calcular rotateSign preciso sin matrices aquí, asumimos 1F */
+        this.rotateSign = 1F; 
+        
+        /* Evitar reinicio en update() */
+        this.lastMouseDown = true; 
+
+        return true;
+    }
+
     /** Establece el modo del gizmo directamente (T/R/S) */
     public void setMode(Mode mode)
     {
@@ -525,6 +578,7 @@ public class BoneGizmoSystem
                 boolean mouseDown = Window.isMouseButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
                 if (!this.dragging && mouseDown && !this.lastMouseDown && this.hoveredAxis != null)
                 {
+                    System.out.println("BoneGizmoSystem: Starting drag. Axis=" + this.hoveredAxis);
                     this.dragging = true;
                     this.activeAxis = this.hoveredAxis;
         this.activeSubMode = (this.mode == Mode.UNIVERSAL) ? (this.hoveredSubMode != null ? this.hoveredSubMode : Mode.ROTATE) : this.mode;
@@ -1151,6 +1205,108 @@ public class BoneGizmoSystem
     private float clampScale(float v)
     {
         return Math.max(0.001F, v);
+    }
+
+    public void renderStencil(MatrixStack stack, mchorse.bbs_mod.ui.framework.elements.utils.StencilMap map)
+    {
+        if (BBSSettings.gizmoDesign.get() == 0)
+        {
+            return;
+        }
+
+        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+
+        float rX = Gizmo.STENCIL_X / 255F;
+        float rY = Gizmo.STENCIL_Y / 255F;
+        float rZ = Gizmo.STENCIL_Z / 255F;
+        float rXY = Gizmo.STENCIL_XY / 255F;
+        float rYZ = Gizmo.STENCIL_ZY / 255F;
+        float rZX = Gizmo.STENCIL_XZ / 255F;
+
+        int design = BBSSettings.gizmoDesign.get();
+        boolean blockbench = (design == 2);
+        boolean thinDesign = (design == 1) || blockbench;
+        float baseLength = blockbench ? 0.35F : 0.25F;
+        float axesScale = BBSSettings.axesScale.get();
+        float length = baseLength * this.gizmoScale * axesScale;
+        float thickness = (blockbench ? 0.010F : (thinDesign ? 0.012F : 0.02F)) * this.gizmoScale * axesScale;
+        float slabThick = (blockbench ? 0.010F : (thinDesign ? 0.012F : 0.018F)) * this.gizmoScale * axesScale;
+        float cubeBig = 0.045F * this.gizmoScale * axesScale;
+        float sphereR = 0.045F * this.gizmoScale;
+        float connectFudge = (this.mode == Mode.TRANSLATE) ? 0.03F : (this.mode == Mode.SCALE ? slabThick : (cubeBig + thickness));
+
+        if (this.mode == Mode.SCALE)
+        {
+            Draw.fillBoxTo(builder, stack, 0, 0, 0, length + connectFudge, 0, 0, thickness, rX, 0F, 0F, 1F);
+            Draw.fillBoxTo(builder, stack, 0, 0, 0, 0, length + connectFudge, 0, thickness, rY, 0F, 0F, 1F);
+            Draw.fillBox(builder, stack, -thickness / 2F, -thickness / 2F, 0F, thickness / 2F, thickness / 2F, length + connectFudge, rZ, 0F, 0F, 1F);
+
+            stack.push(); stack.translate(length, 0F, 0F);
+            Draw.fillBox(builder, stack, -slabThick, -cubeBig, -cubeBig, slabThick, cubeBig, cubeBig, rX, 0F, 0F, 1F);
+            stack.pop();
+
+            stack.push(); stack.translate(0F, length, 0F);
+            Draw.fillBox(builder, stack, -cubeBig, -slabThick, -cubeBig, cubeBig, slabThick, cubeBig, rY, 0F, 0F, 1F);
+            stack.pop();
+
+            stack.push(); stack.translate(0F, 0F, length);
+            Draw.fillBox(builder, stack, -cubeBig, -cubeBig, -slabThick, cubeBig, cubeBig, slabThick, rZ, 0F, 0F, 1F);
+            stack.pop();
+        }
+        else if (this.mode == Mode.ROTATE)
+        {
+            float radius = 0.22F * this.gizmoScale * BBSSettings.axesScale.get();
+            float thicknessRing = (((BBSSettings.gizmoDesign.get() == 1) ? 0.006F : 0.01F) * axesScale);
+            float sweep = 360F;
+
+            RenderSystem.disableCull();
+            drawRingArc3D(builder, stack, 'Z', radius, thicknessRing, rZ, 0F, 0F, 0F, sweep, false);
+            drawRingArc3D(builder, stack, 'X', radius, thicknessRing, rX, 0F, 0F, 0F, sweep, false);
+            drawRingArc3D(builder, stack, 'Y', radius, thicknessRing, rY, 0F, 0F, 0F, sweep, false);
+            RenderSystem.enableCull();
+        }
+        else if (this.mode == Mode.TRANSLATE || this.mode == Mode.PIVOT)
+        {
+            float headLen = (blockbench ? 0.06F : 0.08F) * this.gizmoScale;
+            float headWidth = (blockbench ? 0.04F : 0.06F) * this.gizmoScale;
+            float headRadius = headWidth * 0.5F;
+            float lengthBar = length + connectFudge;
+            float barEnd = lengthBar - (this.mode == Mode.PIVOT ? sphereR : headLen) - 0.002F;
+            float txX = thickness;
+            float txY = thickness;
+            float txZ = thickness;
+
+            Draw.fillBoxTo(builder, stack, 0, 0, 0, barEnd, 0, 0, txX, rX, 0F, 0F, 1F);
+            Draw.fillBoxTo(builder, stack, 0, 0, 0, 0, barEnd, 0, txY, rY, 0F, 0F, 1F);
+            Draw.fillBox(builder, stack, -txZ / 2F, -txZ / 2F, 0F, txZ / 2F, txZ / 2F, barEnd, rZ, 0F, 0F, 1F);
+
+            if (this.mode == Mode.TRANSLATE || (this.mode == Mode.PIVOT && blockbench))
+            {
+                drawCone3D(builder, stack, 'X', lengthBar, headLen, headRadius, rX, 0F, 0F, 1F);
+                drawCone3D(builder, stack, 'Y', lengthBar, headLen, headRadius, rY, 0F, 0F, 1F);
+                drawCone3D(builder, stack, 'Z', lengthBar, headLen, headRadius, rZ, 0F, 0F, 1F);
+            }
+            else
+            {
+                drawSphere3D(builder, stack, 'X', lengthBar, sphereR, rX, 0F, 0F, 1F);
+                drawSphere3D(builder, stack, 'Y', lengthBar, sphereR, rY, 0F, 0F, 1F);
+                drawSphere3D(builder, stack, 'Z', lengthBar, sphereR, rZ, 0F, 0F, 1F);
+            }
+        }
+
+        if (this.mode == Mode.TRANSLATE || this.mode == Mode.UNIVERSAL)
+        {
+            float offset = 0.08F * axesScale; float planeHalf = 0.020F * axesScale; float planeThick = 0.004F * axesScale;
+            
+            Draw.fillBox(builder, stack, offset - (planeHalf - 0.002F), offset - (planeHalf - 0.002F), -(planeThick - 0.002F), offset + (planeHalf - 0.002F), offset + (planeHalf - 0.002F), (planeThick - 0.002F), rXY, 0F, 0F, 1F);
+            Draw.fillBox(builder, stack, offset - (planeHalf - 0.002F), -(planeThick - 0.002F), offset - (planeHalf - 0.002F), offset + (planeHalf - 0.002F), (planeThick - 0.002F), offset + (planeHalf - 0.002F), rZX, 0F, 0F, 1F);
+            Draw.fillBox(builder, stack, -(planeThick - 0.002F), offset - (planeHalf - 0.002F), offset - (planeHalf - 0.002F), (planeThick - 0.002F), offset + (planeHalf - 0.002F), offset + (planeHalf - 0.002F), rYZ, 0F, 0F, 1F);
+        }
+
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.disableDepthTest();
+        BufferRenderer.drawWithGlobalProgram(builder.end());
+        RenderSystem.enableDepthTest();
     }
 
     /**
