@@ -15,11 +15,11 @@ import mchorse.bbs_mod.client.BBSShaders;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -63,7 +63,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
     {
         super.render3D(context);
 
-        if (BBSRendering.isIrisShadowPass() || context.type == FormRenderType.ITEM_INVENTORY)
+        if (BBSRendering.isIrisShadowPass() || context.type == FormRenderType.ITEM_INVENTORY || context.type == FormRenderType.MODEL_BLOCK)
         {
             return;
         }
@@ -99,8 +99,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
         MatrixStack stack = context.stack;
-        // Derivar la rotación desde el contexto (soporta cámaras de replays/no jugador)
-        Matrix4f camInverse = new Matrix4f().set(new Matrix3f(context.camera.view)).invert();
+        Matrix4f camInverse = new Matrix4f(context.camera.view).invert();
 
         Camera camera = context.camera;
         double baseX = camera.position.x;
@@ -170,10 +169,9 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         Trail trail;
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         Matrix4f m = stack.peek().getPositionMatrix();
+
         m.set(camInverse);
         m.invert();
-
-        
 
         for (it = trails.iterator(); it.hasNext(); last = trail)
         {
