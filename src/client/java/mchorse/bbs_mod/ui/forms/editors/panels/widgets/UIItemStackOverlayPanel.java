@@ -102,7 +102,7 @@ public class UIItemStackOverlayPanel extends UIOverlayPanel
 
     private void updateNbt()
     {
-        this.nbt.setText((ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, this.stack).result().get()).asString());
+        this.nbt.setText(ItemStack.CODEC.encodeStart(NbtOps.INSTANCE, this.stack).result().map(net.minecraft.nbt.NbtElement::asString).orElse("{}"));
     }
 
     private void pickItemStack(ItemStack itemStack)
