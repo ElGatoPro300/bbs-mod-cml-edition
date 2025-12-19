@@ -5,7 +5,8 @@
     "name": "BBS mod",
     "description": "A new generation of video production mod",
     "authors": [
-        "McHorse"
+        "McHorse",
+        "ElGatoPro300"
     ],
     "contributors": [
         "Chryfi (tracker clip)",
@@ -25,7 +26,8 @@
         "Rüyaperest (Turkish translations)",
         "Kirkus (Ukrainian translations)",
         "Eleeter (Urdu translations)",
-        "Diobede (Vietnamese translations)"
+        "Diobede (Vietnamese translations)",
+        "bay4lly.java (bug fixes)"
     ],
     "contact": {
         "homepage": "https://www.patreon.com/McHorse"

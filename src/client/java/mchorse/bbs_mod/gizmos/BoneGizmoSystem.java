@@ -391,7 +391,7 @@ public class BoneGizmoSystem
                 }
 
                 this.target.setT(null, x, y, z);
-                this.target.setTransform(t);
+                this.target.setTransform(this.target.getTransform());
             }
             else if (op == Mode.SCALE)
             {
@@ -404,7 +404,7 @@ public class BoneGizmoSystem
                 if (this.activeAxis == Axis.Z) z = clampScale(this.dragStart.scale.z + delta);
 
                 this.target.setS(null, x, y, z);
-                this.target.setTransform(t);
+                this.target.setTransform(this.target.getTransform());
             }
             else if (op == Mode.ROTATE)
             {
@@ -457,7 +457,7 @@ public class BoneGizmoSystem
                 {
                     this.target.setR(null, rx, ry, rz);
                 }
-                this.target.setTransform(t);
+                this.target.setTransform(this.target.getTransform());
             }
         }
 
