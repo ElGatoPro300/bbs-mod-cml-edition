@@ -72,7 +72,7 @@ public class AudioClientClip extends AudioClip
             }
 
             /* Apply aggregated volume for this link (sum of active clips, clamped 0..1) */
-            float gain = Math.min(1F, Math.max(0F, volumes.getOrDefault(entry.getKey(), 0F)));
+            float gain = Math.min(100F, Math.max(0F, volumes.getOrDefault(entry.getKey(), 0F)));
             player.setVolume(gain);
         }
 

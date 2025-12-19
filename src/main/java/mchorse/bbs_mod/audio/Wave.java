@@ -286,7 +286,7 @@ public class Wave
              * Convert to float for precise calculations */
             float waveFloat = waveShort / (float) Short.MAX_VALUE;
             /* Apply per-clip gain */
-            waveFloat *= MathUtils.clamp(gain, 0F, 1F);
+            waveFloat *= MathUtils.clamp(gain, 0F, 100F);
             float bytesFloat = bytesShort / (float) Short.MAX_VALUE;
             
             /* Calculate sum and check for clipping */
@@ -297,12 +297,8 @@ public class Wave
 
             if (sum > 1F || sum < -1F)
             {
-                /* Dynamic normalization to preserve as much volume as possible */
-                float absSum = Math.abs(sum);
-                float normalizationFactor = 1F / absSum;
-
-                /* Slight headroom */
-                mixedFloat = sum * normalizationFactor * 0.95F;
+                /* Hard clipping to allow volume boost beyond normal range */
+                mixedFloat = MathUtils.clamp(sum, -1F, 1F);
             }
             else
             {
