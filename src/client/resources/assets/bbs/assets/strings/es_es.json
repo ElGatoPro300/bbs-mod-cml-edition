@@ -182,6 +182,8 @@
     "bbs.config.pose_track_selection.bone_anchoring_enabled-comment": "Permite anclar huesos específicos a pistas de pose individuales",
     "bbs.config.pose_track_selection.anchor_override_enabled": "Sobreposición de anclaje",
     "bbs.config.pose_track_selection.anchor_override_enabled-comment": "Anula la redirección automática al hueso anclado, mantiene la selección actual",
+    "bbs.config.pose_track_selection.auto_keyframe": "Keyframe automático",
+    "bbs.config.pose_track_selection.auto_keyframe-comment": "Genera un nuevo keyframe al mover el último keyframe seleccionado si el cursor está en un tick diferente (requiere anclaje de huesos activo)",
     
     "bbs.config.tutorials.cursor": "Cursor del ratón",
     "bbs.config.tutorials.cursor-comment": "Habilita el renderizado del cursor del ratón. Es muy útil para tutoriales cuando están grabados con la grabadora de vídeo de BBS y el cursor no está visible",

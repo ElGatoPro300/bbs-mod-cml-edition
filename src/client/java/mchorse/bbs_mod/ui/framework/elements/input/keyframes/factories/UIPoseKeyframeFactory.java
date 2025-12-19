@@ -222,6 +222,11 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         public UIButton unanchorBone;
         public mchorse.bbs_mod.ui.framework.elements.utils.UILabel anchoredLegend;
 
+        public void refreshCurrentBone()
+        {
+            this.pickBone(this.groups.getCurrentFirst());
+        }
+
         public static void apply(UIKeyframes editor, Keyframe keyframe, Consumer<Pose> consumer)
         {
             for (UIKeyframeSheet sheet : editor.getGraph().getSheets())
@@ -414,6 +419,73 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
             this.editor = editor;
         }
 
+        private void checkAutoKeyframe()
+        {
+            if (BBSSettings.autoKeyframe.get() && BBSSettings.boneAnchoringEnabled.get())
+            {
+                mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.editor.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
+
+                if (filmPanel != null)
+                {
+                    int cursor = filmPanel.getCursor();
+
+                    if (cursor != this.editor.keyframe.getTick())
+                    {
+                        UIKeyframeSheet sheet = this.editor.editor.getGraph().getSheet(this.editor.keyframe);
+
+                        if (sheet != null)
+                        {
+                            // Use interpolated pose at current cursor position instead of copying previous keyframe
+                            Pose pose = (Pose) sheet.channel.interpolate(cursor);
+                            String currentBone = this.editor.groups.getCurrentFirst();
+                            int index = sheet.channel.insert(cursor, pose);
+                            Keyframe<Pose> newKeyframe = sheet.channel.get(index);
+
+                            this.editor.keyframe = newKeyframe;
+                            this.editor.setPose(newKeyframe.getValue(), this.editor.getPoseGroupKey());
+
+                            if (currentBone != null)
+                            {
+                                this.editor.groups.setCurrentScroll(currentBone);
+                            }
+
+                            this.editor.refreshCurrentBone();
+
+                            // Explicitly update the transform editor's reference to the new keyframe's bone data
+                            // This prevents the 'accumulation' bug where dx/dy/dz are calculated against the OLD keyframe
+                            // but applied to the NEW keyframe, leading to exponential growth.
+                            if (currentBone != null)
+                            {
+                                PoseTransform pt = newKeyframe.getValue().get(currentBone);
+                                if (pt != null)
+                                {
+                                    this.setTransform(pt);
+                                }
+                            }
+
+                            sheet.selection.clear();
+                            sheet.selection.add(newKeyframe);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ensureTransformSync()
+        {
+            String currentBone = this.editor.groups.getCurrentFirst();
+
+            if (currentBone != null)
+            {
+                PoseTransform pt = this.editor.keyframe.getValue().get(currentBone);
+
+                if (pt != null && pt != this.getTransform())
+                {
+                    this.setTransform(pt);
+                }
+            }
+        }
+
         /**
          * Targets affected by editing. If a category is selected, return all
          * bones in that category; otherwise return the currently selected group.
@@ -500,6 +572,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         public void setT(Axis axis, double x, double y, double z)
         {
+            this.checkAutoKeyframe();
+            this.ensureTransformSync();
             Transform transform = this.getTransform();
             float dx = (float) (x - transform.translate.x);
             float dy = (float) (y - transform.translate.y);
@@ -519,6 +593,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         public void setS(Axis axis, double x, double y, double z)
         {
+            this.checkAutoKeyframe();
+            this.ensureTransformSync();
             Transform transform = this.getTransform();
             float dx = (float) (x - transform.scale.x);
             float dy = (float) (y - transform.scale.y);
@@ -538,6 +614,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         public void setR(Axis axis, double x, double y, double z)
         {
+            this.checkAutoKeyframe();
+            this.ensureTransformSync();
             Transform transform = this.getTransform();
             float dx = MathUtils.toRad((float) x) - transform.rotate.x;
             float dy = MathUtils.toRad((float) y) - transform.rotate.y;
@@ -557,6 +635,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         public void setR2(Axis axis, double x, double y, double z)
         {
+            this.checkAutoKeyframe();
+            this.ensureTransformSync();
             Transform transform = this.getTransform();
             float dx = MathUtils.toRad((float) x) - transform.rotate2.x;
             float dy = MathUtils.toRad((float) y) - transform.rotate2.y;
@@ -576,6 +656,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         public void setP(Axis axis, double x, double y, double z)
         {
+            this.checkAutoKeyframe();
+            this.ensureTransformSync();
             Transform transform = this.getTransform();
             float dx = (float) x - transform.pivot.x;
             float dy = (float) y - transform.pivot.y;

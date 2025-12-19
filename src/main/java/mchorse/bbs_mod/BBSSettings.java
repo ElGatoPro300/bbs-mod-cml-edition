@@ -122,6 +122,7 @@ public class BBSSettings
     /* Pose track bone anchoring */
     public static ValueBoolean boneAnchoringEnabled;
     public static ValueBoolean anchorOverrideEnabled;
+    public static ValueBoolean autoKeyframe;
 
     public static ValueString cdnUrl;
     public static ValueString cdnToken;
@@ -288,6 +289,7 @@ public class BBSSettings
         builder.category("pose_track_selection");
         boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", false);
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
+        autoKeyframe = builder.getBoolean("auto_keyframe", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
