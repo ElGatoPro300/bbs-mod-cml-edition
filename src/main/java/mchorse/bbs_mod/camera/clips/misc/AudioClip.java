@@ -15,8 +15,8 @@ public class AudioClip extends CameraClip
 
     public ValueLink audio = new ValueLink("audio", null);
     public ValueInt offset = new ValueInt("offset", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    /* Volumen máximo del clip: 0–100 (por defecto 100) */
-    public ValueInt volume = new ValueInt("volume", 100, 0, 100);
+    /* Volumen máximo del clip: 0–400 (por defecto 100) */
+    public ValueInt volume = new ValueInt("volume", 100, 0, 400);
 
     public AudioClip()
     {
