@@ -58,6 +58,7 @@ import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.resources.MinecraftSourcePack;
+import mchorse.bbs_mod.client.BBSShaders;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -450,15 +451,19 @@ public class BBSModClient implements ClientModInitializer
 
                     RenderSystem.setShader(BBSShaders.getPositionColorProgram());
 
+                    /*
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
                     RenderSystem.applyModelViewMatrix();
+                    */
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
 
+                    /*
                     mvStack.popMatrix();
                     RenderSystem.applyModelViewMatrix();
+                    */
 
                     RenderSystem.disableDepthTest();
 

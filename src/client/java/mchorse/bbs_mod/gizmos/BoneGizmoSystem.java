@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.gizmos;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.graphics.window.Window;
@@ -1303,7 +1304,7 @@ public class BoneGizmoSystem
             Draw.fillBox(builder, stack, -(planeThick - 0.002F), offset - (planeHalf - 0.002F), offset - (planeHalf - 0.002F), (planeThick - 0.002F), offset + (planeHalf - 0.002F), offset + (planeHalf - 0.002F), rYZ, 0F, 0F, 1F);
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(BBSShaders.getPositionColorProgram());
         RenderSystem.disableDepthTest();
         BufferRenderer.drawWithGlobalProgram(builder.end());
         RenderSystem.enableDepthTest();
