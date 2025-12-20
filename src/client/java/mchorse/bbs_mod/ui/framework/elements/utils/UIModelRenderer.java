@@ -1,7 +1,7 @@
 package mchorse.bbs_mod.ui.framework.elements.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.systems.VertexSorter;
+import com.mojang.blaze3d.systems.ProjectionType;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.forms.entities.IEntity;
@@ -217,7 +217,7 @@ public abstract class UIModelRenderer extends UIElement
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.camera.projection, VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(this.camera.projection, ProjectionType.PERSPECTIVE);
 
         /* Rendering begins... */
         stack.push();
@@ -349,7 +349,7 @@ public abstract class UIModelRenderer extends UIElement
         Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
 
         for (int x = 0; x <= 10; x ++)
         {

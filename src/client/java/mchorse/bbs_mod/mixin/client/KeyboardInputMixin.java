@@ -22,7 +22,7 @@ public class KeyboardInputMixin
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    public void onTick(boolean slowDown, float slowDownFactor, CallbackInfo info)
+    public void onTick(CallbackInfo info)
     {
         UIBaseMenu menu = UIScreen.getCurrentMenu();
 
@@ -33,6 +33,7 @@ public class KeyboardInputMixin
         ) {
             KeyboardInput input = (KeyboardInput) (Object) this;
 
+            /*
             input.pressingForward = Window.isKeyPressed(GLFW.GLFW_KEY_W);
             input.pressingBack = Window.isKeyPressed(GLFW.GLFW_KEY_S);
             input.pressingLeft = Window.isKeyPressed(GLFW.GLFW_KEY_A);
@@ -47,6 +48,7 @@ public class KeyboardInputMixin
                 input.movementSideways *= slowDownFactor;
                 input.movementForward *= slowDownFactor;
             }
+            */
         }
     }
 }

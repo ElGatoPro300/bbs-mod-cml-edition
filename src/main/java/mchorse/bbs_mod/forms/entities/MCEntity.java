@@ -505,11 +505,12 @@ public class MCEntity implements IEntity
     }
 
     @Override
-    public boolean isFallFlying()
+    public boolean isGliding()
     {
-        if (this.mcEntity instanceof LivingEntity living)
+        if (this.mcEntity instanceof net.minecraft.entity.player.PlayerEntity player)
         {
-            return living.isFallFlying();
+            // 1.21+: PlayerEntity#isGliding replaces LivingEntity#isFallFlying
+            return player.isGliding();
         }
 
         return false;

@@ -100,7 +100,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
+                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
             });
 
             light = 0;
@@ -300,7 +300,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         BufferRenderer.drawWithGlobalProgram(builder.end());
         context.stack.pop();
     }

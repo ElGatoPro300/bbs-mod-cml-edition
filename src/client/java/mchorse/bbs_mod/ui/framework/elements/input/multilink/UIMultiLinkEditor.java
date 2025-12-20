@@ -223,7 +223,7 @@ public class UIMultiLinkEditor extends UICanvasEditor
                     context.batcher.box(area.x, area.y, area.ex(), area.ey(), Colors.setA(Colors.RED, 0.25F));
                 }
 
-                ShaderProgram shader = GameRenderer.getPositionTexColorProgram();
+                ShaderProgram shader = BBSShaders.getPositionTexColorProgram();
 
                 if (needsMultLinkShader)
                 {
@@ -240,7 +240,7 @@ public class UIMultiLinkEditor extends UICanvasEditor
 
                 final ShaderProgram finalProgram = shader;
 
-                context.batcher.texturedBox(() -> finalProgram, texture.id, child.color, area.x, area.y, area.w, area.h, 0, 0, texture.width, texture.height, texture.width, texture.height);
+                context.batcher.texturedBox(finalProgram, texture.id, child.color, area.x, area.y, area.w, area.h, 0, 0, texture.width, texture.height, texture.width, texture.height);
             }
         }
     }

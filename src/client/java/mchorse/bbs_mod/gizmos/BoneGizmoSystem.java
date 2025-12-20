@@ -1601,7 +1601,7 @@ public class BoneGizmoSystem
             }
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         RenderSystem.disableDepthTest();
         /* En rotación, reactivar culling después de dibujar */
         BufferRenderer.drawWithGlobalProgram(builder.end());

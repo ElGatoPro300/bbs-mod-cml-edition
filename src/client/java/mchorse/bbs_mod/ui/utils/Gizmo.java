@@ -2,6 +2,7 @@ package mchorse.bbs_mod.ui.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
@@ -211,7 +212,7 @@ public class Gizmo
             Draw.fillBox(builder, stack, -o, l, l, o, rr, rr, 0F, 1F, 1F); */
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
         BufferRenderer.drawWithGlobalProgram(builder.end());
@@ -272,7 +273,7 @@ public class Gizmo
             Draw.fillBox(builder, stack, -o, l, l, o, rr, rr, STENCIL_ZY / 255F, 0F, 0F); */
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(BBSShaders.getPositionColorProgram());
         RenderSystem.disableDepthTest();
 
         BufferRenderer.drawWithGlobalProgram(builder.end());

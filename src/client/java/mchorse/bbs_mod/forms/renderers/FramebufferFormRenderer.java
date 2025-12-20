@@ -1,8 +1,9 @@
 package mchorse.bbs_mod.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.systems.VertexSorter;
+import com.mojang.blaze3d.systems.ProjectionType;
 import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.forms.forms.FramebufferForm;
 import mchorse.bbs_mod.graphics.Framebuffer;
 import mchorse.bbs_mod.graphics.Renderbuffer;
@@ -93,10 +94,10 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
 
         GL30.glCullFace(GL30.GL_FRONT);
         RenderSystem.setShaderLights(new Vector3f(0F, 0F, 1F), new Vector3f(0F, 0F, 1F));
-        RenderSystem.setProjectionMatrix(new Matrix4f().setOrtho(-1F, 1F, 1F, -1F, -500F, 500F), VertexSorter.BY_Z);
-        RenderSystem.getModelViewStack().pushMatrix();
-        RenderSystem.getModelViewStack().identity();
-        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setProjectionMatrix(new Matrix4f().setOrtho(-1F, 1F, 1F, -1F, -500F, 500F), ProjectionType.ORTHOGRAPHIC);
+        
+        // Matrix transformations are handled by shaders in 1.21.4+
+        // RenderSystem.getModelViewStack() is deprecated/removed
 
         framebuffer.apply();
 
@@ -120,14 +121,14 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
         GL30.glViewport(0, 0, width, height);
 
         RenderSystem.setShaderLights(light0, light1);
-        RenderSystem.getModelViewStack().popMatrix();
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorter.BY_Z);
+        // RenderSystem.getModelViewStack().popMatrix();
+        // RenderSystem.applyModelViewMatrix();
+        RenderSystem.setProjectionMatrix(projectionMatrix, ProjectionType.ORTHOGRAPHIC);
         GL30.glCullFace(GL30.GL_BACK);
 
         boolean shading = !context.isPicking();
         VertexFormat format = shading ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR;
-        Supplier<ShaderProgram> shader = shading ? GameRenderer::getRenderTypeEntityTranslucentProgram : GameRenderer::getPositionTexColorProgram;
+        Supplier<ShaderProgram> shader = shading ? BBSShaders::getModel : BBSShaders::getPositionTexColorProgram;
 
         this.renderModel(framebuffer.getMainTexture(), format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
     }
@@ -162,10 +163,10 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
         quad.p3.set(TLx, BRy, 0);
         quad.p4.set(BRx, BRy, 0);
 
-        this.renderQuad(format, texture, shader, matrices, overlay, light, overlayColor, transition);
+        this.renderQuad(format, texture, shader.get(), matrices, overlay, light, overlayColor, transition);
     }
 
-    private void renderQuad(VertexFormat format, Texture texture, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderQuad(VertexFormat format, Texture texture, ShaderProgram shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         BufferBuilder builder = net.minecraft.client.render.Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, format);
         Color color = Color.white();

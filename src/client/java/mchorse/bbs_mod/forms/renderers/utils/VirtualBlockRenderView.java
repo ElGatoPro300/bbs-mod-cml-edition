@@ -151,11 +151,11 @@ public class VirtualBlockRenderView implements BlockRenderView
 
         try
         {
-        this.biomeOverrideId = Identifier.of(biomeId);
+            this.biomeOverrideId = Identifier.of(biomeId);
             // Resolver preferentemente desde el mundo del cliente
             if (MinecraftClient.getInstance().world != null)
             {
-                Registry<Biome> reg = MinecraftClient.getInstance().world.getRegistryManager().get(RegistryKeys.BIOME);
+                Registry<Biome> reg = MinecraftClient.getInstance().world.getRegistryManager().getOrThrow(RegistryKeys.BIOME);
                 this.biomeOverride = reg.get(this.biomeOverrideId);
             }
             else
@@ -215,7 +215,6 @@ public class VirtualBlockRenderView implements BlockRenderView
         return Fluids.EMPTY.getDefaultState();
     }
 
-    @Override
     public int getLuminance(BlockPos pos)
     {
         if (!this.lightsEnabled)
@@ -227,21 +226,14 @@ public class VirtualBlockRenderView implements BlockRenderView
         return Math.min(lum, this.lightIntensity);
     }
 
-    @Override
     public int getMaxLightLevel()
     {
         return 15;
     }
 
     // BlockRenderView
-    @Override
     public float getBrightness(Direction direction, boolean shaded)
     {
-        if (MinecraftClient.getInstance().world != null)
-        {
-            return MinecraftClient.getInstance().world.getBrightness(direction, shaded);
-        }
-
         return 1.0F;
     }
 
@@ -278,39 +270,11 @@ public class VirtualBlockRenderView implements BlockRenderView
         return 0xFFFFFF;
     }
 
-    @Override
     public int getLightLevel(LightType type, BlockPos pos)
     {
-        // UI o modo forzado: devolver niveles seguros y brillantes
-        // para evitar modelos oscuros. Cielo al máximo; bloque según emisores locales.
-        if (this.forceMaxSkyLight || MinecraftClient.getInstance().world == null)
-        {
-            if (type == LightType.SKY)
-            {
-                return 15;
-            }
-            else // LightType.BLOCK
-            {
-                return this.lightsEnabled ? Math.min(this.localBlockLight.getOrDefault(pos, 0), this.lightIntensity) : 0;
-            }
-        }
-
-        int worldLevel = 0;
-        BlockPos worldPos = this.worldAnchor.add(this.baseDx + pos.getX(), this.baseDy + pos.getY(), this.baseDz + pos.getZ());
-        worldLevel = MinecraftClient.getInstance().world.getLightLevel(type, worldPos);
-
-        // Para luz de bloque, combinar con la emitida por bloques luminosos
-        // contenidos en esta vista virtual (no presentes en el mundo real).
-        if (type == LightType.BLOCK)
-        {
-            int local = this.lightsEnabled ? Math.min(this.localBlockLight.getOrDefault(pos, 0), this.lightIntensity) : 0;
-            return Math.max(worldLevel, local);
-        }
-
-        return worldLevel;
+        return this.lightsEnabled ? 15 : 0;
     }
 
-    @Override
     public int getBaseLightLevel(BlockPos pos, int ambientDarkness)
     {
         // UI o modo forzado: usar brillo base máximo para evitar oscurecer.
@@ -328,17 +292,9 @@ public class VirtualBlockRenderView implements BlockRenderView
         return Math.max(worldBase, localBlock);
     }
 
-    @Override
     public boolean isSkyVisible(BlockPos pos)
     {
-        if (this.forceMaxSkyLight || MinecraftClient.getInstance().world == null)
-        {
-            // En UI, asumir visibilidad de cielo para evitar sombreado excesivo.
-            return true;
-        }
-
-        BlockPos worldPos = this.worldAnchor.add(this.baseDx + pos.getX(), this.baseDy + pos.getY(), this.baseDz + pos.getZ());
-        return MinecraftClient.getInstance().world.isSkyVisible(worldPos);
+        return this.forceMaxSkyLight;
     }
 
     /**
@@ -349,19 +305,16 @@ public class VirtualBlockRenderView implements BlockRenderView
     // Método retirado: ahora usamos el mapa precomputado O(1)
 
     // HeightLimitView
-    @Override
     public int getBottomY()
     {
         return this.bottomY;
     }
 
-    @Override
     public int getTopY()
     {
         return this.topY;
     }
 
-    @Override
     public int getHeight()
     {
         return this.topY - this.bottomY + 1;

@@ -181,7 +181,7 @@ public interface IEntity
 
     public int getRoll();
 
-    public boolean isFallFlying();
+    public boolean isGliding();
 
     public Vec3d getRotationVec(float transition);
 

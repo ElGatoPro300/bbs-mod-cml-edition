@@ -2,6 +2,7 @@ package mchorse.bbs_mod.ui.framework.elements.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.utils.Area;
@@ -113,11 +114,11 @@ public class Batcher2D
         this.fillRect(builder, matrix4f, x, y, w, h, color1, color2, color3, color4);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         BufferRenderer.drawWithGlobalProgram(builder.end());
         builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
 
         this.context.draw();
     }
@@ -162,7 +163,7 @@ public class Batcher2D
         builder.vertex(matrix4f, x2a, y2a, 0).color(color);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         BufferRenderer.drawWithGlobalProgram(builder.end());
 
         this.context.draw();
@@ -222,7 +223,7 @@ public class Batcher2D
         builder.vertex(matrix4f,right, top, 0).color(shadow);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
@@ -253,7 +254,7 @@ public class Batcher2D
         builder.vertex(matrix4f, (float) (x - Math.cos(a) * radius), (float) (y + Math.sin(a) * radius), 0F).color(shadow);
         }
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
@@ -271,7 +272,7 @@ public class Batcher2D
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
 
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
 
         /* Draw opaque base */
         
@@ -421,7 +422,7 @@ public class Batcher2D
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        RenderSystem.setShader(BBSShaders.getPositionTexColorProgram());
 
         
         this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
@@ -431,10 +432,10 @@ public class Batcher2D
 
     public void texturedBox(int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        this.texturedBox(GameRenderer::getPositionTexColorProgram, texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
+        this.texturedBox(mchorse.bbs_mod.client.BBSShaders.getPositionTexColorProgram(), texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
     }
 
-    public void texturedBox(Supplier<ShaderProgram> shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
+    public void texturedBox(ShaderProgram shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
         RenderSystem.setShaderTexture(0, texture);
 
@@ -471,7 +472,7 @@ public class Batcher2D
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        RenderSystem.setShader(BBSShaders.getPositionTexColorProgram());
         RenderSystem.setShaderTexture(0, texture.id);
 
         for (int i = 0, c = countX * countY; i < c; i ++)

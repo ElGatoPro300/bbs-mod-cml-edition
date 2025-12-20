@@ -24,6 +24,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -86,7 +87,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
     {
         if (!command.isEmpty())
         {
-            this.getServer().getCommandManager().executeWithPrefix(this.getCommandSource(), command);
+            this.getServer().getCommandManager().executeWithPrefix(this.getCommandSource((ServerWorld) this.getWorld()), command);
         }
     }
 
@@ -133,13 +134,11 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         return this.properties.useTarget ? this.target : this.stub;
     }
 
-    @Override
     protected int getPermissionLevel()
     {
         return 2;
     }
 
-    @Override
     public boolean shouldReceiveFeedback()
     {
         return false;
@@ -268,7 +267,6 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
 
             this.setVelocity(v.multiply(friction).subtract(0, gravity, 0));
             this.setPosition(x, y, z);
-            this.checkBlockCollision();
         }
     }
 
@@ -332,13 +330,13 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
             entity.setOnFireFor(5);
         }
 
-        if (entity.damage(source, (float) damage))
+        if (entity.damage((ServerWorld) this.getWorld(), source, (float) damage))
         {
             if (entity instanceof LivingEntity livingEntity)
             {
                 if (this.properties.knockback > 0)
                 {
-                    double resistanceFactor = Math.max(0D, 1D - livingEntity.getAttributeValue(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE));
+                    double resistanceFactor = Math.max(0D, 1D - livingEntity.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE));
                     Vec3d punchVector = this.getVelocity().multiply(1D).normalize().multiply(this.properties.knockback * 0.6D * resistanceFactor);
 
                     if (punchVector.lengthSquared() > 0D)

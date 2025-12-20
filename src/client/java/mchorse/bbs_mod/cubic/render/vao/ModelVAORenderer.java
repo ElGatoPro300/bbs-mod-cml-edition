@@ -14,18 +14,22 @@ public class ModelVAORenderer
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
         // Guard against null shader: try a safe fallback compatible with VAO format
-        if (shader == null)
-        {
-            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+            if (shader == null)
+                {
+                    // Try Cull variant if generic Translucent is missing
+                    ShaderProgram fallback = null;
+                    try {
+                         fallback = mchorse.bbs_mod.client.BBSShaders.getModel();
+                    } catch (Exception e) {}
 
-            if (fallback == null)
-            {
-                // No compatible program available; skip rendering to avoid crashing
-                return;
-            }
+                    if (fallback == null)
+                    {
+                        // No compatible program available; skip rendering to avoid crashing
+                        return;
+                    }
 
-            shader = fallback;
-        }
+                    shader = fallback;
+                }
 
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
@@ -33,7 +37,8 @@ public class ModelVAORenderer
         setupUniforms(stack, shader);
 
         shader.bind();
-        modelVAO.render(shader.getFormat(), r, g, b, a, light, overlay);
+        // Use standard entity vertex format as fallback/default
+        modelVAO.render(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, r, g, b, a, light, overlay);
         shader.unbind();
 
         GL30.glBindVertexArray(currentVAO);
@@ -44,7 +49,7 @@ public class ModelVAORenderer
     {
         for (int i = 0; i < 12; i++)
         {
-            shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
+            // shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
         }
 
         if (shader.projectionMat != null)
@@ -78,22 +83,22 @@ public class ModelVAORenderer
 
         if (shader.fogStart != null)
         {
-            shader.fogStart.set(RenderSystem.getShaderFogStart());
+            // shader.fogStart.set(RenderSystem.getShaderFogStart());
         }
 
         if (shader.fogEnd != null)
         {
-            shader.fogEnd.set(RenderSystem.getShaderFogEnd());
+            // shader.fogEnd.set(RenderSystem.getShaderFogEnd());
         }
 
         if (shader.fogColor != null)
         {
-            shader.fogColor.set(RenderSystem.getShaderFogColor());
+            // shader.fogColor.set(RenderSystem.getShaderFogColor());
         }
 
         if (shader.fogShape != null)
         {
-            shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
+            // shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
         }
 
         if (shader.colorModulator != null)

@@ -217,7 +217,9 @@ public class BOBJModelVAO
         // Guard against null shader: choose a safe fallback to avoid NPE
         if (shader == null)
         {
-            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+            // ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentProgram();
+            // Fallback to null for now
+            ShaderProgram fallback = null;
 
             if (fallback == null)
             {

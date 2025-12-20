@@ -34,7 +34,7 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
-import net.minecraft.client.render.model.ModelLoader;
+// import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.Util;
 
 import java.util.Collections;
@@ -56,7 +56,6 @@ public class FormUtilsClient
             assignBufferAllocator(map, TexturedRenderLayers.getEntitySolid());
             assignBufferAllocator(map, TexturedRenderLayers.getEntityCutout());
             assignBufferAllocator(map, TexturedRenderLayers.getBannerPatterns());
-            assignBufferAllocator(map, TexturedRenderLayers.getEntityTranslucentCull());
             /* Asegurar soporte de capas base de bloques para miniaturas (vidrio, portales, hojas, etc.) */
             assignBufferAllocator(map, RenderLayer.getSolid());
             assignBufferAllocator(map, RenderLayer.getCutout());
@@ -72,9 +71,7 @@ public class FormUtilsClient
             assignBufferAllocator(map, RenderLayer.getGlint());
             assignBufferAllocator(map, RenderLayer.getGlintTranslucent());
             assignBufferAllocator(map, RenderLayer.getEntityGlint());
-            assignBufferAllocator(map, RenderLayer.getDirectEntityGlint());
             assignBufferAllocator(map, RenderLayer.getWaterMask());
-            ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferAllocator(map, renderLayer));
         });
 
         customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferAllocator(1536), sequencedMap);

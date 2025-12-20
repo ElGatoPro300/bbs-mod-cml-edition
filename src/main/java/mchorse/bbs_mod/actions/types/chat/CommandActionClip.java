@@ -26,7 +26,7 @@ public class CommandActionClip extends ActionClip
         String command = this.command.get();
         ServerCommandSource source = actor == null
             ? player.getCommandSource()
-            : actor.getCommandSource();
+            : actor.getCommandSource((net.minecraft.server.world.ServerWorld) actor.getWorld());
 
         player.getServer().getCommandManager().executeWithPrefix(source, command);
     }

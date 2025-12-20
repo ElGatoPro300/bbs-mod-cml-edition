@@ -189,7 +189,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
         catch (Exception e)
         {}
 
-        this.entity = Registries.ENTITY_TYPE.get(Identifier.of(id)).create(MinecraftClient.getInstance().world);
+        this.entity = Registries.ENTITY_TYPE.get(Identifier.of(id)).create(MinecraftClient.getInstance().world, net.minecraft.entity.SpawnReason.COMMAND);
 
         if (this.entity == null && this.form.isPlayer())
         {
@@ -249,7 +249,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
             });
 
             consumers.setUI(true);
-            MinecraftClient.getInstance().getEntityRenderDispatcher().render(this.entity, 0D, 0D, 0D, 0F, context.getTransition(), stack, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE);
+            MinecraftClient.getInstance().getEntityRenderDispatcher().render(this.entity, 0D, 0D, 0D, context.getTransition(), stack, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE);
             consumers.draw();
             consumers.setUI(false);
 
@@ -280,7 +280,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
                     {
                         this.bindTexture();
                         this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                        RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
+                        RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
 
                         first.bool = true;
                     }
@@ -319,7 +319,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
             currentPose = this.form.pose.get();
             currentPoseOverlay = this.form.poseOverlay.get();
 
-            MinecraftClient.getInstance().getEntityRenderDispatcher().render(this.entity, 0D, 0D, 0D, 0F, context.getTransition(), context.stack, consumers, light);
+            MinecraftClient.getInstance().getEntityRenderDispatcher().render(this.entity, 0D, 0D, 0D, context.getTransition(), context.stack, consumers, light);
 
             currentPose = currentPoseOverlay = null;
 
