@@ -83,7 +83,7 @@ public class UIAudioClip extends UIClip<AudioClip>
 
         this.volume = new UITrackpad((v) -> this.clip.volume.set(v.intValue()));
         this.volume.integer();
-        this.volume.limit(0, 100);
+        this.volume.limit(0, 400);
     }
 
     @Override
