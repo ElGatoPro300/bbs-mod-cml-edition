@@ -306,13 +306,19 @@ public abstract class BaseFilmController
 
                 MatrixCache map = FormUtilsClient.getRenderer(form).collectMatrices(entity, transition);
                 // Normalizar el nombre del adjunto para ignorar sufijo "#origin" en anclajes antiguos
+                boolean forceOrigin = anchor.attachment != null && anchor.attachment.endsWith("#origin");
                 String core = anchor.attachment == null ? null : anchor.attachment.replace("#origin", "");
+                
                 MatrixCacheEntry entry = map.get(core);
                 Matrix4f matrix = null;
 
                 if (entry != null)
                 {
-                    if (anchor.translate)
+                    if (forceOrigin)
+                    {
+                        matrix = entry.origin();
+                    }
+                    else if (anchor.translate)
                     {
                         // Heredar solo traslación: preferir matriz de origen
                         matrix = entry.origin();

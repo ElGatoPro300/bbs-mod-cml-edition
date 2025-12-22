@@ -65,6 +65,11 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
     {
         Form root = FormUtils.getRoot(this.form);
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
+        
+        boolean forceOrigin = path.endsWith("#origin");
+        
+        if (forceOrigin) path = path.substring(0, path.length() - 7);
+        
         MatrixCacheEntry entry = map.get(path);
 
         if (entry == null)
@@ -72,7 +77,7 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
             return Matrices.EMPTY_4F;
         }
 
-        Matrix4f matrix = local ? entry.matrix() : entry.origin();
+        Matrix4f matrix = forceOrigin ? entry.origin() : (local ? entry.matrix() : entry.origin());
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }

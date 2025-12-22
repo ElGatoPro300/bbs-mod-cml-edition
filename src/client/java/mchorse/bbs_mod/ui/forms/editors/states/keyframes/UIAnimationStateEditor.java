@@ -311,14 +311,20 @@ public class UIAnimationStateEditor extends UIElement
 
         Form root = FormUtils.getRoot(this.editor.form);
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
-        MatrixCacheEntry entry = map.get(bone.a);
+        
+        String key = bone.a;
+        boolean forceOrigin = key.endsWith("#origin");
+        
+        if (forceOrigin) key = key.substring(0, key.length() - 7);
+        
+        MatrixCacheEntry entry = map.get(key);
         
         if (entry == null)
         {
             return Matrices.EMPTY_4F;
         }
 
-        Matrix4f matrix = bone.b ? entry.matrix() : entry.origin();
+        Matrix4f matrix = forceOrigin ? entry.origin() : (bone.b ? entry.matrix() : entry.origin());
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }

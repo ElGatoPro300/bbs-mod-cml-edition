@@ -1060,20 +1060,25 @@ public class UIFilmController extends UIElement
                     Matrix4f boneMatrix = null;
 
                     if (matrices != null)
+                {
+                    String key = boneSel.a;
+                    boolean forceOrigin = key.endsWith("#origin");
+                    
+                    if (forceOrigin) key = key.substring(0, key.length() - 7);
+                    
+                    MatrixCacheEntry entry = matrices.get(key);
+
+                    if (entry != null)
                     {
-                        MatrixCacheEntry entry = matrices.get(boneSel.a);
+                        // Preferir la matriz de origen del hueso, si está disponible o si se fuerza
+                        boneMatrix = entry.origin();
 
-                        if (entry != null)
+                        if (boneMatrix == null)
                         {
-                            // Preferir la matriz de origen del hueso, si está disponible
-                            boneMatrix = entry.origin();
-
-                            if (boneMatrix == null)
-                            {
-                                boneMatrix = entry.matrix();
-                            }
+                            boneMatrix = entry.matrix();
                         }
                     }
+                }
 
                     if (boneMatrix != null)
                     {
