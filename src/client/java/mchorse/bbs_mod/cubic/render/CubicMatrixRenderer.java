@@ -32,14 +32,10 @@ public class CubicMatrixRenderer implements ICubicRenderer
     @Override
     public void applyGroupTransformations(MatrixStack stack, ModelGroup group)
     {
-        stack.push();
         ICubicRenderer.translateGroup(stack, group);
 
         this.origins.get(group.index).set(stack.peek().getPositionMatrix());
 
-        stack.pop();
-
-        ICubicRenderer.translateGroup(stack, group);
         ICubicRenderer.moveToGroupPivot(stack, group);
 
         /* Capture matrix at the group's pivot before rotation/scale */

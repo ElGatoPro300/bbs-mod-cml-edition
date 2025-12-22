@@ -856,6 +856,7 @@ public class UIKeys
     public static final IKey SUPPORTERS_CML_INTRO = L10n.lang("bbs.ui.supporters.cml_intro");
     public static final IKey SUPPORTERS_CML_ANIMATORS = L10n.lang("bbs.ui.supporters.cml_animators");
     public static final IKey TEXTURES_COPY = L10n.lang("bbs.ui.textures.copy");
+    public static final IKey TEXTURES_CREATE_MCMETA = L10n.lang("bbs.ui.textures.create_mcmeta");
     public static final IKey TEXTURES_DOWNLOAD = L10n.lang("bbs.ui.textures.download");
     public static final IKey TEXTURES_DOWNLOAD_DESCRIPTION = L10n.lang("bbs.ui.textures.download-description");
     public static final IKey TEXTURES_DOWNLOAD_FILENAME = L10n.lang("bbs.ui.textures.download.filename");
