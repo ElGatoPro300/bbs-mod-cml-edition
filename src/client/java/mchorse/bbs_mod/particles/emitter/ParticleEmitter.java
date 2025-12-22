@@ -459,7 +459,7 @@ public class ParticleEmitter
                     render.renderUI(this.uiParticle, builder, matrix, transition);
                 }
 
-                RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionTexColorProgram());
+                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
                 RenderSystem.disableCull();
                 BufferRenderer.drawWithGlobalProgram(builder.end());
                 RenderSystem.enableCull();
@@ -470,7 +470,7 @@ public class ParticleEmitter
     /**
      * Render all the particles in this particle emitter
      */
-    public void render(VertexFormat format, ShaderProgram program, MatrixStack stack, int overlay, float transition)
+    public void render(VertexFormat format, Supplier<ShaderProgram> program, MatrixStack stack, int overlay, float transition)
     {
         if (this.scheme == null)
         {

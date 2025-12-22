@@ -162,7 +162,7 @@ public class ProceduralAnimator implements IAnimator
                         group.current.rotate2.y = age * -75.0F;
                     }
 
-                    if (target.isGliding())
+                    if (target.isFallFlying())
                     {
                         float roll = target.getRoll() + transition;
                         float riptide = MathHelper.clamp(roll * roll / 100F, 0F, 1F);
@@ -303,7 +303,7 @@ public class ProceduralAnimator implements IAnimator
                         bone.transform.rotate2.y = MathUtils.toRad(age * -75.0F);
                     }
 
-                    if (target.isGliding())
+                    if (target.isFallFlying())
                     {
                         float roll = target.getRoll() + transition;
                         float riptide = MathHelper.clamp(roll * roll / 100F, 0F, 1F);

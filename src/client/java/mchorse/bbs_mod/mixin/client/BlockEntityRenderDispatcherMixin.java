@@ -29,7 +29,6 @@ public class BlockEntityRenderDispatcherMixin
         }
     }
 
-/*
     @Inject(method = "renderEntity", at = @At("HEAD"), cancellable = true)
     public void onRenderEntity(CallbackInfoReturnable<Boolean> info)
     {
@@ -38,5 +37,4 @@ public class BlockEntityRenderDispatcherMixin
             info.setReturnValue(false);
         }
     }
-*/
 }

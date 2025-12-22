@@ -14,10 +14,10 @@ import mchorse.bbs_mod.ui.framework.UIScreen;
 import mchorse.bbs_mod.ui.model_blocks.UIModelBlockEditorMenu;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
-// import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
@@ -25,15 +25,30 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class GunItemRenderer // implements BuiltinItemRendererRegistry.DynamicItemRenderer
+public class GunItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
 {
     private Map<ItemStack, Item> map = new HashMap<>();
 
     public void update()
     {
-        // ...
+        Iterator<Item> it = this.map.values().iterator();
+
+        while (it.hasNext())
+        {
+            Item item = it.next();
+
+            if (item.expiration <= 0)
+            {
+                it.remove();
+            }
+
+            item.expiration -= 1;
+            item.properties.update(item.formEntity);
+            item.formEntity.update();
+        }
     }
 
+    @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
         Item item = this.get(stack);
@@ -68,10 +83,9 @@ public class GunItemRenderer // implements BuiltinItemRendererRegistry.DynamicIt
 
                 RenderSystem.enableDepthTest();
                 /* Iluminación de GUI coherente para ítems de pistola y zoom */
-                // org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-                // org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
-                // com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
-                net.minecraft.client.render.DiffuseLighting.enableGuiDepthLighting();
+                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
+                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
                 int maxLight = net.minecraft.client.render.LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
                     .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))

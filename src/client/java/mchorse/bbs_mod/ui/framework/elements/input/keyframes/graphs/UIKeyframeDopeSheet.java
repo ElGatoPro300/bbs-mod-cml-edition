@@ -655,7 +655,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             }
 
             RenderSystem.enableBlend();
-            RenderSystem.setShader(mchorse.bbs_mod.client.BBSShaders.getPositionColorProgram());
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             BufferRenderer.drawWithGlobalProgram(builder.end());
 
             FontRenderer font = context.batcher.getFont();

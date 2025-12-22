@@ -5,7 +5,6 @@ import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.forms.ITickable;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.TrailForm;
@@ -78,7 +77,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
             Draw.fillBox(builder, stack, -axisOffset, -1F, -axisOffset, axisOffset, 1F, axisOffset, 0, 1, 0);
 
 
-            RenderSystem.setShader(BBSShaders.getPositionColorProgram());
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             RenderSystem.disableDepthTest();
             BufferRenderer.drawWithGlobalProgram(builder.end());
             RenderSystem.enableDepthTest();
@@ -202,7 +201,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
 
-        RenderSystem.setShader(BBSShaders.getPositionTexProgram());
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         BufferRenderer.drawWithGlobalProgram(builder.end());

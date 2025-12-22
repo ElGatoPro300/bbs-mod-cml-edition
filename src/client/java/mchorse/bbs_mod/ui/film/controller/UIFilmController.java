@@ -1,6 +1,5 @@
 package mchorse.bbs_mod.ui.film.controller;
 
-import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import io.netty.util.collection.IntObjectHashMap;
@@ -1112,7 +1111,7 @@ public class UIFilmController extends UIElement
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.panel.lastProjection, com.mojang.blaze3d.systems.ProjectionType.PERSPECTIVE);
+        RenderSystem.setProjectionMatrix(this.panel.lastProjection, VertexSorter.BY_Z);
 
         /* Render the stencil */
         MatrixStack worldStack = this.worldRenderContext.matrixStack();
@@ -1133,12 +1132,12 @@ public class UIFilmController extends UIElement
             mvStack.identity();
             // Mantener la vista sincronizada con la cámara del mundo
             mvStack.set(BBSRendering.camera);
-            // RenderSystem.applyModelViewMatrix();
+            RenderSystem.applyModelViewMatrix();
 
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
 
             mvStack.popMatrix();
-            // RenderSystem.applyModelViewMatrix();
+            RenderSystem.applyModelViewMatrix();
         }
 
         /* Return back to orthographic projection */
@@ -1160,6 +1159,7 @@ public class UIFilmController extends UIElement
         int h = texture.height;
 
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
+        Supplier<ShaderProgram> getPickerPreviewProgram = BBSShaders::getPickerPreviewProgram;
         GlUniform target = previewProgram.getUniform("Target");
 
         if (target != null)
@@ -1168,7 +1168,7 @@ public class UIFilmController extends UIElement
         }
 
         RenderSystem.enableBlend();
-        context.batcher.texturedBox(previewProgram, texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
+        context.batcher.texturedBox(getPickerPreviewProgram, texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
 
         if (altPressed)
         {

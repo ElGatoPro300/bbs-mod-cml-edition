@@ -52,7 +52,7 @@ public class AttackActionClip extends ActionClip
 
             if (entity != null)
             {
-                entity.damage((net.minecraft.server.world.ServerWorld) player.getWorld(), player.getWorld().getDamageSources().mobAttack(player), damage);
+                entity.damage(player.getWorld().getDamageSources().mobAttack(player), damage);
             }
         }
     }

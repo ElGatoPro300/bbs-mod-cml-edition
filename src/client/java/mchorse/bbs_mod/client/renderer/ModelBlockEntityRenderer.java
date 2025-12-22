@@ -5,7 +5,6 @@ import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
-import mchorse.bbs_mod.client.renderer.entity.ActorEntityRenderer;
 import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.entity.ActorEntity;
 import mchorse.bbs_mod.forms.FormUtilsClient;
@@ -74,15 +73,7 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
         matrices.push();
         matrices.translate(tx, ty, tz);
 
-        ActorEntityRenderer.ActorEntityState state = new ActorEntityRenderer.ActorEntityState();
-        state.x = entity.getX();
-        state.y = entity.getY();
-        state.z = entity.getZ();
-        state.actorEntity = entity;
-        // state.width = entity.getWidth();
-        // state.height = entity.getHeight();
-        
-        EntityRendererDispatcherInvoker.bbs$renderShadow(matrices, provider, state, opacity, tickDelta, entity.getWorld(), radius);
+        EntityRendererDispatcherInvoker.bbs$renderShadow(matrices, provider, entity, opacity, tickDelta, entity.getWorld(), radius);
 
         matrices.pop();
     }

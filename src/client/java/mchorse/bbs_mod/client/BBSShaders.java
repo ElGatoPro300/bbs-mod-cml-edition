@@ -15,6 +15,15 @@ import java.util.Optional;
 
 public class BBSShaders
 {
+    private static ShaderProgram multiLink;
+    private static ShaderProgram subtitles;
+
+    private static ShaderProgram pickerPreview;
+    private static ShaderProgram pickerBillboard;
+    private static ShaderProgram pickerBillboardNoShading;
+    private static ShaderProgram pickerParticles;
+    private static ShaderProgram pickerModels;
+
     static
     {
         setup();
@@ -22,107 +31,92 @@ public class BBSShaders
 
     public static void setup()
     {
-        // Shaders are loaded automatically by Vanilla in 1.21.4+
-    }
+        if (subtitles != null) subtitles.close();
+        if (subtitles != null) subtitles.close();
 
-    private static java.lang.reflect.Method getProgramMethod;
+        if (pickerPreview != null) pickerPreview.close();
+        if (pickerBillboard != null) pickerBillboard.close();
+        if (pickerBillboardNoShading != null) pickerBillboardNoShading.close();
+        if (pickerParticles != null) pickerParticles.close();
+        if (pickerModels != null) pickerModels.close();
 
-    private static ShaderProgram getProgram(String name)
-    {
         try
         {
-            if (getProgramMethod == null)
-            {
-                // Try to find the method on GameRenderer
-                for (java.lang.reflect.Method m : GameRenderer.class.getDeclaredMethods())
-                {
-                    if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == String.class && m.getReturnType() == ShaderProgram.class)
-                    {
-                        m.setAccessible(true);
-                        getProgramMethod = m;
-                        break;
-                    }
-                }
-            }
-            if (getProgramMethod != null)
-            {
-                return (ShaderProgram) getProgramMethod.invoke(MinecraftClient.getInstance().gameRenderer, name);
-            }
+            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+            multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
+            subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
+
+            pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
+            pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
+            pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
         }
-        catch (Exception e)
+        catch (IOException e)
         {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    public static ShaderProgram getRenderTypeEntityTranslucentProgram()
-    {
-        return getProgram("rendertype_entity_translucent");
-    }
-
-    public static ShaderProgram getRenderTypeEntityTranslucentCullProgram()
-    {
-        return getProgram("rendertype_entity_translucent_cull");
-    }
-
-    public static ShaderProgram getPositionTexProgram()
-    {
-        return getProgram("position_tex");
-    }
-
-    public static ShaderProgram getParticleProgram()
-    {
-        return getProgram("particle");
-    }
-
-    public static ShaderProgram getMultilinkProgram()
-    {
-        return getProgram("multilink");
-    }
-
-    public static ShaderProgram getSubtitlesProgram()
-    {
-        return getProgram("subtitles");
-    }
-
-    public static ShaderProgram getPickerPreviewProgram()
-    {
-        return getProgram("picker_preview");
-    }
-
-    public static ShaderProgram getPickerBillboardProgram()
-    {
-        return getProgram("picker_billboard");
-    }
-
-    public static ShaderProgram getPickerBillboardNoShadingProgram()
-    {
-        return getProgram("picker_billboard_no_shading");
-    }
-
-    public static ShaderProgram getPickerParticlesProgram()
-    {
-        return getProgram("picker_particles");
-    }
-
-    public static ShaderProgram getPickerModelsProgram()
-    {
-        return getProgram("picker_models");
     }
 
     public static ShaderProgram getModel()
     {
-        return getProgram("rendertype_entity_translucent");
+        // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
+        return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
-    public static ShaderProgram getPositionColorProgram()
+    public static ShaderProgram getMultilinkProgram()
     {
-        return getProgram("position_color");
+        return multiLink;
     }
 
-    public static ShaderProgram getPositionTexColorProgram()
+    public static ShaderProgram getSubtitlesProgram()
     {
-        return getProgram("position_tex_color");
+        return subtitles;
+    }
+
+    public static ShaderProgram getPickerPreviewProgram()
+    {
+        return pickerPreview;
+    }
+
+    public static ShaderProgram getPickerBillboardProgram()
+    {
+        return pickerBillboard;
+    }
+
+    public static ShaderProgram getPickerBillboardNoShadingProgram()
+    {
+        return pickerBillboardNoShading;
+    }
+
+    public static ShaderProgram getPickerParticlesProgram()
+    {
+        return pickerParticles;
+    }
+
+    public static ShaderProgram getPickerModelsProgram()
+    {
+        return pickerModels;
+    }
+
+    private static class ProxyResourceFactory implements ResourceFactory
+    {
+        private ResourceManager manager;
+
+        public ProxyResourceFactory(ResourceManager manager)
+        {
+            this.manager = manager;
+        }
+
+        @Override
+        public Optional<Resource> getResource(Identifier id)
+        {
+            if (id.getPath().contains("/core/"))
+            {
+        return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
+            }
+
+            return this.manager.getResource(id);
+        }
     }
 }

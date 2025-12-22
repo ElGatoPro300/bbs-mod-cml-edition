@@ -58,13 +58,12 @@ import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.resources.MinecraftSourcePack;
-import mchorse.bbs_mod.client.BBSShaders;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-// import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -449,21 +448,17 @@ public class BBSModClient implements ClientModInitializer
                         color.r, color.g, color.b, 1F
                     );
 
-                    RenderSystem.setShader(BBSShaders.getPositionColorProgram());
+                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
-                    /*
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
                     RenderSystem.applyModelViewMatrix();
-                    */
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
 
-                    /*
                     mvStack.popMatrix();
                     RenderSystem.applyModelViewMatrix();
-                    */
 
                     RenderSystem.disableDepthTest();
 
@@ -626,9 +621,8 @@ public class BBSModClient implements ClientModInitializer
 
         BlockEntityRendererRegistryImpl.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
 
-        // TODO: Update to 1.21.4 SpecialModelTypes
-        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, (stack, mode, matrices, vertexConsumers, light, overlay) -> modelBlockItemRenderer.render(stack, mode, matrices, vertexConsumers, light, overlay));
-        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, (stack, mode, matrices, vertexConsumers, light, overlay) -> gunItemRenderer.render(stack, mode, matrices, vertexConsumers, light, overlay));
+        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();

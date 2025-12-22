@@ -21,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin
 {
-/*
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     public void onRender(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info)
     {
@@ -30,9 +29,7 @@ public class PlayerEntityRendererMixin
             info.cancel();
         }
     }
-*/
 
-/*
     @Inject(method = "getPositionOffset", at = @At("HEAD"), cancellable = true)
     public void onPositionOffset(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, CallbackInfoReturnable<Vec3d> info)
     {
@@ -43,9 +40,7 @@ public class PlayerEntityRendererMixin
             info.setReturnValue(Vec3d.ZERO);
         }
     }
-*/
 
-/*
     @Inject(method = "renderArm", at = @At("HEAD"), cancellable = true)
     public void onRenderArmBegin(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, ModelPart arm, ModelPart sleeve, CallbackInfo info)
     {
@@ -67,5 +62,4 @@ public class PlayerEntityRendererMixin
             }
         }
     }
-*/
 }

@@ -12,11 +12,11 @@ import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
-// import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -28,15 +28,30 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ModelBlockItemRenderer // implements BuiltinItemRendererRegistry.DynamicItemRenderer
+public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
 {
     private Map<ItemStack, Item> map = new HashMap<>();
 
     public void update()
     {
-        // ...
+        Iterator<Item> it = this.map.values().iterator();
+
+        while (it.hasNext())
+        {
+            Item item = it.next();
+
+            if (item.expiration <= 0)
+            {
+                it.remove();
+            }
+
+            item.expiration -= 1;
+            item.entity.getProperties().update(item.formEntity);
+            item.formEntity.update();
+        }
     }
-    
+
+    @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
         Item item = this.get(stack);
@@ -57,9 +72,14 @@ public class ModelBlockItemRenderer // implements BuiltinItemRendererRegistry.Dy
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Usar luz mundial para que el modelo de estructura como ítem respete la iluminación */
+                /* Iluminación de GUI coherente para ítems de modelo */
+                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
+                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
+                /* Usar luz máxima para que el modelo como ítem no se vea oscuro */
+                int maxLight = 15728880; // LightmapTextureManager.pack(15, 15)
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getTickDelta())
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();

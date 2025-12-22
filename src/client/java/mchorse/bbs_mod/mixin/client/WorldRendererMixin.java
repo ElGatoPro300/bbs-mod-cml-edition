@@ -20,10 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
 {
-    /*
     @Shadow
     public Framebuffer entityOutlinesFramebuffer;
-    */
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true, require = 0)
     public void onRenderSky(CallbackInfo info)
@@ -34,7 +32,7 @@ public class WorldRendererMixin
 
             GL11.glClearColor(color.r, color.g, color.b, 1F);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            // RenderSystem.setShaderFogColor(color.r, color.g, color.b);
+            RenderSystem.setShaderFogColor(color.r, color.g, color.b, 1F);
 
             info.cancel();
         }
@@ -72,12 +70,10 @@ public class WorldRendererMixin
     @Inject(at = @At("RETURN"), method = "onResized")
     private void onResized(CallbackInfo info)
     {
-        /*
         if (this.entityOutlinesFramebuffer == null)
         {
             return;
         }
-        */
 
         BBSRendering.resizeExtraFramebuffers();
     }

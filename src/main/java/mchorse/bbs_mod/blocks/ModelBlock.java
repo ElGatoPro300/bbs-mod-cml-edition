@@ -60,6 +60,7 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
             .with(Properties.WATERLOGGED, ctx.getWorld().getFluidState(ctx.getBlockPos()).isOf(Fluids.WATER));
     }
 
+    @Override
     public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state)
     {
         BlockEntity entity = world.getBlockEntity(pos);
@@ -71,7 +72,7 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
             return stack;
         }
 
-        return super.getPickStack(world, pos, state, false);
+        return super.getPickStack(world, pos, state);
     }
 
     @Override
@@ -80,6 +81,7 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
         return BlockRenderType.INVISIBLE;
     }
 
+    @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos)
     {
         return true;

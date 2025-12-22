@@ -2,7 +2,6 @@ package mchorse.bbs_mod.mixin.client;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldView;
@@ -13,6 +12,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface EntityRendererDispatcherInvoker
 {
     @Invoker("renderShadow")
-    public static void bbs$renderShadow(MatrixStack matrices, VertexConsumerProvider vertexConsumers, EntityRenderState state, float opacity, float tickDelta, WorldView world, float radius)
+    public static void bbs$renderShadow(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Entity entity, float opacity, float tickDelta, WorldView world, float radius)
     {}
 }

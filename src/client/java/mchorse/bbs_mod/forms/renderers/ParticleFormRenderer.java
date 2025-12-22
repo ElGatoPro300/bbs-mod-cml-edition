@@ -184,10 +184,10 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
 
                 VertexFormat format = billboard ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR_LIGHT;
                 Supplier<ShaderProgram> shader = billboard
-                    ? this.getShader(context, mchorse.bbs_mod.client.BBSShaders::getRenderTypeEntityTranslucentProgram, BBSShaders::getPickerBillboardProgram)
-                    : this.getShader(context, mchorse.bbs_mod.client.BBSShaders::getParticleProgram, BBSShaders::getPickerParticlesProgram);
+                    ? this.getShader(context, GameRenderer::getRenderTypeEntityTranslucentProgram, BBSShaders::getPickerBillboardProgram)
+                    : this.getShader(context, GameRenderer::getParticleProgram, BBSShaders::getPickerParticlesProgram);
 
-                emitter.render(format, shader.get(), context.stack, context.overlay, context.getTransition());
+                emitter.render(format, shader, context.stack, context.overlay, context.getTransition());
             }
 
             context.stack.pop();

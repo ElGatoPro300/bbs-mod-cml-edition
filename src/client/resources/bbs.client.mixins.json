@@ -26,7 +26,6 @@
         "iris.EntityVertexMixin",
         "KeyboardInputMixin",
         "EntityRendererMixin",
-        "EntityRenderStateMixin",
         "ClientPlayerEntityAccessor",
         "iris.IrisRenderingPipelineAccessor",
         "iris.CustomUniformsBuilderMixin",
