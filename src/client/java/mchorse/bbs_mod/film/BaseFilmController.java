@@ -18,6 +18,7 @@ import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
 import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
@@ -222,9 +223,8 @@ public abstract class BaseFilmController
     private static void renderAxes(String bone, boolean local, StencilMap stencilMap, Form form, IEntity entity, float transition, MatrixStack stack)
     {
         Form root = FormUtils.getRoot(form);
-        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, local ? null : bone, transition);
-
-        Matrix4f matrix = map.get(bone);
+        MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
+        Matrix4f matrix = local ? map.get(bone).matrix() : map.get(bone).origin();
 
         if (matrix != null)
         {
@@ -282,11 +282,6 @@ public abstract class BaseFilmController
         return result;
     }
 
-    public static Matrix4f getEntityMatrix(IntObjectMap<IEntity> entities, double cameraX, double cameraY, double cameraZ, Anchor anchor, Matrix4f defaultMatrix, float transition)
-    {
-        return getEntityMatrix(entities, cameraX, cameraY, cameraZ, anchor, defaultMatrix, transition, 0);
-    }
-
     public static Matrix4f getEntityMatrix(IntObjectMap<IEntity> entities, double cameraX, double cameraY, double cameraZ, Anchor anchor, Matrix4f defaultMatrix, float transition, int i)
     {
         IEntity entity = entities.get(anchor.replay);
@@ -329,6 +324,9 @@ public abstract class BaseFilmController
                         matrix = map.get(core + "#origin");
                     }
                 }
+                
+                MatrixCache map = FormUtilsClient.getRenderer(form).collectMatrices(entity, transition);
+                Matrix4f matrix = map.get(anchor.attachment).matrix();
 
                 if (matrix != null)
                 {

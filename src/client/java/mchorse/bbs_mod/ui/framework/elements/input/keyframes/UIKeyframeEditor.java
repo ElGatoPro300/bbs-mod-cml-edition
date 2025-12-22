@@ -10,6 +10,7 @@ import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIKeyfram
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UITransformKeyframeFactory;
 import mchorse.bbs_mod.utils.Pair;
+import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
@@ -152,11 +153,18 @@ public class UIKeyframeEditor extends UIElement
                         bone = targetBone;
                     }
 
+                String id = StringUtils.fileName(sheet.id);
+
+                if (id.startsWith("pose"))
+                {
+                    int i = id.lastIndexOf('/');
+
+                    bone = i >= 0 ? id.substring(0, i + 1) + currentFirst : currentFirst;
                     local = pose.poseEditor.transform.isLocal();
                 }
             }
         }
-        else if (editor instanceof UITransformKeyframeFactory)
+        else if (editor instanceof UITransformKeyframeFactory transform)
         {
             UIKeyframeSheet sheet = this.getSheet(editor.getKeyframe());
 
@@ -170,6 +178,14 @@ public class UIKeyframeEditor extends UIElement
                 {
                     int slash = sheet.id.lastIndexOf('/');
                     bone = slash >= 0 ? sheet.id.substring(0, slash) : "";
+                String id = StringUtils.fileName(sheet.id);
+
+                if (id.startsWith("transform"))
+                {
+                    int i = id.lastIndexOf('/');
+
+                    bone = i >= 0  ? id.substring(0, i) : "";
+                    local = transform.transform.isLocal();
                 }
             }
         }
