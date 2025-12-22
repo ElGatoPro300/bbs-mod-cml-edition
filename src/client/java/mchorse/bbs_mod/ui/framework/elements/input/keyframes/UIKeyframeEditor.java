@@ -153,14 +153,15 @@ public class UIKeyframeEditor extends UIElement
                         bone = targetBone;
                     }
 
-                String id = StringUtils.fileName(sheet.id);
+                    String id = StringUtils.fileName(sheet.id);
 
-                if (id.startsWith("pose"))
-                {
-                    int i = id.lastIndexOf('/');
+                    if (id.startsWith("pose"))
+                    {
+                        int i = id.lastIndexOf('/');
 
-                    bone = i >= 0 ? id.substring(0, i + 1) + currentFirst : currentFirst;
-                    local = pose.poseEditor.transform.isLocal();
+                        bone = i >= 0 ? id.substring(0, i + 1) + currentFirst : currentFirst;
+                        local = pose.poseEditor.transform.isLocal();
+                    }
                 }
             }
         }
@@ -178,6 +179,8 @@ public class UIKeyframeEditor extends UIElement
                 {
                     int slash = sheet.id.lastIndexOf('/');
                     bone = slash >= 0 ? sheet.id.substring(0, slash) : "";
+                }
+
                 String id = StringUtils.fileName(sheet.id);
 
                 if (id.startsWith("transform"))

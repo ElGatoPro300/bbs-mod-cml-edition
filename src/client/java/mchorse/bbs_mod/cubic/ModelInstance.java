@@ -299,17 +299,16 @@ public class ModelInstance implements IModelInstance
                     group.initial.translate.z / 16
                 );
                 matrix.rotateY(MathUtils.PI);
-                bones.put(group.id, matrix);
 
                 /* Also provide origin matrix captured before rotation/scale at the group's pivot */
-                Matrix4f origin = new Matrix4f(renderer.origins.get(group.index));
                 origin.translate(
                     group.initial.translate.x / 8192,
                     group.initial.translate.y / 8192,
                     group.initial.translate.z / 8192
                 );
                 origin.rotateY(MathUtils.PI);
-                bones.put(group.id + "#origin", origin);
+                
+                bones.put(group.id, matrix, origin);
             }
         }
         else if (this.model instanceof BOBJModel model)

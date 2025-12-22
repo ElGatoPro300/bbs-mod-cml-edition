@@ -9,6 +9,7 @@ import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.forms.states.AnimationState;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
@@ -309,15 +310,15 @@ public class UIAnimationStateEditor extends UIElement
         }
 
         Form root = FormUtils.getRoot(this.editor.form);
-        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), bone.b ? null : bone.a, transition);
-        Matrix4f matrix = map.get(bone.a + "#origin");
-        if (matrix == null)
-        {
-            matrix = map.get(bone.a);
-        }
-        
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
-        Matrix4f matrix = bone.b ? map.get(bone.a).origin() : map.get(bone.a).matrix();
+        MatrixCacheEntry entry = map.get(bone.a);
+        
+        if (entry == null)
+        {
+            return Matrices.EMPTY_4F;
+        }
+
+        Matrix4f matrix = bone.b ? entry.matrix() : entry.origin();
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }

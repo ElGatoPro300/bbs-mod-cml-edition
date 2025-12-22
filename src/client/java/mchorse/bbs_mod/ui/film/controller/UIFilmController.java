@@ -22,6 +22,8 @@ import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -1054,17 +1056,22 @@ public class UIFilmController extends UIElement
 
                     /* Collect bone matrices; when local is true, pass null to collect all */
                     Form root = entity.getForm();
-                    Map<String, Matrix4f> matrices = FormUtilsClient.getRenderer(root).collectMatrices(entity, boneSel.b ? null : boneSel.a, transition);
+                    MatrixCache matrices = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
                     Matrix4f boneMatrix = null;
 
                     if (matrices != null)
                     {
-                        // Preferir la matriz de origen del hueso, si está disponible
-                        boneMatrix = matrices.get(boneSel.a + "#origin");
+                        MatrixCacheEntry entry = matrices.get(boneSel.a);
 
-                        if (boneMatrix == null)
+                        if (entry != null)
                         {
-                            boneMatrix = matrices.get(boneSel.a);
+                            // Preferir la matriz de origen del hueso, si está disponible
+                            boneMatrix = entry.origin();
+
+                            if (boneMatrix == null)
+                            {
+                                boneMatrix = entry.matrix();
+                            }
                         }
                     }
 

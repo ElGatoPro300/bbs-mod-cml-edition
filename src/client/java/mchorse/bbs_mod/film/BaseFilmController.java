@@ -30,6 +30,8 @@ import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.Pair;
 import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -155,14 +157,15 @@ public abstract class BaseFilmController
         if (UIBaseMenu.renderAxes)
         {
             Form root = FormUtils.getRoot(form);
-            Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(entity, context.local ? null : context.bone, transition);
+            MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
+            MatrixCacheEntry entry = map.get(context.bone);
 
             // Preferir el origen del hueso para dibujar ejes/gizmo en el pivot real
-            Matrix4f matrix = map.get(context.bone + "#origin");
+            Matrix4f matrix = entry.origin();
 
             if (matrix == null)
             {
-                matrix = map.get(context.bone);
+                matrix = entry.matrix();
             }
 
             if (matrix != null)
@@ -301,32 +304,33 @@ public abstract class BaseFilmController
                     basic = totalMatrix.a;
                 }
 
-                Map<String, Matrix4f> map = FormUtilsClient.getRenderer(form).collectMatrices(entity, null, transition);
+                MatrixCache map = FormUtilsClient.getRenderer(form).collectMatrices(entity, transition);
                 // Normalizar el nombre del adjunto para ignorar sufijo "#origin" en anclajes antiguos
                 String core = anchor.attachment == null ? null : anchor.attachment.replace("#origin", "");
-                Matrix4f matrix;
+                MatrixCacheEntry entry = map.get(core);
+                Matrix4f matrix = null;
 
-                if (anchor.translate)
+                if (entry != null)
                 {
-                    // Heredar solo traslación: preferir matriz de origen
-                    matrix = map.get(core + "#origin");
-                    if (matrix == null)
+                    if (anchor.translate)
                     {
-                        matrix = map.get(core);
+                        // Heredar solo traslación: preferir matriz de origen
+                        matrix = entry.origin();
+                        if (matrix == null)
+                        {
+                            matrix = entry.matrix();
+                        }
+                    }
+                    else
+                    {
+                        // Heredar rotación y traslación: preferir matriz completa
+                        matrix = entry.matrix();
+                        if (matrix == null)
+                        {
+                            matrix = entry.origin();
+                        }
                     }
                 }
-                else
-                {
-                    // Heredar rotación y traslación: preferir matriz completa
-                    matrix = map.get(core);
-                    if (matrix == null)
-                    {
-                        matrix = map.get(core + "#origin");
-                    }
-                }
-                
-                MatrixCache map = FormUtilsClient.getRenderer(form).collectMatrices(entity, transition);
-                Matrix4f matrix = map.get(anchor.attachment).matrix();
 
                 if (matrix != null)
                 {

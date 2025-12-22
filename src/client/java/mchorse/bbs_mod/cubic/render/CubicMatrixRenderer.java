@@ -8,6 +8,7 @@ import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CubicMatrixRenderer implements ICubicRenderer
 {

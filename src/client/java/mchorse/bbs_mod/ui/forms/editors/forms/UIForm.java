@@ -5,6 +5,7 @@ import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -63,15 +64,15 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
     protected Matrix4f getOrigin(float transition, String path, boolean local)
     {
         Form root = FormUtils.getRoot(this.form);
-        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), local ? null : path, transition);
-        Matrix4f matrix = map.get(path + "#origin");
-        if (matrix == null)
-        {
-            matrix = map.get(path);
-        }
-        
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
-        Matrix4f matrix = local ? map.get(path).matrix() : map.get(path).origin();
+        MatrixCacheEntry entry = map.get(path);
+
+        if (entry == null)
+        {
+            return Matrices.EMPTY_4F;
+        }
+
+        Matrix4f matrix = local ? entry.matrix() : entry.origin();
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }
