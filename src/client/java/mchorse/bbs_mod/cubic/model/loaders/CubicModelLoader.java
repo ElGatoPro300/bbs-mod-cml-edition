@@ -1,13 +1,16 @@
 package mchorse.bbs_mod.cubic.model.loaders;
 
+import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.cubic.CubicLoader;
 import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.cubic.data.animation.Animation;
 import mchorse.bbs_mod.cubic.data.animation.Animations;
 import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.cubic.data.model.ModelCube;
 import mchorse.bbs_mod.cubic.data.model.ModelData;
 import mchorse.bbs_mod.cubic.data.model.ModelGroup;
 import mchorse.bbs_mod.cubic.data.model.ModelMesh;
+import mchorse.bbs_mod.cubic.data.model.ModelUV;
 import mchorse.bbs_mod.cubic.model.ModelManager;
 import mchorse.bbs_mod.data.DataToString;
 import mchorse.bbs_mod.data.types.BaseType;
@@ -123,6 +126,95 @@ public class CubicModelLoader implements IModelLoader
         if (theModel == null || theModel.topGroups.isEmpty())
         {
             return null;
+        }
+
+        /* Assign group textures */
+        theModel.initialize();
+
+        for (Link link : links)
+        {
+            if (link.path.endsWith(".png"))
+            {
+                /* Determine model texture dimensions (from config or UV scan) */
+                int modelW = theModel.textureWidth;
+                int modelH = theModel.textureHeight;
+
+                Vector2i uvSize = this.getTextureDimensionsFromModel(theModel);
+                
+                if (uvSize.x > 0 && uvSize.y > 0)
+                {
+                    if (uvSize.x > modelW) modelW = uvSize.x;
+                    if (uvSize.y > modelH) modelH = uvSize.y;
+                    
+                    System.out.println("Model " + link + " dimensions adjusted to UVs: " + modelW + "x" + modelH);
+                    BBSModClient.getTextures().registerTextureDimensions(link, modelW, modelH);
+                }
+
+                if (modelW > 1 && modelH > 1)
+                {
+                    try
+                    {
+                        Pixels pixels = BBSModClient.getTextures().getPixels(link);
+
+                        if (pixels != null)
+                        {
+                            System.out.println("Checking animated texture for " + link + ": " + pixels.width + "x" + pixels.height + " vs model " + modelW + "x" + modelH);
+
+                            if (pixels.height > modelH && pixels.height % modelH == 0)
+                            {
+                                System.out.println("Registering animated texture for " + link);
+                                BBSModClient.getTextures().registerAnimatedTexture(link, pixels, modelW, modelH, 1);
+                            }
+                            else
+                            {
+                                System.out.println("Texture " + link + " did not match animation criteria: " + pixels.height + " > " + modelH + " && " + pixels.height + " % " + modelH + " == 0");
+                            }
+
+                            pixels.delete();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                     System.out.println("Model texture dimensions are invalid (1x1) or not set for " + link + ". Texture: " + modelW + "x" + modelH);
+                }
+
+                String name = StringUtils.fileName(StringUtils.removeExtension(link.path));
+                ModelGroup group = theModel.getGroup(name);
+
+                if (group == null)
+                {
+                    for (ModelGroup g : theModel.getOrderedGroups())
+                    {
+                        if (g.id.equalsIgnoreCase(name))
+                        {
+                            group = g;
+                            break;
+                        }
+                    }
+                }
+
+                if (group == null)
+                {
+                    for (ModelGroup g : theModel.getOrderedGroups())
+                    {
+                        if (g.id.toLowerCase().contains(name.toLowerCase()) || name.toLowerCase().contains(g.id.toLowerCase()))
+                        {
+                            group = g;
+                            break;
+                        }
+                    }
+                }
+
+                if (group != null)
+                {
+                    group.texture = link;
+                }
+            }
         }
 
         newModel.model = theModel;
@@ -488,5 +580,43 @@ public class CubicModelLoader implements IModelLoader
         }
 
         return animations;
+    }
+
+    private Vector2i getTextureDimensionsFromModel(Model model)
+    {
+        float maxWidth = 0;
+        float maxHeight = 0;
+
+        for (ModelGroup group : model.getAllGroups())
+        {
+            for (ModelCube cube : group.cubes)
+            {
+                maxWidth = Math.max(maxWidth, getUVMaxX(cube.front));
+                maxWidth = Math.max(maxWidth, getUVMaxX(cube.back));
+                maxWidth = Math.max(maxWidth, getUVMaxX(cube.left));
+                maxWidth = Math.max(maxWidth, getUVMaxX(cube.right));
+                maxWidth = Math.max(maxWidth, getUVMaxX(cube.top));
+                maxWidth = Math.max(maxWidth, getUVMaxX(cube.bottom));
+
+                maxHeight = Math.max(maxHeight, getUVMaxY(cube.front));
+                maxHeight = Math.max(maxHeight, getUVMaxY(cube.back));
+                maxHeight = Math.max(maxHeight, getUVMaxY(cube.left));
+                maxHeight = Math.max(maxHeight, getUVMaxY(cube.right));
+                maxHeight = Math.max(maxHeight, getUVMaxY(cube.top));
+                maxHeight = Math.max(maxHeight, getUVMaxY(cube.bottom));
+            }
+        }
+        
+        return new Vector2i((int)Math.ceil(maxWidth), (int)Math.ceil(maxHeight));
+    }
+
+    private float getUVMaxX(ModelUV uv)
+    {
+        return uv != null ? uv.ex() : 0;
+    }
+
+    private float getUVMaxY(ModelUV uv)
+    {
+        return uv != null ? uv.ey() : 0;
     }
 }

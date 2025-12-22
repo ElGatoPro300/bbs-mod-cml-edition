@@ -48,6 +48,10 @@ public class CubicVAORenderer extends CubicCubeRenderer
             {
                 BBSModClient.getTextures().bindTexture(group.textureOverride);
             }
+            else if (group.texture != null)
+            {
+                BBSModClient.getTextures().bindTexture(group.texture);
+            }
             else if (this.defaultTexture != null)
             {
                 BBSModClient.getTextures().bindTexture(this.defaultTexture);
