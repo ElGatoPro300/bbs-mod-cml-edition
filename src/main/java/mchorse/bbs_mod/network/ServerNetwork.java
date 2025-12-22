@@ -226,7 +226,6 @@ public class ServerNetwork
                     sendManagerData(player, callbackId, op, film.toData());
                 }
 
-                sendManagerData(player, callbackId, op, film.toData());
             }
             else if (op == RepositoryOperation.SAVE)
             {
