@@ -20,6 +20,7 @@ import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.obj.shapes.ShapeKeys;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
@@ -286,18 +287,19 @@ public class ModelInstance implements IModelInstance
         }
     }
 
-    public void captureMatrices(Map<String, Matrix4f> bones, String target)
+    public void captureMatrices(MatrixCache bones)
     {
         if (this.model instanceof Model model)
         {
             MatrixStack stack = new MatrixStack();
-            CubicMatrixRenderer renderer = new CubicMatrixRenderer(model, target);
+            CubicMatrixRenderer renderer = new CubicMatrixRenderer(model);
 
             CubicRenderer.processRenderModel(renderer, null, stack, model);
 
             for (ModelGroup group : model.getAllGroups())
             {
                 Matrix4f matrix = new Matrix4f(renderer.matrices.get(group.index));
+                Matrix4f origin = new Matrix4f(renderer.origins.get(group.index));
 
                 matrix.translate(
                     group.initial.translate.x / 16,
@@ -305,17 +307,16 @@ public class ModelInstance implements IModelInstance
                     group.initial.translate.z / 16
                 );
                 matrix.rotateY(MathUtils.PI);
-                bones.put(group.id, matrix);
 
                 /* Also provide origin matrix captured before rotation/scale at the group's pivot */
-                Matrix4f origin = new Matrix4f(renderer.origins.get(group.index));
                 origin.translate(
                     group.initial.translate.x / 8192,
                     group.initial.translate.y / 8192,
                     group.initial.translate.z / 8192
                 );
                 origin.rotateY(MathUtils.PI);
-                bones.put(group.id + "#origin", origin);
+                
+                bones.put(group.id, matrix, origin);
             }
         }
         else if (this.model instanceof BOBJModel model)
@@ -324,22 +325,12 @@ public class ModelInstance implements IModelInstance
 
             for (BOBJBone orderedBone : model.getArmature().orderedBones)
             {
-                Matrix4f value = new Matrix4f();
-
-                value.rotateY(MathUtils.PI).mul(orderedBone.mat);
-                bones.put(orderedBone.name, value);
-
-                /* Origin matrix for BOBJ bones: parent transform + translation (no bone rotation/scale) */
+                Matrix4f matrix = new Matrix4f();
                 Matrix4f origin = new Matrix4f();
-                origin.rotateY(MathUtils.PI);
 
-                if (orderedBone.parentBone != null)
-                {
-                    origin.mul(new Matrix4f(orderedBone.parentBone.mat));
-                }
-
-                origin.translate(orderedBone.transform.translate);
-                bones.put(orderedBone.name + "#origin", origin);
+                matrix.rotateY(MathUtils.PI).mul(orderedBone.mat);
+                origin.rotateY(MathUtils.PI).mul(orderedBone.originMat);
+                bones.put(orderedBone.name, matrix, origin);
             }
         }
     }

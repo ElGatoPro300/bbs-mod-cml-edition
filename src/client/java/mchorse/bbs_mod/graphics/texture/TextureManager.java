@@ -23,6 +23,7 @@ public class TextureManager implements IWatchDogListener
 {
     public final Map<Link, Texture> textures = new HashMap<>();
     public final Map<Link, AnimatedTexture> animatedTextures = new HashMap<>();
+    public final Map<Link, org.joml.Vector2i> textureDimensionsHints = new java.util.concurrent.ConcurrentHashMap<>();
     public AssetProvider provider;
 
     private Texture error;
@@ -200,19 +201,115 @@ public class TextureManager implements IWatchDogListener
                     if (!link.source.startsWith("http"))
                     {
                         try (InputStream stream = this.provider.getAsset(new Link(link.source, link.path + ".mcmeta")))
+                    {
+                        AnimatedTexture animatedTexture = AnimatedTexture.load(stream, pixels);
+
+                        texture = animatedTexture.getTexture(this.tick);
+
+                        System.out.println("Animated texture \"" + link + "\" was loaded!");
+
+                        this.animatedTextures.put(link, animatedTexture);
+
+                        return texture;
+                    }
+                    catch (Exception e)
+                    {}
+                    }
+
+                    if (this.textureDimensionsHints.containsKey(link))
+                    {
+                        org.joml.Vector2i dims = this.textureDimensionsHints.get(link);
+                        
+                        if (dims.x > 0 && dims.y > 0)
                         {
-                            AnimatedTexture animatedTexture = AnimatedTexture.load(stream, pixels);
+                            /* Check Vertical Animation (Stack of frames) */
+                            /* Priority: Square Frames > Hint Frames */
+                            long scaleW = pixels.width / dims.x;
+                            if (scaleW < 1) scaleW = 1;
+                            long minFH = dims.y * scaleW;
+                            
+                            /* Candidate 1: Square Frame */
+                            long sqFH = pixels.width;
+                            if (pixels.height % sqFH == 0 && sqFH >= minFH && pixels.height > sqFH)
+                            {
+                                try
+                                {
+                                    AnimatedTexture animatedTexture = AnimatedTexture.create(pixels, null, pixels.width, (int) sqFH, 3);
+                                    texture = animatedTexture.getTexture(this.tick);
+                                    System.out.println("Animated texture (Vertical Square) \"" + link + "\" detected (frame " + pixels.width + "x" + sqFH + ") and loaded!");
+                                    this.animatedTextures.put(link, animatedTexture);
+                                    return texture;
+                                }
+                                catch (Exception e) { e.printStackTrace(); }
+                            }
+                            
+                            /* Candidate 2: Hint Frame */
+                            if (pixels.height % minFH == 0 && pixels.height > minFH)
+                            {
+                                try
+                                {
+                                    AnimatedTexture animatedTexture = AnimatedTexture.create(pixels, null, pixels.width, (int) minFH, 3);
+                                    texture = animatedTexture.getTexture(this.tick);
+                                    System.out.println("Animated texture (Vertical Hint) \"" + link + "\" detected (frame " + pixels.width + "x" + minFH + ") and loaded!");
+                                    this.animatedTextures.put(link, animatedTexture);
+                                    return texture;
+                                }
+                                catch (Exception e) { e.printStackTrace(); }
+                            }
+
+                            /* Check Horizontal Animation (Row of frames) */
+                            long scaleH = pixels.height / dims.y;
+                            if (scaleH < 1) scaleH = 1;
+                            long minFW = dims.x * scaleH;
+                            
+                            /* Candidate 1: Square Frame */
+                            long sqFW = pixels.height;
+                            if (pixels.width % sqFW == 0 && sqFW >= minFW && pixels.width > sqFW)
+                            {
+                                try
+                                {
+                                    AnimatedTexture animatedTexture = AnimatedTexture.create(pixels, null, (int) sqFW, pixels.height, 3);
+                                    texture = animatedTexture.getTexture(this.tick);
+                                    System.out.println("Animated texture (Horizontal Square) \"" + link + "\" detected (frame " + sqFW + "x" + pixels.height + ") and loaded!");
+                                    this.animatedTextures.put(link, animatedTexture);
+                                    return texture;
+                                }
+                                catch (Exception e) { e.printStackTrace(); }
+                            }
+                            
+                            /* Candidate 2: Hint Frame */
+                            if (pixels.width % minFW == 0 && pixels.width > minFW)
+                            {
+                                try
+                                {
+                                    AnimatedTexture animatedTexture = AnimatedTexture.create(pixels, null, (int) minFW, pixels.height, 3);
+                                    texture = animatedTexture.getTexture(this.tick);
+                                    System.out.println("Animated texture (Horizontal Hint) \"" + link + "\" detected (frame " + minFW + "x" + pixels.height + ") and loaded!");
+                                    this.animatedTextures.put(link, animatedTexture);
+                                    return texture;
+                                }
+                                catch (Exception e) { e.printStackTrace(); }
+                            }
+                        }
+                    }
+                    else if (link.path.toLowerCase().contains("models") && pixels.height > pixels.width && pixels.height % pixels.width == 0)
+                    {
+                        try
+                        {
+                            AnimatedTexture animatedTexture = AnimatedTexture.create(pixels, null, pixels.width, pixels.width, 3);
 
                             texture = animatedTexture.getTexture(this.tick);
 
-                            System.out.println("Animated texture \"" + link + "\" was loaded!");
+                            System.out.println("Animated texture (Generic) \"" + link + "\" was detected and loaded!");
 
                             this.animatedTextures.put(link, animatedTexture);
 
                             return texture;
                         }
                         catch (Exception e)
-                        {}
+                        {
+                            e.printStackTrace();
+                        }
                     }
 
                     texture = Texture.textureFromPixels(pixels, filter);
@@ -271,6 +368,30 @@ public class TextureManager implements IWatchDogListener
         this.textures.clear();
         this.animatedTextures.clear();
         this.extruder.deleteAll();
+    }
+
+    public void registerTextureDimensions(Link link, int width, int height)
+    {
+        this.textureDimensionsHints.put(link, new org.joml.Vector2i(width, height));
+        // System.out.println("Registered texture dimension hint for " + link + ": " + width + "x" + height);
+    }
+
+    public void registerAnimatedTexture(Link link, Pixels pixels, int frameWidth, int frameHeight, int frameTime)
+    {
+        try
+        {
+            AnimatedTexture animatedTexture = AnimatedTexture.create(pixels, null, frameWidth, frameHeight, frameTime);
+            Texture texture = animatedTexture.getTexture(this.tick);
+
+            this.animatedTextures.put(link, animatedTexture);
+            this.textures.put(link, texture);
+            
+            System.out.println("Registered manual animated texture for \"" + link + "\" (" + frameWidth + "x" + frameHeight + ")");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void update()

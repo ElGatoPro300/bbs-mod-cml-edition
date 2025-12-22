@@ -22,6 +22,8 @@ import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -1054,19 +1056,29 @@ public class UIFilmController extends UIElement
 
                     /* Collect bone matrices; when local is true, pass null to collect all */
                     Form root = entity.getForm();
-                    Map<String, Matrix4f> matrices = FormUtilsClient.getRenderer(root).collectMatrices(entity, boneSel.b ? null : boneSel.a, transition);
+                    MatrixCache matrices = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
                     Matrix4f boneMatrix = null;
 
                     if (matrices != null)
+                {
+                    String key = boneSel.a;
+                    boolean forceOrigin = key.endsWith("#origin");
+                    
+                    if (forceOrigin) key = key.substring(0, key.length() - 7);
+                    
+                    MatrixCacheEntry entry = matrices.get(key);
+
+                    if (entry != null)
                     {
-                        // Preferir la matriz de origen del hueso, si está disponible
-                        boneMatrix = matrices.get(boneSel.a + "#origin");
+                        // Preferir la matriz de origen del hueso, si está disponible o si se fuerza
+                        boneMatrix = entry.origin();
 
                         if (boneMatrix == null)
                         {
-                            boneMatrix = matrices.get(boneSel.a);
+                            boneMatrix = entry.matrix();
                         }
                     }
+                }
 
                     if (boneMatrix != null)
                     {

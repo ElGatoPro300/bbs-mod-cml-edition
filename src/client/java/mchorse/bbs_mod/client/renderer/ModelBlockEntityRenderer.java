@@ -10,6 +10,8 @@ import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.mixin.client.EntityRendererDispatcherInvoker;
 import mchorse.bbs_mod.ui.dashboard.UIDashboard;
@@ -276,6 +278,95 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
         {
             modelForm.poseOverlay.setRuntimeValue(null);
         }
+    }
+
+    private Transform applyLookingAnimation(MinecraftClient mc, ModelBlockEntity entity, ModelProperties properties, float tickDelta)
+    {
+        Transform transform = properties.getTransform();
+        Camera camera = mc.gameRenderer.getCamera();
+        Vec3d position = !mc.options.getPerspective().isFirstPerson() && mc.player != null
+            ? mc.player.getCameraPosVec(tickDelta)
+            : camera.getPos();
+
+        BlockPos pos = entity.getPos();
+        double x = pos.getX() + 0.5D + transform.translate.x;
+        double y = pos.getY() + transform.translate.y;
+        double z = pos.getZ() + 0.5D + transform.translate.z;
+
+        double dx = position.x - x;
+        double dz = position.z - z;
+        double distance = Math.sqrt(dx * dx + dz * dz);
+
+        float initialYaw = transform.rotate.y;
+        float yaw = (float) Math.atan2(dx, dz);
+        float yawContinuous = entity.updateLookYawContinuous(yaw);
+        float yawDelta = yawContinuous - initialYaw;
+        float travel = Math.abs(yawDelta) % (MathUtils.PI * 2F);
+
+        Transform finalTransform = transform.copy();
+        Form form = properties.getForm();
+        boolean lookAt = form instanceof MobForm;
+        float headHeight = form.hitboxHeight.get() * form.hitboxEyeHeight.get() * finalTransform.scale.y;
+        float constraint = 45F;
+        boolean isPitching = true;
+
+        if (form instanceof ModelForm modelForm)
+        {
+            ModelInstance model = ModelFormRenderer.getModel(modelForm);
+
+            if (model != null && model.view != null)
+            {
+                String headKey = model.view.headBone;
+
+                lookAt = true;
+                constraint = model.view.constraint;
+                isPitching = model.view.pitch;
+
+                if (FormUtilsClient.getBones(modelForm).contains(headKey))
+                {
+                    MatrixCache matrices = new MatrixCache();
+
+                    model.captureMatrices(matrices);
+
+                    Matrix4f matrix = matrices.get(headKey).matrix();
+
+                    if (matrix != null)
+                    {
+                        headHeight = matrix.getTranslation(new Vector3f()).y * finalTransform.scale.y;
+                    }
+                }
+            }
+        }
+
+        finalTransform.rotate.y = yawContinuous;
+
+        if (lookAt)
+        {
+            IEntity iEntity = entity.getEntity();
+            double deltaHead = position.y - (y + headHeight);
+            float pitch = MathUtils.clamp((float) Math.atan2(deltaHead, distance), -MathUtils.PI / 2F, MathUtils.PI / 2F);
+            float headYaw = getHeadYaw(constraint, yawDelta, travel);
+            float anchorYaw = yawDelta - headYaw;
+
+            if (travel >= (float) Math.toRadians(359D))
+            {
+                headYaw = 0F;
+                anchorYaw = 0F;
+
+                entity.snapLookYawToBase(yaw, initialYaw);
+            }
+
+            finalTransform.rotate.y = initialYaw + anchorYaw;
+            headYaw = -MathUtils.toDeg(headYaw);
+            pitch = -MathUtils.toDeg(isPitching ? pitch : 0F);
+
+            iEntity.setHeadYaw(headYaw);
+            iEntity.setPrevHeadYaw(headYaw);
+            iEntity.setPitch(pitch);
+            iEntity.setPrevPitch(pitch);
+        }
+
+        return finalTransform;
     }
 
     @Override
