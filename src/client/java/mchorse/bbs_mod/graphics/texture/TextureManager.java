@@ -373,7 +373,7 @@ public class TextureManager implements IWatchDogListener
     public void registerTextureDimensions(Link link, int width, int height)
     {
         this.textureDimensionsHints.put(link, new org.joml.Vector2i(width, height));
-        System.out.println("Registered texture dimension hint for " + link + ": " + width + "x" + height);
+        // System.out.println("Registered texture dimension hint for " + link + ": " + width + "x" + height);
     }
 
     public void registerAnimatedTexture(Link link, Pixels pixels, int frameWidth, int frameHeight, int frameTime)

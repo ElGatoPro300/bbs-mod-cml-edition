@@ -146,7 +146,7 @@ public class CubicModelLoader implements IModelLoader
                     if (uvSize.x > modelW) modelW = uvSize.x;
                     if (uvSize.y > modelH) modelH = uvSize.y;
                     
-                    System.out.println("Model " + link + " dimensions adjusted to UVs: " + modelW + "x" + modelH);
+                    // System.out.println("Model " + link + " dimensions adjusted to UVs: " + modelW + "x" + modelH);
                     BBSModClient.getTextures().registerTextureDimensions(link, modelW, modelH);
                 }
 
@@ -158,16 +158,16 @@ public class CubicModelLoader implements IModelLoader
 
                         if (pixels != null)
                         {
-                            System.out.println("Checking animated texture for " + link + ": " + pixels.width + "x" + pixels.height + " vs model " + modelW + "x" + modelH);
+                            // System.out.println("Checking animated texture for " + link + ": " + pixels.width + "x" + pixels.height + " vs model " + modelW + "x" + modelH);
 
                             if (pixels.height > modelH && pixels.height % modelH == 0)
                             {
-                                System.out.println("Registering animated texture for " + link);
+                                // System.out.println("Registering animated texture for " + link);
                                 BBSModClient.getTextures().registerAnimatedTexture(link, pixels, modelW, modelH, 1);
                             }
                             else
                             {
-                                System.out.println("Texture " + link + " did not match animation criteria: " + pixels.height + " > " + modelH + " && " + pixels.height + " % " + modelH + " == 0");
+                                // System.out.println("Texture " + link + " did not match animation criteria: " + pixels.height + " > " + modelH + " && " + pixels.height + " % " + modelH + " == 0");
                             }
 
                             pixels.delete();
@@ -180,7 +180,7 @@ public class CubicModelLoader implements IModelLoader
                 }
                 else
                 {
-                     System.out.println("Model texture dimensions are invalid (1x1) or not set for " + link + ". Texture: " + modelW + "x" + modelH);
+                     // System.out.println("Model texture dimensions are invalid (1x1) or not set for " + link + ". Texture: " + modelW + "x" + modelH);
                 }
 
                 String name = StringUtils.fileName(StringUtils.removeExtension(link.path));
