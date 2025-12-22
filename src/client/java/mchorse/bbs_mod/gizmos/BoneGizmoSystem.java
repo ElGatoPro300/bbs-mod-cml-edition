@@ -246,6 +246,8 @@ public class BoneGizmoSystem
             this.lastShiftPressedWhileDragging = isComboHeld(Keys.GIZMOS_FREE_ROTATE_ZY);
             if (this.target != null && this.target.getTransform() != null)
             {
+                this.target.preCallback();
+                this.target.setCallbackEnabled(false);
                 this.dragStart.copy(this.target.getTransform());
             }
 
@@ -593,6 +595,8 @@ public class BoneGizmoSystem
                     this.lastShiftPressedWhileDragging = isComboHeld(Keys.GIZMOS_FREE_ROTATE_ZY);
                     if (this.target != null && this.target.getTransform() != null)
                     {
+                        this.target.preCallback();
+                        this.target.setCallbackEnabled(false);
                         this.dragStart.copy(this.target.getTransform());
                     }
 

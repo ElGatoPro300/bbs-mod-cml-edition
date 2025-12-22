@@ -4,6 +4,8 @@ import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -21,15 +23,13 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import org.joml.Matrix4f;
 
-import java.util.Map;
-
 public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>>
 {
     public UIFormEditor editor;
 
     public T form;
     public UIFormPanel<T> defaultPanel;
-    public UIFormPanel<T> generalPanel;
+    public UIGeneralFormPanel generalPanel;
 
     private UIPropTransform general;
 
@@ -58,18 +58,26 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
 
     public Matrix4f getOrigin(float transition)
     {
-        return this.getOrigin(transition, FormUtils.getPath(this.form), false);
+        return this.getOrigin(transition, FormUtils.getPath(this.form), this.generalPanel != null && this.generalPanel.transform.isLocal());
     }
 
     protected Matrix4f getOrigin(float transition, String path, boolean local)
     {
         Form root = FormUtils.getRoot(this.form);
-        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), local ? null : path, transition);
-        Matrix4f matrix = map.get(path + "#origin");
-        if (matrix == null)
+        MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
+        
+        boolean forceOrigin = path.endsWith("#origin");
+        
+        if (forceOrigin) path = path.substring(0, path.length() - 7);
+        
+        MatrixCacheEntry entry = map.get(path);
+
+        if (entry == null)
         {
-            matrix = map.get(path);
+            return Matrices.EMPTY_4F;
         }
+
+        Matrix4f matrix = forceOrigin ? entry.origin() : (local ? entry.matrix() : entry.origin());
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }

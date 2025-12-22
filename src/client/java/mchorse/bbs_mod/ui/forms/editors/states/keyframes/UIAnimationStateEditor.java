@@ -8,6 +8,8 @@ import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.forms.states.AnimationState;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
@@ -40,7 +42,6 @@ import org.joml.Vector2i;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -309,12 +310,21 @@ public class UIAnimationStateEditor extends UIElement
         }
 
         Form root = FormUtils.getRoot(this.editor.form);
-        Map<String, Matrix4f> map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), bone.b ? null : bone.a, transition);
-        Matrix4f matrix = map.get(bone.a + "#origin");
-        if (matrix == null)
+        MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
+        
+        String key = bone.a;
+        boolean forceOrigin = key.endsWith("#origin");
+        
+        if (forceOrigin) key = key.substring(0, key.length() - 7);
+        
+        MatrixCacheEntry entry = map.get(key);
+        
+        if (entry == null)
         {
-            matrix = map.get(bone.a);
+            return Matrices.EMPTY_4F;
         }
+
+        Matrix4f matrix = forceOrigin ? entry.origin() : (bone.b ? entry.matrix() : entry.origin());
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }

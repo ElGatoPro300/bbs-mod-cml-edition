@@ -98,11 +98,10 @@ public class AudioRenderer
         }
     }
 
-    public static boolean renderAudio(File file, List<AudioClip> clips, int totalDuration, int sampleRate)
+    public static boolean renderAudio(File file, List<AudioClip> clips, int totalDuration, int sampleRate, float from, float to)
     {
         float total = totalDuration / 20F;
         Map<AudioClip, Wave> map = new HashMap<>();
-
 
         for (AudioClip clip : clips)
         {
@@ -114,8 +113,8 @@ public class AudioRenderer
             try
             {
                 Wave wave = AudioReader.read(BBSMod.getProvider(), clip.audio.get());
+
                 map.put(clip, wave);
-                
             }
             catch (Exception e)
             {
@@ -135,7 +134,6 @@ public class AudioRenderer
         byte[] bytes = new byte[totalBytes + (totalBytes % 2)];
         Wave finalWave = new Wave(1, 1, sampleRate, 16, bytes);
         ByteBuffer buffer = MemoryUtil.memAlloc(2);
-        
 
         for (AudioClip clip : clips)
         {
@@ -166,11 +164,10 @@ public class AudioRenderer
                             continue;
                         }
 
-                        finalWave.add(buffer, wave,
-                            clipStartSec + t,
-                            sourceStartSec + t,
-                            chunkSec,
-                            gain
+                    finalWave.add(buffer, wave,
+                        TimeUtils.toSeconds(clip.tick.get()),
+                        TimeUtils.toSeconds(clip.offset.get()),
+                        TimeUtils.toSeconds(clip.duration.get())
                         );
                     }
                 }
@@ -185,6 +182,11 @@ public class AudioRenderer
 
         try
         {
+            if (from != to && (from >= 0 && to >= 0))
+            {
+                finalWave = finalWave.excerptMono(from, to);
+            }
+
             WaveWriter.write(file, finalWave);
 
             return true;

@@ -494,6 +494,7 @@ public class UIPoseEditor extends UIElement
         @Override
         public void setT(Axis axis, double x, double y, double z)
         {
+            this.preCallback();
             Transform transform = this.getTransform();
             float dx = (float) (x - transform.translate.x);
             float dy = (float) (y - transform.translate.y);
@@ -509,11 +510,13 @@ public class UIPoseEditor extends UIElement
                     t.translate.z += dz;
                 }
             }
+            this.postCallback();
         }
 
         @Override
         public void setS(Axis axis, double x, double y, double z)
         {
+            this.preCallback();
             Transform transform = this.getTransform();
             float dx = (float) (x - transform.scale.x);
             float dy = (float) (y - transform.scale.y);
@@ -529,11 +532,13 @@ public class UIPoseEditor extends UIElement
                     t.scale.z += dz;
                 }
             }
+            this.postCallback();
         }
 
         @Override
         public void setR(Axis axis, double x, double y, double z)
         {
+            this.preCallback();
             Transform transform = this.getTransform();
             float dx = MathUtils.toRad((float) x) - transform.rotate.x;
             float dy = MathUtils.toRad((float) y) - transform.rotate.y;
@@ -549,11 +554,13 @@ public class UIPoseEditor extends UIElement
                     t.rotate.z += dz;
                 }
             }
+            this.postCallback();
         }
 
         @Override
         public void setR2(Axis axis, double x, double y, double z)
         {
+            this.preCallback();
             Transform transform = this.getTransform();
             float dx = MathUtils.toRad((float) x) - transform.rotate2.x;
             float dy = MathUtils.toRad((float) y) - transform.rotate2.y;
@@ -569,11 +576,13 @@ public class UIPoseEditor extends UIElement
                     t.rotate2.z += dz;
                 }
             }
+            this.postCallback();
         }
 
         @Override
         public void setP(Axis axis, double x, double y, double z)
         {
+            this.preCallback();
             Transform transform = this.getTransform();
             float dx = (float) x - transform.pivot.x;
             float dy = (float) y - transform.pivot.y;
@@ -589,6 +598,7 @@ public class UIPoseEditor extends UIElement
                     t.pivot.z += dz;
                 }
             }
+            this.postCallback();
         }
     }
 

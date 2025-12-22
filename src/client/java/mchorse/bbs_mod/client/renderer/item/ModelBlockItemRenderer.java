@@ -79,7 +79,7 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
                 /* Usar luz máxima para que el modelo como ítem no se vea oscuro */
                 int maxLight = 15728880; // LightmapTextureManager.pack(15, 15)
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();
