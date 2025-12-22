@@ -57,15 +57,9 @@ public class ModelBlockItemRenderer // implements BuiltinItemRendererRegistry.Dy
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Iluminación de GUI coherente para ítems de modelo */
-                // org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-                // org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
-                // com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
-                net.minecraft.client.render.DiffuseLighting.enableGuiDepthLighting();
-                /* Usar luz máxima para que el modelo como ítem no se vea oscuro */
-                int maxLight = 15728880; // LightmapTextureManager.pack(15, 15)
+                /* Usar luz mundial para que el modelo de estructura como ítem respete la iluminación */
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getTickDelta())
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();

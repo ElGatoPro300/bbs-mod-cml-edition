@@ -34,6 +34,8 @@ public class UIPropTransform extends UITransform
     private Runnable preCallback;
     private Runnable postCallback;
 
+    private boolean callbackEnabled = true;
+
     private boolean editing;
     private int mode;
     private Axis axis = Axis.X;
@@ -85,14 +87,19 @@ public class UIPropTransform extends UITransform
         return this;
     }
 
+    public void setCallbackEnabled(boolean enabled)
+    {
+        this.callbackEnabled = enabled;
+    }
+
     public void preCallback()
     {
-        if (this.preCallback != null) this.preCallback.run();
+        if (this.callbackEnabled && this.preCallback != null) this.preCallback.run();
     }
 
     public void postCallback()
     {
-        if (this.postCallback != null) this.postCallback.run();
+        if (this.callbackEnabled && this.postCallback != null) this.postCallback.run();
     }
 
     public void setModel()
@@ -300,6 +307,9 @@ public class UIPropTransform extends UITransform
         this.editing = true;
         this.mode = mode;
 
+        this.preCallback();
+        this.setCallbackEnabled(false);
+
         this.cache.copy(this.transform);
 
         if (!this.handler.hasParent())
@@ -345,12 +355,16 @@ public class UIPropTransform extends UITransform
 
     public void acceptChanges()
     {
+        this.setCallbackEnabled(true);
+        this.postCallback();
         this.disable();
         this.setTransform(this.transform);
     }
 
     public void rejectChanges()
     {
+        this.setCallbackEnabled(true);
+        this.postCallback();
         this.disable();
         this.restore(true);
         this.setTransform(this.transform);
