@@ -70,10 +70,9 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Usar luz máxima para que el modelo de estructura como ítem no se vea oscuro */
-                int maxLight = LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
+                /* Usar luz mundial para que el modelo de estructura como ítem respete la iluminación */
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getTickDelta())
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getTickDelta())
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 RenderSystem.disableDepthTest();
 
