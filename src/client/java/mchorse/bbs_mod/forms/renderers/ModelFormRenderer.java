@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.client.BBSRendering;
@@ -42,7 +43,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -272,11 +273,15 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             org.joml.Vector3f light1 = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
             RenderSystem.setupLevelDiffuseLighting(light0, light1);
 
-            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
-                : BBSShaders::getModel;
+            Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
+                : () -> RenderSystem.setShader(BBSShaders.getModel());
 
-            this.renderModel(this.entity, mainShader, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
+            ShaderProgram programContext = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? null
+                : BBSShaders.getModel();
+
+            this.renderModel(this.entity, mainShader, programContext, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
 
             /* Render body parts */
             stack.push();
@@ -295,7 +300,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         }
     }
 
-    private void renderModel(IEntity target, Supplier<ShaderProgram> program, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
+    private void renderModel(IEntity target, Runnable mainShader, ShaderProgram programContext, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
     {
         if (!model.culling)
         {
@@ -323,7 +328,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         /* Pass form-level texture so VAO renderer can respect it */
         Link link = this.form.texture.get();
         Link defaultTexture = link == null ? model.texture : link;
-        model.render(newStack, program, color, light, overlay, stencilMap, this.form.shapeKeys.get(), defaultTexture);
+        model.render(newStack, mainShader, programContext, color, light, overlay, stencilMap, this.form.shapeKeys.get(), defaultTexture);
 
         gameRenderer.getLightmapTextureManager().disable();
         gameRenderer.getOverlayTexture().teardownOverlayColor();
@@ -477,14 +482,14 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
-                : BBSShaders::getModel;
+            Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
+                : () -> RenderSystem.setShader(BBSShaders.getModel());
 
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();
 
-            this.renderModel(this.entity, mainShader, matrices, model, light, OverlayTexture.DEFAULT_UV, color, false, null, 0F);
+            this.renderModel(this.entity, mainShader, null, matrices, model, light, OverlayTexture.DEFAULT_UV, color, false, null, 0F);
 
             for (ModelGroup group : model.getModel().getAllGroups())
             {
@@ -524,12 +529,12 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
-                : BBSShaders::getModel;
-            Supplier<ShaderProgram> shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
+            Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
+                : () -> RenderSystem.setShader(BBSShaders.getModel());
+            Runnable shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
 
-            this.renderModel(context.entity, shader, context.stack, model, context.light, context.overlay, color, false, context.stencilMap, context.getTransition());
+            this.renderModel(context.entity, shader, null, context.stack, model, context.light, context.overlay, color, false, context.stencilMap, context.getTransition());
         }
     }
 

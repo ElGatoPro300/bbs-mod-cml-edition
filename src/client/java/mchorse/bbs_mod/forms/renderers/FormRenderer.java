@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.forms.renderers;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.entities.IEntity;
@@ -171,7 +172,7 @@ public abstract class FormRenderer <T extends Form>
         transform.pivot.add(overlay.pivot);
     }
 
-    protected Supplier<ShaderProgram> getShader(FormRenderingContext context, Supplier<ShaderProgram> normal, Supplier<ShaderProgram> picking)
+    protected Runnable getShader(FormRenderingContext context, Runnable normal, Supplier<ShaderProgram> picking)
     {
         if (context.isPicking())
         {
@@ -185,8 +186,8 @@ public abstract class FormRenderer <T extends Form>
 
             this.setupTarget(context, program);
 
-            // Devolver un supplier seguro que siempre retorna el programa no nulo
-            return () -> program;
+            // Devolver un runnable seguro que siempre retorna el programa no nulo
+            return program::bind;
         }
 
         return normal;

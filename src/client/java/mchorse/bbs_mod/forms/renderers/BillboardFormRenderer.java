@@ -16,6 +16,7 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -61,7 +62,7 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
 
         VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
 
-        this.renderModel(format, GameRenderer::getRenderTypeEntityTranslucentProgram,
+        this.renderModel(format, () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT),
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition()
@@ -81,15 +82,15 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         }
 
         VertexFormat format = shading ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR;
-        Supplier<ShaderProgram> shader = this.getShader(context,
-            shading ? GameRenderer::getRenderTypeEntityTranslucentProgram : GameRenderer::getPositionTexColorProgram,
+        Runnable shader = this.getShader(context,
+            shading ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT) : () -> RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR),
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
         );
 
         this.renderModel(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
     }
 
-    private void renderModel(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderModel(VertexFormat format, Runnable shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         Link t = this.form.texture.get();
 
@@ -165,7 +166,7 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         this.renderQuad(format, texture, shader, matrices, overlay, light, overlayColor, transition);
     }
 
-    private void renderQuad(VertexFormat format, Texture texture, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderQuad(VertexFormat format, Texture texture, Runnable shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         BufferBuilder builder = net.minecraft.client.render.Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, format);
         Color color = this.form.color.get().copy();
@@ -198,7 +199,7 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         }
 
         BBSModClient.getTextures().bindTexture(texture);
-        RenderSystem.setShader(shader);
+        shader.run();
 
         texture.bind();
         texture.setFilterMipmap(this.form.linear.get(), this.form.mipmap.get());

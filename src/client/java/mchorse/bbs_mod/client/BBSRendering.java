@@ -264,7 +264,7 @@ public class BBSRendering
             return;
         }
 
-        framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
+        framebuffer.resize(w, h);
     }
 
     public static void toggleFramebuffer(boolean toggleFramebuffer)
@@ -288,7 +288,7 @@ public class BBSRendering
 
             if (framebuffer.textureWidth != w || framebuffer.textureHeight != h)
             {
-                framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
+                framebuffer.resize(w, h);
             }
 
             clientFramebuffer = mc.getFramebuffer();
@@ -371,6 +371,14 @@ public class BBSRendering
         renderingWorld = false;
     }
 
+    public static void render(float partialTicks)
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        // mc.getProfiler().push("bbs_render");
+        // mc.getProfiler().pop();
+    }
+
     public static void onRenderBeforeScreen()
     {
         Texture texture = getTexture();
@@ -394,11 +402,9 @@ public class BBSRendering
             false,
             mc.gameRenderer.getCamera(),
             mc.gameRenderer,
-            mc.gameRenderer.getLightmapTextureManager(),
             RenderSystem.getProjectionMatrix(),
             RenderSystem.getModelViewMatrix(),
             mc.getBufferBuilders().getEntityVertexConsumers(),
-            mc.getProfiler(),
             false,
             mc.world
         );
@@ -425,11 +431,9 @@ public class BBSRendering
             false,
             mc.gameRenderer.getCamera(),
             mc.gameRenderer,
-            mc.gameRenderer.getLightmapTextureManager(),
             positionMatrix,
             projectionMatrix,
             mc.getBufferBuilders().getEntityVertexConsumers(),
-            mc.getProfiler(),
             false,
             mc.world
         );

@@ -20,6 +20,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.BufferAllocator;
@@ -459,7 +460,7 @@ public class ParticleEmitter
                     render.renderUI(this.uiParticle, builder, matrix, transition);
                 }
 
-                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+                RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
                 RenderSystem.disableCull();
                 BufferRenderer.drawWithGlobalProgram(builder.end());
                 RenderSystem.enableCull();
@@ -470,7 +471,7 @@ public class ParticleEmitter
     /**
      * Render all the particles in this particle emitter
      */
-    public void render(VertexFormat format, Supplier<ShaderProgram> program, MatrixStack stack, int overlay, float transition)
+    public void render(VertexFormat format, Runnable program, MatrixStack stack, int overlay, float transition)
     {
         if (this.scheme == null)
         {
@@ -505,7 +506,7 @@ public class ParticleEmitter
                     }
                 }
 
-                RenderSystem.setShader(program);
+                program.run();
                 RenderSystem.disableBlend();
                 RenderSystem.disableCull();
                 BufferRenderer.drawWithGlobalProgram(builder.end());

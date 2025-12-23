@@ -12,17 +12,11 @@ import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.lang.reflect.Method;
 
 public class BBSShaders
 {
-    private static ShaderProgram multiLink;
-    private static ShaderProgram subtitles;
-
-    private static ShaderProgram pickerPreview;
-    private static ShaderProgram pickerBillboard;
-    private static ShaderProgram pickerBillboardNoShading;
-    private static ShaderProgram pickerParticles;
-    private static ShaderProgram pickerModels;
+    private static Method getProgramMethod;
 
     static
     {
@@ -31,92 +25,78 @@ public class BBSShaders
 
     public static void setup()
     {
-        if (subtitles != null) subtitles.close();
-        if (subtitles != null) subtitles.close();
+        getProgramMethod = null;
+    }
 
-        if (pickerPreview != null) pickerPreview.close();
-        if (pickerBillboard != null) pickerBillboard.close();
-        if (pickerBillboardNoShading != null) pickerBillboardNoShading.close();
-        if (pickerParticles != null) pickerParticles.close();
-        if (pickerModels != null) pickerModels.close();
-
+    private static ShaderProgram getProgram(String name)
+    {
         try
         {
-            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
-            multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
-            subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
+            if (getProgramMethod == null)
+            {
+                // Try to find the method on GameRenderer
+                for (Method m : GameRenderer.class.getDeclaredMethods())
+                {
+                    if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == String.class && m.getReturnType() == ShaderProgram.class)
+                    {
+                        m.setAccessible(true);
+                        getProgramMethod = m;
+                        break;
+                    }
+                }
+            }
 
-            pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
-            pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-            pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
-            pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
-            pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            if (getProgramMethod != null)
+            {
+                return (ShaderProgram) getProgramMethod.invoke(MinecraftClient.getInstance().gameRenderer, name);
+            }
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public static ShaderProgram getModel()
     {
         // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
-        return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        return null; // MinecraftClient.getInstance().gameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
     {
-        return multiLink;
+        return getProgram("multilink");
     }
 
     public static ShaderProgram getSubtitlesProgram()
     {
-        return subtitles;
+        return getProgram("subtitles");
     }
 
     public static ShaderProgram getPickerPreviewProgram()
     {
-        return pickerPreview;
+        return getProgram("picker_preview");
     }
 
     public static ShaderProgram getPickerBillboardProgram()
     {
-        return pickerBillboard;
+        return getProgram("picker_billboard");
     }
 
     public static ShaderProgram getPickerBillboardNoShadingProgram()
     {
-        return pickerBillboardNoShading;
+        return getProgram("picker_billboard_no_shading");
     }
 
     public static ShaderProgram getPickerParticlesProgram()
     {
-        return pickerParticles;
+        return getProgram("picker_particles");
     }
 
     public static ShaderProgram getPickerModelsProgram()
     {
-        return pickerModels;
-    }
-
-    private static class ProxyResourceFactory implements ResourceFactory
-    {
-        private ResourceManager manager;
-
-        public ProxyResourceFactory(ResourceManager manager)
-        {
-            this.manager = manager;
-        }
-
-        @Override
-        public Optional<Resource> getResource(Identifier id)
-        {
-            if (id.getPath().contains("/core/"))
-            {
-        return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
-            }
-
-            return this.manager.getResource(id);
-        }
+        return getProgram("picker_models");
     }
 }

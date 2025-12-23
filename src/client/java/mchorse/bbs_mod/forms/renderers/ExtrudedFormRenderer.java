@@ -15,6 +15,7 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
@@ -75,15 +76,15 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
         }
 
         VertexFormat format = shading ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR;
-        Supplier<ShaderProgram> shader = this.getShader(context,
-            shading ? GameRenderer::getRenderTypeEntityTranslucentProgram : GameRenderer::getPositionTexColorProgram,
+        Runnable shader = this.getShader(context,
+            shading ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT) : () -> RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR),
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
         );
 
         this.renderModel(shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
     }
 
-    private void renderModel(Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderModel(Runnable shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         Link texture = this.form.texture.get();
         ModelVAO data = BBSModClient.getTextures().getExtruder().get(texture);
@@ -118,7 +119,7 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
             gameRenderer.getLightmapTextureManager().enable();
             gameRenderer.getOverlayTexture().setupOverlayColor();
 
-            ModelVAORenderer.render(shader.get(), data, matrices, color.r * formColor.r, color.g * formColor.g, color.b * formColor.b, color.a * formColor.a, light, overlay);
+            ModelVAORenderer.render(shader, null, data, matrices, color.r * formColor.r, color.g * formColor.g, color.b * formColor.b, color.a * formColor.a, light, overlay);
 
             RenderSystem.disableBlend();
 

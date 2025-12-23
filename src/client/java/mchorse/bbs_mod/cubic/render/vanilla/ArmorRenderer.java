@@ -18,12 +18,12 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.equipment.ArmorMaterial;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
@@ -50,7 +50,8 @@ public class ArmorRenderer
 
         if (item instanceof ArmorItem armorItem)
         {
-            if (armorItem.getSlotType() == armorSlot)
+            // if (armorItem.getSlot() == armorSlot)
+            if (true) // armorItem.getSlotType() == armorSlot)
             {
                 boolean innerModel = this.usesInnerModel(armorSlot);
                 BipedEntityModel bipedModel = this.getModel(armorSlot);
@@ -70,18 +71,21 @@ public class ArmorRenderer
                     float g = (float)(color >> 8 & 255) / 255.0F;
                     float b = (float)(color & 255) / 255.0F;
 
-                    this.renderArmorParts(part, matrices, vertexConsumers, light, armorItem, innerModel, r, g, b, null);
-                    this.renderArmorParts(part, matrices, vertexConsumers, light, armorItem, innerModel, 1F, 1F, 1F, "overlay");
+                    this.renderArmorParts(part, matrices, vertexConsumers, light, null, innerModel, r, g, b, null);
+                    this.renderArmorParts(part, matrices, vertexConsumers, light, null, innerModel, 1F, 1F, 1F, "overlay");
                 }
                 else
                 {
-                    this.renderArmorParts(part, matrices, vertexConsumers, light, armorItem, innerModel, 1F, 1F, 1F, null);
+                    this.renderArmorParts(part, matrices, vertexConsumers, light, (RegistryEntry<ArmorMaterial>)null, innerModel, 1F, 1F, 1F, null);
                 }
 
                 ArmorTrim trim = itemStack.get(DataComponentTypes.TRIM);
-                if (trim != null)
+                // RegistryEntry<ArmorMaterial> material = armorItem.getMaterial();
+                RegistryEntry<ArmorMaterial> material = null;
+
+                if (trim != null && material != null)
                 {
-                    this.renderTrim(part, armorItem.getMaterial(), matrices, vertexConsumers, light, trim, innerModel);
+                    this.renderTrim(part, material, matrices, vertexConsumers, light, trim, innerModel);
                 }
 
                 if (itemStack.hasGlint())
@@ -119,9 +123,9 @@ public class ArmorRenderer
         return bipedModel.head;
     }
 
-    private void renderArmorParts(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorItem item, boolean secondTextureLayer, float red, float green, float blue, String overlay)
+    private void renderArmorParts(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, RegistryEntry<ArmorMaterial> material, boolean secondTextureLayer, float red, float green, float blue, String overlay)
     {
-        VertexConsumer base = vertexConsumers.getBuffer(RenderLayer.getArmorCutoutNoCull(this.getArmorTexture(item, secondTextureLayer, overlay)));
+        VertexConsumer base = vertexConsumers.getBuffer(RenderLayer.getArmorCutoutNoCull(this.getArmorTexture(material, secondTextureLayer, overlay)));
         VertexConsumer vertexConsumer = new RecolorVertexConsumer(base, new Color(red, green, blue, 1F));
 
         part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
@@ -129,10 +133,10 @@ public class ArmorRenderer
 
     private void renderTrim(ModelPart part, RegistryEntry<ArmorMaterial> material, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorTrim trim, boolean leggings)
     {
-        Sprite sprite = this.armorTrimsAtlas.getSprite(leggings ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material));
-        VertexConsumer vertexConsumer = sprite.getTextureSpecificVertexConsumer(vertexConsumers.getBuffer(TexturedRenderLayers.getArmorTrims(trim.getPattern().value().decal())));
+        // Sprite sprite = this.armorTrimsAtlas.getSprite(leggings ? trim.getLeggingsModelId(material) : trim.getGenericModelId(material));
+        // VertexConsumer vertexConsumer = sprite.getTextureSpecificVertexConsumer(vertexConsumers.getBuffer(TexturedRenderLayers.getArmorTrims(trim.pattern().value().decal())));
 
-        part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
+        // part.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV);
     }
 
     private void renderGlint(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
@@ -150,9 +154,9 @@ public class ArmorRenderer
         return slot == EquipmentSlot.LEGS;
     }
 
-    private Identifier getArmorTexture(ArmorItem item, boolean secondLayer, String overlay)
+    private Identifier getArmorTexture(RegistryEntry<ArmorMaterial> material, boolean secondLayer, String overlay)
     {
-        String materialName = item.getMaterial().getKey().map(k -> k.getValue().getPath()).orElse("unknown");
+        String materialName = material != null ? material.getKey().map(k -> k.getValue().getPath()).orElse("unknown") : "unknown";
         String id = "textures/models/armor/" + materialName + "_layer_" + (secondLayer ? 2 : 1) + (overlay == null ? "" : "_" + overlay) + ".png";
 
         Identifier found = ARMOR_TEXTURE_CACHE.get(id);

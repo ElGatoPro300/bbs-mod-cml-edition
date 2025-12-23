@@ -63,12 +63,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+// import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
@@ -448,17 +449,17 @@ public class BBSModClient implements ClientModInitializer
                         color.r, color.g, color.b, 1F
                     );
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+                    RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
-                    RenderSystem.applyModelViewMatrix();
+                    // RenderSystem.applyModelViewMatrix();
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
 
                     mvStack.popMatrix();
-                    RenderSystem.applyModelViewMatrix();
+                    // RenderSystem.applyModelViewMatrix();
 
                     RenderSystem.disableDepthTest();
 
@@ -621,8 +622,8 @@ public class BBSModClient implements ClientModInitializer
 
         BlockEntityRendererRegistryImpl.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
 
-        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
+        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
+        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();

@@ -327,13 +327,13 @@ public class ModelInstance implements IModelInstance
         }
     }
 
-    public void render(MatrixStack stack, Supplier<ShaderProgram> program, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys, Link defaultTexture)
+    public void render(MatrixStack stack, Runnable shaderSetup, ShaderProgram contextProgram, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys, Link defaultTexture)
     {
         if (this.model instanceof Model model)
         {
             boolean isVao = this.isVAORendered();
             CubicCubeRenderer renderProcessor = isVao
-                ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys, defaultTexture)
+                ? new CubicVAORenderer(shaderSetup, contextProgram, this, light, overlay, stencilMap, keys, defaultTexture)
                 : new CubicCubeRenderer(light, overlay, stencilMap, keys);
 
             renderProcessor.setColor(color.r, color.g, color.b, color.a);
@@ -344,7 +344,7 @@ public class ModelInstance implements IModelInstance
             }
             else
             {
-                RenderSystem.setShader(program);
+                shaderSetup.run();
 
                 BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
@@ -362,7 +362,7 @@ public class ModelInstance implements IModelInstance
 
                 vao.armature.setupMatrices();
                 vao.updateMesh(stencilMap);
-                vao.render(program.get(), stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
+                vao.render(shaderSetup, contextProgram, stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
 
                 stack.pop();
             }

@@ -1,5 +1,7 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJLoader;
 import mchorse.bbs_mod.client.BBSRendering;
@@ -212,21 +214,8 @@ public class BOBJModelVAO
     protected void processData(float[] newVertices, float[] newNormals)
     {}
 
-    public void render(ShaderProgram shader, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
+    public void render(Runnable shaderSetup, ShaderProgram contextProgram, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
     {
-        // Guard against null shader: choose a safe fallback to avoid NPE
-        if (shader == null)
-        {
-            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
-
-            if (fallback == null)
-            {
-                return;
-            }
-
-            shader = fallback;
-        }
-
         boolean hasShaders = BBSRendering.isIrisShadersEnabled();
 
         GL30.glVertexAttrib4f(Attributes.COLOR, r, g, b, a);
@@ -236,9 +225,28 @@ public class BOBJModelVAO
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
-        ModelVAORenderer.setupUniforms(stack, shader);
+        shaderSetup.run();
 
-        shader.bind();
+        Matrix4f originalModelView = null;
+
+        if (contextProgram != null)
+        {
+            ModelVAORenderer.setupUniforms(stack, contextProgram);
+        }
+        else
+        {
+            originalModelView = new Matrix4f(RenderSystem.getModelViewMatrix());
+
+            RenderSystem.getModelViewMatrix().set(stack.peek().getPositionMatrix());
+                    
+                    ShaderProgram shader = RenderSystem.getShader();
+                    if (shader != null)
+                    {
+                        if (shader.modelViewMat != null) shader.modelViewMat.set(RenderSystem.getModelViewMatrix());
+                        if (shader.projectionMat != null) shader.projectionMat.set(RenderSystem.getProjectionMatrix());
+                        shader.bind();
+                    }
+        }
 
         GL30.glBindVertexArray(this.vao);
 
@@ -260,7 +268,26 @@ public class BOBJModelVAO
         if (hasShaders) GL30.glDisableVertexAttribArray(Attributes.TANGENTS);
         if (hasShaders) GL30.glDisableVertexAttribArray(Attributes.MID_TEXTURE_UV);
 
-        shader.unbind();
+        if (contextProgram != null)
+        {
+            GlStateManager._glUseProgram(0);
+        }
+        else
+        {
+            GlStateManager._glUseProgram(0);
+
+            if (originalModelView != null)
+            {
+                RenderSystem.getModelViewMatrix().set(originalModelView);
+                    
+                    ShaderProgram shader = RenderSystem.getShader();
+                    if (shader != null && shader.modelViewMat != null)
+                    {
+                        shader.modelViewMat.set(originalModelView);
+                        shader.bind();
+                    }
+            }
+        }
 
         GL30.glBindVertexArray(currentVAO);
         GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, currentElementArrayBuffer);
