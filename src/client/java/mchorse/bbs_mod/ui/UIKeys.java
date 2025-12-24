@@ -862,6 +862,11 @@ public class UIKeys
     public static final IKey TEXTURES_DOWNLOAD_FILENAME = L10n.lang("bbs.ui.textures.download.filename");
     public static final IKey TEXTURES_DOWNLOAD_TITLE = L10n.lang("bbs.ui.textures.download-title");
     public static final IKey TEXTURES_DOWNLOAD_URL = L10n.lang("bbs.ui.textures.download.url");
+    public static final IKey TEXTURES_MCMETA_EDIT = L10n.lang("bbs.ui.textures.mcmeta.edit");
+    public static final IKey TEXTURES_MCMETA_FRAMETIME = L10n.lang("bbs.ui.textures.mcmeta.frametime");
+    public static final IKey TEXTURES_MCMETA_WIDTH = L10n.lang("bbs.ui.textures.mcmeta.width");
+    public static final IKey TEXTURES_MCMETA_HEIGHT = L10n.lang("bbs.ui.textures.mcmeta.height");
+    public static final IKey TEXTURES_MCMETA_RESIZE = L10n.lang("bbs.ui.textures.mcmeta.resize");
     public static final IKey TEXTURES_EXPORT_OVERLAY_ERROR = L10n.lang("bbs.ui.textures.export_overlay.error");
     public static final IKey TEXTURES_EXPORT_OVERLAY_OPEN_FOLDER = L10n.lang("bbs.ui.textures.export_overlay.open_folder");
     public static final IKey TEXTURES_EXPORT_OVERLAY_SUCCESS = L10n.lang("bbs.ui.textures.export_overlay.success");
