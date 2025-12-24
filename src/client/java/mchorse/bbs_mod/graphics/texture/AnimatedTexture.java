@@ -21,8 +21,6 @@ public class AnimatedTexture
     public final List<Texture> textures = new ArrayList<>();
     public final KeyframeChannel<Integer> index;
     public final int length;
-    public final int width;
-    public final int height;
 
     public static AnimatedTexture load(InputStream stream, Pixels pixels) throws Exception
     {
@@ -34,21 +32,7 @@ public class AnimatedTexture
         int w = animation.getInt("width", Math.min(pixels.width, pixels.height));
         int h = animation.getInt("height", Math.min(pixels.width, pixels.height));
 
-        return create(pixels, listFrames, w, h, frameTime);
-    }
-
-    public static AnimatedTexture createFromPixels(Pixels pixels)
-    {
-        int w = pixels.width;
-        int h = pixels.width;
-        int frameTime = 1;
-
-        return create(pixels, null, w, h, frameTime);
-    }
-
-    public static AnimatedTexture create(Pixels pixels, ListType listFrames, int w, int h, int frameTime)
-    {
-        AnimatedTexture texture = computeFrames(pixels, listFrames, w, h, frameTime);
+        AnimatedTexture texture = computeFrames(pixels, listFrames, h, frameTime);
 
         for (int i = 0, c = pixels.height / h; i < c; i++)
         {
@@ -65,13 +49,13 @@ public class AnimatedTexture
 
         if (texture.textures.isEmpty())
         {
-            throw new RuntimeException("For some reason, the animated texture is empty...");
+            throw new Exception("For some reason, the animated texture is empty...");
         }
 
         return texture;
     }
 
-    private static AnimatedTexture computeFrames(Pixels pixels, ListType frames, int w, int h, int frameTime)
+    private static AnimatedTexture computeFrames(Pixels pixels, ListType frames, int h, int frameTime)
     {
         KeyframeChannel<Integer> index = new KeyframeChannel<>("", KeyframeFactories.INTEGER);
         int length = 0;
@@ -116,15 +100,13 @@ public class AnimatedTexture
             length = x;
         }
 
-        return new AnimatedTexture(index, length, w, h);
+        return new AnimatedTexture(index, length);
     }
 
-    public AnimatedTexture(KeyframeChannel<Integer> index, int length, int w, int h)
+    public AnimatedTexture(KeyframeChannel<Integer> index, int length)
     {
         this.index = index;
         this.length = length;
-        this.width = w;
-        this.height = h;
     }
 
     public Texture getTexture(int tick)
