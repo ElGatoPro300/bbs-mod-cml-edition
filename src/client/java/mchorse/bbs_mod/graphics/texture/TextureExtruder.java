@@ -120,26 +120,7 @@ public class TextureExtruder
 
         try
         {
-            BBSModClient.getTextures().getTexture(key);
-
             pixels = BBSModClient.getTextures().getPixels(key);
-
-            if (pixels != null)
-            {
-                AnimatedTexture animatedTexture = BBSModClient.getTextures().animatedTextures.get(key);
-
-                if (animatedTexture != null)
-                {
-                    int w = animatedTexture.width;
-                    int h = animatedTexture.height;
-                    Pixels newPixels = Pixels.fromSize(w, h);
-
-                    newPixels.drawPixels(pixels, 0, 0, w, h, 0, 0, w, h);
-                    newPixels.rewindBuffer();
-                    pixels.delete();
-                    pixels = newPixels;
-                }
-            }
         }
         catch (Exception e)
         {
