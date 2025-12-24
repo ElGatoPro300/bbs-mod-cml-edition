@@ -108,18 +108,13 @@ public class Batcher2D
     public void box(float x, float y, float w, float h, int color1, int color2, int color3, int color4)
     {
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         this.fillRect(builder, matrix4f, x, y, w, h, color1, color2, color3, color4);
 
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
-        builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-        RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-
-        this.context.draw();
     }
 
     /**
@@ -419,7 +414,7 @@ public class Batcher2D
         RenderSystem.setShaderTexture(0, texture.id);
 
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
 
@@ -439,7 +434,7 @@ public class Batcher2D
         RenderSystem.setShaderTexture(0, texture);
 
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
         RenderSystem.setShader(shader);
 
