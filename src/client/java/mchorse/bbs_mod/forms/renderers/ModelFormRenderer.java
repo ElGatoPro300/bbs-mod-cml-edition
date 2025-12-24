@@ -49,7 +49,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -265,8 +264,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             stack.scale(scale, scale, scale);
 
             BBSModClient.getTextures().bindTexture(texture);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
             RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
             org.joml.Vector3f light0 = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
@@ -479,8 +476,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             MatrixStackUtils.applyTransform(matrices, slot.transform);
 
             BBSModClient.getTextures().bindTexture(texture);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
             Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
                 ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
@@ -526,8 +521,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             context.stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
 
             BBSModClient.getTextures().bindTexture(texture);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
             Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
                 ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)

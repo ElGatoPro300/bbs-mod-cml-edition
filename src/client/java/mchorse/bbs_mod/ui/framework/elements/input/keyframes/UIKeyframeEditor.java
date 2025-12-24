@@ -157,7 +157,7 @@ public class UIKeyframeEditor extends UIElement
 
                     if (id.startsWith("pose"))
                     {
-                        int i = id.lastIndexOf('/');
+                        int i = sheet.id.lastIndexOf('/');
 
                         bone = i >= 0 ? id.substring(0, i + 1) + currentFirst : currentFirst;
                         local = pose.poseEditor.transform.isLocal();
@@ -185,9 +185,9 @@ public class UIKeyframeEditor extends UIElement
 
                 if (id.startsWith("transform"))
                 {
-                    int i = id.lastIndexOf('/');
+                    int i = sheet.id.lastIndexOf('/');
 
-                    bone = i >= 0  ? id.substring(0, i) : "";
+                    bone = i >= 0 ? sheet.id.substring(0, i) : "";
                     local = transform.transform.isLocal();
                 }
             }
