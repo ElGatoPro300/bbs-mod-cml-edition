@@ -19,8 +19,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 public class CubicVAORenderer extends CubicCubeRenderer
 {
-    private Runnable shaderSetup;
-    private ShaderProgram contextProgram;
+    private ShaderProgram program;
     private ModelInstance model;
     /**
      * Optional default texture to use when a group doesn't have an override.
@@ -28,12 +27,11 @@ public class CubicVAORenderer extends CubicCubeRenderer
      */
     private Link defaultTexture;
 
-    public CubicVAORenderer(Runnable shaderSetup, ShaderProgram program, ModelInstance model, int light, int overlay, StencilMap stencilMap, ShapeKeys shapeKeys, Link defaultTexture)
+    public CubicVAORenderer(ShaderProgram program, ModelInstance model, int light, int overlay, StencilMap stencilMap, ShapeKeys shapeKeys, Link defaultTexture)
     {
         super(light, overlay, stencilMap, shapeKeys);
 
-        this.shaderSetup = shaderSetup;
-        this.contextProgram = program;
+        this.program = program;
         this.model = model;
         this.defaultTexture = defaultTexture;
     }
@@ -77,7 +75,7 @@ public class CubicVAORenderer extends CubicCubeRenderer
                 light = u | v << 16;
             }
 
-            ModelVAORenderer.render(this.shaderSetup, this.contextProgram, modelVAO, stack, r, g, b, a, light, this.overlay);
+            ModelVAORenderer.render(this.program, modelVAO, stack, r, g, b, a, light, this.overlay);
         }
 
         return false;

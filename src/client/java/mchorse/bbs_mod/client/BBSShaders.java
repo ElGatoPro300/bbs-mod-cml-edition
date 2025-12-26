@@ -1,8 +1,10 @@
 package mchorse.bbs_mod.client;
 
 import mchorse.bbs_mod.BBSMod;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -90,8 +92,27 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
-        return null; // MinecraftClient.getInstance().gameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        // Usar programa vanilla para VAO en modo normal
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+        return RenderSystem.getShader();
+    }
+    
+    public static ShaderProgram getRenderTypeEntityTranslucentProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+        return RenderSystem.getShader();
+    }
+
+    public static ShaderProgram getPositionTexColorProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+        return RenderSystem.getShader();
+    }
+
+    public static ShaderProgram getParticleProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.PARTICLE);
+        return RenderSystem.getShader();
     }
 
     public static ShaderProgram getMultilinkProgram()

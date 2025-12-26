@@ -172,7 +172,7 @@ public abstract class FormRenderer <T extends Form>
         transform.pivot.add(overlay.pivot);
     }
 
-    protected Runnable getShader(FormRenderingContext context, Runnable normal, Supplier<ShaderProgram> picking)
+    protected Supplier<ShaderProgram> getShader(FormRenderingContext context, Supplier<ShaderProgram> normal, Supplier<ShaderProgram> picking)
     {
         if (context.isPicking())
         {
@@ -187,7 +187,7 @@ public abstract class FormRenderer <T extends Form>
             this.setupTarget(context, program);
 
             // Devolver un runnable seguro que siempre retorna el programa no nulo
-            return program::bind;
+            return () -> program;
         }
 
         return normal;

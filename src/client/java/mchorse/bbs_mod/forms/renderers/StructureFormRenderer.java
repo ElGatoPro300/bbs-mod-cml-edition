@@ -198,7 +198,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 // Habilitar blending para soportar capas translúcidas (vidrios, portal, hojas, etc.)
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                ModelVAORenderer.render(() -> RenderSystem.setShader(shader), shader, this.structureVao, matrices, tint.r, tint.g, tint.b, tint.a, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+                ModelVAORenderer.render(shader, this.structureVao, matrices, tint.r, tint.g, tint.b, tint.a, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
 
                 // Pase de Block Entities tras VAO
                 try
@@ -297,7 +297,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-                ModelVAORenderer.render(() -> RenderSystem.setShader(BBSShaders.getPickerModelsProgram()), BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
+                ModelVAORenderer.render(BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
 
                 gameRenderer.getLightmapTextureManager().disable();
                 gameRenderer.getOverlayTexture().teardownOverlayColor();
@@ -362,7 +362,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-                ModelVAORenderer.render(() -> RenderSystem.setShader(BBSShaders.getPickerModelsProgram()), BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
+                ModelVAORenderer.render(BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
             }
             else
             {
@@ -373,7 +373,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                ModelVAORenderer.render(() -> RenderSystem.setShader(shader), shader, this.structureVao, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
+                ModelVAORenderer.render(shader, this.structureVao, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
 
                 // Pase de Block Entities tras VAO
                 try

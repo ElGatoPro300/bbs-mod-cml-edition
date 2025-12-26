@@ -1,9 +1,9 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -12,56 +12,31 @@ import org.lwjgl.opengl.GL30;
 
 public class ModelVAORenderer
 {
-    public static void render(Runnable shaderSetup, ShaderProgram contextProgram, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
+    public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
+        // Guard against null shader: try a safe fallback compatible with VAO format
+        if (shader == null)
+        {
+            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+            ShaderProgram fallback = RenderSystem.getShader();
+
+            if (fallback == null)
+            {
+                // No compatible program available; skip rendering to avoid crashing
+                return;
+            }
+
+            shader = fallback;
+        }
+
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
-        shaderSetup.run();
+        setupUniforms(stack, shader);
 
-        Matrix4f originalModelView = null;
-
-        if (contextProgram != null)
-        {
-            setupUniforms(stack, contextProgram);
-        }
-        else
-        {
-            originalModelView = new Matrix4f(RenderSystem.getModelViewMatrix());
-            
-            RenderSystem.getModelViewMatrix().set(stack.peek().getPositionMatrix());
-            
-            ShaderProgram shader = RenderSystem.getShader();
-            if (shader != null)
-            {
-                if (shader.modelViewMat != null) shader.modelViewMat.set(RenderSystem.getModelViewMatrix());
-                if (shader.projectionMat != null) shader.projectionMat.set(RenderSystem.getProjectionMatrix());
-                shader.bind();
-            }
-        }
-
-        modelVAO.render(null, r, g, b, a, light, overlay);
-
-        if (contextProgram != null)
-        {
-            GlStateManager._glUseProgram(0);
-        }
-        else
-        {
-            GlStateManager._glUseProgram(0);
-
-            if (originalModelView != null)
-            {
-                RenderSystem.getModelViewMatrix().set(originalModelView);
-                
-                ShaderProgram shader = RenderSystem.getShader();
-                if (shader != null && shader.modelViewMat != null)
-                {
-                    shader.modelViewMat.set(originalModelView);
-                    shader.bind();
-                }
-            }
-        }
+        shader.bind();
+        modelVAO.render(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, r, g, b, a, light, overlay);
+        shader.unbind();
 
         GL30.glBindVertexArray(currentVAO);
         GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, currentElementArrayBuffer);
@@ -69,10 +44,12 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
+        /*
         for (int i = 0; i < 12; i++)
         {
-            // shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
+            shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
         }
+        */
 
         if (shader.projectionMat != null)
         {
@@ -103,25 +80,27 @@ public class ModelVAORenderer
             viewRot.set(new org.joml.Matrix4f().identity());
         }
 
+        /* TODO: 1.21.4 update - find replacement for RenderSystem.getShaderFogStart()
         if (shader.fogStart != null)
         {
-            // shader.fogStart.set(RenderSystem.getShaderFogStart());
+            shader.fogStart.set(RenderSystem.getShaderFogStart());
         }
 
         if (shader.fogEnd != null)
         {
-            // shader.fogEnd.set(RenderSystem.getShaderFogEnd());
+            shader.fogEnd.set(RenderSystem.getShaderFogEnd());
         }
 
         if (shader.fogColor != null)
         {
-            // shader.fogColor.set(RenderSystem.getShaderFogColor());
+            shader.fogColor.set(RenderSystem.getShaderFogColor());
         }
 
         if (shader.fogShape != null)
         {
-            // shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
+            shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
         }
+        */
 
         if (shader.colorModulator != null)
         {

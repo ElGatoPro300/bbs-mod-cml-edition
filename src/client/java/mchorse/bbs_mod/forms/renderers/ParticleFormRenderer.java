@@ -185,9 +185,9 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
                 boolean billboard = shadersEnabled;
 
                 VertexFormat format = billboard ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR_LIGHT;
-                Runnable shader = billboard
-                    ? this.getShader(context, () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT), BBSShaders::getPickerBillboardProgram)
-                    : this.getShader(context, () -> RenderSystem.setShader(ShaderProgramKeys.PARTICLE), BBSShaders::getPickerParticlesProgram);
+                Supplier<ShaderProgram> shader = billboard
+                    ? this.getShader(context, BBSShaders::getRenderTypeEntityTranslucentProgram, BBSShaders::getPickerBillboardProgram)
+                    : this.getShader(context, BBSShaders::getParticleProgram, BBSShaders::getPickerParticlesProgram);
 
                 emitter.render(format, shader, context.stack, context.overlay, context.getTransition());
             }

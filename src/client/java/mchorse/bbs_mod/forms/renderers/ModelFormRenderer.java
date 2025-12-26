@@ -270,15 +270,11 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             org.joml.Vector3f light1 = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
             RenderSystem.setupLevelDiffuseLighting(light0, light1);
 
-            Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
-                : () -> RenderSystem.setShader(BBSShaders.getModel());
+            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? BBSShaders::getRenderTypeEntityTranslucentProgram
+                : BBSShaders::getModel;
 
-            ShaderProgram programContext = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? null
-                : BBSShaders.getModel();
-
-            this.renderModel(this.entity, mainShader, programContext, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
+            this.renderModel(this.entity, mainShader, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
 
             /* Render body parts */
             stack.push();
@@ -297,7 +293,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         }
     }
 
-    private void renderModel(IEntity target, Runnable mainShader, ShaderProgram programContext, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
+    private void renderModel(IEntity target, Supplier<ShaderProgram> mainShader, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
     {
         if (!model.culling)
         {
@@ -325,7 +321,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         /* Pass form-level texture so VAO renderer can respect it */
         Link link = this.form.texture.get();
         Link defaultTexture = link == null ? model.texture : link;
-        model.render(newStack, mainShader, programContext, color, light, overlay, stencilMap, this.form.shapeKeys.get(), defaultTexture);
+        model.render(newStack, mainShader, color, light, overlay, stencilMap, this.form.shapeKeys.get(), defaultTexture);
 
         gameRenderer.getLightmapTextureManager().disable();
         gameRenderer.getOverlayTexture().teardownOverlayColor();
@@ -477,14 +473,14 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             BBSModClient.getTextures().bindTexture(texture);
 
-            Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
-                : () -> RenderSystem.setShader(BBSShaders.getModel());
+            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? BBSShaders::getRenderTypeEntityTranslucentProgram
+                : BBSShaders::getModel;
 
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();
 
-            this.renderModel(this.entity, mainShader, null, matrices, model, light, OverlayTexture.DEFAULT_UV, color, false, null, 0F);
+            this.renderModel(this.entity, mainShader, matrices, model, light, OverlayTexture.DEFAULT_UV, color, false, null, 0F);
 
             for (ModelGroup group : model.getModel().getAllGroups())
             {
@@ -522,12 +518,12 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             BBSModClient.getTextures().bindTexture(texture);
 
-            Runnable mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? () -> RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT)
-                : () -> RenderSystem.setShader(BBSShaders.getModel());
-            Runnable shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
+            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? BBSShaders::getRenderTypeEntityTranslucentProgram
+                : BBSShaders::getModel;
+            Supplier<ShaderProgram> shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
 
-            this.renderModel(context.entity, shader, null, context.stack, model, context.light, context.overlay, color, false, context.stencilMap, context.getTransition());
+            this.renderModel(context.entity, shader, context.stack, model, context.light, context.overlay, color, false, context.stencilMap, context.getTransition());
         }
     }
 

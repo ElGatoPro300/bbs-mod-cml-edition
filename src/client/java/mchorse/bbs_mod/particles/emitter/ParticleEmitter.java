@@ -471,7 +471,7 @@ public class ParticleEmitter
     /**
      * Render all the particles in this particle emitter
      */
-    public void render(VertexFormat format, Runnable program, MatrixStack stack, int overlay, float transition)
+    public void render(VertexFormat format, Supplier<ShaderProgram> program, MatrixStack stack, int overlay, float transition)
     {
         if (this.scheme == null)
         {
@@ -506,7 +506,7 @@ public class ParticleEmitter
                     }
                 }
 
-                program.run();
+                RenderSystem.setShader(program.get());
                 RenderSystem.disableBlend();
                 RenderSystem.disableCull();
                 BufferRenderer.drawWithGlobalProgram(builder.end());
