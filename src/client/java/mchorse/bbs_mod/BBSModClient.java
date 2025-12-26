@@ -59,6 +59,7 @@ import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 import mchorse.bbs_mod.ui.utils.keys.KeybindSettings;
 import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.ScreenshotRecorder;
 import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
@@ -460,12 +461,12 @@ public class BBSModClient implements ClientModInitializer
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
-                    // RenderSystem.applyModelViewMatrix();
+                    MatrixStackUtils.applyModelViewMatrix();
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
 
                     mvStack.popMatrix();
-                    // RenderSystem.applyModelViewMatrix();
+                    MatrixStackUtils.applyModelViewMatrix();
 
                     RenderSystem.disableDepthTest();
 

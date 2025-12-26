@@ -97,10 +97,10 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
 
         GL30.glCullFace(GL30.GL_FRONT);
         RenderSystem.setShaderLights(new Vector3f(0F, 0F, 1F), new Vector3f(0F, 0F, 1F));
-        // RenderSystem.setProjectionMatrix(new Matrix4f().setOrtho(-1F, 1F, 1F, -1F, -500F, 500F), VertexSorter.BY_Z);
-        // RenderSystem.getModelViewStack().pushMatrix();
-        // RenderSystem.getModelViewStack().identity();
-        // RenderSystem.applyModelViewMatrix();
+        RenderSystem.setProjectionMatrix(new Matrix4f().setOrtho(-1F, 1F, 1F, -1F, -500F, 500F), ProjectionType.ORTHOGRAPHIC);
+        RenderSystem.getModelViewStack().pushMatrix();
+        RenderSystem.getModelViewStack().identity();
+        MatrixStackUtils.applyModelViewMatrix();
 
         framebuffer.apply();
 
