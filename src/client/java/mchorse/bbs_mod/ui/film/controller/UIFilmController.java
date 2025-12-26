@@ -1160,6 +1160,12 @@ public class UIFilmController extends UIElement
         int h = texture.height;
 
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
+        
+        if (previewProgram == null)
+        {
+            return;
+        }
+
         Supplier<ShaderProgram> getPickerPreviewProgram = BBSShaders::getPickerPreviewProgram;
         GlUniform target = previewProgram.getUniform("Target");
 
