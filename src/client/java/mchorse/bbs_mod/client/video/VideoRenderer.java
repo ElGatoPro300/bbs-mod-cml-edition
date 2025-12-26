@@ -41,6 +41,7 @@ public class VideoRenderer
 
     private static final Map<String, PlayerWrapper> PLAYERS = new HashMap<>();
     private static MediaPlayerFactory FACTORY;
+    private static boolean factoryFailed;
 
     public static void renderClips(MatrixStack stack, Batcher2D batcher, List<Clip> clips, int tick, boolean isRunning, Area viewport, Area globalArea, UIContext context, int screenWidth, int screenHeight, boolean renderGlobal)
     {
@@ -131,9 +132,23 @@ public class VideoRenderer
 
         if (wrapper == null)
         {
+            if (factoryFailed)
+            {
+                return;
+            }
+
             if (FACTORY == null)
             {
-                FACTORY = new MediaPlayerFactory(new String[] {"--avcodec-hw=none"});
+                try
+                {
+                    FACTORY = new MediaPlayerFactory(new String[] {"--avcodec-hw=none"});
+                }
+                catch (Throwable t)
+                {
+                    t.printStackTrace();
+                    factoryFailed = true;
+                    return;
+                }
             }
 
             player = new VideoPlayer(FACTORY, MinecraftClient.getInstance());
