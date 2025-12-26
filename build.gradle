@@ -60,6 +60,8 @@ dependencies {
     // Sodium and Iris should be compile-only for dev; avoid loading at runtime
     modCompileOnly "maven.modrinth:sodium:mc1.21.4-0.6.3-fabric"
     modCompileOnly "maven.modrinth:iris:1.8.2+1.21.4-fabric"
+	modImplementation "maven.modrinth:watermedia:2.1.37"
+	
 	modImplementation "org.anarres:jcpp:1.4.14"
 	modImplementation "io.github.douira:glsl-transformer:2.0.0-pre13"
 
