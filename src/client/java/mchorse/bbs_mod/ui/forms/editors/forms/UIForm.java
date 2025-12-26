@@ -63,6 +63,11 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
 
     protected Matrix4f getOrigin(float transition, String path, boolean local)
     {
+        if (path == null)
+        {
+            return Matrices.EMPTY_4F;
+        }
+
         Form root = FormUtils.getRoot(this.form);
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
         
