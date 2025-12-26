@@ -325,6 +325,8 @@
     "bbs.ui.camera.panels.audio.extend_duration": "Extend this clip's duration to the duration of the audio",
   "bbs.ui.camera.panels.audio.offset": "Audio offset",
   "bbs.ui.camera.panels.audio.volume": "Audio volume",
+  "bbs.ui.camera.panels.video.offset": "Video offset",
+  "bbs.ui.camera.panels.video.volume": "Video volume",
     "bbs.ui.camera.panels.audio.pick_audio": "Pick audio...",
     "bbs.ui.camera.panels.block": "Block coordinates",
     "bbs.ui.camera.panels.context.copy_angle": "Copy angles",

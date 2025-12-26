@@ -74,18 +74,22 @@ public abstract class BinaryReader
         {
             long skipped = stream.skip(bytes);
 
-            if (skipped <= 0)
+            if (skipped > 0)
             {
-                if (stream.read() == -1)
+                bytes -= skipped;
+            }
+            else
+            {
+                int size = (int) Math.min(bytes, 2048);
+                byte[] buffer = new byte[size];
+                int read = stream.read(buffer);
+
+                if (read == -1)
                 {
                     throw new EOFException();
                 }
 
-                bytes--;
-            }
-            else
-            {
-                bytes -= skipped;
+                bytes -= read;
             }
         }
     }

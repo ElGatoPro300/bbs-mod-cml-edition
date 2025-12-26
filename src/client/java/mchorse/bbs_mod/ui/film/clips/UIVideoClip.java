@@ -35,13 +35,13 @@ public class UIVideoClip extends UIClip<VideoClip>
         this.video.tooltip(UIKeys.C_CLIP.get("bbs:video"));
 
         this.offset = new UITrackpad((v) -> this.clip.offset.set(v.intValue()));
-        this.offset.integer();
-        this.offset.tooltip(UIKeys.CAMERA_PANELS_AUDIO_OFFSET);
+         this.offset.integer();
+        this.offset.tooltip(UIKeys.CAMERA_PANELS_VIDEO_OFFSET);
 
         this.volume = new UITrackpad((v) -> this.clip.volume.set(v.intValue()));
         this.volume.integer();
         this.volume.limit(0, 100);
-        this.volume.tooltip(UIKeys.CAMERA_PANELS_AUDIO_VOLUME);
+        this.volume.tooltip(UIKeys.CAMERA_PANELS_VIDEO_VOLUME);
 
         this.x = new UITrackpad((v) -> this.clip.x.set(v.intValue()));
         this.x.integer();
@@ -73,8 +73,8 @@ public class UIVideoClip extends UIClip<VideoClip>
         super.registerPanels();
 
         this.panels.add(UI.column(UIClip.label(UIKeys.C_CLIP.get("bbs:video")), this.video).marginTop(12));
-        this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_AUDIO_OFFSET).marginTop(6), this.offset).marginTop(12));
-        this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_AUDIO_VOLUME).marginTop(6), this.volume).marginTop(12));
+        this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_VIDEO_OFFSET).marginTop(6), this.offset).marginTop(12));
+        this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_VIDEO_VOLUME).marginTop(6), this.volume).marginTop(12));
         this.panels.add(UI.row(
             UI.column(UIClip.label(UIKeys.C_CLIP.get("bbs:x")), this.x),
             UI.column(UIClip.label(UIKeys.C_CLIP.get("bbs:y")), this.y)

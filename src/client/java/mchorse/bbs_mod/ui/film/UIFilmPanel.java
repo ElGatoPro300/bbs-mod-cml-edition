@@ -661,6 +661,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
         BBSRendering.setCustomSize(false);
         MorphRenderer.hidePlayer = false;
+        VideoRenderer.stopAll();
 
         CameraController cameraController = this.getCameraController();
 
