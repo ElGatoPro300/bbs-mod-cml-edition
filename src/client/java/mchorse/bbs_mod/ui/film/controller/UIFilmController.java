@@ -1142,8 +1142,7 @@ public class UIFilmController extends UIElement
         }
 
         /* Return back to orthographic projection */
-        // MatrixStackUtils.restoreMatrices();
-        RenderSystem.setProjectionMatrix(this.panel.lastProjection, ProjectionType.ORTHOGRAPHIC);
+        MatrixStackUtils.restoreMatrices();
 
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
