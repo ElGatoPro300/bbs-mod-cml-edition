@@ -1133,12 +1133,12 @@ public class UIFilmController extends UIElement
             mvStack.identity();
             // Mantener la vista sincronizada con la cámara del mundo
             mvStack.set(BBSRendering.camera);
-            // RenderSystem.applyModelViewMatrix();
+            MatrixStackUtils.applyModelViewMatrix();
 
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
 
             mvStack.popMatrix();
-            // RenderSystem.applyModelViewMatrix();
+            MatrixStackUtils.applyModelViewMatrix();
         }
 
         /* Return back to orthographic projection */

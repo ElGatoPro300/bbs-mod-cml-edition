@@ -11,6 +11,7 @@ import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.Quad;
 import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.MinecraftClient;
@@ -123,8 +124,8 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
         GL30.glViewport(0, 0, width, height);
 
         RenderSystem.setShaderLights(light0, light1);
-        // RenderSystem.getModelViewStack().popMatrix();
-        // RenderSystem.applyModelViewMatrix();
+        RenderSystem.getModelViewStack().popMatrix();
+        MatrixStackUtils.applyModelViewMatrix();
         RenderSystem.setProjectionMatrix(projectionMatrix, ProjectionType.ORTHOGRAPHIC);
         GL30.glCullFace(GL30.GL_BACK);
 
