@@ -4,6 +4,7 @@ import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFactory;
@@ -11,12 +12,19 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.Optional;
-import java.lang.reflect.Method;
 
 public class BBSShaders
 {
-    private static Method getProgramMethod;
+    private static ShaderProgram multiLink;
+    private static ShaderProgram subtitles;
+
+    private static ShaderProgram pickerPreview;
+    private static ShaderProgram pickerBillboard;
+    private static ShaderProgram pickerBillboardNoShading;
+    private static ShaderProgram pickerParticles;
+    private static ShaderProgram pickerModels;
 
     static
     {
@@ -25,37 +33,53 @@ public class BBSShaders
 
     public static void setup()
     {
-        getProgramMethod = null;
+        if (multiLink != null) multiLink.close();
+        if (subtitles != null) subtitles.close();
+
+        if (pickerPreview != null) pickerPreview.close();
+        if (pickerBillboard != null) pickerBillboard.close();
+        if (pickerBillboardNoShading != null) pickerBillboardNoShading.close();
+        if (pickerParticles != null) pickerParticles.close();
+        if (pickerModels != null) pickerModels.close();
+
+        try
+        {
+            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+            
+            multiLink = createShader(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
+            subtitles = createShader(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
+
+            pickerPreview = createShader(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
+            pickerBillboard = createShader(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            pickerBillboardNoShading = createShader(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
+            pickerParticles = createShader(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            pickerModels = createShader(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    private static ShaderProgram getProgram(String name)
+    private static ShaderProgram createShader(ResourceFactory factory, String name, VertexFormat format)
     {
         try
         {
-            if (getProgramMethod == null)
+            for (Constructor<?> c : ShaderProgram.class.getDeclaredConstructors())
             {
-                // Try to find the method on GameRenderer
-                for (Method m : GameRenderer.class.getDeclaredMethods())
+                c.setAccessible(true);
+                Class<?>[] types = c.getParameterTypes();
+                if (types.length == 3 && ResourceFactory.class.isAssignableFrom(types[0]) && types[1] == String.class && VertexFormat.class.isAssignableFrom(types[2]))
                 {
-                    if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == String.class && m.getReturnType() == ShaderProgram.class)
-                    {
-                        m.setAccessible(true);
-                        getProgramMethod = m;
-                        break;
-                    }
+                    return (ShaderProgram) c.newInstance(factory, name, format);
                 }
-            }
-
-            if (getProgramMethod != null)
-            {
-                return (ShaderProgram) getProgramMethod.invoke(MinecraftClient.getInstance().gameRenderer, name);
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
+        
         return null;
     }
 
@@ -67,36 +91,57 @@ public class BBSShaders
 
     public static ShaderProgram getMultilinkProgram()
     {
-        return getProgram("multilink");
+        return multiLink;
     }
 
     public static ShaderProgram getSubtitlesProgram()
     {
-        return getProgram("subtitles");
+        return subtitles;
     }
 
     public static ShaderProgram getPickerPreviewProgram()
     {
-        return getProgram("picker_preview");
+        return pickerPreview;
     }
 
     public static ShaderProgram getPickerBillboardProgram()
     {
-        return getProgram("picker_billboard");
+        return pickerBillboard;
     }
 
     public static ShaderProgram getPickerBillboardNoShadingProgram()
     {
-        return getProgram("picker_billboard_no_shading");
+        return pickerBillboardNoShading;
     }
 
     public static ShaderProgram getPickerParticlesProgram()
     {
-        return getProgram("picker_particles");
+        return pickerParticles;
     }
 
     public static ShaderProgram getPickerModelsProgram()
     {
-        return getProgram("picker_models");
+        return pickerModels;
+    }
+
+    private static class ProxyResourceFactory implements ResourceFactory
+    {
+        private ResourceManager manager;
+
+        public ProxyResourceFactory(ResourceManager manager)
+        {
+            this.manager = manager;
+        }
+
+        @Override
+        public Optional<Resource> getResource(Identifier id)
+        {
+            if (id.getPath().contains("/core/"))
+            {
+                return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
+            }
+
+            return this.manager.getResource(id);
+        }
     }
 }
