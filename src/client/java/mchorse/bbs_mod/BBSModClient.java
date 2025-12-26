@@ -2,6 +2,12 @@ package mchorse.bbs_mod;
 
 import mchorse.bbs_mod.client.BBSShaders;
 
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
@@ -612,6 +618,18 @@ public class BBSModClient implements ClientModInitializer
         });
 
         BBSRendering.setup();
+
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+            @Override
+            public Identifier getFabricId() {
+                return Identifier.of(BBSMod.MOD_ID, "shaders");
+            }
+
+            @Override
+            public void reload(ResourceManager manager) {
+                BBSShaders.setup(manager);
+            }
+        });
 
         /* Network */
         ClientNetwork.setup();

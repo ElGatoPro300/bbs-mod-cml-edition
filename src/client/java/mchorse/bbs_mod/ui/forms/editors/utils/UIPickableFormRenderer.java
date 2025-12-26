@@ -312,6 +312,12 @@ public class UIPickableFormRenderer extends UIFormRenderer
         int h = texture.height;
 
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
+
+        if (previewProgram == null)
+        {
+            return;
+        }
+
         GlUniform target = previewProgram.getUniform("Target");
 
         if (target != null)

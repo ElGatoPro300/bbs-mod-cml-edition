@@ -33,6 +33,11 @@ public class BBSShaders
 
     public static void setup()
     {
+        setup(MinecraftClient.getInstance().getResourceManager());
+    }
+
+    public static void setup(ResourceManager manager)
+    {
         if (multiLink != null) multiLink.close();
         if (subtitles != null) subtitles.close();
 
@@ -44,7 +49,7 @@ public class BBSShaders
 
         try
         {
-            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+            ResourceFactory factory = new ProxyResourceFactory(manager);
             
             multiLink = createShader(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
             subtitles = createShader(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
