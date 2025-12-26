@@ -58,6 +58,7 @@ dependencies {
 	modCompileOnly "maven.modrinth:iris:1.7.2+1.20.4"
 	modCompileOnly "maven.modrinth:distanthorizons:2.1.0-a-1.20.4"
 	modCompileOnly "maven.modrinth:indium:1.0.31+mc1.20.4"
+	modImplementation "maven.modrinth:watermedia:2.1.37"
 
 	modImplementation "org.anarres:jcpp:1.4.14"
 	modImplementation "io.github.douira:glsl-transformer:2.0.0-pre13"
