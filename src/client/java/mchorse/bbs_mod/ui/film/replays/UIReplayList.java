@@ -950,11 +950,59 @@ public class UIReplayList extends UIList<Replay>
     private void addGroup()
     {
         Film film = this.panel.getData();
-        Replay replay = new Replay("replay");
+        Replay group = new Replay("replay");
 
-        replay.isGroup.set(true);
-        replay.label.set("New Group");
-        film.replays.add(replay);
+        group.uuid.set(java.util.UUID.randomUUID().toString());
+        group.isGroup.set(true);
+        group.label.set("New Group");
+
+        List<Replay> selected = this.getCurrent();
+
+        if (!selected.isEmpty())
+        {
+            List<Replay> list = film.replays.getAllTyped();
+            Replay first = selected.get(0);
+            
+            int insertionIndex = list.size();
+
+            for (Replay r : selected)
+            {
+                int index = list.indexOf(r);
+
+                if (index != -1 && index < insertionIndex)
+                {
+                    insertionIndex = index;
+                }
+            }
+            
+            String parentPath = first.group.get();
+
+            group.group.set(parentPath);
+            
+            String newGroupPath = parentPath.isEmpty() ? group.uuid.get() : parentPath + "/" + group.uuid.get();
+            
+            list.removeAll(selected);
+            
+            for (Replay r : selected)
+            {
+                r.group.set(newGroupPath);
+            }
+            
+            if (insertionIndex > list.size())
+            {
+                insertionIndex = list.size();
+            }
+            
+            list.add(insertionIndex, group);
+            list.addAll(insertionIndex + 1, selected);
+            
+            this.expandedGroups.put(newGroupPath, true);
+        }
+        else
+        {
+            film.replays.add(group);
+        }
+
         film.replays.sync();
 
         this.buildVisualList();
