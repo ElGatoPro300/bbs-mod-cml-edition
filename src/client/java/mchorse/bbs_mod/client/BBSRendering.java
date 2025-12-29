@@ -42,7 +42,6 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import com.mojang.blaze3d.systems.VertexSorter;
-import com.mojang.blaze3d.systems.ProjectionType;
 import org.lwjgl.opengl.GL11;
 import org.joml.Matrix4f;
 
@@ -269,7 +268,7 @@ public class BBSRendering
             return;
         }
 
-        framebuffer.resize(w, h);
+        framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
     }
 
     public static void toggleFramebuffer(boolean toggleFramebuffer)
@@ -293,7 +292,7 @@ public class BBSRendering
 
             if (framebuffer.textureWidth != w || framebuffer.textureHeight != h)
             {
-                framebuffer.resize(w, h);
+                framebuffer.resize(w, h, MinecraftClient.IS_SYSTEM_MAC);
             }
 
             clientFramebuffer = mc.getFramebuffer();
@@ -360,9 +359,9 @@ public class BBSRendering
             Matrix4f cache = new Matrix4f(RenderSystem.getProjectionMatrix());
             Matrix4f ortho = new Matrix4f().ortho(0, area.w, area.h, 0, -1000, 3000);
 
-            RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
+            RenderSystem.setProjectionMatrix(ortho, VertexSorter.BY_Z);
             VideoRenderer.renderClips(batcher.getContext().getMatrices(), batcher, controller.getContext().clips.getClips(controller.getContext().relativeTick), controller.getContext().relativeTick, true, area, area, null, area.w, area.h, false);
-            RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
+            RenderSystem.setProjectionMatrix(cache, VertexSorter.BY_Z);
         }
 
         if (!customSize)
@@ -384,22 +383,14 @@ public class BBSRendering
                 Matrix4f cache = new Matrix4f(RenderSystem.getProjectionMatrix());
                 Matrix4f ortho = new Matrix4f().ortho(0, window.getScaledWidth(), window.getScaledHeight(), 0, -1000, 3000);
 
-                RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
+                RenderSystem.setProjectionMatrix(ortho, VertexSorter.BY_Z);
                 Area fullScreen = new Area(0, 0, window.getScaledWidth(), window.getScaledHeight());
                 VideoRenderer.renderClips(new MatrixStack(), currentMenu.context.batcher, panel.getData().camera.getClips(panel.getCursor()), panel.getCursor(), panel.getRunner().isRunning(), fullScreen, fullScreen, null, window.getScaledWidth(), window.getScaledHeight(), false);
-                RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
+                RenderSystem.setProjectionMatrix(cache, VertexSorter.BY_Z);
             }
         }
 
         renderingWorld = false;
-    }
-
-    public static void render(float partialTicks)
-    {
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        // mc.getProfiler().push("bbs_render");
-        // mc.getProfiler().pop();
     }
 
     public static void onRenderBeforeScreen()
@@ -425,9 +416,11 @@ public class BBSRendering
             false,
             mc.gameRenderer.getCamera(),
             mc.gameRenderer,
+            mc.gameRenderer.getLightmapTextureManager(),
             RenderSystem.getProjectionMatrix(),
             RenderSystem.getModelViewMatrix(),
             mc.getBufferBuilders().getEntityVertexConsumers(),
+            mc.getProfiler(),
             false,
             mc.world
         );
@@ -454,9 +447,11 @@ public class BBSRendering
             false,
             mc.gameRenderer.getCamera(),
             mc.gameRenderer,
+            mc.gameRenderer.getLightmapTextureManager(),
             positionMatrix,
             projectionMatrix,
             mc.getBufferBuilders().getEntityVertexConsumers(),
+            mc.getProfiler(),
             false,
             mc.world
         );

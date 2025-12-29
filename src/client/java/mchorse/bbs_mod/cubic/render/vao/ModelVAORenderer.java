@@ -3,7 +3,6 @@ package mchorse.bbs_mod.cubic.render.vao;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -17,8 +16,7 @@ public class ModelVAORenderer
         // Guard against null shader: try a safe fallback compatible with VAO format
         if (shader == null)
         {
-            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-            ShaderProgram fallback = RenderSystem.getShader();
+            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
 
             if (fallback == null)
             {
@@ -35,7 +33,7 @@ public class ModelVAORenderer
         setupUniforms(stack, shader);
 
         shader.bind();
-        modelVAO.render(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, r, g, b, a, light, overlay);
+        modelVAO.render(shader.getFormat(), r, g, b, a, light, overlay);
         shader.unbind();
 
         GL30.glBindVertexArray(currentVAO);
@@ -44,12 +42,10 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
-        /*
         for (int i = 0; i < 12; i++)
         {
             shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
         }
-        */
 
         if (shader.projectionMat != null)
         {
@@ -80,7 +76,6 @@ public class ModelVAORenderer
             viewRot.set(new org.joml.Matrix4f().identity());
         }
 
-        /* TODO: 1.21.4 update - find replacement for RenderSystem.getShaderFogStart()
         if (shader.fogStart != null)
         {
             shader.fogStart.set(RenderSystem.getShaderFogStart());
@@ -100,7 +95,6 @@ public class ModelVAORenderer
         {
             shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
         }
-        */
 
         if (shader.colorModulator != null)
         {
