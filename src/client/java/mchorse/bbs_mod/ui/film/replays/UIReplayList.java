@@ -175,10 +175,10 @@ public class UIReplayList extends UIList<Replay>
         if (src.isGroup.get())
         {
             String srcPath = getReplayPath(src);
-            String srcFullPath = srcPath.isEmpty() ? src.getName() : srcPath + "/" + src.getName();
+            String srcFullPath = srcPath.isEmpty() ? src.uuid.get() : srcPath + "/" + src.uuid.get();
 
             String destPath = getReplayPath(dest);
-            String destFullPath = destPath.isEmpty() ? dest.getName() : destPath + "/" + dest.getName();
+            String destFullPath = destPath.isEmpty() ? dest.uuid.get() : destPath + "/" + dest.uuid.get();
 
             // If dest is strictly inside src or is src itself (circular check)
             if (destFullPath.equals(srcFullPath) || destFullPath.startsWith(srcFullPath + "/") ||
@@ -192,7 +192,7 @@ public class UIReplayList extends UIList<Replay>
         if (dest.isGroup.get())
         {
             String destPath = getReplayPath(dest);
-            String destGroupPath = destPath.isEmpty() ? dest.getName() : destPath + "/" + dest.getName();
+            String destGroupPath = destPath.isEmpty() ? dest.uuid.get() : destPath + "/" + dest.uuid.get();
             String srcGroup = src.group.get();
 
             // If we are dragging onto a group that is NOT our current parent, we reparent
@@ -202,12 +202,12 @@ public class UIReplayList extends UIList<Replay>
                 if (src.isGroup.get())
                 {
                     String oldPath = getReplayPath(src);
-                    String oldFullPath = oldPath.isEmpty() ? src.getName() : oldPath + "/" + src.getName();
+                    String oldFullPath = oldPath.isEmpty() ? src.uuid.get() : oldPath + "/" + src.uuid.get();
 
                     src.group.set(destGroupPath);
 
                     String newPath = getReplayPath(src);
-                    String newFullPath = newPath.isEmpty() ? src.getName() : newPath + "/" + src.getName();
+                    String newFullPath = newPath.isEmpty() ? src.uuid.get() : newPath + "/" + src.uuid.get();
 
                     this.updateGroupPath(oldFullPath, newFullPath);
                 }
@@ -234,12 +234,12 @@ public class UIReplayList extends UIList<Replay>
         if (src.isGroup.get())
         {
             String oldPath = getReplayPath(src);
-            String oldFullPath = oldPath.isEmpty() ? src.getName() : oldPath + "/" + src.getName();
+            String oldFullPath = oldPath.isEmpty() ? src.uuid.get() : oldPath + "/" + src.uuid.get();
 
             src.group.set(destGroup);
 
             String newPath = getReplayPath(src);
-            String newFullPath = newPath.isEmpty() ? src.getName() : newPath + "/" + src.getName();
+            String newFullPath = newPath.isEmpty() ? src.uuid.get() : newPath + "/" + src.uuid.get();
 
             if (!oldFullPath.equals(newFullPath))
             {
@@ -267,7 +267,7 @@ public class UIReplayList extends UIList<Replay>
         if (src.isGroup.get())
         {
             String srcPath = getReplayPath(src);
-            String srcFullPath = srcPath.isEmpty() ? src.getName() : srcPath + "/" + src.getName();
+            String srcFullPath = srcPath.isEmpty() ? src.uuid.get() : srcPath + "/" + src.uuid.get();
 
             for (Replay r : list)
             {
@@ -542,6 +542,7 @@ public class UIReplayList extends UIList<Replay>
             Replay replay = film.replays.addReplay();
 
             BaseValue.edit(replay, (r) -> r.fromData(replayType));
+            replay.uuid.set(java.util.UUID.randomUUID().toString());
 
             last = replay;
         }
@@ -774,6 +775,7 @@ public class UIReplayList extends UIList<Replay>
             Replay newReplay = film.replays.addReplay();
 
             newReplay.copy(replay);
+            newReplay.uuid.set(java.util.UUID.randomUUID().toString());
 
             last = newReplay;
         }
@@ -833,7 +835,7 @@ public class UIReplayList extends UIList<Replay>
         if (element.isGroup.get())
         {
             String path = getReplayPath(element);
-            String myPath = path.isEmpty() ? element.getName() : path + "/" + element.getName();
+            String myPath = path.isEmpty() ? element.uuid.get() : path + "/" + element.uuid.get();
             boolean expanded = this.expandedGroups.getOrDefault(myPath, true);
             Icon icon = expanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
 
@@ -1003,7 +1005,7 @@ public class UIReplayList extends UIList<Replay>
                 if (r.isGroup.get() && context.mouseX >= x && context.mouseX < x + 16)
                 {
                     String path = getReplayPath(r);
-                    String myPath = path.isEmpty() ? r.getName() : path + "/" + r.getName();
+                    String myPath = path.isEmpty() ? r.uuid.get() : path + "/" + r.uuid.get();
 
                     boolean expanded = this.expandedGroups.getOrDefault(myPath, true);
 

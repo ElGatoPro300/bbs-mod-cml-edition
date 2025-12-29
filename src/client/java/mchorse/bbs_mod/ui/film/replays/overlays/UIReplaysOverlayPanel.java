@@ -77,18 +77,9 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
              {
                  if (replay.isGroup.get())
                  {
-                     String oldPath = this.replays.getReplayPath(replay);
-                     String oldFullPath = oldPath.isEmpty() ? replay.getName() : oldPath + "/" + replay.getName();
-                     
                      replay.label.set(s);
-                     
-                     String newPath = this.replays.getReplayPath(replay);
-                     String newFullPath = newPath.isEmpty() ? replay.getName() : newPath + "/" + replay.getName();
-                     
-                     if (!oldFullPath.equals(newFullPath))
-                     {
-                         this.replays.updateGroupPath(oldFullPath, newFullPath);
-                     }
+                     this.replays.buildVisualList();
+                     this.replays.setCurrentDirect(replay);
                  }
              });
         });
