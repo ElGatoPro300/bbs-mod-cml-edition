@@ -52,6 +52,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -134,6 +135,11 @@ public abstract class BaseFilmController
         else
         {
             target = defaultMatrix;
+        }
+
+        if (context.localGroupTransform != null)
+        {
+            target.mul(context.localGroupTransform);
         }
 
         BlockPos pos = BlockPos.ofFloored(position.x, position.y + 0.5D, position.z);
@@ -731,13 +737,31 @@ public abstract class BaseFilmController
 
             filmContext.transition = getTransition(entity, context.tickDelta());
 
+            filmContext.stack.push();
+
             if (!this.applyGroupProperties(replay, filmContext))
             {
+                filmContext.stack.pop();
                 return;
             }
 
             renderEntity(filmContext);
+
+            filmContext.stack.pop();
         }
+    }
+
+    protected Replay getGroupPivot(String groupUuid)
+    {
+        for (Replay replay : this.film.replays.getList())
+        {
+            if (replay.group.get().contains(groupUuid))
+            {
+                return replay;
+            }
+        }
+
+        return null;
     }
 
     protected boolean applyGroupProperties(Replay replay, FilmControllerContext context)
@@ -749,6 +773,8 @@ public abstract class BaseFilmController
 
         String[] groups = replay.group.get().split("/");
         int finalColor = Colors.WHITE;
+        Matrix4f globalTranslate = new Matrix4f().identity();
+        Matrix4f localTransform = new Matrix4f().identity();
 
         for (String uuid : groups)
         {
@@ -782,12 +808,58 @@ public abstract class BaseFilmController
                         finalColor = this.mulColors(finalColor, groupColor);
                     }
                 }
+
+                BaseValue transformValue = groupReplay.properties.get("transform");
+
+                if (transformValue instanceof KeyframeChannel)
+                {
+                    KeyframeChannel<Transform> transform = (KeyframeChannel<Transform>) transformValue;
+
+                    if (!transform.isEmpty())
+                    {
+                        Transform t = transform.interpolate((float) tick);
+                        
+                        globalTranslate.translate(t.translate.x, t.translate.y, t.translate.z);
+                        
+                        Matrix4f local = new Matrix4f();
+                        
+                        if (t.pivot.x != 0F || t.pivot.y != 0F || t.pivot.z != 0F)
+                        {
+                            local.translate(t.pivot);
+                        }
+                        
+                        local.rotateZ(t.rotate.z);
+                        local.rotateY(t.rotate.y);
+                        local.rotateX(t.rotate.x);
+                        local.rotateZ(t.rotate2.z);
+                        local.rotateY(t.rotate2.y);
+                        local.rotateX(t.rotate2.x);
+                        local.scale(t.scale);
+                        
+                        if (t.pivot.x != 0F || t.pivot.y != 0F || t.pivot.z != 0F)
+                        {
+                            local.translate(-t.pivot.x, -t.pivot.y, -t.pivot.z);
+                        }
+                        
+                        localTransform.mul(local);
+                    }
+                }
             }
         }
 
         if (finalColor != Colors.WHITE)
         {
             context.color(this.mulColors(context.color, finalColor));
+        }
+
+        if (!globalTranslate.equals(new Matrix4f().identity()))
+        {
+            context.stack.peek().getPositionMatrix().mul(globalTranslate);
+        }
+        
+        if (!localTransform.equals(new Matrix4f().identity()))
+        {
+            context.localGroupTransform = localTransform;
         }
 
         return true;

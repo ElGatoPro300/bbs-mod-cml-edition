@@ -65,14 +65,17 @@ import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -394,8 +397,8 @@ public class UIReplaysEditor extends UIElement
 
         if (this.replay.isGroup.get())
         {
-            /* Add only visible and color properties for groups */
-            String[] properties = {"visible", "color"};
+            /* Add only visible, color and transform properties for groups */
+            String[] properties = {"visible", "color", "transform"};
 
             for (String key : properties)
             {
