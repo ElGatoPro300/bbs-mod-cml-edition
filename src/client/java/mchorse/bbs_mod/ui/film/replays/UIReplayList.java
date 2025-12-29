@@ -171,63 +171,141 @@ public class UIReplayList extends UIList<Replay>
         Replay src = this.list.get(from);
         Replay dest = this.list.get(to);
 
-        Film data = this.panel.getData();
-        Replays replays = data.replays;
-
-        if (dest.isGroup.get())
+        // Prevent dragging parent into child
+        if (src.isGroup.get())
         {
-            String srcGroup = src.group.get();
+            String srcPath = getReplayPath(src);
+            String srcFullPath = srcPath.isEmpty() ? src.getName() : srcPath + "/" + src.getName();
+
             String destPath = getReplayPath(dest);
-            String destGroupPath = destPath.isEmpty() ? dest.getName() : destPath + "/" + dest.getName();
+            String destFullPath = destPath.isEmpty() ? dest.getName() : destPath + "/" + dest.getName();
 
-            if (!srcGroup.equals(destGroupPath))
+            // If dest is strictly inside src or is src itself (circular check)
+            if (destFullPath.equals(srcFullPath) || destFullPath.startsWith(srcFullPath + "/") ||
+                dest.group.get().equals(srcFullPath) || dest.group.get().startsWith(srcFullPath + "/"))
             {
-                src.group.set(destGroupPath);
-
-                replays.remove(src);
-                int destIndex = replays.getList().indexOf(dest);
-                replays.add(destIndex + 1, src);
-                replays.sync();
-
-                this.expandedGroups.put(destGroupPath, true);
-                this.buildVisualList();
-                this.updateFilmEditor();
                 return;
             }
         }
 
-        src.group.set(dest.group.get());
-
-        int srcRealIndex = replays.getList().indexOf(src);
-        int destRealIndex = replays.getList().indexOf(dest);
-
-        if (srcRealIndex == -1 || destRealIndex == -1) return;
-
-        data.preNotify(IValueListener.FLAG_UNMERGEABLE);
-
-        replays.remove(src);
-
-        if (destRealIndex > srcRealIndex)
+        // Logic for dropping INTO a group (Reparenting)
+        if (dest.isGroup.get())
         {
-            destRealIndex--;
+            String destPath = getReplayPath(dest);
+            String destGroupPath = destPath.isEmpty() ? dest.getName() : destPath + "/" + dest.getName();
+            String srcGroup = src.group.get();
+
+            // If we are dragging onto a group that is NOT our current parent, we reparent
+            if (!srcGroup.equals(destGroupPath))
+            {
+                // Update src parent
+                if (src.isGroup.get())
+                {
+                    String oldPath = getReplayPath(src);
+                    String oldFullPath = oldPath.isEmpty() ? src.getName() : oldPath + "/" + src.getName();
+
+                    src.group.set(destGroupPath);
+
+                    String newPath = getReplayPath(src);
+                    String newFullPath = newPath.isEmpty() ? src.getName() : newPath + "/" + src.getName();
+
+                    this.updateGroupPath(oldFullPath, newFullPath);
+                }
+                else
+                {
+                    src.group.set(destGroupPath);
+                }
+
+                // Move src and children to be inside dest (after dest)
+                this.moveReplayAndChildren(src, dest, true);
+
+                // Auto-expand the target group
+                this.expandedGroups.put(destGroupPath, true);
+                this.buildVisualList();
+                this.updateFilmEditor();
+
+                return;
+            }
         }
 
-        if (from < to)
+        // Standard Reorder (Same Parent or Move to Root)
+        String destGroup = dest.group.get();
+
+        if (src.isGroup.get())
         {
-            replays.add(destRealIndex + 1, src);
+            String oldPath = getReplayPath(src);
+            String oldFullPath = oldPath.isEmpty() ? src.getName() : oldPath + "/" + src.getName();
+
+            src.group.set(destGroup);
+
+            String newPath = getReplayPath(src);
+            String newFullPath = newPath.isEmpty() ? src.getName() : newPath + "/" + src.getName();
+
+            if (!oldFullPath.equals(newFullPath))
+            {
+                this.updateGroupPath(oldFullPath, newFullPath);
+            }
         }
         else
         {
-            replays.add(destRealIndex, src);
+            src.group.set(destGroup);
         }
 
-        replays.sync();
+        this.moveReplayAndChildren(src, dest, from < to);
+    }
 
+    private void moveReplayAndChildren(Replay src, Replay dest, boolean insertAfter)
+    {
+        Film data = this.panel.getData();
+        List<Replay> list = data.replays.getAllTyped();
+        List<Replay> toMove = new ArrayList<>();
+
+        // Add src itself
+        toMove.add(src);
+
+        // Add descendants
+        if (src.isGroup.get())
+        {
+            String srcPath = getReplayPath(src);
+            String srcFullPath = srcPath.isEmpty() ? src.getName() : srcPath + "/" + src.getName();
+
+            for (Replay r : list)
+            {
+                if (r == src) continue;
+
+                String g = r.group.get();
+                if (g.equals(srcFullPath) || g.startsWith(srcFullPath + "/"))
+                {
+                    toMove.add(r);
+                }
+            }
+        }
+
+        data.preNotify(IValueListener.FLAG_UNMERGEABLE);
+
+        list.removeAll(toMove);
+
+        int destIndex = list.indexOf(dest);
+
+        if (destIndex != -1)
+        {
+            int insertIndex = insertAfter ? destIndex + 1 : destIndex;
+            // Clamp index
+            insertIndex = Math.max(0, Math.min(insertIndex, list.size()));
+            list.addAll(insertIndex, toMove);
+        }
+        else
+        {
+            list.addAll(toMove);
+        }
+
+        data.replays.sync();
         data.postNotify(IValueListener.FLAG_UNMERGEABLE);
 
         this.buildVisualList();
         this.updateFilmEditor();
 
+        // Restore selection
         int newIndex = this.visualList.indexOf(src);
         if (newIndex != -1)
         {
@@ -470,7 +548,8 @@ public class UIReplayList extends UIList<Replay>
 
         if (last != null)
         {
-            this.update();
+            this.buildVisualList();
+            this.setCurrentDirect(last);
             this.panel.replayEditor.setReplay(last);
             this.updateFilmEditor();
         }
@@ -558,7 +637,8 @@ public class UIReplayList extends UIList<Replay>
             replay.keyframes.pitch.insert(i, (double) position.angle.pitch);
         }
 
-        this.update();
+        this.buildVisualList();
+        this.setCurrentDirect(replay);
         this.panel.replayEditor.setReplay(replay);
         this.updateFilmEditor();
 
@@ -645,7 +725,8 @@ public class UIReplayList extends UIList<Replay>
             }
         }
 
-        this.update();
+        this.buildVisualList();
+        this.setCurrentDirect(replay);
         this.panel.replayEditor.setReplay(replay);
         this.updateFilmEditor();
     }
@@ -664,7 +745,8 @@ public class UIReplayList extends UIList<Replay>
         replay.keyframes.headYaw.insert(0, (double) yaw);
         replay.keyframes.bodyYaw.insert(0, (double) yaw);
 
-        this.update();
+        this.buildVisualList();
+        this.setCurrentDirect(replay);
         this.panel.replayEditor.setReplay(replay);
         this.updateFilmEditor();
 
@@ -698,7 +780,8 @@ public class UIReplayList extends UIList<Replay>
 
         if (last != null)
         {
-            this.update();
+            this.buildVisualList();
+            this.setCurrentDirect(last);
             this.panel.replayEditor.setReplay(last);
             this.updateFilmEditor();
         }
@@ -722,8 +805,9 @@ public class UIReplayList extends UIList<Replay>
         int size = this.list.size();
         index = MathUtils.clamp(index, 0, size - 1);
 
-        this.update();
-        this.panel.replayEditor.setReplay(size == 0 ? null : this.list.get(index));
+        this.buildVisualList();
+        size = this.list.size();
+        this.panel.replayEditor.setReplay(size == 0 ? null : CollectionUtils.getSafe(this.list, index));
         this.updateFilmEditor();
     }
 
