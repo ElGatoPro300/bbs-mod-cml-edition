@@ -6,6 +6,7 @@ import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.Axis;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -211,7 +212,7 @@ public class Gizmo
             Draw.fillBox(builder, stack, -o, l, l, o, rr, rr, 0F, 1F, 1F); */
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
         BufferRenderer.drawWithGlobalProgram(builder.end());
@@ -235,7 +236,9 @@ public class Gizmo
         axisSize *= scale;
         axisOffset *= scale;
 
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+        RenderSystem.disableDepthTest();
+        // RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
 
         if (this.mode == Mode.ROTATE)
         {
@@ -272,7 +275,7 @@ public class Gizmo
             Draw.fillBox(builder, stack, -o, l, l, o, rr, rr, STENCIL_ZY / 255F, 0F, 0F); */
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         RenderSystem.disableDepthTest();
 
         BufferRenderer.drawWithGlobalProgram(builder.end());
