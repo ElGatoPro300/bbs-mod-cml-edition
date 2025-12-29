@@ -117,40 +117,49 @@ public class UIReplayList extends UIList<Replay>
 
             if (this.isSelected())
             {
+                boolean isGroup = this.getCurrentFirst().isGroup.get();
                 boolean shift = Window.isShiftPressed();
                 MapType data = Window.getClipboardMap("_CopyKeyframes");
 
-                menu.action(Icons.ALL_DIRECTIONS, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS, this::processReplays);
-                menu.action(Icons.TIME, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME, this::offsetTimeReplays);
+                if (!isGroup)
+                {
+                    menu.action(Icons.ALL_DIRECTIONS, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS, this::processReplays);
+                    menu.action(Icons.TIME, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME, this::offsetTimeReplays);
+                }
+                
                 menu.action(Icons.FOLDER, UIKeys.SCENE_REPLAYS_CONTEXT_ADD_GROUP, this::addGroup);
 
-                if (data != null)
+                if (!isGroup && data != null)
                 {
                     menu.action(Icons.PASTE, UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES, () -> this.pasteToReplays(data));
                 }
 
-                menu.action(Icons.DUPE, UIKeys.SCENE_REPLAYS_CONTEXT_DUPE, () ->
+                if (!isGroup)
                 {
-                    if (Window.isShiftPressed() || shift)
+                    menu.action(Icons.DUPE, UIKeys.SCENE_REPLAYS_CONTEXT_DUPE, () ->
                     {
-                        this.dupeReplay();
-                    }
-                    else
-                    {
-                        UINumberOverlayPanel numberPanel = new UINumberOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_DUPE, UIKeys.SCENE_REPLAYS_CONTEXT_DUPE_DESCRIPTION, (n) ->
+                        if (Window.isShiftPressed() || shift)
                         {
-                            for (int i = 0; i < n; i++)
+                            this.dupeReplay();
+                        }
+                        else
+                        {
+                            UINumberOverlayPanel numberPanel = new UINumberOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_DUPE, UIKeys.SCENE_REPLAYS_CONTEXT_DUPE_DESCRIPTION, (n) ->
                             {
-                                this.dupeReplay();
-                            }
-                        });
+                                for (int i = 0; i < n; i++)
+                                {
+                                    this.dupeReplay();
+                                }
+                            });
 
-                        numberPanel.value.limit(1).integer();
-                        numberPanel.value.setValue(1D);
+                            numberPanel.value.limit(1).integer();
+                            numberPanel.value.setValue(1D);
 
-                        UIOverlay.addOverlay(this.getContext(), numberPanel);
-                    }
-                });
+                            UIOverlay.addOverlay(this.getContext(), numberPanel);
+                        }
+                    });
+                }
+                
                 menu.action(Icons.REMOVE, UIKeys.SCENE_REPLAYS_CONTEXT_REMOVE, this::removeReplay);
             }
         });
@@ -849,7 +858,40 @@ public class UIReplayList extends UIList<Replay>
         return true;
     }
 
-    private String getReplayPath(Replay r)
+    public void updateGroupPath(String oldFullPath, String newFullPath)
+    {
+        Film film = this.panel.getData();
+        List<Replay> all = film.replays.getList();
+        boolean changed = false;
+
+        // Update expanded state key
+        if (this.expandedGroups.containsKey(oldFullPath))
+        {
+            this.expandedGroups.put(newFullPath, this.expandedGroups.remove(oldFullPath));
+        }
+
+        // Update children paths
+        for (Replay r : all)
+        {
+            String group = r.group.get();
+            
+            if (group.equals(oldFullPath) || group.startsWith(oldFullPath + "/"))
+            {
+                String suffix = group.substring(oldFullPath.length());
+                r.group.set(newFullPath + suffix);
+                changed = true;
+            }
+        }
+
+        if (changed)
+        {
+            film.replays.sync();
+            this.buildVisualList();
+            this.updateFilmEditor();
+        }
+    }
+
+    public String getReplayPath(Replay r)
     {
         return r.group.get();
     }
