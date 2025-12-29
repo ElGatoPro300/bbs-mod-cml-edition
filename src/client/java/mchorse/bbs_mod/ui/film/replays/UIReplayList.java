@@ -198,6 +198,40 @@ public class UIReplayList extends UIList<Replay>
             // If we are dragging onto a group that is NOT our current parent, we reparent
             if (!srcGroup.equals(destGroupPath))
             {
+                // Calculate insertionAnchor BEFORE modifying src
+                // We want to find the last child of dest to append src after it.
+                // We must be careful NOT to pick src or any of its children as the anchor.
+                
+                Replay insertionAnchor = dest;
+                List<Replay> allReplays = this.panel.getData().replays.getAllTyped();
+                
+                // Identify src's current full path to exclude its descendants
+                String srcPathForCheck = getReplayPath(src);
+                String srcFullPathForCheck = srcPathForCheck.isEmpty() ? src.uuid.get() : srcPathForCheck + "/" + src.uuid.get();
+
+                for (Replay r : allReplays)
+                {
+                    // Exclude src itself
+                    if (r == src) continue;
+
+                    // Exclude descendants of src (using old path)
+                    if (src.isGroup.get())
+                    {
+                        String g = r.group.get();
+                        if (g.equals(srcFullPathForCheck) || g.startsWith(srcFullPathForCheck + "/"))
+                        {
+                            continue;
+                        }
+                    }
+
+                    // Check if r is a child of dest
+                    String g = r.group.get();
+                    if (g.equals(destGroupPath) || g.startsWith(destGroupPath + "/"))
+                    {
+                        insertionAnchor = r;
+                    }
+                }
+
                 // Update src parent
                 if (src.isGroup.get())
                 {
@@ -216,8 +250,8 @@ public class UIReplayList extends UIList<Replay>
                     src.group.set(destGroupPath);
                 }
 
-                // Move src and children to be inside dest (after dest)
-                this.moveReplayAndChildren(src, dest, true);
+                // Move src and children to be inside dest (after last child of dest)
+                this.moveReplayAndChildren(src, insertionAnchor, true);
 
                 // Auto-expand the target group
                 this.expandedGroups.put(destGroupPath, true);
@@ -801,6 +835,11 @@ public class UIReplayList extends UIList<Replay>
 
         for (Replay replay : this.getCurrent())
         {
+            if (replay.isGroup.get())
+            {
+                this.reparentChildren(replay);
+            }
+
             film.replays.remove(replay);
         }
 
@@ -811,6 +850,41 @@ public class UIReplayList extends UIList<Replay>
         size = this.list.size();
         this.panel.replayEditor.setReplay(size == 0 ? null : CollectionUtils.getSafe(this.list, index));
         this.updateFilmEditor();
+    }
+
+    private void reparentChildren(Replay groupToDelete)
+    {
+        Film data = this.panel.getData();
+        List<Replay> allReplays = data.replays.getAllTyped();
+
+        String targetPath = getReplayPath(groupToDelete);
+        String targetID = groupToDelete.uuid.get();
+        String childPrefix = targetPath.isEmpty() ? targetID : targetPath + "/" + targetID;
+        String newParentPath = targetPath;
+
+        for (Replay r : allReplays)
+        {
+            if (r == groupToDelete) continue;
+
+            String g = r.group.get();
+
+            if (g.equals(childPrefix) || g.startsWith(childPrefix + "/"))
+            {
+                String suffix = g.substring(childPrefix.length());
+                String newPath;
+
+                if (newParentPath.isEmpty())
+                {
+                    newPath = suffix.startsWith("/") ? suffix.substring(1) : suffix;
+                }
+                else
+                {
+                    newPath = newParentPath + suffix;
+                }
+
+                r.group.set(newPath);
+            }
+        }
     }
 
     @Override
