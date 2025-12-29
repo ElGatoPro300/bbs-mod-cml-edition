@@ -669,6 +669,7 @@ public class UIKeys
     public static final IKey PRESETS_SAVE_TITLE = L10n.lang("bbs.ui.presets.save-title");
     public static final IKey PRESETS_TITLE = L10n.lang("bbs.ui.presets.title");
     public static final IKey SCENE_REPLAYS_CONTEXT_ADD = L10n.lang("bbs.ui.scene.replays.context.add");
+    public static final IKey SCENE_REPLAYS_CONTEXT_ADD_GROUP = L10n.lang("bbs.ui.scene.replays.context.add_group");
     public static final IKey SCENE_REPLAYS_CONTEXT_COPY = L10n.lang("bbs.ui.scene.replays.context.copy");
     public static final IKey SCENE_REPLAYS_CONTEXT_DUPE = L10n.lang("bbs.ui.scene.replays.context.dupe");
     public static final IKey SCENE_REPLAYS_CONTEXT_DUPE_DESCRIPTION = L10n.lang("bbs.ui.scene.replays.context.dupe-description");
