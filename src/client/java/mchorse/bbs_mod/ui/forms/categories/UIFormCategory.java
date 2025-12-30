@@ -53,6 +53,10 @@ public class UIFormCategory extends UIElement
     private String search = "";
     private List<Form> searched = new ArrayList<>();
 
+    private boolean dragging;
+    private int dragIndex = -1;
+    private long dragStart;
+
     public UIFormCategory(FormCategory category, UIFormList list)
     {
         this.category = category;
@@ -242,6 +246,33 @@ public class UIFormCategory extends UIElement
         return this.searched;
     }
 
+    public int getIndexAt(int mouseX, int mouseY)
+    {
+        int x = mouseX - this.area.x;
+        int y = mouseY - this.area.y - HEADER_HEIGHT;
+        int perRow = this.area.w / CELL_WIDTH;
+
+        if (x >= 0 && y >= 0)
+        {
+            x /= CELL_WIDTH;
+            y /= CELL_HEIGHT;
+            int i = x + y * perRow;
+            int size = this.getForms().size();
+
+            if (i >= 0 && i <= size)
+            {
+                return Math.min(i, size);
+            }
+        }
+        
+        // If below the last row, return size (append)
+        if (y >= 0 && (mouseY - this.area.y) < this.area.h) {
+             return this.getForms().size();
+        }
+
+        return -1;
+    }
+
     @Override
     public boolean subMouseClicked(UIContext context)
     {
@@ -273,6 +304,13 @@ public class UIFormCategory extends UIElement
 
             if (i >= 0 && i < forms.size())
             {
+                if (context.mouseButton == 0 && this.category instanceof UserFormCategory && this.search.isEmpty())
+                {
+                    this.dragIndex = i;
+                    this.dragStart = System.currentTimeMillis();
+                    this.dragging = false;
+                }
+
                 this.select(forms.get(i), true);
             }
             else
@@ -282,6 +320,41 @@ public class UIFormCategory extends UIElement
         }
 
         return super.subMouseClicked(context);
+    }
+
+    @Override
+    public boolean subMouseReleased(UIContext context)
+    {
+        if (this.dragIndex != -1)
+        {
+            if (this.dragging && this.category instanceof UserFormCategory)
+            {
+                int x = context.mouseX - this.area.x;
+                int y = context.mouseY - this.area.y - HEADER_HEIGHT;
+                int perRow = this.area.w / CELL_WIDTH;
+
+                if (this.area.isInside(context.mouseX, context.mouseY))
+                {
+                    x /= CELL_WIDTH;
+                    y /= CELL_HEIGHT;
+                    int i = x + y * perRow;
+
+                    if (i >= 0 && i < this.getForms().size())
+                    {
+                        ((UserFormCategory) this.category).moveForm(this.dragIndex, i);
+                    }
+                }
+                else
+                {
+                     this.list.handleFormDrop(this, this.dragIndex, context.mouseX, context.mouseY);
+                }
+            }
+
+            this.dragIndex = -1;
+            this.dragging = false;
+        }
+
+        return super.subMouseReleased(context);
     }
 
     public void select(Form form, boolean notify)
@@ -297,6 +370,14 @@ public class UIFormCategory extends UIElement
     @Override
     public void render(UIContext context)
     {
+        if (this.dragIndex != -1 && !this.dragging && this.category instanceof UserFormCategory)
+        {
+            if (System.currentTimeMillis() - this.dragStart > 250)
+            {
+                this.dragging = true;
+            }
+        }
+
         super.render(context);
 
         context.batcher.textCard(this.category.getProcessedTitle(), this.area.x + 26, this.area.y + 6);
@@ -361,6 +442,18 @@ public class UIFormCategory extends UIElement
                 this.h(h);
                 container.resize();
             }
+        }
+
+        if (this.dragging && this.dragIndex != -1 && this.category instanceof UserFormCategory)
+        {
+            Form form = this.getForms().get(this.dragIndex);
+            int cx = context.mouseX - CELL_WIDTH / 2;
+            int cy = context.mouseY - CELL_HEIGHT / 2;
+
+            context.batcher.box(cx, cy, cx + CELL_WIDTH, cy + CELL_HEIGHT, Colors.A50 | BBSSettings.primaryColor.get());
+            context.batcher.outline(cx, cy, cx + CELL_WIDTH, cy + CELL_HEIGHT, Colors.A50 | BBSSettings.primaryColor.get(), 2);
+
+            FormUtilsClient.renderUI(form, context, cx, cy, cx + CELL_WIDTH, cy + CELL_HEIGHT);
         }
     }
 }
