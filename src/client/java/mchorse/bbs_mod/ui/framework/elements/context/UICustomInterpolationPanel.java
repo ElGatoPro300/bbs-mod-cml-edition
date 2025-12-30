@@ -30,6 +30,7 @@ import mchorse.bbs_mod.utils.interps.CustomInterpolation;
 import mchorse.bbs_mod.utils.interps.CustomInterpolationManager;
 import mchorse.bbs_mod.utils.interps.IInterp;
 import mchorse.bbs_mod.utils.interps.InterpContext;
+import mchorse.bbs_mod.utils.interps.Interpolation;
 import mchorse.bbs_mod.utils.interps.Interpolations;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
@@ -163,16 +164,15 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
 
     private void pickBaseInterpolation()
     {
-        UISimpleContextMenu menu = new UISimpleContextMenu();
+        Interpolation dummy = new Interpolation("dummy", Interpolations.MAP, Interpolations.LINEAR);
+        UIInterpolationContextMenu menu = new UIInterpolationContextMenu(dummy);
 
-        for (Map.Entry<IInterp, Icon> entry : UIInterpolationContextMenu.INTERP_ICON_MAP.entrySet())
+        menu.callback(() ->
         {
-            IInterp interp = entry.getKey();
+            this.applyBaseInterpolation(dummy);
+        });
 
-            menu.actions.add(new ContextAction(entry.getValue(), IKey.raw(interp.getKey()), () -> this.applyBaseInterpolation(interp)));
-        }
-
-        this.getContext().setContextMenu((UISimpleContextMenu) menu.relative(this.useBase).w(120));
+        this.getContext().replaceContextMenu(menu);
     }
 
     private void applyBaseInterpolation(IInterp interp)
