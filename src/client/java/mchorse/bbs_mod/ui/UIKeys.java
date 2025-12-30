@@ -342,6 +342,7 @@ public class UIKeys
     public static final IKey FORMS_CATEGORIES_REMOVE_CATEGORY_TITLE = L10n.lang("bbs.ui.forms.categories.remove_category-title");
     public static final IKey FORMS_CATEGORIES_RENAME_CATEGORY_DESCRIPTION = L10n.lang("bbs.ui.forms.categories.rename_category-description");
     public static final IKey FORMS_CATEGORIES_RENAME_CATEGORY_TITLE = L10n.lang("bbs.ui.forms.categories.rename_category-title");
+    public static final IKey FORMS_CATEGORIES_ORDER = L10n.lang("bbs.ui.forms.categories.order");
     public static final IKey FORMS_CROP_BOTTOM = L10n.lang("bbs.ui.forms.crop.bottom");
     public static final IKey FORMS_CROP_LEFT = L10n.lang("bbs.ui.forms.crop.left");
     public static final IKey FORMS_CROP_RIGHT = L10n.lang("bbs.ui.forms.crop.right");

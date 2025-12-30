@@ -571,6 +571,7 @@
     "bbs.ui.forms.categories.remove_category-title": "Eliminar %s categoría",
     "bbs.ui.forms.categories.rename_category-description": "Escribe un nuevo nombre para esta categoría de la forma:",
     "bbs.ui.forms.categories.rename_category-title": "Renombrar categoría",
+    "bbs.ui.forms.categories.order": "Ordenar categorías",
     "bbs.ui.forms.categories.shared-notification": "Se te ha compartido una forma \"%s\", consulta las formas recientes...",
     "bbs.ui.forms.crop.bottom": "Recortar abajo",
     "bbs.ui.forms.crop.left": "Recortar a la izquierda",

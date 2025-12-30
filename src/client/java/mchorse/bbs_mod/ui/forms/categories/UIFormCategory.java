@@ -154,6 +154,14 @@ public class UIFormCategory extends UIElement
                 ));
             });
 
+            menu.action(Icons.REFRESH, UIKeys.FORMS_CATEGORIES_ORDER, () ->
+            {
+                UIOverlay.addOverlay(this.getContext(), new UIOrderCategoriesOverlayPanel(userForms, () ->
+                {
+                    list.setupForms(formCategories);
+                }), 240, 0.6F);
+            });
+
             if (this.selected != null)
             {
                 menu.action(Icons.COPY, UIKeys.FORMS_CATEGORIES_CONTEXT_COPY_FORM, () -> Window.setClipboard(FormUtils.toData(this.selected)));

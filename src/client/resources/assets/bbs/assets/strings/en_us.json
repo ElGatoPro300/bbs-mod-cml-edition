@@ -595,6 +595,7 @@
     "bbs.ui.forms.categories.remove_category-title": "Remove %s category",
     "bbs.ui.forms.categories.rename_category-description": "Type in a new name for this form category:",
     "bbs.ui.forms.categories.rename_category-title": "Rename category",
+    "bbs.ui.forms.categories.order": "Order categories",
     "bbs.ui.forms.categories.shared-notification": "You've been shared a form \"%s\", see recent forms...",
     "bbs.ui.forms.crop.bottom": "Bottom crop",
     "bbs.ui.forms.crop.left": "Left crop",
