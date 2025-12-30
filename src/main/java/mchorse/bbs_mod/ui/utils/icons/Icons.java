@@ -199,6 +199,8 @@ public class Icons
     public static final Icon INTERP_SINE_INOUT = register(new Icon(ATLAS, "interp_sine_inout", 176, 192));
     public static final Icon INTERP_CIRCLE_INOUT = register(new Icon(ATLAS, "interp_circle_inout", 192, 192));
     public static final Icon INTERP_BEZIER = register(new Icon(ATLAS, "interp_bezier", 208, 192));
+    public static final Icon INTERP_CUSTOM = register(new Icon(ATLAS, "interp_custom", 224, 192));
+    public static final Icon INTERP_ADD = register(new Icon(ATLAS, "interp_add", 240, 192));
 
     public static final Icon INTERP_QUAD_OUT = register(new Icon(ATLAS, "interp_quad_out", 48, 208));
     public static final Icon INTERP_CUBIC_OUT = register(new Icon(ATLAS, "interp_cubic_out", 64, 208));

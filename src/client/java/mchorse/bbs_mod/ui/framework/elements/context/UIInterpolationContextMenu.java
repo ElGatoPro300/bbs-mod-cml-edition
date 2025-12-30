@@ -44,10 +44,15 @@ public class UIInterpolationContextMenu extends UIContextMenu
 
     public UIIcon copy;
     public UIIcon paste;
+    
+    public UIIcon prev;
+    public UIIcon next;
 
     private Runnable callback;
     private Interpolation interpolation;
     private Map<IInterp, UIIcon> icons = new HashMap<>();
+    
+    private int page = 0;
 
     static
     {
@@ -153,26 +158,74 @@ public class UIInterpolationContextMenu extends UIContextMenu
         this.grid = new UIElement();
         this.grid.relative(this).xy(PADDING, gridY).w(w).h(h).grid(0).items(6);
 
-        for (IInterp value : interpolation.getMap().values())
-        {
-            UIIcon icon = new UIIcon(INTERP_ICON_MAP.getOrDefault(value, Icons.INTERP_LINEAR), (b) ->
-            {
-                this.interpolation.setInterp(value);
-                this.accept();
-            });
+        this.prev = new UIIcon(Icons.ARROW_LEFT, (b) -> this.setPage(this.page - 1));
+        this.next = new UIIcon(Icons.ARROW_RIGHT, (b) -> this.setPage(this.page + 1));
 
-            icon.tooltip(InterpolationUtils.getName(value));
-            this.grid.add(icon);
-            this.icons.put(value, icon);
-            this.setupKeybind(value, icon);
-        }
+        this.prev.relative(this).xy(PADDING, gridY + h + PADDING).w(w / 2).h(20);
+        this.next.relative(this).xy(PADDING + w / 2, gridY + h + PADDING).w(w / 2).h(20);
 
         UIElement vs = UI.column(UI.row(this.v1, this.v2, this.copy), UI.row(this.v3, this.v4, this.paste));
 
         vs.relative(this).xy(PADDING, PADDING + GRAPH_HEIGHT + MARGIN).w(w);
 
-        this.wh(w + PADDING * 2, gridY + h + PADDING);
-        this.add(vs, this.grid);
+        this.wh(w + PADDING * 2, gridY + h + PADDING + 20 + PADDING);
+        this.add(vs, this.grid, this.prev, this.next);
+
+        this.updateGrid();
+        this.updatePageNavigation();
+    }
+
+    private void setPage(int page)
+    {
+        if (page < 0 || page > 1)
+        {
+            return;
+        }
+
+        this.page = page;
+        this.updateGrid();
+        this.updatePageNavigation();
+    }
+
+    private void updatePageNavigation()
+    {
+        this.prev.setEnabled(this.page > 0);
+        this.next.setEnabled(this.page < 1);
+    }
+
+    private void updateGrid()
+    {
+        this.grid.removeAll();
+        this.icons.clear();
+        this.keys().keybinds.clear();
+
+        if (this.page == 0)
+        {
+            for (IInterp value : this.interpolation.getMap().values())
+            {
+                UIIcon icon = new UIIcon(INTERP_ICON_MAP.getOrDefault(value, Icons.INTERP_LINEAR), (b) ->
+                {
+                    this.interpolation.setInterp(value);
+                    this.accept();
+                });
+
+                icon.tooltip(InterpolationUtils.getName(value));
+                this.grid.add(icon);
+                this.icons.put(value, icon);
+                this.setupKeybind(value, icon);
+            }
+        }
+        else if (this.page == 1)
+        {
+            UIIcon icon = new UIIcon(Icons.INTERP_ADD, (b) ->
+            {
+                // No function yet
+            });
+
+            this.grid.add(icon);
+        }
+
+        this.grid.resize();
     }
 
     private void accept()
