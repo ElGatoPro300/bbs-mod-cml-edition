@@ -9,6 +9,7 @@ import org.lwjgl.glfw.GLFW;
 public class CustomInterpolation extends BaseInterp
 {
     public KeyframeChannel<Double> channel;
+    public boolean continuous;
 
     public CustomInterpolation(String name)
     {
@@ -22,6 +23,12 @@ public class CustomInterpolation extends BaseInterp
     public double interpolate(InterpContext context)
     {
         double t = this.channel.interpolate((float) context.x);
+
+        if (this.continuous)
+        {
+             return Lerps.cubicHermite(context.a0, context.a, context.b, context.b0, t);
+        }
+
         return Lerps.lerp(context.a, context.b, t);
     }
 
@@ -45,12 +52,18 @@ public class CustomInterpolation extends BaseInterp
         {
             this.channel.fromData(data.getMap("channel"));
         }
+        
+        if (data.has("continuous"))
+        {
+            this.continuous = data.getBool("continuous");
+        }
     }
 
     public MapType toData()
     {
         MapType data = new MapType();
         data.put("channel", this.channel.toData());
+        data.putBool("continuous", this.continuous);
         return data;
     }
 }
