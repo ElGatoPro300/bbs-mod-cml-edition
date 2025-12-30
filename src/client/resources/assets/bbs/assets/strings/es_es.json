@@ -1191,5 +1191,9 @@
     "bbs.gizmos.design.cml": "CML",
     "bbs.gizmos.design.classic": "Clásico",
     "bbs.gizmos.design.blockbench": "Blockbench",
-    "bbs.ui.texture.pick.bone.texture": "Elegir textura de hueso"
+    "bbs.ui.texture.pick.bone.texture": "Elegir textura de hueso",
+    "bbs.ui.interpolations.custom_panel.title": "Editor De Interpolación Personalizada",
+    "bbs.ui.interpolations.custom_panel.name": "Nombre De Interpolación",
+    "bbs.ui.interpolations.custom_panel.save": "Guardar",
+    "bbs.ui.interpolations.context.add": "Agregar Interpolación"
 }

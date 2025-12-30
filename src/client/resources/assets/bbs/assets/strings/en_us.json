@@ -1286,5 +1286,9 @@
     "bbs.gizmos.design.blockbench": "Blockbench",
     "keybinds.config.gizmos.title": "Gizmos",
     "keybinds.config.gizmos.tooltip": "Keybinds that control bone gizmos (translate/rotate/scale)",
-    "bbs.ui.texture.pick.bone.texture": "Pick bone texture"
+    "bbs.ui.texture.pick.bone.texture": "Pick bone texture",
+    "bbs.ui.interpolations.custom_panel.title": "Custom Interpolation Editor",
+    "bbs.ui.interpolations.custom_panel.name": "Interpolation Name",
+    "bbs.ui.interpolations.custom_panel.save": "Save",
+    "bbs.ui.interpolations.context.add": "Add Interpolation"
 }

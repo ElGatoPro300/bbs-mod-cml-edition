@@ -561,6 +561,9 @@ public class UIKeys
     public static final IKey INTERPOLATIONS_CONTEXT_COPY = L10n.lang("interpolations.ui.context.copy");
     public static final IKey INTERPOLATIONS_CONTEXT_PASTE = L10n.lang("interpolations.ui.context.paste");
     public static final IKey INTERPOLATIONS_KEY_CATEGORY = L10n.lang("interpolations.key_category");
+    public static final IKey INTERPOLATIONS_CUSTOM_NAME = L10n.lang("bbs.ui.interpolations.custom_panel.name");
+    public static final IKey INTERPOLATIONS_CUSTOM_SAVE = L10n.lang("bbs.ui.interpolations.custom_panel.save");
+    public static final IKey INTERPOLATIONS_CONTEXT_ADD = L10n.lang("bbs.ui.interpolations.context.add");
     public static final IKey ITEM_STACK_CONTEXT_HOTBAR = L10n.lang("bbs.ui.item_stack.context.hotbar");
     public static final IKey ITEM_STACK_CONTEXT_PASTE = L10n.lang("bbs.ui.item_stack.context.paste");
     public static final IKey ITEM_STACK_CONTEXT_RESET = L10n.lang("bbs.ui.item_stack.context.reset");

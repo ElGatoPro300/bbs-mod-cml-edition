@@ -19,12 +19,17 @@ import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 import mchorse.bbs_mod.ui.utils.renderers.InterpolationRenderer;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
+import mchorse.bbs_mod.utils.interps.CustomInterpolationManager;
 import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.CustomInterpolation;
 import mchorse.bbs_mod.utils.interps.Interpolation;
 import mchorse.bbs_mod.utils.interps.Interpolations;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UIInterpolationContextMenu extends UIContextMenu
@@ -177,7 +182,7 @@ public class UIInterpolationContextMenu extends UIContextMenu
 
     private void setPage(int page)
     {
-        if (page < 0 || page > 1)
+        if (page < 0 || page > this.getMaxPage())
         {
             return;
         }
@@ -187,10 +192,21 @@ public class UIInterpolationContextMenu extends UIContextMenu
         this.updatePageNavigation();
     }
 
+    private int getMaxPage()
+    {
+        CustomInterpolationManager.INSTANCE.load();
+        int customCount = CustomInterpolationManager.INSTANCE.getList().size();
+        int itemsPerPage = 36;
+        int totalCustomItems = customCount + 1; // +1 for Add button
+        int customPages = (int) Math.ceil(totalCustomItems / (double) itemsPerPage);
+        
+        return Math.max(1, customPages);
+    }
+
     private void updatePageNavigation()
     {
         this.prev.setEnabled(this.page > 0);
-        this.next.setEnabled(this.page < 1);
+        this.next.setEnabled(this.page < this.getMaxPage());
     }
 
     private void updateGrid()
@@ -215,14 +231,46 @@ public class UIInterpolationContextMenu extends UIContextMenu
                 this.setupKeybind(value, icon);
             }
         }
-        else if (this.page == 1)
+        else
         {
-            UIIcon icon = new UIIcon(Icons.INTERP_ADD, (b) ->
-            {
-                // No function yet
-            });
+            CustomInterpolationManager.INSTANCE.load();
+            List<CustomInterpolation> list = CustomInterpolationManager.INSTANCE.getList();
+            
+            int itemsPerPage = 36;
+            int startIndex = (this.page - 1) * itemsPerPage;
+            int endIndex = Math.min(startIndex + itemsPerPage, list.size());
 
-            this.grid.add(icon);
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                CustomInterpolation interp = list.get(i);
+                UIIcon icon = new UIIcon(Icons.INTERP_CUSTOM, (b) ->
+                {
+                    this.interpolation.setInterp(interp);
+                    this.accept();
+                });
+                icon.tooltip(IKey.raw(interp.getKey()));
+                this.grid.add(icon);
+                this.icons.put(interp, icon);
+            }
+            
+            if (list.size() >= startIndex && list.size() < startIndex + itemsPerPage)
+            {
+                UIIcon icon = new UIIcon(Icons.INTERP_ADD, (b) ->
+                {
+                    UICustomInterpolationPanel panel = new UICustomInterpolationPanel()
+                        .onSave((custom) ->
+                        {
+                            this.interpolation.setInterp(custom);
+                            this.accept();
+                        });
+
+                    panel.onClose((e) -> this.updateGrid());
+                    UIOverlay.addOverlay(this.getContext(), panel, 600, 400);
+                });
+                icon.tooltip(UIKeys.INTERPOLATIONS_CONTEXT_ADD);
+    
+                this.grid.add(icon);
+            }
         }
 
         this.grid.resize();
@@ -287,6 +335,20 @@ public class UIInterpolationContextMenu extends UIContextMenu
         fg.a = 0.5F;
 
         InterpolationRenderer.renderInterpolationGraph(this.interpolation, context, fg, Colors.WHITE, this.area.x + PADDING, this.area.y + PADDING, this.area.w - PADDING * 2, GRAPH_HEIGHT, 20, 15);
+
+        if (icon == null && interp != null)
+        {
+            // Fallback: try to find the icon by checking equality with keys in the map
+            // This handles cases where the interp object is a different instance but equals() returns true
+            for (Map.Entry<IInterp, UIIcon> entry : this.icons.entrySet())
+            {
+                if (entry.getKey().equals(interp))
+                {
+                    icon = entry.getValue();
+                    break;
+                }
+            }
+        }
 
         if (icon != null)
         {
