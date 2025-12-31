@@ -20,6 +20,7 @@ import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.forms.StructureForm;
 import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -64,14 +65,17 @@ import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -253,6 +257,8 @@ public class UIReplaysEditor extends UIElement
         }
     }
 
+    public static final Form DUMMY_FORM = new StructureForm();
+
     public static boolean renderBackground(UIContext context, UIKeyframes keyframes, Clips camera, int clipOffset)
     {
         if (!BBSSettings.audioWaveformVisible.get())
@@ -389,50 +395,71 @@ public class UIReplaysEditor extends UIElement
         /* Replay keyframes */
         List<UIKeyframeSheet> sheets = new ArrayList<>();
 
-        for (String key : ReplayKeyframes.CURATED_CHANNELS)
+        if (this.replay.isGroup.get())
         {
-            BaseValue value = this.replay.keyframes.get(key);
-            KeyframeChannel channel = (KeyframeChannel) value;
+            /* Add only visible, color and transform properties for groups */
+            String[] properties = {"visible", "color", "transform"};
 
-            String customTitle = this.replay.getCustomSheetTitle(key);
-            UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
-                ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, channel, null)
-                : new UIKeyframeSheet(getColor(key), false, channel, null);
-
-            /* Restaurar estado de anclaje desde título personalizado para canales de pose */
-            if (customTitle != null && !customTitle.isEmpty() && channel.getFactory() == KeyframeFactories.POSE)
+            for (String key : properties)
             {
-                sheet.anchoredBone = customTitle;
-            }
+                KeyframeChannel property = this.replay.properties.getOrCreate(DUMMY_FORM, key);
 
-            sheets.add(sheet.icon(ICONS.get(key)));
+                if (property != null)
+                {
+                    BaseValueBasic formProperty = FormUtils.getProperty(DUMMY_FORM, key);
+                    UIKeyframeSheet sheet = new UIKeyframeSheet(getColor(key), false, property, formProperty);
+
+                    sheets.add(sheet.icon(getIcon(key)));
+                }
+            }
         }
-
-        /* Form properties */
-        for (String key : FormUtils.collectPropertyPaths(this.replay.form.get()))
+        else
         {
-            /* Ocultar/omitir la pista tint_block_entities */
-            if (key.endsWith("tint_block_entities"))
+            for (String key : ReplayKeyframes.CURATED_CHANNELS)
             {
-                continue;
-            }
-            KeyframeChannel property = this.replay.properties.getOrCreate(this.replay.form.get(), key);
+                BaseValue value = this.replay.keyframes.get(key);
+                KeyframeChannel channel = (KeyframeChannel) value;
 
-            if (property != null)
-            {
-                BaseValueBasic formProperty = FormUtils.getProperty(this.replay.form.get(), key);
                 String customTitle = this.replay.getCustomSheetTitle(key);
                 UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
-                    ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, property, formProperty)
-                    : new UIKeyframeSheet(getColor(key), false, property, formProperty);
+                    ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, channel, null)
+                    : new UIKeyframeSheet(getColor(key), false, channel, null);
 
-                /* Restaurar estado de anclaje desde título personalizado para propiedades de pose */
-                if (customTitle != null && !customTitle.isEmpty() && property.getFactory() == KeyframeFactories.POSE)
+                /* Restaurar estado de anclaje desde título personalizado para canales de pose */
+                if (customTitle != null && !customTitle.isEmpty() && channel.getFactory() == KeyframeFactories.POSE)
                 {
                     sheet.anchoredBone = customTitle;
                 }
 
-                sheets.add(sheet.icon(getIcon(key)));
+                sheets.add(sheet.icon(ICONS.get(key)));
+            }
+
+            /* Form properties */
+            for (String key : FormUtils.collectPropertyPaths(this.replay.form.get()))
+            {
+                /* Ocultar/omitir la pista tint_block_entities */
+                if (key.endsWith("tint_block_entities"))
+                {
+                    continue;
+                }
+                KeyframeChannel property = this.replay.properties.getOrCreate(this.replay.form.get(), key);
+
+                if (property != null)
+                {
+                    BaseValueBasic formProperty = FormUtils.getProperty(this.replay.form.get(), key);
+                    String customTitle = this.replay.getCustomSheetTitle(key);
+                    UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
+                        ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, property, formProperty)
+                        : new UIKeyframeSheet(getColor(key), false, property, formProperty);
+
+                    /* Restaurar estado de anclaje desde título personalizado para propiedades de pose */
+                    if (customTitle != null && !customTitle.isEmpty() && property.getFactory() == KeyframeFactories.POSE)
+                    {
+                        sheet.anchoredBone = customTitle;
+                    }
+
+                    sheets.add(sheet.icon(getIcon(key)));
+                }
             }
         }
 

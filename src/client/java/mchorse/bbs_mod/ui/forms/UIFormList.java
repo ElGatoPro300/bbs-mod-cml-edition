@@ -192,6 +192,29 @@ public class UIFormList extends UIElement
         }
     }
 
+    public boolean handleFormDrop(UIFormCategory source, int sourceIndex, int mouseX, int mouseY)
+    {
+        for (UIFormCategory category : this.categories)
+        {
+            if (category != source && category.area.isInside(mouseX, mouseY) && category.category instanceof mchorse.bbs_mod.forms.categories.UserFormCategory)
+            {
+                int index = category.getIndexAt(mouseX, mouseY);
+                
+                if (index != -1)
+                {
+                    Form form = source.category.getForms().get(sourceIndex);
+                    
+                    ((mchorse.bbs_mod.forms.categories.UserFormCategory) category.category).addForm(index, form);
+                    source.category.removeForm(form);
+                    
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
     @Override
     public void render(UIContext context)
     {

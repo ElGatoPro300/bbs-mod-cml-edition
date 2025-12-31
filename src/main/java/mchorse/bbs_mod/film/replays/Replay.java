@@ -48,6 +48,8 @@ public class Replay extends ValueGroup
     private final Map<String, String> customSheetTitles = new HashMap<>();
     public final ValueBoolean axesPreview = new ValueBoolean("axes_preview", false);
     public final ValueString axesPreviewBone = new ValueString("axes_preview_bone", "");
+    public final ValueBoolean isGroup = new ValueBoolean("is_group", false);
+    public final ValueString uuid = new ValueString("uuid", "");
 
     public Replay(String id)
     {
@@ -73,10 +75,19 @@ public class Replay extends ValueGroup
 
         this.add(this.axesPreview);
         this.add(this.axesPreviewBone);
+        this.add(this.isGroup);
+        this.add(this.uuid);
+        
+        this.uuid.set(java.util.UUID.randomUUID().toString());
     }
 
     public String getName()
     {
+        if (this.isGroup.get())
+        {
+            return this.label.get().isEmpty() ? "New Group" : this.label.get();
+        }
+
         String label = this.label.get();
 
         if (!label.isEmpty())
