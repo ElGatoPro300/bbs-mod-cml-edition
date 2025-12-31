@@ -52,10 +52,15 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,6 +70,7 @@ public abstract class BaseFilmController
     public final Film film;
 
     protected IntObjectMap<IEntity> entities = new IntObjectHashMap<>();
+    protected Map<String, Replay> replayMap = new java.util.HashMap<>();
 
     public boolean paused;
     public int exception = -1;
@@ -129,6 +135,11 @@ public abstract class BaseFilmController
         else
         {
             target = defaultMatrix;
+        }
+
+        if (context.localGroupTransform != null)
+        {
+            target.mul(context.localGroupTransform);
         }
 
         BlockPos pos = BlockPos.ofFloored(position.x, position.y + 0.5D, position.z);
@@ -434,6 +445,7 @@ public abstract class BaseFilmController
     public void createEntities()
     {
         this.entities.clear();
+        this.replayMap.clear();
 
         if (this.film == null)
         {
@@ -444,6 +456,9 @@ public abstract class BaseFilmController
 
         for (Replay replay : this.film.replays.getList())
         {
+            this.replayMap.put(replay.uuid.get(), replay);
+            this.replayMap.put(replay.getId(), replay);
+
             if (replay.enabled.get())
             {
                 World world = MinecraftClient.getInstance().world;
@@ -722,8 +737,152 @@ public abstract class BaseFilmController
 
             filmContext.transition = getTransition(entity, context.tickDelta());
 
+            filmContext.stack.push();
+
+            if (!this.applyGroupProperties(replay, filmContext))
+            {
+                filmContext.stack.pop();
+                return;
+            }
+
             renderEntity(filmContext);
+
+            filmContext.stack.pop();
         }
+    }
+
+    protected Replay getGroupPivot(String groupUuid)
+    {
+        for (Replay replay : this.film.replays.getList())
+        {
+            if (replay.group.get().contains(groupUuid))
+            {
+                return replay;
+            }
+        }
+
+        return null;
+    }
+
+    protected boolean applyGroupProperties(Replay replay, FilmControllerContext context)
+    {
+        if (replay.group.get().isEmpty())
+        {
+            return true;
+        }
+
+        String[] groups = replay.group.get().split("/");
+        int finalColor = Colors.WHITE;
+        Matrix4f globalTranslate = new Matrix4f().identity();
+        Matrix4f localTransform = new Matrix4f().identity();
+
+        for (String uuid : groups)
+        {
+            Replay groupReplay = this.replayMap.get(uuid);
+
+            if (groupReplay != null)
+            {
+                double tick = groupReplay.getTick(this.getTick()) + context.transition;
+
+                BaseValue visibleValue = groupReplay.properties.get("visible");
+
+                if (visibleValue instanceof KeyframeChannel)
+                {
+                    KeyframeChannel<Boolean> visible = (KeyframeChannel<Boolean>) visibleValue;
+
+                    if (!visible.isEmpty() && !visible.interpolate((float) tick))
+                    {
+                        return false;
+                    }
+                }
+
+                BaseValue colorValue = groupReplay.properties.get("color");
+
+                if (colorValue instanceof KeyframeChannel)
+                {
+                    KeyframeChannel<Color> color = (KeyframeChannel<Color>) colorValue;
+
+                    if (!color.isEmpty())
+                    {
+                        int groupColor = color.interpolate((float) tick).getARGBColor();
+                        finalColor = this.mulColors(finalColor, groupColor);
+                    }
+                }
+
+                BaseValue transformValue = groupReplay.properties.get("transform");
+
+                if (transformValue instanceof KeyframeChannel)
+                {
+                    KeyframeChannel<Transform> transform = (KeyframeChannel<Transform>) transformValue;
+
+                    if (!transform.isEmpty())
+                    {
+                        Transform t = transform.interpolate((float) tick);
+                        
+                        globalTranslate.translate(t.translate.x, t.translate.y, t.translate.z);
+                        
+                        Matrix4f local = new Matrix4f();
+                        
+                        if (t.pivot.x != 0F || t.pivot.y != 0F || t.pivot.z != 0F)
+                        {
+                            local.translate(t.pivot);
+                        }
+                        
+                        local.rotateZ(t.rotate.z);
+                        local.rotateY(t.rotate.y);
+                        local.rotateX(t.rotate.x);
+                        local.rotateZ(t.rotate2.z);
+                        local.rotateY(t.rotate2.y);
+                        local.rotateX(t.rotate2.x);
+                        local.scale(t.scale);
+                        
+                        if (t.pivot.x != 0F || t.pivot.y != 0F || t.pivot.z != 0F)
+                        {
+                            local.translate(-t.pivot.x, -t.pivot.y, -t.pivot.z);
+                        }
+                        
+                        localTransform.mul(local);
+                    }
+                }
+            }
+        }
+
+        if (finalColor != Colors.WHITE)
+        {
+            context.color(this.mulColors(context.color, finalColor));
+        }
+
+        if (!globalTranslate.equals(new Matrix4f().identity()))
+        {
+            context.stack.peek().getPositionMatrix().mul(globalTranslate);
+        }
+        
+        if (!localTransform.equals(new Matrix4f().identity()))
+        {
+            context.localGroupTransform = localTransform;
+        }
+
+        return true;
+    }
+
+    private int mulColors(int c1, int c2)
+    {
+        int a1 = (c1 >> 24) & 0xFF;
+        int r1 = (c1 >> 16) & 0xFF;
+        int g1 = (c1 >> 8) & 0xFF;
+        int b1 = (c1) & 0xFF;
+
+        int a2 = (c2 >> 24) & 0xFF;
+        int r2 = (c2 >> 16) & 0xFF;
+        int g2 = (c2 >> 8) & 0xFF;
+        int b2 = (c2) & 0xFF;
+
+        int a = (a1 * a2) / 255;
+        int r = (r1 * r2) / 255;
+        int g = (g1 * g2) / 255;
+        int b = (b1 * b2) / 255;
+
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
