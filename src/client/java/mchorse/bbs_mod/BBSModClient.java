@@ -620,18 +620,6 @@ public class BBSModClient implements ClientModInitializer
 
         BBSRendering.setup();
 
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
-            @Override
-            public Identifier getFabricId() {
-                return Identifier.of(BBSMod.MOD_ID, "shaders");
-            }
-
-            @Override
-            public void reload(ResourceManager manager) {
-                BBSShaders.setup(manager);
-            }
-        });
-
         /* Network */
         ClientNetwork.setup();
 

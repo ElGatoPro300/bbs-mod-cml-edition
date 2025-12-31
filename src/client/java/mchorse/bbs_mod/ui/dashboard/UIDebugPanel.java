@@ -129,7 +129,7 @@ public class UIDebugPanel extends UIDashboardPanel
         this.button.relative(this).xy(10, 10).w(80);
 
         this.add(this.button);
-        // this.add(this.keyframes);
+        this.add(this.keyframes);
     }
 
     @Override
