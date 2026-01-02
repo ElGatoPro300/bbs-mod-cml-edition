@@ -5,13 +5,13 @@ import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.IUIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
 import mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UICustomInterpolationKeyframes;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
@@ -32,6 +32,7 @@ import mchorse.bbs_mod.utils.interps.IInterp;
 import mchorse.bbs_mod.utils.interps.InterpContext;
 import mchorse.bbs_mod.utils.interps.Interpolation;
 import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import mchorse.bbs_mod.utils.undo.IUndo;
@@ -45,6 +46,8 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
 {
     public UITextbox name;
     public UIToggle continuous;
+    public UITrackpad samples;
+    public UIToggle clamp;
     public UIButton useBase;
     public UICustomInterpolationKeyframes keyframes;
     public UIButton save;
@@ -67,6 +70,15 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
         this.name.setText("custom");
 
         this.continuous = new UIToggle(UIKeys.INTERPOLATIONS_CUSTOM_CONTINUOUS, (b) -> this.toggleContinuous());
+        
+        this.samples = new UITrackpad((v) -> {});
+        this.samples.limit(2, 500).integer().setValue(10);
+        this.samples.tooltip(UIKeys.INTERPOLATIONS_CUSTOM_SAMPLES);
+
+        this.clamp = new UIToggle(UIKeys.INTERPOLATIONS_CUSTOM_CLAMP, (b) -> {});
+        this.clamp.setValue(true);
+        this.clamp.tooltip(UIKeys.INTERPOLATIONS_CUSTOM_CLAMP_TOOLTIP);
+
         this.useBase = new UIButton(UIKeys.INTERPOLATIONS_CUSTOM_USE_BASE, (b) -> this.pickBaseInterpolation());
 
         this.keyframes = new UICustomInterpolationKeyframes((k) -> {});
@@ -93,7 +105,7 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
         this.save = new UIButton(UIKeys.INTERPOLATIONS_CUSTOM_SAVE, (b) -> this.saveInterpolation());
 
         UILabel label = UI.label(UIKeys.INTERPOLATIONS_CUSTOM_NAME).color(Colors.WHITE, true);
-        UIElement sidebar = UI.column(5, 10, label, this.name, this.continuous, this.useBase, this.save);
+        UIElement sidebar = UI.column(5, 10, label, this.name, this.continuous, this.samples, this.clamp, this.useBase, this.save);
 
         sidebar.relative(this.content).x(1F).y(0).w(140).h(1F).anchorX(1F);
         this.keyframes.relative(this.content).x(0).y(0).w(1F, -140).h(1F);
@@ -183,13 +195,20 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
         channel.insert(0, 0D);
         channel.insert(1, 1D);
 
-        int samples = 10;
+        int samples = (int) this.samples.getValue();
         double step = 1.0 / samples;
+        boolean clamp = this.clamp.getValue();
+        
+        EasingArgs args = null;
+        if (interp instanceof Interpolation)
+        {
+            args = ((Interpolation) interp).getArgs();
+        }
 
         for (int i = 1; i < samples; i++)
         {
             double x = i * step;
-            double y = interp.interpolate(0, 1, x);
+            double y = this.sample(interp, x, args, clamp);
 
             channel.insert((float) x, y);
         }
@@ -206,18 +225,18 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
 
             if (i == 0)
             {
-                double nextY = interp.interpolate(0, 1, x + epsilon);
+                double nextY = this.sample(interp, x + epsilon, args, clamp);
                 slope = (nextY - y) / epsilon;
             }
             else if (i == samples)
             {
-                double prevY = interp.interpolate(0, 1, x - epsilon);
+                double prevY = this.sample(interp, x - epsilon, args, clamp);
                 slope = (y - prevY) / epsilon;
             }
             else
             {
-                double prevY = interp.interpolate(0, 1, x - epsilon);
-                double nextY = interp.interpolate(0, 1, x + epsilon);
+                double prevY = this.sample(interp, x - epsilon, args, clamp);
+                double nextY = this.sample(interp, x + epsilon, args, clamp);
                 slope = (nextY - prevY) / (2 * epsilon);
             }
 
@@ -233,6 +252,15 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
 
         this.keyframes.resetView();
         this.markUndo();
+    }
+    
+    private double sample(IInterp interp, double x, EasingArgs args, boolean clamp)
+    {
+        IInterp.context.set(0, 1, x);
+        if (clamp) IInterp.context.setBoundary(true, true);
+        if (args != null) IInterp.context.extra(args);
+        
+        return interp.interpolate(IInterp.context);
     }
 
     @Override

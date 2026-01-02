@@ -5,6 +5,7 @@ import mchorse.bbs_mod.data.IMapSerializable;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.InterpContext;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -33,18 +34,46 @@ public class Transform implements IMapSerializable
 
     public void lerp(Transform preA, Transform a, Transform b, Transform postB, IInterp interp, float x)
     {
-        this.lerp(this.translate, preA.translate, a.translate, b.translate, postB.translate, interp, x);
-        this.lerp(this.scale, preA.scale, a.scale, b.scale, postB.scale, interp, x);
-        this.lerp(this.rotate, preA.rotate, a.rotate, b.rotate, postB.rotate, interp, x);
-        this.lerp(this.rotate2, preA.rotate2, a.rotate2, b.rotate2, postB.rotate2, interp, x);
-        this.lerp(this.pivot, preA.pivot, a.pivot, b.pivot, postB.pivot, interp, x);
+        this.lerp(preA, a, b, postB, interp, x, 1.0, 1.0, 1.0, 1.0);
     }
 
-    private void lerp(Vector3f target, Vector3f preA, Vector3f a, Vector3f b, Vector3f postB, IInterp interp, float x)
+    public void lerp(Transform preA, Transform a, Transform b, Transform postB, IInterp interp, float x, double w0, double w1, double w2, double w3)
     {
-        target.x = (float) interp.interpolate(IInterp.context.set(preA.x, a.x, b.x, postB.x, x));
-        target.y = (float) interp.interpolate(IInterp.context.set(preA.y, a.y, b.y, postB.y, x));
-        target.z = (float) interp.interpolate(IInterp.context.set(preA.z, a.z, b.z, postB.z, x));
+        /* We can't access EasingArgs from just IInterp, so we assume defaults (0) or pass empty args if needed.
+           However, in PoseKeyframeFactory, 'interp' is passed from Keyframe.getInterpolation().
+           If IInterp passed here is actually an instance of Interpolation, we can cast it. */
+           
+        mchorse.bbs_mod.utils.interps.easings.EasingArgs args = null;
+        if (interp instanceof mchorse.bbs_mod.utils.interps.Interpolation)
+        {
+            args = ((mchorse.bbs_mod.utils.interps.Interpolation) interp).getArgs();
+        }
+
+        this.lerp(this.translate, preA.translate, a.translate, b.translate, postB.translate, interp, args, x, w0, w1, w2, w3);
+        this.lerp(this.scale, preA.scale, a.scale, b.scale, postB.scale, interp, args, x, w0, w1, w2, w3);
+        this.lerp(this.rotate, preA.rotate, a.rotate, b.rotate, postB.rotate, interp, args, x, w0, w1, w2, w3);
+        this.lerp(this.rotate2, preA.rotate2, a.rotate2, b.rotate2, postB.rotate2, interp, args, x, w0, w1, w2, w3);
+        this.lerp(this.pivot, preA.pivot, a.pivot, b.pivot, postB.pivot, interp, args, x, w0, w1, w2, w3);
+    }
+
+    private void lerp(Vector3f target, Vector3f preA, Vector3f a, Vector3f b, Vector3f postB, IInterp interp, mchorse.bbs_mod.utils.interps.easings.EasingArgs args, float x, double w0, double w1, double w2, double w3)
+    {
+        double ax = a.x, ay = a.y, az = a.z;
+        double bx = b.x, by = b.y, bz = b.z;
+        double preAx = preA.x, preAy = preA.y, preAz = preA.z;
+        double postBx = postB.x, postBy = postB.y, postBz = postB.z;
+
+        InterpContext ctx = IInterp.context.setBoundary(preA == a, postB == b);
+        if (args != null) ctx.extra(args);
+        
+        if (interp == mchorse.bbs_mod.utils.interps.Interpolations.NURBS)
+        {
+            ctx.weights(w0, w1, w2, w3);
+        }
+
+        target.x = (float) interp.interpolate(ctx.set(preAx, ax, bx, postBx, x));
+        target.y = (float) interp.interpolate(ctx.set(preAy, ay, by, postBy, x));
+        target.z = (float) interp.interpolate(ctx.set(preAz, az, bz, postBz, x));
     }
 
     public void identity()
