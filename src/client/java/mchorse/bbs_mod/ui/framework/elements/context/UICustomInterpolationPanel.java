@@ -76,7 +76,7 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
         this.samples.tooltip(UIKeys.INTERPOLATIONS_CUSTOM_SAMPLES);
 
         this.clamp = new UIToggle(UIKeys.INTERPOLATIONS_CUSTOM_CLAMP, (b) -> {});
-        this.clamp.setValue(true);
+        this.clamp.setValue(false);
         this.clamp.tooltip(UIKeys.INTERPOLATIONS_CUSTOM_CLAMP_TOOLTIP);
 
         this.useBase = new UIButton(UIKeys.INTERPOLATIONS_CUSTOM_USE_BASE, (b) -> this.pickBaseInterpolation());

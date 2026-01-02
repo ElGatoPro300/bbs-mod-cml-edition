@@ -1294,7 +1294,7 @@
     "bbs.ui.interpolations.custom.use_base": "Use Base Interpolation",
     "bbs.ui.interpolations.custom.samples": "Samples",
     "bbs.ui.interpolations.custom.clamp": "Clamp Ends",
-    "bbs.ui.interpolations.custom.clamp-tooltip": "Force start/end tangents to be clamped (Useful for B-Spline/NURBS)",
+    "bbs.ui.interpolations.custom.clamp-tooltip": "Force start/end tangents to be clamped (Useful for B-Spline/NURBS) (Don't work, still in beta)",
     "bbs.ui.interpolations.custom_panel.title": "Custom Interpolation Editor",
     "bbs.ui.interpolations.custom_panel.name": "Interpolation Name",
     "bbs.ui.interpolations.custom_panel.save": "Save",
