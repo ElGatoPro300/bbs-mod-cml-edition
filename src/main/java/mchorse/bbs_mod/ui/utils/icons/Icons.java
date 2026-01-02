@@ -224,6 +224,11 @@ public class Icons
     public static final Icon INTERP_SINE_IN = register(new Icon(ATLAS, "interp_sine_in", 176, 224));
     public static final Icon INTERP_CIRCLE_IN = register(new Icon(ATLAS, "interp_circle_in", 192, 224));
 
+    public static final Icon INTERP_BSPLINE = register(new Icon(ATLAS, "interp_bspline", 0, 208));
+    public static final Icon INTERP_AKIMA = register(new Icon(ATLAS, "interp_akima", 16, 208));
+    public static final Icon INTERP_TCB = register(new Icon(ATLAS, "interp_tcb", 32, 208));
+    public static final Icon INTERP_NURBS = register(new Icon(ATLAS, "interp_nurbs", 0, 224));
+
     public static final Icon CHECKBOARD = register(new Icon(ATLAS, "checkboard", 0, 240));
     public static final Icon DISABLED = register(new Icon(ATLAS, "disabled", 16, 240));
     public static final Icon CURSOR = register(new Icon(ATLAS, "cursor", 32, 240));

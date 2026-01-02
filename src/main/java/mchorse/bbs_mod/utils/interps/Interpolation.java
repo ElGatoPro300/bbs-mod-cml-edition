@@ -96,6 +96,11 @@ public class Interpolation extends BaseValue implements IInterp
         return this.interp;
     }
 
+    public EasingArgs getArgs()
+    {
+        return this.args;
+    }
+
     public void setInterp(IInterp interp)
     {
         this.preNotify();
