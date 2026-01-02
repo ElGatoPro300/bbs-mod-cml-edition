@@ -20,8 +20,7 @@ import java.util.Collection;
  */
 public class WorldStructuresSourcePack implements ISourcePack
 {
-    private static final String PREFIX = Link.ASSETS;
-    private static final String STRUCTURES_PREFIX = "structures";
+    private static final String PREFIX = "world";
 
     @Override
     public String getPrefix()
@@ -81,7 +80,7 @@ public class WorldStructuresSourcePack implements ISourcePack
                 rel = rel.substring(1);
             }
 
-            return new Link(PREFIX, STRUCTURES_PREFIX + "/" + rel.replace('\\', '/'));
+            return new Link(PREFIX, rel.replace('\\', '/'));
         }
         else if (path.startsWith(base2))
         {
@@ -91,7 +90,7 @@ public class WorldStructuresSourcePack implements ISourcePack
                 rel = rel.substring(1);
             }
 
-            return new Link(PREFIX, STRUCTURES_PREFIX + "/" + rel.replace('\\', '/'));
+            return new Link(PREFIX, rel.replace('\\', '/'));
         }
 
         return null;
@@ -107,25 +106,16 @@ public class WorldStructuresSourcePack implements ISourcePack
             return;
         }
 
-        if (!Link.ASSETS.equals(link.source))
+        if (!PREFIX.equals(link.source))
         {
             return;
         }
-
-        if (!link.path.startsWith(STRUCTURES_PREFIX))
-        {
-            return;
-        }
-
-        String subPath = link.path.equals(STRUCTURES_PREFIX)
-            ? ""
-            : link.path.substring(STRUCTURES_PREFIX.length() + 1);
 
         File base1 = new File(world, "generated/minecraft/structures");
         File base2 = new File(world, "generated/structures");
 
-        File dir1 = subPath.isEmpty() ? base1 : new File(base1, subPath);
-        File dir2 = subPath.isEmpty() ? base2 : new File(base2, subPath);
+        File dir1 = link.path.isEmpty() ? base1 : new File(base1, link.path);
+        File dir2 = link.path.isEmpty() ? base2 : new File(base2, link.path);
 
         if (dir1.isDirectory())
         {
@@ -140,7 +130,7 @@ public class WorldStructuresSourcePack implements ISourcePack
 
     private File resolve(Link link)
     {
-        if (!Link.ASSETS.equals(link.source) || !link.path.startsWith(STRUCTURES_PREFIX))
+        if (!PREFIX.equals(link.source))
         {
             return null;
         }
@@ -152,7 +142,7 @@ public class WorldStructuresSourcePack implements ISourcePack
             return null;
         }
 
-        String rel = link.path.substring(STRUCTURES_PREFIX.length());
+        String rel = link.path;
         if (rel.startsWith("/"))
         {
             rel = rel.substring(1);

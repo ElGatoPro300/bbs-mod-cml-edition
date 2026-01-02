@@ -82,7 +82,7 @@ public class UIStructureFormPanel extends UIFormPanel<StructureForm>
         {
             try
             {
-                overlay.set(Link.assets(current));
+                overlay.set(Link.create(current));
             }
             catch (Exception e)
             {
@@ -148,7 +148,7 @@ public class UIStructureFormPanel extends UIFormPanel<StructureForm>
 
     private void setStructure(Link link)
     {
-        String path = link == null ? "" : link.path;
+        String path = link == null ? "" : link.toString();
 
         this.form.structureFile.set(path);
         this.structureFile.setText(path);
