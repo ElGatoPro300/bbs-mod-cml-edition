@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.utils.resources;
 
+import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.resources.ISourcePack;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.DataPath;
@@ -20,14 +21,22 @@ import java.util.Optional;
 
 public class MinecraftSourcePack implements ISourcePack
 {
-    private final ResourceManager manager;
     private Map<String, Object> links = new HashMap<>();
+    private boolean initialized = false;
+    private String prefix = "minecraft";
 
     public MinecraftSourcePack()
     {
-        this.manager = MinecraftClient.getInstance().getResourceManager();
+    }
 
-        this.setupPaths();
+    public MinecraftSourcePack(String prefix)
+    {
+        this.prefix = prefix;
+    }
+
+    private ResourceManager getManager()
+    {
+        return MinecraftClient.getInstance().getResourceManager();
     }
     
     private ResourceManager getEffectiveManager(Link link)
@@ -40,18 +49,35 @@ public class MinecraftSourcePack implements ISourcePack
             return mc.getServer().getResourceManager();
         }
         
-        return this.manager;
+        return this.getManager();
     }
 
     public void setupPaths()
     {
-        Map<Identifier, List<Resource>> map = this.manager.findAllResources("textures", (l) -> l.getNamespace().equals("minecraft") && l.getPath().endsWith(".png"));
+        ResourceManager manager = this.getManager();
+        
+        if (manager == null)
+        {
+            return;
+        }
+
+        Map<Identifier, List<Resource>> map = manager.findAllResources("textures", (l) -> l.getNamespace().equals("minecraft") && l.getPath().endsWith(".png"));
 
         for (Identifier id : map.keySet())
         {
             DataPath path = new DataPath(id.getPath());
 
             this.insert(path);
+        }
+        
+        this.initialized = true;
+    }
+    
+    private void ensureInitialized()
+    {
+        if (!this.initialized && this.getManager() != null)
+        {
+            this.setupPaths();
         }
     }
 
@@ -83,14 +109,35 @@ public class MinecraftSourcePack implements ISourcePack
     @Override
     public String getPrefix()
     {
-        return "minecraft";
+        return this.prefix;
+    }
+
+    private Identifier getIdentifier(Link link)
+    {
+        String namespace = link.source;
+        String path = link.path;
+
+        if (Link.isAssets(link))
+        {
+            namespace = BBSMod.MOD_ID;
+            path = "assets/" + path;
+        }
+
+        return Identifier.of(namespace, path);
     }
 
     @Override
     public boolean hasAsset(Link link)
     {
-        Identifier id = Identifier.of(link.source, link.path);
+        this.ensureInitialized();
+        
+        Identifier id = this.getIdentifier(link);
         ResourceManager effectiveManager = this.getEffectiveManager(link);
+        
+        if (effectiveManager == null)
+        {
+            return false;
+        }
         
         if (effectiveManager.getResource(id).isPresent())
         {
@@ -100,7 +147,7 @@ public class MinecraftSourcePack implements ISourcePack
         // Try prepending "structures/" if missing and it looks like a structure
         if (!link.path.startsWith("structures/") && link.path.endsWith(".nbt"))
         {
-             Identifier structureId = Identifier.of(link.source, "structures/" + link.path);
+             Identifier structureId = Identifier.of(id.getNamespace(), "structures/" + id.getPath());
              if (effectiveManager.getResource(structureId).isPresent())
              {
                  return true;
@@ -113,15 +160,22 @@ public class MinecraftSourcePack implements ISourcePack
     @Override
     public InputStream getAsset(Link link) throws IOException
     {
-        Identifier id = Identifier.of(link.source, link.path);
+        this.ensureInitialized();
+        
+        Identifier id = this.getIdentifier(link);
         ResourceManager effectiveManager = this.getEffectiveManager(link);
+        
+        if (effectiveManager == null)
+        {
+            return null;
+        }
         
         Optional<Resource> resource = effectiveManager.getResource(id);
 
         // Try prepending "structures/" if missing and it looks like a structure
         if (resource.isEmpty() && !link.path.startsWith("structures/") && link.path.endsWith(".nbt"))
         {
-             Identifier structureId = Identifier.of(link.source, "structures/" + link.path);
+             Identifier structureId = Identifier.of(id.getNamespace(), "structures/" + id.getPath());
              resource = effectiveManager.getResource(structureId);
         }
 
@@ -148,6 +202,8 @@ public class MinecraftSourcePack implements ISourcePack
     @Override
     public void getLinksFromPath(Collection<Link> links, Link link, boolean recursive)
     {
+        this.ensureInitialized();
+        
         String path = link.path.endsWith("/") ? link.path.substring(0, link.path.length() - 1) : link.path;
         Map<String, Object> allLinks = this.findBasePath(path);
 
