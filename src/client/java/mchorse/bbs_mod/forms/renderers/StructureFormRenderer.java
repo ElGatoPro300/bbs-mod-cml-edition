@@ -1177,12 +1177,12 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             return;
         }
 
-        if (file.equals(lastFile))
+        if (file.equals(lastFile) && !blocks.isEmpty())
         {
             return;
         }
 
-        File nbtFile = BBSMod.getProvider().getFile(Link.assets(file));
+        File nbtFile = BBSMod.getProvider().getFile(Link.create(file));
 
         
 
@@ -1220,7 +1220,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         }
 
         /* Si no hay File (assets internos), leer vía InputStream del provider */
-        try (InputStream is = BBSMod.getProvider().getAsset(Link.assets(file)))
+        try (InputStream is = BBSMod.getProvider().getAsset(Link.create(file)))
         {
             try
             {
@@ -1365,6 +1365,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 if (stateIndex >= 0 && stateIndex < paletteStates.size())
                 {
                     BlockState state = paletteStates.get(stateIndex);
+                    if (state == null || state.isAir())
+                    {
+                        continue;
+                    }
                     blocks.add(new BlockEntry(state, pos));
 
                     // Actualizar límites
@@ -1419,6 +1423,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         catch (Exception e)
         {
             block = net.minecraft.block.Blocks.AIR;
+        }
+
+        if ("minecraft:jigsaw".equals(name) || block == Blocks.JIGSAW)
+        {
+            return Blocks.AIR.getDefaultState();
         }
 
         state = block.getDefaultState();
