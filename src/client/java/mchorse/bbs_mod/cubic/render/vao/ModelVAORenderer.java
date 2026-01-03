@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.ShaderProgramKeys;
@@ -35,6 +36,11 @@ public class ModelVAORenderer
         setupUniforms(stack, shader);
 
         shader.bind();
+
+        int textureID = RenderSystem.getShaderTexture(0);
+        GlStateManager._activeTexture(GL30.GL_TEXTURE0);
+        GlStateManager._bindTexture(textureID);
+
         modelVAO.render(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, r, g, b, a, light, overlay);
         shader.unbind();
 
@@ -44,12 +50,12 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
-        /*
-        for (int i = 0; i < 12; i++)
+        /* Ensure the shader knows to use texture unit 0 for Sampler0 */
+        GlUniform sampler0 = shader.getUniform("Sampler0");
+        if (sampler0 != null)
         {
-            shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
+            sampler0.set(0);
         }
-        */
 
         if (shader.projectionMat != null)
         {

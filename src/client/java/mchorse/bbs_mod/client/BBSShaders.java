@@ -103,6 +103,12 @@ public class BBSShaders
         return RenderSystem.getShader();
     }
 
+    public static ShaderProgram getRenderTypeEntityTranslucentCullProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+        return RenderSystem.getShader();
+    }
+
     public static ShaderProgram getPositionTexColorProgram()
     {
         RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
