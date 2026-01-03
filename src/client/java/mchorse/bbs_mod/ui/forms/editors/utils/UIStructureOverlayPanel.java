@@ -1,171 +1,555 @@
 package mchorse.bbs_mod.ui.forms.editors.utils;
 
 import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.forms.StructureLikeManager;
 import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIStringOverlayPanel;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UILikeableStructureList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UILikedStructureList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIVanillaStructureList;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIStringOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.WorldSavePath;
 
-import java.util.function.Function;
-
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
+/**
+ * Overlay panel for picking structures with three tabs: World, Vanilla, and Favorites.
+ */
 public class UIStructureOverlayPanel extends UIStringOverlayPanel
 {
-    private UIIcon saveButton;
-    private String currentSelectedStructure = "";
+    private final StructureLikeManager likeManager;
+    private final UIIcon worldButton;
+    private final UIIcon vanillaButton;
+    private final UIIcon likeButton;
+
+    private UISearchList<String> worldStructures;
+    private UILikeableStructureList worldStructureList;
+    private UISearchList<String> vanillaStructures;
+    private UIVanillaStructureList vanillaStructureList;
+    private UISearchList<StructureLikeManager.LikedStructure> likedStructures;
+    private UILikedStructureList likedStructureList;
+
+    private ViewMode currentMode = null;
+    private final UIContext context;
+    private final Consumer<Link> originalCallback;
+    private String selectedStructure;
 
     public UIStructureOverlayPanel(IKey title, Consumer<Link> callback)
     {
-        super(title, true, getStructureFiles(), (str) ->
+        this(callback, null);
+    }
+
+    public UIStructureOverlayPanel(Consumer<Link> callback)
+    {
+        this(callback, null);
+    }
+
+    public UIStructureOverlayPanel(Consumer<Link> callback, UIContext context)
+    {
+        super(UIKeys.GENERAL_SEARCH, getWorldStructureFiles(), null);
+
+        this.context = context;
+        this.originalCallback = callback;
+        this.likeManager = new StructureLikeManager();
+
+        /* Replace the default list with the like-aware list */
+        this.content.remove(this.strings);
+
+        UILikeableStructureList likeableList = new UILikeableStructureList((list) ->
         {
-            if (callback != null)
+            if (!list.isEmpty())
             {
-                callback.accept(str.isEmpty() ? null : Link.create(str));
+                this.pickStructure(list.get(0));
             }
-        }, displayFormatter());
+        }, this.likeManager);
 
-        // Agregar botón de guardar estructura
-        this.saveButton = new UIIcon(Icons.DOWNLOAD, (b) -> this.saveStructure());
-        this.saveButton.tooltip(IKey.raw("Guardar estructura"));
-        this.icons.add(this.saveButton); // Agregar al contenedor de iconos
-
-        this.updateSaveButtonVisibility();
-    }
-
-    @Override
-    protected void accept(String string)
-    {
-        this.currentSelectedStructure = string;
-        this.updateSaveButtonVisibility();
-        super.accept(string);
-    }
-
-    private void updateSaveButtonVisibility()
-    {
-        boolean isWorldStructure = !this.currentSelectedStructure.isEmpty() && 
-                                   this.isFromWorld(this.currentSelectedStructure);
-        this.saveButton.setVisible(isWorldStructure);
-    }
-
-    private void saveStructure()
-    {
-        if (this.currentSelectedStructure.isEmpty()) {
-            return;
-        }
-
-        try {
-            Link sourceLink = Link.create(this.currentSelectedStructure);
-            File sourceFile = BBSMod.getProvider().getFile(sourceLink);
-            
-            if (sourceFile == null || !sourceFile.exists()) {
-                System.err.println("[BBS] No se pudo encontrar el archivo fuente: " + this.currentSelectedStructure);
+        likeableList.scroll.scrollSpeed *= 2;
+        
+        likeableList.setEditCallback((structureName) ->
+        {
+            if (this.context == null)
+            {
                 return;
             }
-
-            // Obtener el nombre del archivo sin la ruta
-            String fileName = sourceLink.path;
-            if (fileName.startsWith("structures/")) {
-                fileName = fileName.substring("structures/".length());
-            }
-
-            // Crear la carpeta de destino si no existe
-            File assetsStructuresDir = new File(BBSMod.getAssetsFolder(), "structures");
-            if (!assetsStructuresDir.exists()) {
-                assetsStructuresDir.mkdirs();
-            }
-
-            // Archivo de destino
-            File destFile = new File(assetsStructuresDir, fileName);
-
-            // Copiar el archivo
-            Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            System.out.println("[BBS] Estructura guardada: " + sourceFile.getAbsolutePath() + " -> " + destFile.getAbsolutePath());
-
-            // Refrescar la lista de estructuras
-            this.strings.list.clear();
-            this.strings.list.add(getStructureFiles());
-            this.strings.list.sort();
-            this.strings.list.update();
-
-        } catch (IOException e) {
-            System.err.println("[BBS] Error al guardar estructura: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private static boolean isFromWorld(String linkString)
-    {
-        if (linkString == null || linkString.isEmpty()) {
-            return false;
-        }
-
-        try {
-            Link link = Link.create(linkString);
-            File worldFolder = BBSMod.getWorldFolder();
             
-            if (worldFolder == null) {
-                return false;
-            }
-
-            // Verificar si el archivo existe en las carpetas del mundo
-            String rel = link.path.substring("structures/".length());
-            File candidate1 = new File(worldFolder, "generated/minecraft/structures/" + rel);
-            File candidate2 = new File(worldFolder, "generated/structures/" + rel);
-
-            return candidate1.exists() || candidate2.exists();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private static Function<String, String> displayFormatter()
-    {
-        return (s) ->
+            UIPromptOverlayPanel renamePanel = new UIPromptOverlayPanel(
+                UIKeys.GENERAL_RENAME,
+                UIKeys.GENERAL_RENAME,
+                (newName) -> this.renameStructure(structureName, newName)
+            );
+            
+            renamePanel.text.setText(structureName);
+            renamePanel.text.filename();
+            
+            UIOverlay.addOverlay(this.context, renamePanel);
+        });
+        
+        likeableList.setRemoveCallback((structureName) ->
         {
-            if (s == null || s.isEmpty()) return s;
-
-            // Mostrar solo el nombre de archivo sin prefijo ni extensión
-            int slash = Math.max(s.lastIndexOf('/'), s.lastIndexOf('\\'));
-            String name = slash >= 0 ? s.substring(slash + 1) : s;
-            if (name.toLowerCase().endsWith(".nbt"))
+            if (this.context == null)
             {
-                name = name.substring(0, name.length() - 4);
+                return;
             }
-            // Añadir prefijo visual "structures/" para dar contexto
-            return "structures/" + name;
-        };
+            
+            UIConfirmOverlayPanel confirmPanel = new UIConfirmOverlayPanel(
+                UIKeys.GENERAL_REMOVE,
+                UIKeys.GENERAL_REMOVE,
+                (confirmed) ->
+                {
+                    if (confirmed)
+                    {
+                        this.deleteStructure(structureName);
+                    }
+                }
+            );
+            
+            UIOverlay.addOverlay(this.context, confirmPanel);
+        });
+
+        likeableList.setRefreshCallback(this::refreshLikedList);
+
+        this.strings = new UISearchList<>(likeableList);
+        this.strings.label(UIKeys.GENERAL_SEARCH).full(this.content).x(6).w(1F, -12);
+        this.content.add(this.strings);
+        this.worldStructures = this.strings;
+        this.worldStructureList = likeableList;
+
+        /* Create vanilla structure list */
+        this.vanillaStructureList = new UIVanillaStructureList((list) ->
+        {
+            if (!list.isEmpty())
+            {
+                this.pickStructure(list.get(0));
+            }
+        }, this.likeManager);
+        
+        this.vanillaStructureList.setLikeToggleCallback(() ->
+        {
+            this.refreshVanillaStructureList();
+            this.refreshLikedList();
+        });
+
+        this.vanillaStructures = new UISearchList<>(this.vanillaStructureList);
+        this.vanillaStructures.label(UIKeys.GENERAL_SEARCH).full(this.content).x(6).w(1F, -12);
+        this.vanillaStructures.setVisible(false);
+        this.content.add(this.vanillaStructures);
+
+        /* Create liked structures list */
+        this.likedStructureList = new UILikedStructureList((list) ->
+        {
+            if (!list.isEmpty())
+            {
+                this.pickStructure(list.get(0).getPath());
+            }
+        });
+        
+        this.likedStructureList.setUnlikeCallback((structure) ->
+        {
+            this.likeManager.setStructureLiked(structure.getPath(), structure.getDisplayName(), false);
+            this.refreshLikedList();
+        });
+        
+        this.likedStructures = new UISearchList<>(this.likedStructureList);
+        this.likedStructures.label(UIKeys.GENERAL_SEARCH).full(this.content).x(6).w(1F, -12);
+        this.likedStructures.setVisible(false);
+        this.content.add(this.likedStructures);
+
+        /* Setup button icons */
+        this.worldButton = new UIIcon(Icons.FOLDER, (b) -> this.switchToMode(ViewMode.WORLD));
+        this.worldButton.tooltip(UIKeys.GENERAL_SEARCH);
+
+        this.vanillaButton = new UIIcon(Icons.ADD, (b) -> this.switchToMode(ViewMode.VANILLA));
+        this.vanillaButton.tooltip(UIKeys.GENERAL_ADD);
+
+        this.likeButton = new UIIcon(Icons.HEART_ALT, (b) -> this.switchToMode(ViewMode.LIKE));
+        this.likeButton.tooltip(UIKeys.GENERAL_PRESETS);
+
+        this.icons.add(this.worldButton, this.vanillaButton, this.likeButton);
+
+        this.callback(this::pickStructure);
+
+        this.refreshWorldStructureList();
+        this.refreshVanillaStructureList();
+        this.refreshLikedList();
+        this.switchToMode(ViewMode.WORLD);
     }
 
-    private static Set<String> getStructureFiles()
+    private static Set<String> getWorldStructureFiles()
     {
         Set<String> locations = new HashSet<>();
+        MinecraftClient mc = MinecraftClient.getInstance();
 
-        try
+        /* Scan world/generated/minecraft/structures/ (if in world) */
+        if (mc.world != null && mc.isInSingleplayer() && mc.getServer() != null)
         {
-            for (Link link : BBSMod.getProvider().getLinksFromPath(Link.assets("structures")))
+            try
             {
-                String pathLower = link.path.toLowerCase();
-
-                if (pathLower.endsWith(".nbt"))
+                File generatedFolder = mc.getServer().getSavePath(WorldSavePath.GENERATED).toFile();
+                File worldStructures = new File(new File(generatedFolder, "minecraft"), "structures");
+                
+                if (worldStructures.exists() && worldStructures.isDirectory())
                 {
-                    locations.add(link.toString());
+                    scanWorldStructureFolder(worldStructures, worldStructures, locations);
+                }
+                
+                // Also scan the standard world structures folder (generated/structures/...)
+                // Sometimes structures are saved directly in generated/structures without 'minecraft' namespace folder
+                File genericStructures = new File(generatedFolder, "structures");
+                if (genericStructures.exists() && genericStructures.isDirectory())
+                {
+                    scanWorldStructureFolder(genericStructures, genericStructures, locations);
                 }
             }
-        }
-        catch (Exception e)
-        {
-            // Si no hay carpeta structures o hay algún error, devolver conjunto vacío
+            catch (Exception e)
+            {
+                System.err.println("Failed to scan world structures: " + e.getMessage());
+            }
         }
 
         return locations;
+    }
+
+    private static void scanWorldStructureFolder(File root, File folder, Set<String> results)
+    {
+        if (!folder.exists() || !folder.isDirectory())
+        {
+            return;
+        }
+
+        try (Stream<Path> paths = Files.walk(folder.toPath()))
+        {
+            paths.filter(Files::isRegularFile)
+                .filter(path -> path.toString().endsWith(".nbt"))
+                .forEach(path ->
+                {
+                    try
+                    {
+                        String relativePath = root.toPath().relativize(path).toString().replace("\\", "/");
+                        results.add("world:" + relativePath);
+                    }
+                    catch (Exception e)
+                    {
+                        /* Skip invalid structures */
+                    }
+                });
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to scan folder: " + folder + " - " + e.getMessage());
+        }
+    }
+
+    private void switchToMode(ViewMode mode)
+    {
+        if (this.currentMode == mode)
+        {
+            return;
+        }
+
+        this.currentMode = mode;
+
+        this.updateButtonStates();
+
+        switch (mode)
+        {
+            case WORLD:
+                this.showWorldMode();
+                break;
+
+            case VANILLA:
+                this.showVanillaMode();
+                break;
+
+            case LIKE:
+                this.showLikeMode();
+                break;
+        }
+
+        this.updateListSelections();
+    }
+
+    private void showWorldMode()
+    {
+        this.strings.setVisible(true);
+        this.vanillaStructures.setVisible(false);
+
+        if (this.likedStructures != null)
+        {
+            this.likedStructures.setVisible(false);
+        }
+
+        UILikeableStructureList list = (UILikeableStructureList) this.strings.list;
+
+        list.setShowOnlyLiked(false);
+        list.setShowEditRemoveButtons(true);
+
+        this.refreshWorldStructureList();
+        list.update();
+    }
+
+    private void showVanillaMode()
+    {
+        this.strings.setVisible(false);
+        this.vanillaStructures.setVisible(true);
+
+        if (this.likedStructures != null)
+        {
+            this.likedStructures.setVisible(false);
+        }
+
+        this.vanillaStructures.resize();
+        this.content.resize();
+
+        this.refreshVanillaStructureList();
+    }
+
+    private void showLikeMode()
+    {
+        this.strings.setVisible(false);
+        this.vanillaStructures.setVisible(false);
+
+        if (this.likedStructures != null)
+        {
+            this.likedStructures.setVisible(true);
+        }
+
+        UILikeableStructureList list = (UILikeableStructureList) this.strings.list;
+
+        list.setShowOnlyLiked(true);
+        list.setShowEditRemoveButtons(false);
+
+        this.refreshLikedList();
+        list.update();
+    }
+
+    private void updateButtonStates()
+    {
+        this.worldButton.active(this.currentMode == ViewMode.WORLD);
+        this.vanillaButton.active(this.currentMode == ViewMode.VANILLA);
+        this.likeButton.active(this.currentMode == ViewMode.LIKE);
+    }
+
+    private void refreshVanillaStructureList()
+    {
+        if (this.vanillaStructureList == null)
+        {
+            return;
+        }
+
+        this.vanillaStructureList.refresh();
+
+        if (this.vanillaStructures != null)
+        {
+            String filter = this.vanillaStructures.search.getText();
+
+            this.vanillaStructures.filter(filter, true);
+            this.vanillaStructures.resize();
+        }
+    }
+
+    private void refreshLikedList()
+    {
+        if (this.likedStructureList == null)
+        {
+            return;
+        }
+
+        this.likedStructureList.setStructures(this.likeManager.getLikedStructures());
+
+        if (this.likedStructures != null)
+        {
+            String filter = this.likedStructures.search.getText();
+
+            this.likedStructures.filter(filter, true);
+            this.likedStructures.resize();
+        }
+    }
+
+    public void refreshWorldStructureList()
+    {
+        Set<String> structureFiles = getWorldStructureFiles();
+
+        UILikeableStructureList list = (UILikeableStructureList) this.strings.list;
+        list.getList().clear();
+
+        java.util.List<String> sorted = new java.util.ArrayList<>(structureFiles);
+
+        sorted.sort(null);
+        list.getList().addAll(sorted);
+        list.getList().add(0, UIKeys.GENERAL_NONE.get());
+        list.update();
+        list.sort();
+
+        String filter = this.strings.search.getText();
+
+        this.strings.filter(filter, true);
+        this.strings.resize();
+        this.refreshLikedList();
+    }
+
+    private void pickStructure(String structure)
+    {
+        this.selectedStructure = structure;
+
+        if (structure == null || structure.isEmpty() || structure.equals(UIKeys.GENERAL_NONE.get()))
+        {
+            if (this.originalCallback != null)
+            {
+                this.originalCallback.accept(null);
+            }
+
+            return;
+        }
+
+        this.updateListSelections();
+
+        if (this.originalCallback != null)
+        {
+            this.originalCallback.accept(Link.create(structure));
+        }
+    }
+
+    private void updateListSelections()
+    {
+        if (this.selectedStructure == null)
+        {
+            return;
+        }
+
+        if (this.strings.list instanceof UILikeableStructureList list)
+        {
+            int index = list.getList().indexOf(this.selectedStructure);
+
+            if (index >= 0)
+            {
+                list.setIndex(index);
+            }
+        }
+
+        if (this.vanillaStructureList != null)
+        {
+            int index = this.vanillaStructureList.getList().indexOf(this.selectedStructure);
+
+            if (index >= 0)
+            {
+                this.vanillaStructureList.setIndex(index);
+            }
+        }
+
+        if (this.likedStructureList != null)
+        {
+            List<StructureLikeManager.LikedStructure> liked = this.likedStructureList.getStructures();
+
+            for (int i = 0; i < liked.size(); i++)
+            {
+                if (liked.get(i).getPath().equals(this.selectedStructure))
+                {
+                    this.likedStructureList.setIndex(i);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void render(UIContext context)
+    {
+        super.render(context);
+    }
+
+    @Override
+    protected void renderBackground(UIContext context)
+    {
+        super.renderBackground(context);
+
+        if (this.worldButton.isActive())
+        {
+            this.worldButton.area.render(context.batcher, BBSSettings.primaryColor(Colors.A100));
+        }
+
+        if (this.vanillaButton.isActive())
+        {
+            this.vanillaButton.area.render(context.batcher, BBSSettings.primaryColor(Colors.A100));
+        }
+
+        if (this.likeButton.isActive())
+        {
+            this.likeButton.area.render(context.batcher, BBSSettings.primaryColor(Colors.A100));
+        }
+    }
+
+    private void renameStructure(String oldName, String newName)
+    {
+        if (oldName == null || newName == null || oldName.equals(newName))
+        {
+            return;
+        }
+
+        /* Only rename world: structures */
+        if (!oldName.startsWith("world:"))
+        {
+            return;
+        }
+
+        String oldFileName = oldName.replace("world:", "").replace(".nbt", "");
+        String newFileName = newName.replace("world:", "").replace(".nbt", "");
+
+        /* TODO: Implement file renaming in world structures folder */
+        
+        this.refreshWorldStructureList();
+        this.refreshVanillaStructureList();
+        this.refreshLikedList();
+    }
+
+    private void deleteStructure(String structureName)
+    {
+        if (structureName == null)
+        {
+            return;
+        }
+
+        /* Only delete world: structures */
+        if (!structureName.startsWith("world:"))
+        {
+            return;
+        }
+
+        /* TODO: Implement file deletion in world structures folder */
+        
+        this.likeManager.removeStructure(structureName);
+
+        this.refreshWorldStructureList();
+        this.refreshVanillaStructureList();
+        this.refreshLikedList();
+    }
+
+    @Override
+    public void onClose()
+    {
+        super.onClose();
+    }
+
+    private enum ViewMode
+    {
+        WORLD, VANILLA, LIKE;
     }
 }
