@@ -350,8 +350,13 @@ public class BBSModClient implements ClientModInitializer
         System.out.println("Registered SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
 
         AssetProvider provider = BBSMod.getProvider();
-        provider.register(new MinecraftSourcePack());
-        provider.registerFirst(new MinecraftSourcePack(Link.ASSETS));
+        // provider.register(new MinecraftSourcePack());
+        // provider.registerFirst(new MinecraftSourcePack(Link.ASSETS));
+        
+        ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
+        {
+            provider.register(new MinecraftSourcePack());
+        });
 
         textures = new TextureManager(provider);
         framebuffers = new FramebufferManager();
