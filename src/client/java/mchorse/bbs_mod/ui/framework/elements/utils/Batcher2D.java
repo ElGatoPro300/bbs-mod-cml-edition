@@ -29,6 +29,8 @@ public class Batcher2D
 {
     private static FontRenderer fontRenderer = new FontRenderer();
 
+    // private List<Area> scissorStack = new ArrayList<>();
+
     private DrawContext context;
     private FontRenderer font;
 
