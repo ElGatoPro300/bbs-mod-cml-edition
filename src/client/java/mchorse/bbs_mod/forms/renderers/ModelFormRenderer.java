@@ -42,7 +42,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -270,7 +270,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             RenderSystem.setupLevelDiffuseLighting(light0, light1);
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
+                ? BBSShaders::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
 
             this.renderModel(this.entity, mainShader, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
@@ -294,13 +294,18 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     private void renderModel(IEntity target, Supplier<ShaderProgram> program, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
     {
-        if (!model.culling)
+        if (model.culling)
+        {
+            RenderSystem.enableCull();
+        }
+        else
         {
             RenderSystem.disableCull();
         }
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
         GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
 
         gameRenderer.getLightmapTextureManager().enable();
@@ -473,7 +478,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             BBSModClient.getTextures().bindTexture(texture);
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
+                ? BBSShaders::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
 
             RenderSystem.enableDepthTest();
@@ -518,7 +523,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             BBSModClient.getTextures().bindTexture(texture);
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
+                ? BBSShaders::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
             Supplier<ShaderProgram> shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
 

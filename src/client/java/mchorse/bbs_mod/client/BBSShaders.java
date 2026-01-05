@@ -1,9 +1,12 @@
 package mchorse.bbs_mod.client;
 
 import mchorse.bbs_mod.BBSMod;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFactory;
@@ -11,6 +14,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.Optional;
 
 public class BBSShaders
@@ -31,7 +35,12 @@ public class BBSShaders
 
     public static void setup()
     {
-        if (subtitles != null) subtitles.close();
+        setup(MinecraftClient.getInstance().getResourceManager());
+    }
+
+    public static void setup(ResourceManager manager)
+    {
+        if (multiLink != null) multiLink.close();
         if (subtitles != null) subtitles.close();
 
         if (pickerPreview != null) pickerPreview.close();
@@ -42,26 +51,74 @@ public class BBSShaders
 
         try
         {
-            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
-            multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
-            subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
+            ResourceFactory factory = new ProxyResourceFactory(manager);
+            
+            multiLink = createShader(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
+            subtitles = createShader(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
 
-            pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
-            pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-            pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
-            pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
-            pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            pickerPreview = createShader(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
+            pickerBillboard = createShader(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            pickerBillboardNoShading = createShader(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
+            pickerParticles = createShader(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
+            pickerModels = createShader(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
     }
 
+    private static ShaderProgram createShader(ResourceFactory factory, String name, VertexFormat format)
+    {
+        try
+        {
+            for (Constructor<?> c : ShaderProgram.class.getDeclaredConstructors())
+            {
+                c.setAccessible(true);
+                Class<?>[] types = c.getParameterTypes();
+                if (types.length == 3 && ResourceFactory.class.isAssignableFrom(types[0]) && types[1] == String.class && VertexFormat.class.isAssignableFrom(types[2]))
+                {
+                    return (ShaderProgram) c.newInstance(factory, name, format);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+
     public static ShaderProgram getModel()
     {
-        // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
-        return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        // Usar programa vanilla para VAO en modo normal
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+        return RenderSystem.getShader();
+    }
+    
+    public static ShaderProgram getRenderTypeEntityTranslucentProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+        return RenderSystem.getShader();
+    }
+
+    public static ShaderProgram getRenderTypeEntityTranslucentCullProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+        return RenderSystem.getShader();
+    }
+
+    public static ShaderProgram getPositionTexColorProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+        return RenderSystem.getShader();
+    }
+
+    public static ShaderProgram getParticleProgram()
+    {
+        RenderSystem.setShader(ShaderProgramKeys.PARTICLE);
+        return RenderSystem.getShader();
     }
 
     public static ShaderProgram getMultilinkProgram()
@@ -113,7 +170,7 @@ public class BBSShaders
         {
             if (id.getPath().contains("/core/"))
             {
-        return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
+                return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
             }
 
             return this.manager.getResource(id);

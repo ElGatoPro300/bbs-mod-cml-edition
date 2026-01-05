@@ -2,6 +2,12 @@ package mchorse.bbs_mod;
 
 import mchorse.bbs_mod.client.BBSShaders;
 
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
@@ -53,6 +59,7 @@ import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 import mchorse.bbs_mod.ui.utils.keys.KeybindSettings;
 import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.ScreenshotRecorder;
 import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
@@ -63,12 +70,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
@@ -86,6 +92,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.render.item.model.special.SpecialModelTypes;
+import com.mojang.serialization.MapCodec;
 
 import java.io.File;
 import java.util.Collections;
@@ -191,6 +201,16 @@ public class BBSModClient implements ClientModInitializer
     public static GunZoom getGunZoom()
     {
         return gunZoom;
+    }
+
+    public static GunItemRenderer getGunItemRenderer()
+    {
+        return gunItemRenderer;
+    }
+
+    public static ModelBlockItemRenderer getModelBlockItemRenderer()
+    {
+        return modelBlockItemRenderer;
     }
 
     public static KeyBinding getKeyZoom()
@@ -319,7 +339,24 @@ public class BBSModClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
+        System.out.println("BBSModClient.onInitializeClient() called! Registering SpecialModelTypes.");
+        try {
+            System.out.println("SpecialModelTypes fields: " + java.util.Arrays.toString(SpecialModelTypes.class.getFields()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
+        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
+        System.out.println("Registered SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
+
         AssetProvider provider = BBSMod.getProvider();
+        // provider.register(new MinecraftSourcePack());
+        // provider.registerFirst(new MinecraftSourcePack(Link.ASSETS));
+        
+        ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
+        {
+            provider.register(new MinecraftSourcePack());
+        });
 
         textures = new TextureManager(provider);
         framebuffers = new FramebufferManager();
@@ -448,17 +485,17 @@ public class BBSModClient implements ClientModInitializer
                         color.r, color.g, color.b, 1F
                     );
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+                    RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
-                    RenderSystem.applyModelViewMatrix();
+                    MatrixStackUtils.applyModelViewMatrix();
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
 
                     mvStack.popMatrix();
-                    RenderSystem.applyModelViewMatrix();
+                    MatrixStackUtils.applyModelViewMatrix();
 
                     RenderSystem.disableDepthTest();
 
@@ -581,15 +618,30 @@ public class BBSModClient implements ClientModInitializer
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register((e) -> BBSResources.stopWatchdog());
-        ClientLifecycleEvents.CLIENT_STARTED.register((e) ->
+        ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
         {
+            // BBSMod.getProvider().lateInit(client.getResourceManager());
             BBSRendering.setupFramebuffer();
-            provider.register(new MinecraftSourcePack());
-
-            Window window = MinecraftClient.getInstance().getWindow();
-
-            originalFramebufferScale = window.getFramebufferWidth() / window.getWidth();
+            System.out.println("CLIENT_STARTED check: SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
+            try {
+                System.out.println("RegistryKeys fields:");
+                for (java.lang.reflect.Field field : net.minecraft.registry.RegistryKeys.class.getFields()) {
+                    System.out.println(field.getName());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            /*
+            if (!SpecialModelTypes.ID_MAPPER.containsKey(Identifier.of(BBSMod.MOD_ID, "gun"))) {
+                 System.out.println("WARNING: bbs:gun missing from SpecialModelTypes! Re-registering.");
+                 SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
+                 SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
+            }
+            */
         });
+
+        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
+        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         URLTextureErrorCallback.EVENT.register((url, error) ->
         {
@@ -619,10 +671,8 @@ public class BBSModClient implements ClientModInitializer
         EntityRendererRegistry.register(BBSMod.ACTOR_ENTITY, ActorEntityRenderer::new);
         EntityRendererRegistry.register(BBSMod.GUN_PROJECTILE_ENTITY, GunProjectileEntityRenderer::new);
 
-        BlockEntityRendererRegistryImpl.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
-
-        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
+        /* Block entity renderers */
+        BlockEntityRendererFactories.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();

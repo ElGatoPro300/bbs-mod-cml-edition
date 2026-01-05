@@ -7,6 +7,8 @@ import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
 import mchorse.bbs_mod.utils.clips.Clip;
 import net.minecraft.entity.LivingEntity;
 
+import net.minecraft.server.world.ServerWorld;
+
 public class DamageActionClip extends ActionClip
 {
     public final ValueFloat damage = new ValueFloat("damage", 0F);
@@ -30,9 +32,9 @@ public class DamageActionClip extends ActionClip
 
         this.applyPositionRotation(player, replay, tick);
 
-        if (actor != null)
+        if (actor != null && player.getWorld() instanceof ServerWorld serverWorld)
         {
-            actor.damage(player.getWorld().getDamageSources().mobAttack(player), damage);
+            actor.damage(serverWorld, player.getWorld().getDamageSources().mobAttack(player), damage);
         }
     }
 
