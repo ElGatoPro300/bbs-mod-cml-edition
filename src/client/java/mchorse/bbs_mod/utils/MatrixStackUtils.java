@@ -1,13 +1,10 @@
 package mchorse.bbs_mod.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.VertexSorter;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.GlUniform;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -39,34 +36,19 @@ public class MatrixStackUtils
 
         Matrix4fStack mvStack = RenderSystem.getModelViewStack();
         mvStack.identity();
-        applyModelViewMatrix();
+        RenderSystem.applyModelViewMatrix();
     }
 
     public static void restoreMatrices()
     {
         /* Return back to orthographic projection */
-        RenderSystem.setProjectionMatrix(oldProjection, ProjectionType.ORTHOGRAPHIC);
+        RenderSystem.setProjectionMatrix(oldProjection, VertexSorter.BY_Z);
         // Ya no aplicamos explícitamente la inversa de rotación; restauramos el ModelView completo abajo
 
         Matrix4fStack mvStack = RenderSystem.getModelViewStack();
         // Restore the ModelView matrix from the cached value
         mvStack.set(oldMV);
-        applyModelViewMatrix();
-    }
-
-    public static void applyModelViewMatrix()
-    {
-        ShaderProgram program = RenderSystem.getShader();
-
-        if (program != null)
-        {
-            GlUniform uniform = program.getUniform("ModelViewMat");
-
-            if (uniform != null)
-            {
-                uniform.set(RenderSystem.getModelViewStack());
-            }
-        }
+        RenderSystem.applyModelViewMatrix();
     }
 
     public static void applyTransform(MatrixStack stack, Transform transform)

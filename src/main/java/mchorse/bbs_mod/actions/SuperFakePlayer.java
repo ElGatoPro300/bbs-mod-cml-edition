@@ -41,17 +41,18 @@ public class SuperFakePlayer extends ServerPlayerEntity
     }
 
     @Override
-    public int getPermissionLevel()
+    protected int getPermissionLevel()
     {
         return 2;
     }
 
+    @Override
     public boolean shouldBroadcastConsoleToOps()
     {
         return false;
     }
 
-    // @Override
+    @Override
     public boolean shouldReceiveFeedback()
     {
         return false;
@@ -73,6 +74,7 @@ public class SuperFakePlayer extends ServerPlayerEntity
     public void resetStat(Stat<?> stat)
     {}
 
+    @Override
     public boolean isInvulnerableTo(DamageSource damageSource)
     {
         return true;

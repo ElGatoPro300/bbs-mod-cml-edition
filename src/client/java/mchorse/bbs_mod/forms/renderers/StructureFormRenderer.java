@@ -29,7 +29,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.TexturedRenderLayers;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
@@ -193,8 +193,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 // Volver al shader de modelo propio en vanilla para asegurar compatibilidad del VAO
                 net.minecraft.client.gl.ShaderProgram shader = BBSShaders.getModel();
 
-                RenderSystem.setShader(shader);
-                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShader(() -> shader);
+                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 // Habilitar blending para soportar capas translúcidas (vidrios, portal, hojas, etc.)
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
@@ -294,9 +294,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 gameRenderer.getOverlayTexture().setupOverlayColor();
 
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
                 RenderSystem.enableBlend();
-                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 ModelVAORenderer.render(BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
 
                 gameRenderer.getLightmapTextureManager().disable();
@@ -321,7 +321,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 gameRenderer.getLightmapTextureManager().enable();
                 gameRenderer.getOverlayTexture().setupOverlayColor();
                 // Asegurar atlas de bloques activo al iniciar el pase
-                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
                 try
                 {
@@ -359,18 +359,20 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     buildStructureVAOPicking();
                 }
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
                 RenderSystem.enableBlend();
-                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 ModelVAORenderer.render(BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
             }
             else
             {
                 // VAO con shader compatible con packs: usar programa de entidad translúcida cuando Iris está activo
-                net.minecraft.client.gl.ShaderProgram shader = BBSShaders.getModel(); // Fallback to getModel since vanilla accessor is missing
+                net.minecraft.client.gl.ShaderProgram shader = (mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld())
+                    ? net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentCullProgram()
+                    : BBSShaders.getModel();
 
-                RenderSystem.setShader(shader);
-                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShader(() -> shader);
+                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 ModelVAORenderer.render(shader, this.structureVao, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
@@ -589,7 +591,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             // de vértices de entidad del WorldRenderer. Esto asegura compatibilidad
             // con shaders (Iris/Sodium) para capas translúcidas y especiales.
             RenderLayer layer = useEntityLayers
-                ? RenderLayers.getEntityBlockLayer(entry.state)
+                ? RenderLayers.getEntityBlockLayer(entry.state, false)
                 : RenderLayers.getBlockLayer(entry.state);
 
             // Si hay opacidad global (<1), forzar capa translúcida para todos los bloques
@@ -600,7 +602,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (globalAlpha < 0.999f)
             {
                 layer = useEntityLayers
-                    ? RenderLayer.getTranslucent()
+                    ? TexturedRenderLayers.getEntityTranslucentCull()
                     : RenderLayer.getTranslucent();
             }
 
@@ -686,7 +688,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     private void renderAnimatedBlocksVanilla(FormRenderingContext context, MatrixStack stack, net.minecraft.client.render.VertexConsumerProvider consumers, int light, int overlay)
     {
         // Asegurar atlas de bloques activo
-        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         // Centrado basado en límites reales (min/max)
         float cx;
         float cy;
@@ -785,7 +787,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             // Selección de capa: en shaders usar variante de entidad para que el pack procese la animación
             boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
             RenderLayer layer = shadersEnabled
-                ? RenderLayers.getEntityBlockLayer(entry.state)
+                ? RenderLayers.getEntityBlockLayer(entry.state, true)
                 : RenderLayer.getTranslucentMovingBlock();
 
             // Si hay alpha global, preferir capa translúcida de entidad en shaders para asegurar fade suave
@@ -793,7 +795,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (globalAlphaAnim < 0.999f)
             {
                 layer = shadersEnabled
-                    ? RenderLayer.getTranslucent()
+                    ? TexturedRenderLayers.getEntityTranslucentCull()
                     : RenderLayer.getTranslucentMovingBlock();
             }
 
@@ -821,7 +823,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         // Asegurar atlas de bloques activo
-        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         // Calcular pivote efectivo igual que en renderStructureCulledWorld
         float cx;
         float cy;
@@ -905,7 +907,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             // Capa según el estado; en shaders usar variante de entidad para packs
             boolean shadersEnabledTint = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
             RenderLayer layer = shadersEnabledTint
-                ? RenderLayers.getEntityBlockLayer(entry.state)
+                ? RenderLayers.getEntityBlockLayer(entry.state, false)
                 : RenderLayers.getBlockLayer(entry.state);
 
             // Si hay opacidad global (<1), forzar capa translúcida para que el alpha
@@ -913,7 +915,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             float globalAlpha = this.form.color.get().a;
             if (globalAlpha < 0.999f)
             {
-                layer = shadersEnabledTint ? RenderLayer.getTranslucent() : RenderLayer.getTranslucent();
+                layer = shadersEnabledTint ? TexturedRenderLayers.getEntityTranslucentCull() : RenderLayer.getTranslucent();
             }
 
             VertexConsumer vc = consumers.getBuffer(layer);

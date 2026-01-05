@@ -13,9 +13,6 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
-import net.minecraft.client.gl.ShaderProgramKeys;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 public class BOBJModelVAO
 {
@@ -220,8 +217,7 @@ public class BOBJModelVAO
         // Guard against null shader: choose a safe fallback to avoid NPE
         if (shader == null)
         {
-            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-            ShaderProgram fallback = RenderSystem.getShader();
+            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
 
             if (fallback == null)
             {
@@ -243,10 +239,6 @@ public class BOBJModelVAO
         ModelVAORenderer.setupUniforms(stack, shader);
 
         shader.bind();
-
-        int textureID = RenderSystem.getShaderTexture(0);
-        GlStateManager._activeTexture(GL30.GL_TEXTURE0);
-        GlStateManager._bindTexture(textureID);
 
         GL30.glBindVertexArray(this.vao);
 
