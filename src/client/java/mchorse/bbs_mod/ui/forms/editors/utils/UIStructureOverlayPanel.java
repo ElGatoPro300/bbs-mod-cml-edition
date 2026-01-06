@@ -90,7 +90,9 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
         
         likeableList.setEditCallback((structureName) ->
         {
-            if (this.context == null)
+            UIContext ctx = this.context != null ? this.context : this.getContext();
+
+            if (ctx == null)
             {
                 return;
             }
@@ -104,12 +106,14 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
             renamePanel.text.setText(structureName);
             renamePanel.text.filename();
             
-            UIOverlay.addOverlay(this.context, renamePanel);
+            UIOverlay.addOverlay(ctx, renamePanel);
         });
         
         likeableList.setRemoveCallback((structureName) ->
         {
-            if (this.context == null)
+            UIContext ctx = this.context != null ? this.context : this.getContext();
+
+            if (ctx == null)
             {
                 return;
             }
@@ -126,7 +130,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
                 }
             );
             
-            UIOverlay.addOverlay(this.context, confirmPanel);
+            UIOverlay.addOverlay(ctx, confirmPanel);
         });
 
         likeableList.setRefreshCallback(this::refreshLikedList);
@@ -550,6 +554,31 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
                 }
             }
         }
+    }
+
+    @Override
+    public UIStringOverlayPanel set(String string)
+    {
+        if (string != null)
+        {
+            if (string.startsWith("bbs:structures/"))
+            {
+                string = "saved:" + string.substring(15);
+            }
+            else if (string.startsWith("assets:structures/"))
+            {
+                string = "saved:" + string.substring(18);
+            }
+            else if (string.startsWith("structures/"))
+            {
+                string = "saved:" + string.substring(11);
+            }
+        }
+        
+        this.selectedStructure = string;
+        this.updateListSelections();
+        
+        return super.set(string);
     }
 
     @Override

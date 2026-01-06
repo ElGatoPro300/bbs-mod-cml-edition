@@ -129,7 +129,7 @@ public class UILikeableStructureList extends UIStringList
         int iconY = y + (this.scroll.scrollItemSize - 16) / 2;
 
         /* Render Like Button (Always present) */
-        boolean isLiked = this.likeManager.isStructureLiked(element) || isSaved;
+        boolean isLiked = this.likeManager.isStructureLiked(element);
         boolean isHoverOnLike = this.area.isInside(context)
             && context.mouseX >= currentIconX
             && context.mouseX < currentIconX + 16
