@@ -74,6 +74,9 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
             NbtCompound compound = new NbtCompound();
 
             compound.put("BlockEntityTag", modelBlock.createNbtWithId());
+            NbtCompound stateTag = new NbtCompound();
+            stateTag.putInt("light_level", modelBlock.getProperties().getLightLevel());
+            compound.put("BlockStateTag", stateTag);
             stack.setNbt(compound);
 
             return stack;
@@ -148,6 +151,9 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
                 NbtCompound wrapper = new NbtCompound();
 
                 wrapper.put("BlockEntityTag", model.createNbtWithId());
+                NbtCompound stateTag = new NbtCompound();
+                stateTag.putInt("light_level", model.getProperties().getLightLevel());
+                wrapper.put("BlockStateTag", stateTag);
                 stack.setNbt(wrapper);
 
                 ItemScatterer.spawn(world, pos, DefaultedList.ofSize(1, stack));
