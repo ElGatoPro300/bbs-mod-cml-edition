@@ -837,11 +837,18 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             stack.push();
             stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
-            // Selección de capa: en shaders usar variante de entidad para que el pack procese la animación
+            // Selección de capa: elegir según el bloque animado
             boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
-            RenderLayer layer = shadersEnabled
-                ? RenderLayers.getEntityBlockLayer(entry.state, true)
-                : RenderLayer.getTranslucentMovingBlock();
+            RenderLayer layer;
+            FluidState fsAnim = entry.state.getFluidState();
+            if (entry.state.isOf(Blocks.NETHER_PORTAL) || (fsAnim != null && (fsAnim.getFluid() == Fluids.WATER || fsAnim.getFluid() == Fluids.FLOWING_WATER || fsAnim.getFluid() == Fluids.LAVA || fsAnim.getFluid() == Fluids.FLOWING_LAVA)))
+            {
+                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state, true) : RenderLayer.getTranslucentMovingBlock();
+            }
+            else
+            {
+                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state, false) : RenderLayers.getBlockLayer(entry.state);
+            }
 
             // Si hay alpha global, preferir capa translúcida de entidad en shaders para asegurar fade suave
             float globalAlphaAnim = this.form.color.get().a;
@@ -1012,10 +1019,16 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
         }
 
+        // Fuego normal y fuego de alma: animación de textura en atlas
+        if (state.isOf(Blocks.FIRE) || state.isOf(Blocks.SOUL_FIRE))
+        {
+            return true;
+        }
+
         return false;
     }
 
-    /** Heurística: determina si el bloque usa tinte por bioma (foliage/grass/vine/lily pad). */
+    /** Heurística: determina si el bloque requiere tinte especial (bioma/redstone). */
     private boolean isBiomeTinted(BlockState state)
     {
         if (state == null) return false;
@@ -1023,7 +1036,17 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         return (b instanceof net.minecraft.block.LeavesBlock)
             || (b instanceof net.minecraft.block.GrassBlock)
             || (b instanceof net.minecraft.block.VineBlock)
-            || (b instanceof net.minecraft.block.LilyPadBlock);
+            || (b instanceof net.minecraft.block.LilyPadBlock)
+            // Redstone wire usa color provider dependiente de potencia
+            || (b instanceof net.minecraft.block.RedstoneWireBlock)
+            // Vegetación adicional que requiere tinte de bioma
+            || state.isOf(Blocks.FERN)
+            || state.isOf(Blocks.SUGAR_CANE)
+            || (b instanceof net.minecraft.block.StemBlock)
+            || (b instanceof net.minecraft.block.AttachedStemBlock)
+            || state.isOf(Blocks.SHORT_GRASS)
+            || state.isOf(Blocks.TALL_GRASS)
+            || state.isOf(Blocks.LARGE_FERN);
     }
 
     /**
