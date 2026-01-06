@@ -11,7 +11,7 @@ import mchorse.bbs_mod.particles.components.appearance.colors.Solid;
 import mchorse.bbs_mod.particles.components.appearance.colors.Tint;
 import mchorse.bbs_mod.particles.emitter.Particle;
 import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormat;
 import org.joml.Matrix4f;
 
@@ -64,13 +64,13 @@ public class ParticleComponentAppearanceTinting extends ParticleComponentBase im
     {}
 
     @Override
-    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, BufferBuilder builder, Matrix4f matrix, int overlay, float transition)
+    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, VertexConsumer builder, Matrix4f matrix, int overlay, float transition)
     {
         this.renderUI(particle, builder, matrix, transition);
     }
 
     @Override
-    public void renderUI(Particle particle, BufferBuilder builder, Matrix4f matrix, float transition)
+    public void renderUI(Particle particle, VertexConsumer builder, Matrix4f matrix, float transition)
     {
         if (this.color != null)
         {
