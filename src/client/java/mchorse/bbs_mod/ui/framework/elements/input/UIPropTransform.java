@@ -210,7 +210,7 @@ public class UIPropTransform extends UITransform
             {
                 BoneGizmoSystem.get().setMode(BoneGizmoSystem.Mode.PIVOT);
             }
-        }).active(() -> BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0).category(UIKeys.GIZMOS_KEYS_CATEGORY);
+        }).active(() -> BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 && !BBSSettings.disablePivotTransform.get()).category(UIKeys.GIZMOS_KEYS_CATEGORY);
 
         /* Toggle entre canal de rotación principal (R) y secundario (R2) para el gizmo */
         this.keys().register(Keys.GIZMOS_TOGGLE_ROTATION_CHANNEL, () ->

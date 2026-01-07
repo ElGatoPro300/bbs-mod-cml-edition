@@ -34,6 +34,7 @@ public class BBSSettings
     public static ValueFloat axesScale;
     public static ValueBoolean uniformScale;
     public static ValueBoolean clickSound;
+    public static ValueBoolean disablePivotTransform;
     public static ValueBoolean gizmos;
 
     public static ValueBoolean enableCursorRendering;
@@ -183,6 +184,7 @@ public class BBSSettings
         axesScale = builder.getFloat("axes_scale", 1F, 0F, 2F);
         uniformScale = builder.getBoolean("uniform_scale", false);
         clickSound = builder.getBoolean("click_sound", false);
+        disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
         gizmos = builder.getBoolean("gizmos", true);
         
         // gizmoDynamic = builder.getBoolean("dynamic", false);

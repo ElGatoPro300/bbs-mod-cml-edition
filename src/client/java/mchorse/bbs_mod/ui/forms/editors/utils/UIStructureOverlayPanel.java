@@ -20,10 +20,13 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.WorldSavePath;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +67,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
 
     public UIStructureOverlayPanel(Consumer<Link> callback, UIContext context)
     {
-        super(UIKeys.GENERAL_SEARCH, getWorldStructureFiles(), null);
+        super(UIKeys.GENERAL_SEARCH, getAllStructureFiles(), null);
 
         this.context = context;
         this.originalCallback = callback;
@@ -83,9 +86,13 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
 
         likeableList.scroll.scrollSpeed *= 2;
         
+        likeableList.setSaveCallback(this::saveStructure);
+        
         likeableList.setEditCallback((structureName) ->
         {
-            if (this.context == null)
+            UIContext ctx = this.context != null ? this.context : this.getContext();
+
+            if (ctx == null)
             {
                 return;
             }
@@ -99,12 +106,14 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
             renamePanel.text.setText(structureName);
             renamePanel.text.filename();
             
-            UIOverlay.addOverlay(this.context, renamePanel);
+            UIOverlay.addOverlay(ctx, renamePanel);
         });
         
         likeableList.setRemoveCallback((structureName) ->
         {
-            if (this.context == null)
+            UIContext ctx = this.context != null ? this.context : this.getContext();
+
+            if (ctx == null)
             {
                 return;
             }
@@ -121,7 +130,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
                 }
             );
             
-            UIOverlay.addOverlay(this.context, confirmPanel);
+            UIOverlay.addOverlay(ctx, confirmPanel);
         });
 
         likeableList.setRefreshCallback(this::refreshLikedList);
@@ -192,7 +201,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
         this.switchToMode(ViewMode.WORLD);
     }
 
-    private static Set<String> getWorldStructureFiles()
+    private static Set<String> getAllStructureFiles()
     {
         Set<String> locations = new HashSet<>();
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -207,7 +216,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
                 
                 if (worldStructures.exists() && worldStructures.isDirectory())
                 {
-                    scanWorldStructureFolder(worldStructures, worldStructures, locations);
+                    scanStructureFolder(worldStructures, worldStructures, locations, "world:");
                 }
                 
                 // Also scan the standard world structures folder (generated/structures/...)
@@ -215,7 +224,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
                 File genericStructures = new File(generatedFolder, "structures");
                 if (genericStructures.exists() && genericStructures.isDirectory())
                 {
-                    scanWorldStructureFolder(genericStructures, genericStructures, locations);
+                    scanStructureFolder(genericStructures, genericStructures, locations, "world:");
                 }
             }
             catch (Exception e)
@@ -227,7 +236,25 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
         return locations;
     }
 
-    private static void scanWorldStructureFolder(File root, File folder, Set<String> results)
+    private static File getSavedStructureFolder()
+    {
+        return new File(BBSMod.getAssetsFolder(), "structures");
+    }
+
+    private static Set<String> getSavedStructureFiles()
+    {
+        Set<String> locations = new HashSet<>();
+        File savedFolder = getSavedStructureFolder();
+
+        if (savedFolder.exists() && savedFolder.isDirectory())
+        {
+            scanStructureFolder(savedFolder, savedFolder, locations, "saved:");
+        }
+
+        return locations;
+    }
+
+    private static void scanStructureFolder(File root, File folder, Set<String> results, String prefix)
     {
         if (!folder.exists() || !folder.isDirectory())
         {
@@ -243,7 +270,7 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
                     try
                     {
                         String relativePath = root.toPath().relativize(path).toString().replace("\\", "/");
-                        results.add("world:" + relativePath);
+                        results.add(prefix + relativePath);
                     }
                     catch (Exception e)
                     {
@@ -385,7 +412,10 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
 
     public void refreshWorldStructureList()
     {
-        Set<String> structureFiles = getWorldStructureFiles();
+        Set<String> structureFiles = getAllStructureFiles();
+        Set<String> savedFiles = getSavedStructureFiles();
+        
+        structureFiles.addAll(savedFiles);
 
         UILikeableStructureList list = (UILikeableStructureList) this.strings.list;
         list.getList().clear();
@@ -403,6 +433,54 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
         this.strings.filter(filter, true);
         this.strings.resize();
         this.refreshLikedList();
+    }
+    
+    private void saveStructure(String worldPath)
+    {
+        if (!worldPath.startsWith("world:")) return;
+        
+        try
+        {
+            File worldFile = resolveWorldFile(worldPath);
+            if (worldFile == null || !worldFile.exists()) return;
+            
+            String relative = worldPath.substring(6);
+            File destFile = new File(getSavedStructureFolder(), relative);
+            
+            // Ensure parent directories exist
+            destFile.getParentFile().mkdirs();
+            
+            Files.copy(worldFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            
+            this.refreshWorldStructureList();
+            this.refreshLikedList();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private File resolveWorldFile(String worldPath)
+    {
+        if (!worldPath.startsWith("world:")) return null;
+        
+        String relative = worldPath.substring(6);
+        MinecraftClient mc = MinecraftClient.getInstance();
+        
+        if (mc.getServer() == null) return null;
+        
+        File generatedFolder = mc.getServer().getSavePath(WorldSavePath.GENERATED).toFile();
+        
+        // Check minecraft/structures
+        File f1 = new File(new File(generatedFolder, "minecraft"), "structures/" + relative);
+        if (f1.exists()) return f1;
+        
+        // Check generated/structures
+        File f2 = new File(generatedFolder, "structures/" + relative);
+        if (f2.exists()) return f2;
+        
+        return null;
     }
 
     private void pickStructure(String structure)
@@ -423,7 +501,15 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
 
         if (this.originalCallback != null)
         {
-            this.originalCallback.accept(Link.create(structure));
+            if (structure.startsWith("saved:"))
+            {
+                String path = structure.substring(6);
+                this.originalCallback.accept(Link.create("structures/" + path));
+            }
+            else
+            {
+                this.originalCallback.accept(Link.create(structure));
+            }
         }
     }
 
@@ -471,6 +557,31 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
     }
 
     @Override
+    public UIStringOverlayPanel set(String string)
+    {
+        if (string != null)
+        {
+            if (string.startsWith("bbs:structures/"))
+            {
+                string = "saved:" + string.substring(15);
+            }
+            else if (string.startsWith("assets:structures/"))
+            {
+                string = "saved:" + string.substring(18);
+            }
+            else if (string.startsWith("structures/"))
+            {
+                string = "saved:" + string.substring(11);
+            }
+        }
+        
+        this.selectedStructure = string;
+        this.updateListSelections();
+        
+        return super.set(string);
+    }
+
+    @Override
     public void render(UIContext context)
     {
         super.render(context);
@@ -503,6 +614,29 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
         {
             return;
         }
+        
+        if (oldName.startsWith("saved:"))
+        {
+            String oldRel = oldName.substring(6);
+            String newRel = newName;
+            
+            // Remove prefix if user typed it
+            if (newRel.startsWith("saved:")) newRel = newRel.substring(6);
+            
+            // Keep extension
+            if (oldRel.endsWith(".nbt") && !newRel.endsWith(".nbt")) newRel += ".nbt";
+            
+            File oldFile = new File(getSavedStructureFolder(), oldRel);
+            File newFile = new File(getSavedStructureFolder(), newRel);
+            
+            if (oldFile.exists() && !newFile.exists())
+            {
+                oldFile.renameTo(newFile);
+                this.refreshWorldStructureList();
+                this.refreshLikedList();
+            }
+            return;
+        }
 
         /* Only rename world: structures */
         if (!oldName.startsWith("world:"))
@@ -524,6 +658,20 @@ public class UIStructureOverlayPanel extends UIStringOverlayPanel
     {
         if (structureName == null)
         {
+            return;
+        }
+        
+        if (structureName.startsWith("saved:"))
+        {
+            String rel = structureName.substring(6);
+            File file = new File(getSavedStructureFolder(), rel);
+            
+            if (file.exists())
+            {
+                file.delete();
+                this.refreshWorldStructureList();
+                this.refreshLikedList();
+            }
             return;
         }
 
