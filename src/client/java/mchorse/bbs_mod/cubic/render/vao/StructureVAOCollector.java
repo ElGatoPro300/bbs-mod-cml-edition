@@ -13,6 +13,66 @@ import java.util.List;
  */
 public class StructureVAOCollector implements VertexConsumer
 {
+    private static final class FloatBuf
+    {
+        float[] data;
+        int size;
+
+        FloatBuf(int initial)
+        {
+            data = new float[Math.max(16, initial)];
+            size = 0;
+        }
+
+        void ensure(int add)
+        {
+            int need = size + add;
+            if (need > data.length)
+            {
+                int cap = Math.max(need, data.length + (data.length >>> 1));
+                float[] n = new float[cap];
+                System.arraycopy(data, 0, n, 0, size);
+                data = n;
+            }
+        }
+
+        void add(float v)
+        {
+            ensure(1);
+            data[size++] = v;
+        }
+
+        void add3(float a, float b, float c)
+        {
+            ensure(3);
+            data[size++] = a;
+            data[size++] = b;
+            data[size++] = c;
+        }
+
+        void add2(float a, float b)
+        {
+            ensure(2);
+            data[size++] = a;
+            data[size++] = b;
+        }
+
+        void add4(float a, float b, float c, float d)
+        {
+            ensure(4);
+            data[size++] = a;
+            data[size++] = b;
+            data[size++] = c;
+            data[size++] = d;
+        }
+
+        float[] toArray()
+        {
+            float[] out = new float[size];
+            System.arraycopy(data, 0, out, 0, size);
+            return out;
+        }
+    }
     private static class Vtx
     {
         float x, y, z;
@@ -20,10 +80,10 @@ public class StructureVAOCollector implements VertexConsumer
         float u, v;
     }
 
-    private final List<Float> positions = new ArrayList<>();
-    private final List<Float> normals = new ArrayList<>();
-    private final List<Float> texCoords = new ArrayList<>();
-    private final List<Float> tangents = new ArrayList<>();
+    private final FloatBuf positions = new FloatBuf(8192);
+    private final FloatBuf normals = new FloatBuf(8192);
+    private final FloatBuf texCoords = new FloatBuf(8192);
+    private final FloatBuf tangents = new FloatBuf(8192);
 
     private final Vtx[] quad = new Vtx[4];
     private int quadIndex = 0;
@@ -33,10 +93,17 @@ public class StructureVAOCollector implements VertexConsumer
     private float vx, vy, vz;
     private float vnx, vny, vnz;
     private float vu, vv;
+    private boolean computeTangents = true;
+    private final float[] tangentTmp = new float[3];
 
     public StructureVAOCollector()
     {
         for (int i = 0; i < 4; i++) quad[i] = new Vtx();
+    }
+
+    public void setComputeTangents(boolean computeTangents)
+    {
+        this.computeTangents = computeTangents;
     }
 
     @Override
@@ -124,28 +191,31 @@ public class StructureVAOCollector implements VertexConsumer
 
     private void emitTriangle(Vtx a, Vtx b, Vtx c)
     {
-        // Positions
-        positions.add(a.x); positions.add(a.y); positions.add(a.z);
-        positions.add(b.x); positions.add(b.y); positions.add(b.z);
-        positions.add(c.x); positions.add(c.y); positions.add(c.z);
+        positions.add3(a.x, a.y, a.z);
+        positions.add3(b.x, b.y, b.z);
+        positions.add3(c.x, c.y, c.z);
 
-        // Normals
-        normals.add(a.nx); normals.add(a.ny); normals.add(a.nz);
-        normals.add(b.nx); normals.add(b.ny); normals.add(b.nz);
-        normals.add(c.nx); normals.add(c.ny); normals.add(c.nz);
+        normals.add3(a.nx, a.ny, a.nz);
+        normals.add3(b.nx, b.ny, b.nz);
+        normals.add3(c.nx, c.ny, c.nz);
 
-        // UVs
-        texCoords.add(a.u); texCoords.add(a.v);
-        texCoords.add(b.u); texCoords.add(b.v);
-        texCoords.add(c.u); texCoords.add(c.v);
+        texCoords.add2(a.u, a.v);
+        texCoords.add2(b.u, b.v);
+        texCoords.add2(c.u, c.v);
 
-        // Tangents (per-triangle)
-        // Compute tangent vector from positions and UVs
-        float[] t = computeTriangleTangent(a, b, c);
-        // Write tangent with w=1 for each vertex of the triangle
-        tangents.add(t[0]); tangents.add(t[1]); tangents.add(t[2]); tangents.add(1F);
-        tangents.add(t[0]); tangents.add(t[1]); tangents.add(t[2]); tangents.add(1F);
-        tangents.add(t[0]); tangents.add(t[1]); tangents.add(t[2]); tangents.add(1F);
+        if (computeTangents)
+        {
+            float[] t = computeTriangleTangent(a, b, c);
+            tangents.add4(t[0], t[1], t[2], 1F);
+            tangents.add4(t[0], t[1], t[2], 1F);
+            tangents.add4(t[0], t[1], t[2], 1F);
+        }
+        else
+        {
+            tangents.add4(1F, 0F, 0F, 1F);
+            tangents.add4(1F, 0F, 0F, 1F);
+            tangents.add4(1F, 0F, 0F, 1F);
+        }
     }
 
     private float[] computeTriangleTangent(Vtx a, Vtx b, Vtx c)
@@ -158,10 +228,9 @@ public class StructureVAOCollector implements VertexConsumer
         float denom = (u1 * v2 - u2 * v1);
         if (Math.abs(denom) < 1e-8f)
         {
-            // Fallback: use a normalized edge as tangent
             float len = (float) Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1);
-            if (len < 1e-8f) return new float[]{1F, 0F, 0F};
-            return new float[]{x1 / len, y1 / len, z1 / len};
+            if (len < 1e-8f) { tangentTmp[0] = 1F; tangentTmp[1] = 0F; tangentTmp[2] = 0F; return tangentTmp; }
+            tangentTmp[0] = x1 / len; tangentTmp[1] = y1 / len; tangentTmp[2] = z1 / len; return tangentTmp;
         }
 
         float f = 1.0f / denom;
@@ -170,8 +239,8 @@ public class StructureVAOCollector implements VertexConsumer
         float tz = f * (v2 * z1 - v1 * z2);
 
         float len = (float) Math.sqrt(tx * tx + ty * ty + tz * tz);
-        if (len < 1e-8f) return new float[]{1F, 0F, 0F};
-        return new float[]{tx / len, ty / len, tz / len};
+        if (len < 1e-8f) { tangentTmp[0] = 1F; tangentTmp[1] = 0F; tangentTmp[2] = 0F; return tangentTmp; }
+        tangentTmp[0] = tx / len; tangentTmp[1] = ty / len; tangentTmp[2] = tz / len; return tangentTmp;
     }
 
     public void fixedColor(int red, int green, int blue, int alpha)
@@ -186,12 +255,10 @@ public class StructureVAOCollector implements VertexConsumer
 
     public ModelVAOData toData()
     {
-        // Asegurar volcar último vértice si estaba parcialmente construido
-        if (hasCurrent) finalizeCurrent();
-        float[] v = toArray(positions);
-        float[] n = toArray(normals);
-        float[] t = toArray(tangents);
-        float[] uv = toArray(texCoords);
+        float[] v = positions.toArray();
+        float[] n = normals.toArray();
+        float[] t = tangents.toArray();
+        float[] uv = texCoords.toArray();
         return new ModelVAOData(v, n, t, uv);
     }
 

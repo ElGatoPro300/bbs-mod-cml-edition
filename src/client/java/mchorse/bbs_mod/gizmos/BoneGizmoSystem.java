@@ -168,6 +168,11 @@ public class BoneGizmoSystem
     /** Establece el modo del gizmo directamente (T/R/S) */
     public void setMode(Mode mode)
     {
+        if (mode == Mode.PIVOT && BBSSettings.disablePivotTransform.get())
+        {
+            return;
+        }
+
         this.mode = mode;
         this.hoveredSubMode = null;
         this.activeSubMode = null;
@@ -2823,7 +2828,10 @@ public class BoneGizmoSystem
     public void cycleMode(boolean forward)
     {
         // Recorrer todos los modos con la tecla U
-        Mode[] order = new Mode[]{ Mode.TRANSLATE, Mode.ROTATE, Mode.SCALE, Mode.PIVOT };
+        Mode[] order = BBSSettings.disablePivotTransform.get() 
+            ? new Mode[]{ Mode.TRANSLATE, Mode.ROTATE, Mode.SCALE } 
+            : new Mode[]{ Mode.TRANSLATE, Mode.ROTATE, Mode.SCALE, Mode.PIVOT };
+            
         int idx = 0;
         for (int i = 0; i < order.length; i++) { if (order[i] == this.mode) { idx = i; break; } }
         if (forward) { idx = (idx + 1) % order.length; }

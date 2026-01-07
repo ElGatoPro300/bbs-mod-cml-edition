@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.ui.framework.elements.input;
 
 import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.ui.Keys;
@@ -141,6 +142,14 @@ public abstract class UITransform extends UIElement
         this.pz.textbox.setColor(Colors.BLUE);
 
         this.add(UI.row(this.iconP, this.px, this.py, this.pz));
+
+        if (BBSSettings.disablePivotTransform.get())
+        {
+            this.iconP.removeFromParent();
+            this.px.removeFromParent();
+            this.py.removeFromParent();
+            this.pz.removeFromParent();
+        }
 
         this.context((menu) ->
         {
@@ -474,7 +483,11 @@ public abstract class UITransform extends UIElement
         this.fillSetS(1, 1, 1);
         this.fillSetR(0, 0, 0);
         this.fillSetR2(0, 0, 0);
-        this.fillSetP(0, 0, 0);
+
+        if (!BBSSettings.disablePivotTransform.get())
+        {
+            this.fillSetP(0, 0, 0);
+        }
     }
 
     @Override
