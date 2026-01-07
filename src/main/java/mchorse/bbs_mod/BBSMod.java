@@ -265,6 +265,13 @@ public class BBSMod implements ModInitializer
         nbt.put("Properties", DataStorageUtils.toNbt(properties.toData()));
         stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
 
+        /* BlockStateTag allows mods derive luminance
+         * from the item stack's block state. */
+        NbtCompound stateTag = new NbtCompound();
+        stateTag.putInt("light_level", properties.getLightLevel());
+        nbt.put("BlockStateTag", stateTag);
+        stack.setNbt(nbt);
+
         return stack;
     }
 
