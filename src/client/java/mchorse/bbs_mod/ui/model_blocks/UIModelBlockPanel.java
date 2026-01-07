@@ -64,6 +64,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UINestedEdit pickEdit;
     public UIToggle enabled;
     public UIToggle shadow;
+    public UIToggle hitbox;
     public UIToggle global;
     public UIToggle lookAt;
     public UITrackpad lightLevel;
@@ -149,6 +150,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         this.enabled = new UIToggle(UIKeys.CAMERA_PANELS_ENABLED, (b) -> this.modelBlock.getProperties().setEnabled(b.getValue()));
         this.shadow = new UIToggle(UIKeys.MODEL_BLOCKS_SHADOW, (b) -> this.modelBlock.getProperties().setShadow(b.getValue()));
+        this.hitbox = new UIToggle(UIKeys.MODEL_BLOCKS_HITBOX, (b) -> this.modelBlock.getProperties().setHitbox(b.getValue()));
         this.global = new UIToggle(UIKeys.MODEL_BLOCKS_GLOBAL, (b) ->
         {
             this.modelBlock.getProperties().setGlobal(b.getValue());
@@ -190,7 +192,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform.enableHotkeys();
 
         this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global,
-            this.lookAt, this.transform,
+            this.lookAt, this.hitbox, this.transform,
             UI.row(5, 0, 20, new UIElement()
             {
                 @Override
@@ -373,6 +375,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform.setTransform(properties.getTransform());
         this.enabled.setValue(properties.isEnabled());
         this.shadow.setValue(properties.isShadow());
+        this.hitbox.setValue(properties.isHitbox());
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
         this.lightLevel.setValue(properties.getLightLevel());
