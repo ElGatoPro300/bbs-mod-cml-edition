@@ -71,11 +71,13 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     {
         final BlockState state;
         final BlockPos pos;
+        final NbtCompound nbt;
 
-        BlockEntry(BlockState state, BlockPos pos)
+        BlockEntry(BlockState state, BlockPos pos, NbtCompound nbt)
         {
             this.state = state;
             this.pos = pos;
+            this.nbt = nbt;
         }
     }
 
@@ -685,6 +687,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 BlockEntity be = ((BlockEntityProvider) block).createBlockEntity(worldPos, entry.state);
                 if (be != null)
                 {
+                    if (entry.nbt != null)
+                    {
+                        be.readNbt(entry.nbt);
+                    }
+
                     // Asociar mundo real para que el renderer pueda consultar luz y efectos
                     if (MinecraftClient.getInstance().world != null)
                     {
@@ -1475,6 +1482,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 BlockPos pos = readBlockPos(be.getList("pos", NbtElement.INT_TYPE));
                 int stateIndex = be.getInt("state");
+                NbtCompound nbt = be.contains("nbt") ? be.getCompound("nbt") : null;
 
                 if (stateIndex >= 0 && stateIndex < paletteStates.size())
                 {
@@ -1483,7 +1491,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     {
                         continue;
                     }
-                    blocks.add(new BlockEntry(state, pos));
+                    blocks.add(new BlockEntry(state, pos, nbt));
 
                     // Actualizar límites
                     if (pos.getX() < minX) minX = pos.getX();
