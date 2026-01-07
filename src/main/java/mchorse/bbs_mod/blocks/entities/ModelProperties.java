@@ -24,6 +24,7 @@ public class ModelProperties implements IMapSerializable
     private boolean global;
     private boolean shadow;
     private boolean lookAt;
+    private int lightLevel = 0;
 
     public Form getForm()
     {
@@ -135,6 +136,16 @@ public class ModelProperties implements IMapSerializable
         this.lookAt = lookAt;
     }
 
+    public int getLightLevel()
+    {
+        return this.lightLevel;
+    }
+
+    public void setLightLevel(int level)
+    {
+        this.lightLevel = Math.max(0, Math.min(15, level));
+    }
+
     public Form getForm(ModelTransformationMode mode)
     {
         Form form = this.form;
@@ -192,6 +203,7 @@ public class ModelProperties implements IMapSerializable
         this.shadow = data.getBool("shadow");
         this.global = data.getBool("global");
         this.lookAt = data.getBool("look_at");
+        if (data.has("light_level")) this.lightLevel = data.getInt("light_level");
     }
 
     @Override
@@ -211,6 +223,7 @@ public class ModelProperties implements IMapSerializable
         data.putBool("shadow", this.shadow);
         data.putBool("global", this.global);
         data.putBool("look_at", this.lookAt);
+        data.putInt("light_level", this.lightLevel);
     }
 
     public void update(IEntity entity)
