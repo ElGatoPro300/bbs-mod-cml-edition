@@ -1058,7 +1058,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             || state.isOf(Blocks.SUGAR_CANE)
             || (b instanceof net.minecraft.block.StemBlock)
             || (b instanceof net.minecraft.block.AttachedStemBlock)
-            || state.isOf(Blocks.SHORT_GRASS)
+            || state.isOf(Blocks.GRASS)
             || state.isOf(Blocks.TALL_GRASS)
             || state.isOf(Blocks.LARGE_FERN);
     }
