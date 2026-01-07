@@ -177,7 +177,8 @@ public class BBSMod implements ModInitializer
         .noCollision()
         .nonOpaque()
         .notSolid()
-        .strength(0F));
+        .strength(0F)
+        .luminance((state) -> state.get(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL)));
     public static final Block CHROMA_RED_BLOCK = createChromaBlock();
     public static final Block CHROMA_GREEN_BLOCK = createChromaBlock();
     public static final Block CHROMA_BLUE_BLOCK = createChromaBlock();
@@ -260,6 +261,15 @@ public class BBSMod implements ModInitializer
         nbt.putString("id", Identifier.of(MOD_ID, "model_block_entity").toString());
         nbt.put("Properties", DataStorageUtils.toNbt(properties.toData()));
         stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
+        NbtCompound compound = entity.createNbtWithId();
+
+        nbt.put("BlockEntityTag", compound);
+        /* BlockStateTag allows mods derive luminance
+         * from the item stack's block state. */
+        NbtCompound stateTag = new NbtCompound();
+        stateTag.putInt("light_level", properties.getLightLevel());
+        nbt.put("BlockStateTag", stateTag);
+        stack.setNbt(nbt);
 
         return stack;
     }
