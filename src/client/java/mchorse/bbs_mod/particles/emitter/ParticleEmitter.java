@@ -561,6 +561,8 @@ public class ParticleEmitter
             component.postRender(this, transition);
         }
     }
+    }
+    }
 
     /**
      * Render all the particles in this particle emitter to a VertexConsumer (buffered)
