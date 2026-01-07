@@ -245,7 +245,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                         boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
                         net.minecraft.client.render.VertexConsumerProvider consumersTint = shadersEnabled
                             ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                            : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                            : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
 
                         FormRenderingContext tintContext = new FormRenderingContext()
                             .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -266,7 +266,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                         boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
                         net.minecraft.client.render.VertexConsumerProvider consumersAnim = shadersEnabled
                             ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                            : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                            : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
 
                         FormRenderingContext animContext = new FormRenderingContext()
                             .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -455,7 +455,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 {
                     try
                     {
-                        net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
                         renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
                         tintConsumers.draw();
                     }
@@ -466,7 +466,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 {
                     try
                     {
-                        net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(256));
                         renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
                         animConsumers.draw();
                     }
@@ -694,9 +694,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 BlockEntity be = ((BlockEntityProvider) block).createBlockEntity(worldPos, entry.state);
                 if (be != null)
                 {
-                    if (entry.nbt != null)
+                    if (entry.nbt != null && net.minecraft.client.MinecraftClient.getInstance().world != null)
                     {
-                        be.readNbt(entry.nbt);
+                        be.read(entry.nbt, net.minecraft.client.MinecraftClient.getInstance().world.getRegistryManager());
                     }
 
                     // Asociar mundo real para que el renderer pueda consultar luz y efectos

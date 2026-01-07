@@ -77,17 +77,16 @@ public class CubicVAORenderer extends CubicCubeRenderer
             // But Draw.renderBox uses Tessellator.getInstance().getBuffer() internally and draws immediately!
             // So we should do the same.
             
-            BufferBuilder circleBuilder = Tessellator.getInstance().getBuffer();
+            BufferBuilder circleBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
             RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             RenderSystem.enableBlend();
             
-            circleBuilder.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
             
             Matrix4f drawMat = stack.peek().getPositionMatrix();
             float r = 1F, g = 1F, b = 0F, a = 0.5F; // Yellow, semi-transparent
             
             // Center
-            circleBuilder.vertex(drawMat, 0, 0, 0).color(r, g, b, a).next();
+            circleBuilder.vertex(drawMat, 0, 0, 0).color(r, g, b, a);
             
             // Perimeter
             for (int i = 0; i <= segments; i++)
@@ -95,7 +94,7 @@ public class CubicVAORenderer extends CubicCubeRenderer
                 float angle = (float) (i * Math.PI * 2 / segments);
                 float x = (float) Math.cos(angle) * radius;
                 float y = (float) Math.sin(angle) * radius;
-                circleBuilder.vertex(drawMat, x, y, 0).color(r, g, b, a).next();
+                circleBuilder.vertex(drawMat, x, y, 0).color(r, g, b, a);
             }
             
             BufferRenderer.drawWithGlobalProgram(circleBuilder.end());
