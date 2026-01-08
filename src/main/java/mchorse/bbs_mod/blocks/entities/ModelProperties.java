@@ -29,6 +29,8 @@ public class ModelProperties implements IMapSerializable
     private boolean lookYawInitialized;
     private float lookYawLastAbs;
     private float lookYawContinuous;
+    private boolean hitbox;
+    private int lightLevel = 0;
 
     public Form getForm()
     {
@@ -130,6 +132,16 @@ public class ModelProperties implements IMapSerializable
         this.shadow = shadow;
     }
 
+    public boolean isHitbox()
+    {
+        return this.hitbox;
+    }
+
+    public void setHitbox(boolean hitbox)
+    {
+        this.hitbox = hitbox;
+    }
+
     public boolean isLookAt()
     {
         return this.lookAt;
@@ -142,7 +154,6 @@ public class ModelProperties implements IMapSerializable
 
     /* Runtime helpers */
     public boolean isLookYawInitialized()
-    {
         return this.lookYawInitialized;
     }
 
@@ -187,9 +198,15 @@ public class ModelProperties implements IMapSerializable
         this.lookYawInitialized = true;
         this.lookYawLastAbs = yawAbs;
         this.lookYawContinuous = baseYaw;
+    public int getLightLevel()
+    {
     }
 
-    public Form getForm(ModelTransformationMode mode)
+    public void setLightLevel(int level)
+    {
+        this.lightLevel = Math.max(0, Math.min(15, level));
+    }
+
     {
         Form form = this.form;
 
@@ -246,6 +263,8 @@ public class ModelProperties implements IMapSerializable
         this.shadow = data.getBool("shadow");
         this.global = data.getBool("global");
         this.lookAt = data.getBool("look_at");
+        if (data.has("hitbox")) this.hitbox = data.getBool("hitbox");
+        if (data.has("light_level")) this.lightLevel = data.getInt("light_level");
     }
 
     @Override
@@ -264,7 +283,9 @@ public class ModelProperties implements IMapSerializable
         data.putBool("enabled", this.enabled);
         data.putBool("shadow", this.shadow);
         data.putBool("global", this.global);
+        data.putBool("hitbox", this.hitbox);
         data.putBool("look_at", this.lookAt);
+        data.putInt("light_level", this.lightLevel);
     }
 
     public void update(IEntity entity)
