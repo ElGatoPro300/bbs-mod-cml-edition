@@ -154,6 +154,7 @@ public class ModelProperties implements IMapSerializable
 
     /* Runtime helpers */
     public boolean isLookYawInitialized()
+    {
         return this.lookYawInitialized;
     }
 
@@ -198,15 +199,18 @@ public class ModelProperties implements IMapSerializable
         this.lookYawInitialized = true;
         this.lookYawLastAbs = yawAbs;
         this.lookYawContinuous = baseYaw;
+    }   
+    
     public int getLightLevel()
     {
+        return this.lightLevel;
     }
 
     public void setLightLevel(int level)
     {
         this.lightLevel = Math.max(0, Math.min(15, level));
     }
-
+    public Form getForm(ModelTransformationMode mode)
     {
         Form form = this.form;
 
