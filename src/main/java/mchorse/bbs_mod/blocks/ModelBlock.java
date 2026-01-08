@@ -9,6 +9,9 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -114,6 +117,29 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state)
     {
         return new ModelBlockEntity(pos, state);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
+    {
+        try
+        {
+            if (world instanceof World w)
+            {
+                BlockEntity be = w.getBlockEntity(pos);
+
+                if (be instanceof ModelBlockEntity model && model.getProperties().isHitbox())
+                {
+                    return VoxelShapes.fullCube();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
+        return VoxelShapes.empty();
     }
 
     @Override
