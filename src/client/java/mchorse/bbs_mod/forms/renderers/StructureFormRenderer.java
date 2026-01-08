@@ -92,6 +92,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     private BlockPos boundsMin = null;
     private BlockPos boundsMax = null;
     private IModelVAO structureVao = null;
+    private ModelVAOData cachedGeometry = null;
+    private boolean geometryDirty = true;
     private boolean vaoDirty = true;
     private boolean vaoBuiltWithShaders = false;
     private boolean capturingVAO = false;
@@ -187,7 +189,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             {
                 FormRenderingContext uiContext = new FormRenderingContext()
                     .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
-                renderStructureCulledWorld(uiContext, matrices, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, shaders);
+                renderStructureCulledWorld(uiContext, matrices, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, shaders, null);
                 if (consumers instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                 {
                     immediate.draw();
@@ -378,7 +380,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 try
                 {
-                    renderStructureCulledWorld(context, context.stack, consumers, light, context.overlay, shaders);
+                    renderStructureCulledWorld(context, context.stack, consumers, light, context.overlay, shaders, null);
                     if (consumers instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                     {
                         immediate.draw();
@@ -555,7 +557,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
      * Render con culling usando BlockRenderView virtual para aprovechar la lógica vanilla.
      * Mantiene el mismo centrado y paridad que renderStructure.
      */
-    private void renderStructureCulledWorld(FormRenderingContext context, MatrixStack stack, net.minecraft.client.render.VertexConsumerProvider consumers, int light, int overlay, boolean useEntityLayers)
+    private void renderStructureCulledWorld(FormRenderingContext context, MatrixStack stack, net.minecraft.client.render.VertexConsumerProvider consumers, int light, int overlay, boolean useEntityLayers, LightmapStructureVAOCollector flushTarget)
     {
         // Centrado basado en límites reales (min/max) para compensar offsets del NBT
         float cx;
@@ -704,6 +706,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 vc = recolor.apply(vc);
             }
             MinecraftClient.getInstance().getBlockRenderManager().renderBlock(entry.state, entry.pos, view, stack, vc, true, Random.create());
+
+            if (flushTarget != null && flushTarget.getQuadIndex() != 0)
+            {
+                flushTarget.flush();
+            }
 
             // Renderizar bloques con entidad (cofres, camas, carteles, cráneos, etc.)
             Block block = entry.state.getBlock();
@@ -1419,7 +1426,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         this.capturingIncludeSpecialBlocks = false; // para VAO normal, omitir animados/bioma
         try
         {
-            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers);
+            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers, lightWrapper);
         }
         finally
         {
@@ -1440,9 +1447,23 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         }
 
         ModelVAOData data = collector.toData();
+
+        int[] lightData = lightWrapper.getLightmapData();
+        int vertexCount = data.vertices().length / 3;
+        if (lightData.length != vertexCount)
+        {
+            System.err.println("[StructureFormRenderer] Lightmap mismatch: Vertices=" + vertexCount + ", Lights=" + lightData.length);
+            // Pad lightData if necessary to avoid crash
+            if (lightData.length < vertexCount)
+            {
+                int[] padded = new int[vertexCount];
+                System.arraycopy(lightData, 0, padded, 0, lightData.length);
+                lightData = padded;
+            }
+        }
         
         // Always use LightmapModelVAO to support virtual lighting in both Vanilla and Shaders
-        this.structureVao = new LightmapModelVAO(data, lightWrapper.getLightmapData());
+        this.structureVao = new LightmapModelVAO(data, lightData);
         
         this.vaoDirty = false;
     }
@@ -1478,7 +1499,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         this.capturingIncludeSpecialBlocks = true; // incluir animados y bioma para picking
         try
         {
-            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers);
+            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers, null);
         }
         finally
         {
@@ -1734,33 +1755,34 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 return 15;
             }
 
-            if (this.virtualMode)
+            // Siempre obtener el nivel base del mundo (o super implementación)
+            int baseLevel = super.getLightLevel(type, pos);
+
+            if (this.virtualMode && type == net.minecraft.world.LightType.BLOCK)
             {
-                if (type == net.minecraft.world.LightType.SKY)
+                int max = 0;
+                for (int i = 0; i < this.emitters.size(); i++)
                 {
-                    return this.virtualAmbient;
-                }
-                else // BLOCK
-                {
-                    int max = 0;
-                    for (int i = 0; i < this.emitters.size(); i++)
+                    BlockPos sp = this.emitters.get(i);
+                    int L = this.emitterLevels.get(i);
+                    int dist = Math.abs(sp.getX() - pos.getX()) + Math.abs(sp.getY() - pos.getY()) + Math.abs(sp.getZ() - pos.getZ());
+                    int contrib = L - dist;
+                    
+                    if (contrib > max)
                     {
-                        BlockPos sp = this.emitters.get(i);
-                        int L = this.emitterLevels.get(i);
-                        int dist = Math.abs(sp.getX() - pos.getX()) + Math.abs(sp.getY() - pos.getY()) + Math.abs(sp.getZ() - pos.getZ());
-                        int contrib = L - dist;
-                        
-                        if (contrib > max)
-                        {
-                            max = contrib;
-                        }
+                        max = contrib;
                     }
-                    // Limit block light by virtual ambient (intensity) to allow manipulation
-                    return Math.min(max, this.virtualAmbient);
                 }
+                
+                // Escalar la luz virtual con la intensidad configurada
+                // La intensidad (virtualAmbient) actúa como un techo para la luz emitida internamente
+                int virtualResult = Math.min(max, this.virtualAmbient);
+                
+                // Combinar con la luz del mundo (baseLevel)
+                return Math.max(baseLevel, virtualResult);
             }
 
-            return super.getLightLevel(type, pos);
+            return baseLevel;
         }
     }
 
@@ -1886,6 +1908,24 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             return Arrays.copyOf(this.lightData, this.lightSize);
         }
+
+        public int getQuadIndex()
+        {
+            return this.quadIndex;
+        }
+
+        public void flush()
+        {
+            if (this.quadIndex != 0)
+            {
+                while (this.quadIndex != 0)
+                {
+                    this.vertex(0, 0, 0);
+                    this.light(0, 0);
+                    this.next();
+                }
+            }
+        }
     }
 
     private static class LightmapModelVAO implements IModelVAO
@@ -1893,6 +1933,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         private int vao;
         private int count;
         private int[] buffers;
+        private int lightmapBuffer;
         
         public LightmapModelVAO(ModelVAOData data, int[] lightmap)
         {
@@ -1904,9 +1945,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             int tangentsBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
             int texCoordBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
             int midTexCoordBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            int lightmapBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            this.lightmapBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
             
-            this.buffers = new int[] {vertexBuffer, normalBuffer, tangentsBuffer, texCoordBuffer, midTexCoordBuffer, lightmapBuffer};
+            this.buffers = new int[] {vertexBuffer, normalBuffer, tangentsBuffer, texCoordBuffer, midTexCoordBuffer, this.lightmapBuffer};
 
             org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, vertexBuffer);
             org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.vertices(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
@@ -1928,8 +1969,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.texCoords(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
             org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV, 2, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
             
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmapBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, this.lightmapBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW);
             // IMPORTANTE: LIGHTMAP_UV es short/int, usar IPointer si es necesario, pero vanilla usa Pointer normal para UVs?
             // Lightmap suele ser ushort.
             org.lwjgl.opengl.GL30.glVertexAttribIPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV, 2, org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT, 0, 0);
@@ -1947,6 +1988,15 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             this.count = data.vertices().length / 3;
             
             org.lwjgl.opengl.GL30.glBindVertexArray(0);
+        }
+
+        public void updateLightmap(int[] lightmap)
+        {
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, this.lightmapBuffer);
+            // Use glBufferSubData if size matches, or glBufferData (orphaning) if we want to replace safely
+            // Using glBufferData with DYNAMIC_DRAW is safe and handles synchronization
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW);
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, 0);
         }
 
         @Override
