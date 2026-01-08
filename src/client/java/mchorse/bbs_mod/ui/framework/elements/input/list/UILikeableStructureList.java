@@ -21,11 +21,9 @@ public class UILikeableStructureList extends UIStringList
     private UIIcon likeButton;
     private UIIcon editButton;
     private UIIcon removeButton;
-    private UIIcon saveButton;
     private Runnable refreshCallback;
     private Consumer<String> editCallback;
     private Consumer<String> removeCallback;
-    private Consumer<String> saveCallback;
     private boolean showEditRemoveButtons = false;
     
     public UILikeableStructureList(Consumer<List<String>> callback, StructureLikeManager likeManager)
@@ -35,7 +33,6 @@ public class UILikeableStructureList extends UIStringList
         this.likeButton = new UIIcon(Icons.LIKE, null);
         this.editButton = new UIIcon(Icons.EDIT, null);
         this.removeButton = new UIIcon(Icons.REMOVE, null);
-        this.saveButton = new UIIcon(Icons.DOWNLOAD, null);
     }
     
     public void setShowOnlyLiked(boolean showOnlyLiked)
@@ -48,26 +45,6 @@ public class UILikeableStructureList extends UIStringList
         String display = this.likeManager.getDisplayName(element);
 
         return display != null ? display : element;
-    }
-    
-    public void setSaveCallback(Consumer<String> saveCallback)
-    {
-        this.saveCallback = saveCallback;
-    }
-
-    public void setEditCallback(Consumer<String> editCallback)
-    {
-        this.editCallback = editCallback;
-    }
-
-    public void setRemoveCallback(Consumer<String> removeCallback)
-    {
-        this.removeCallback = removeCallback;
-    }
-
-    public void setRefreshCallback(Runnable refreshCallback)
-    {
-        this.refreshCallback = refreshCallback;
     }
     
     @Override
@@ -86,29 +63,14 @@ public class UILikeableStructureList extends UIStringList
 
         boolean isNoneOption = element.equals(UIKeys.GENERAL_NONE.get());
         String displayText = this.getDisplayText(element);
-        
         int textWidth = context.batcher.getFont().getWidth(displayText);
-        
-        boolean isSaved = element.startsWith("saved:");
-        boolean isWorld = element.startsWith("world:");
-        
         int buttonSpace = 0;
 
         if (!isNoneOption)
         {
-            /* Calculate space based on available buttons */
-            if (isSaved)
-            {
-                buttonSpace = 60; /* edit + remove + like */
-            }
-            else if (isWorld)
-            {
-                buttonSpace = 40; /* save + like */
-            }
-            else
-            {
-                buttonSpace = 20; /* like only */
-            }
+            buttonSpace = this.showEditRemoveButtons
+                ? 60 /* edit + remove + like = 60px */
+                : 20; /* like button only = 20px */
         }
 
         int maxWidth = this.area.w - 8 - buttonSpace;
@@ -128,7 +90,6 @@ public class UILikeableStructureList extends UIStringList
         int currentIconX = this.area.x + this.area.w - 20;
         int iconY = y + (this.scroll.scrollItemSize - 16) / 2;
 
-        /* Render Like Button (Always present) */
         boolean isLiked = this.likeManager.isStructureLiked(element);
         boolean isHoverOnLike = this.area.isInside(context)
             && context.mouseX >= currentIconX
@@ -141,11 +102,10 @@ public class UILikeableStructureList extends UIStringList
         this.likeButton.area.set(currentIconX, iconY, 16, 16);
         this.likeButton.render(context);
 
-        /* Render other buttons */
-        if (isSaved)
+        if (this.showEditRemoveButtons)
         {
-            /* Remove Button */
             currentIconX -= 20;
+
             boolean isHoverOnRemove = this.area.isInside(context)
                 && context.mouseX >= currentIconX
                 && context.mouseX < currentIconX + 16
@@ -156,8 +116,8 @@ public class UILikeableStructureList extends UIStringList
             this.removeButton.area.set(currentIconX, iconY, 16, 16);
             this.removeButton.render(context);
 
-            /* Edit Button */
             currentIconX -= 20;
+            
             boolean isHoverOnEdit = this.area.isInside(context)
                 && context.mouseX >= currentIconX
                 && context.mouseX < currentIconX + 16
@@ -167,20 +127,6 @@ public class UILikeableStructureList extends UIStringList
             this.editButton.iconColor(isHoverOnEdit ? Colors.WHITE : Colors.GRAY);
             this.editButton.area.set(currentIconX, iconY, 16, 16);
             this.editButton.render(context);
-        }
-        else if (isWorld)
-        {
-            /* Save Button */
-            currentIconX -= 20;
-            boolean isHoverOnSave = this.area.isInside(context)
-                && context.mouseX >= currentIconX
-                && context.mouseX < currentIconX + 16
-                && context.mouseY >= iconY
-                && context.mouseY < iconY + 16;
-
-            this.saveButton.iconColor(isHoverOnSave ? Colors.WHITE : Colors.GRAY);
-            this.saveButton.area.set(currentIconX, iconY, 16, 16);
-            this.saveButton.render(context);
         }
     }
     
@@ -201,22 +147,21 @@ public class UILikeableStructureList extends UIStringList
 
         String element = this.showOnlyLiked ? this.getVisibleElement(scrollIndex) : this.list.get(scrollIndex);
 
-        if (element == null || element.equals(UIKeys.GENERAL_NONE.get()))
+        if (element == null)
         {
             return super.subMouseClicked(context);
         }
 
         int y = this.area.y + scrollIndex * this.scroll.scrollItemSize - (int) this.scroll.getScroll();
         int iconY = y + (this.scroll.scrollItemSize - 16) / 2;
-        int currentIconX = this.area.x + this.area.w - 20;
+        int likeIconX = this.area.x + this.area.w - 20;
 
-        boolean isSaved = element.startsWith("saved:");
-        boolean isWorld = element.startsWith("world:");
-
-        /* Check Like Button */
-        if (context.mouseX >= currentIconX && context.mouseX < currentIconX + 16 &&
-            context.mouseY >= iconY && context.mouseY < iconY + 16)
-        {
+        if (
+            context.mouseX >= likeIconX &&
+            context.mouseX < likeIconX + 16 &&
+            context.mouseY >= iconY &&
+            context.mouseY < iconY + 16
+        ) {
             this.likeManager.toggleStructureLiked(element);
 
             if (this.refreshCallback != null)
@@ -227,39 +172,67 @@ public class UILikeableStructureList extends UIStringList
             return true;
         }
 
-        if (isSaved)
+        if (this.showEditRemoveButtons)
         {
-            /* Check Remove Button */
-            currentIconX -= 20;
-            if (context.mouseX >= currentIconX && context.mouseX < currentIconX + 16 &&
+            int removeIconX = likeIconX - 20;
+            
+            if (context.mouseX >= removeIconX && context.mouseX < removeIconX + 16 &&
                 context.mouseY >= iconY && context.mouseY < iconY + 16)
             {
-                if (this.removeCallback != null) this.removeCallback.accept(element);
+                if (this.removeCallback != null)
+                {
+                    this.removeCallback.accept(element);
+                }
+
                 return true;
             }
 
-            /* Check Edit Button */
-            currentIconX -= 20;
-            if (context.mouseX >= currentIconX && context.mouseX < currentIconX + 16 &&
+            int editIconX = removeIconX - 20;
+            
+            if (context.mouseX >= editIconX && context.mouseX < editIconX + 16 &&
                 context.mouseY >= iconY && context.mouseY < iconY + 16)
             {
-                if (this.editCallback != null) this.editCallback.accept(element);
-                return true;
-            }
-        }
-        else if (isWorld)
-        {
-            /* Check Save Button */
-            currentIconX -= 20;
-            if (context.mouseX >= currentIconX && context.mouseX < currentIconX + 16 &&
-                context.mouseY >= iconY && context.mouseY < iconY + 16)
-            {
-                if (this.saveCallback != null) this.saveCallback.accept(element);
+                if (this.editCallback != null)
+                {
+                    this.editCallback.accept(element);
+                }
+
                 return true;
             }
         }
 
-        return super.subMouseClicked(context);
+        if (!this.showOnlyLiked)
+        {
+            return super.subMouseClicked(context);
+        }
+
+        int actualIndex = this.list.indexOf(element);
+
+        if (actualIndex < 0)
+        {
+            return false;
+        }
+
+        int buttonAreaStartX = this.area.x + this.area.w - 20;
+
+        if (context.mouseX >= buttonAreaStartX && context.mouseX < this.area.x + this.area.w && context.mouseY >= iconY && context.mouseY < iconY + 16)
+        {
+            return false;
+        }
+
+        this.current.clear();
+        this.current.add(actualIndex);
+
+        if (this.callback != null)
+        {
+            List<String> selected = new ArrayList<>();
+
+            selected.add(element);
+
+            this.callback.accept(selected);
+        }
+
+        return true;
     }
     
     @Override
@@ -357,6 +330,21 @@ public class UILikeableStructureList extends UIStringList
         return null;
     }
     
+    public void setRefreshCallback(Runnable callback)
+    {
+        this.refreshCallback = callback;
+    }
+
+    public void setEditCallback(Consumer<String> callback)
+    {
+        this.editCallback = callback;
+    }
+
+    public void setRemoveCallback(Consumer<String> callback)
+    {
+        this.removeCallback = callback;
+    }
+
     public void setShowEditRemoveButtons(boolean show)
     {
         this.showEditRemoveButtons = show;

@@ -30,7 +30,6 @@ import mchorse.bbs_mod.settings.values.core.ValuePose;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.colors.Color;
@@ -178,12 +177,10 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
                 poseTransform.pivot.add(value.pivot);
             }
 
-            /* Also apply visual properties of the overlay (color, lighting and texture) */
-            if (value.fix != 0)
-            {
-                poseTransform.color.lerp(value.color, value.fix);
-                poseTransform.lighting = Lerps.lerp(poseTransform.lighting, value.lighting, value.fix);
-            }
+            /* También aplicar propiedades visuales del overlay (color, iluminación y textura).
+             * No se interpolan; el overlay copia sobre el destino si están presentes. */
+            poseTransform.color.copy(value.color);
+            poseTransform.lighting = value.lighting;
 
             if (value.texture != null)
             {

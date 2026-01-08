@@ -6,8 +6,7 @@
     "description": "A new generation of video production mod",
     "authors": [
         "McHorse",
-        "ElGatoPro300",
-        "Diobede"
+        "ElGatoPro300"
     ],
     "contributors": [
         "Chryfi (tracker clip)",
@@ -31,7 +30,7 @@
         "bay4lly.java (bug fixes)"
     ],
     "contact": {
-        "homepage": "https://discord.gg/MAHVQBSce6"
+        "homepage": "https://www.patreon.com/McHorse"
     },
     "license": "MIT",
     "icon": "assets/bbs/icon.png",
