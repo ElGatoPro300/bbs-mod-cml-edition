@@ -110,6 +110,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.component.type.BlockStateComponent;
+import java.util.Map;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -264,15 +266,10 @@ public class BBSMod implements ModInitializer
         nbt.putString("id", Identifier.of(MOD_ID, "model_block_entity").toString());
         nbt.put("Properties", DataStorageUtils.toNbt(properties.toData()));
         stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
-        NbtCompound compound = entity.createNbtWithId();
-
-        nbt.put("BlockEntityTag", compound);
+        
         /* BlockStateTag allows mods derive luminance
          * from the item stack's block state. */
-        NbtCompound stateTag = new NbtCompound();
-        stateTag.putInt("light_level", properties.getLightLevel());
-        nbt.put("BlockStateTag", stateTag);
-        stack.setNbt(nbt);
+        stack.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(Map.of("light_level", String.valueOf(properties.getLightLevel()))));
 
         return stack;
     }
