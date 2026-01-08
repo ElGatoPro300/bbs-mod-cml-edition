@@ -1,6 +1,7 @@
 package net.minecraft.client.render;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
 
 public class BBSModRenderLayerHelper
 {
@@ -8,7 +9,7 @@ public class BBSModRenderLayerHelper
     {
         RenderLayer.MultiPhaseParameters params = RenderLayer.MultiPhaseParameters.builder()
             .program(RenderPhase.ENTITY_TRANSLUCENT_PROGRAM)
-            .texture(new RenderPhase.Texture(texture, false, false))
+            .texture(new RenderPhase.Texture(texture, TriState.FALSE, false))
             .transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY)
             .cull(RenderPhase.DISABLE_CULLING)
             .lightmap(RenderPhase.ENABLE_LIGHTMAP)

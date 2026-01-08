@@ -30,6 +30,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.TexturedRenderLayers;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
@@ -207,8 +208,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 // Volver al shader de modelo propio en vanilla para asegurar compatibilidad del VAO
                 net.minecraft.client.gl.ShaderProgram shader = BBSShaders.getModel();
 
-                RenderSystem.setShader(() -> shader);
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShader(shader);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
                 boolean needBlendUI = tint.a < 0.999f || this.hasTranslucentLayer;
                 if (needBlendUI)
                 {
@@ -408,24 +409,25 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean translucentNeeded = this.hasTranslucentLayer || tint3D.a < 0.999f;
                     if (translucentNeeded)
                     {
-                        shader = net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+                        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
                     }
                     else if (this.hasCutoutLayer)
                     {
-                        shader = net.minecraft.client.render.GameRenderer.getRenderTypeEntityCutoutProgram();
+                        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_CUTOUT);
                     }
                     else
                     {
-                        shader = net.minecraft.client.render.GameRenderer.getRenderTypeSolidProgram();
+                        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_SOLID);
                     }
+                    shader = RenderSystem.getShader();
                 }
                 else
                 {
                     shader = BBSShaders.getModel();
                 }
 
-                RenderSystem.setShader(() -> shader);
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShader(shader);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
                 boolean needBlend3D = tint3D.a < 0.999f || this.hasTranslucentLayer;
                 if (needBlend3D)
                 {
@@ -857,11 +859,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             FluidState fsAnim = entry.state.getFluidState();
             if (entry.state.isOf(Blocks.NETHER_PORTAL) || (fsAnim != null && (fsAnim.getFluid() == Fluids.WATER || fsAnim.getFluid() == Fluids.FLOWING_WATER || fsAnim.getFluid() == Fluids.LAVA || fsAnim.getFluid() == Fluids.FLOWING_LAVA)))
             {
-                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state, true) : RenderLayer.getTranslucentMovingBlock();
+                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state) : RenderLayer.getTranslucentMovingBlock();
             }
             else
             {
-                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state, false) : RenderLayers.getBlockLayer(entry.state);
+                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state) : RenderLayers.getBlockLayer(entry.state);
             }
 
             // Si hay alpha global, preferir capa translúcida de entidad en shaders para asegurar fade suave

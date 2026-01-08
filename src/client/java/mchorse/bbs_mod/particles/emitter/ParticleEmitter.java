@@ -544,7 +544,7 @@ public class ParticleEmitter
                     this.setEmitterVariables(transition);
                     this.setParticleVariables(particle, transition);
 
-            RenderSystem.setShader(program);
+            RenderSystem.setShader(program.get());
             
             /* Enable blending and disable depth mask for correct semi-transparency */
             RenderSystem.enableBlend();
