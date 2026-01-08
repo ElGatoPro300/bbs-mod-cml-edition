@@ -56,7 +56,9 @@ import java.io.InputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -96,6 +98,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     // VAO dedicado para picking (incluye bloques animados y con tinte por bioma)
     private IModelVAO structureVaoPicking = null;
     private boolean vaoPickingDirty = true;
+    
+    // Cache de luz para detectar cambios y reconstruir VAO
+    private boolean lastEmitLight = false;
+    private int lastLightIntensity = 0;
+
     // Controla si, durante la captura del VAO, se deben incluir bloques especiales
     private boolean capturingIncludeSpecialBlocks = false;
     private boolean hasTranslucentLayer = false;
@@ -161,14 +168,13 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         // Si la luz de la estructura está habilitada, forzar el camino BufferBuilder
         // para que el cálculo de luz dinámico mediante VirtualBlockRenderView aplique.
         // Esto evita que el VAO (iluminación más simple) ignore el panel de luz.
-        {
-            mchorse.bbs_mod.forms.forms.utils.StructureLightSettings sl = this.form.structureLight.getRuntimeValue();
-            boolean lightsEnabled = (sl != null) ? sl.enabled : this.form.emitLight.get();
-            if (lightsEnabled)
-            {
-                optimize = false;
-            }
-        }
+        /* 
+           MODIFICACIÓN: Permitir optimización (VAO) incluso con luces habilitadas,
+           ya que ahora LightmapStructureVAOCollector maneja la luz virtual.
+           
+           Se mantiene la lógica original de renderizado si la optimización está desactivada globalmente.
+        */
+        
         if (!optimize)
         {
             // Modo BufferBuilder: mejor iluminación, peor rendimiento
@@ -304,6 +310,18 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         if (this.structureVao != null && this.vaoBuiltWithShaders != mchorse.bbs_mod.cubic.render.vao.ModelVAO.isShadersEnabled())
         {
             this.vaoDirty = true;
+        }
+
+        // Detectar cambios en configuración de luz para reconstruir VAO
+        mchorse.bbs_mod.forms.forms.utils.StructureLightSettings sl = this.form.structureLight.getRuntimeValue();
+        boolean currentEmitLight = (sl != null) ? sl.enabled : this.form.emitLight.get();
+        int currentLightIntensity = (sl != null) ? sl.intensity : this.form.lightIntensity.get();
+
+        if (currentEmitLight != this.lastEmitLight || currentLightIntensity != this.lastLightIntensity)
+        {
+            this.vaoDirty = true;
+            this.lastEmitLight = currentEmitLight;
+            this.lastLightIntensity = currentLightIntensity;
         }
 
         if (optimize && (this.structureVao == null || this.vaoDirty))
@@ -591,10 +609,15 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             lightIntensity = this.form.lightIntensity.get();
         }
 
-        mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
-            .setBiomeOverride(this.form.biomeId.get())
+        StructureVirtualBlockRenderView view = new StructureVirtualBlockRenderView(entries);
+        view.setBiomeOverride(this.form.biomeId.get())
             .setLightsEnabled(lightsEnabled)
             .setLightIntensity(lightIntensity);
+        
+        if (lightsEnabled)
+        {
+            view.setVirtualMode(true, lightIntensity);
+        }
 
         BlockEntityRenderDispatcher beDispatcher = MinecraftClient.getInstance().getBlockEntityRenderDispatcher();
 
@@ -633,9 +656,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         int baseDz = (int)Math.floor(-pivotZ);
         view.setWorldAnchor(anchor, baseDx, baseDy, baseDz)
             // En UI/miniatura/ítem inventario, forzar luz de cielo máxima para evitar oscurecer
-            .setForceMaxSkyLight(context.ui
+            // EXCEPTO si estamos capturando VAO, donde queremos la iluminación calculada real (VirtualBlockRenderView).
+            .setForceMaxSkyLight(!this.capturingVAO && (context.ui
                 || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.PREVIEW
-                || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.ITEM_INVENTORY);
+                || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.ITEM_INVENTORY));
 
         for (BlockEntry entry : blocks)
         {
@@ -1374,6 +1398,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         if (shaders)
         {
             lightWrapper = new LightmapStructureVAOCollector(collector);
+            // La luz virtual se maneja automáticamente en renderStructureCulledWorld mediante VirtualBlockRenderView
         }
 
         // Sustituir cualquier consumidor por nuestro colector
@@ -1665,6 +1690,92 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         return state;
     }
 
+    private static class StructureVirtualBlockRenderView extends mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView
+    {
+        private final List<BlockPos> emitters = new ArrayList<>();
+        private final List<Integer> emitterLevels = new ArrayList<>();
+        private boolean virtualMode = false;
+        private int virtualAmbient = 0;
+        private boolean myForceMaxSkyLight = false;
+
+        public StructureVirtualBlockRenderView(List<Entry> entries)
+        {
+            super(entries);
+            this.findEmitters(entries);
+        }
+
+        private void findEmitters(List<Entry> entries)
+        {
+            this.emitters.clear();
+            this.emitterLevels.clear();
+
+            for (Entry e : entries)
+            {
+                BlockState st = e.state;
+                int lum = st == null ? 0 : st.getLuminance();
+                if (lum > 0)
+                {
+                    this.emitters.add(e.pos);
+                    this.emitterLevels.add(lum);
+                }
+            }
+        }
+
+        public StructureVirtualBlockRenderView setVirtualMode(boolean enabled, int ambient)
+        {
+            this.virtualMode = enabled;
+            this.virtualAmbient = ambient;
+            return this;
+        }
+
+        @Override
+        public mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView setForceMaxSkyLight(boolean force)
+        {
+            this.myForceMaxSkyLight = force;
+            return super.setForceMaxSkyLight(force);
+        }
+
+        @Override
+        public int getLightLevel(net.minecraft.world.LightType type, BlockPos pos)
+        {
+            if (this.myForceMaxSkyLight)
+            {
+                return 15;
+            }
+
+            if (this.virtualMode)
+            {
+                if (type == net.minecraft.world.LightType.SKY)
+                {
+                    return this.virtualAmbient;
+                }
+                else // BLOCK
+                {
+                    int max = 0;
+                    for (int i = 0; i < this.emitters.size(); i++)
+                    {
+                        BlockPos sp = this.emitters.get(i);
+                        int L = this.emitterLevels.get(i);
+                        int dist = Math.abs(sp.getX() - pos.getX()) + Math.abs(sp.getY() - pos.getY()) + Math.abs(sp.getZ() - pos.getZ());
+                        int contrib = L - dist;
+                        
+                        if (contrib > max)
+                        {
+                            max = contrib;
+                            if (max >= 15)
+                            {
+                                return 15;
+                            }
+                        }
+                    }
+                    return max;
+                }
+            }
+
+            return super.getLightLevel(type, pos);
+        }
+    }
+
     private static class LightmapStructureVAOCollector implements VertexConsumer
     {
         private final StructureVAOCollector delegate;
@@ -1673,9 +1784,19 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         private int[] quadLights = new int[4];
         private int quadIndex = 0;
 
+        // Configuración de luz virtual
+        private int minBlockLight = 0;
+        private int minSkyLight = 0;
+
         public LightmapStructureVAOCollector(StructureVAOCollector delegate)
         {
             this.delegate = delegate;
+        }
+
+        public void setVirtualLight(int blockLight, int skyLight)
+        {
+            this.minBlockLight = blockLight;
+            this.minSkyLight = skyLight;
         }
 
         public StructureVAOCollector getDelegate()
@@ -1714,8 +1835,13 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         @Override
         public VertexConsumer light(int u, int v)
         {
-            this.quadLights[this.quadIndex] = (u & 0xFFFF) | ((v & 0xFFFF) << 16);
-            delegate.light(u, v);
+            // Aplicar luz virtual: asegurar mínimo de luz configurada
+            // Nota: u = block light, v = sky light (valores desempaquetados 0-240)
+            int finalBlock = Math.max(u & 0xFFFF, this.minBlockLight);
+            int finalSky = Math.max(v & 0xFFFF, this.minSkyLight);
+            
+            this.quadLights[this.quadIndex] = (finalBlock & 0xFFFF) | ((finalSky & 0xFFFF) << 16);
+            delegate.light(finalBlock, finalSky);
             return this;
         }
 
@@ -1749,7 +1875,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         @Override
         public void fixedColor(int red, int green, int blue, int alpha)
         {
-            // Delegate default method if possible, or ignore if StructureVAOCollector doesn't support it
+            // Delegate default method if possible
         }
 
         @Override
@@ -1816,6 +1942,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             
             org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmapBuffer);
             org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            // IMPORTANTE: LIGHTMAP_UV es short/int, usar IPointer si es necesario, pero vanilla usa Pointer normal para UVs?
+            // Lightmap suele ser ushort.
             org.lwjgl.opengl.GL30.glVertexAttribIPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV, 2, org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT, 0, 0);
 
             org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION);
@@ -1837,6 +1965,17 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         public void render(net.minecraft.client.render.VertexFormat format, float r, float g, float b, float a, int light, int overlay)
         {
             org.lwjgl.opengl.GL30.glBindVertexArray(this.vao);
+
+            // Asegurar estado de atributos para evitar GL_INVALID_OPERATION
+            // Atributos habilitados (con buffers)
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.NORMAL);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TEXTURE_UV);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV);
+
+            // Atributos constantes (sin buffers)
+            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR);
+            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV);
 
             org.lwjgl.opengl.GL20.glVertexAttrib4f(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR, r, g, b, a);
             org.lwjgl.opengl.GL30.glVertexAttribI2i(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV, overlay & 0xFFFF, overlay >> 16 & 0xFFFF);
