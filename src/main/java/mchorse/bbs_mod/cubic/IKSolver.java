@@ -113,13 +113,41 @@ public class IKSolver
                 }
             }
 
-            if ("2_bone".equals(chain.solver))
+            // Check if the Target Group (Null Object) is a child of the Effector
+            // If so, treat the Null Object as the TRUE effector (Tip)
+            ModelGroup effector = model.getGroup(chain.effector);
+            if (targetGroup != null && effector != null && targetGroup.parent == effector)
+            {
+                // Swap effector to the Null Object
+                // This forces the solver to align the Null Object (Tip) to the Target Position
+                // which effectively orients the "Bone" (Effector)
+                effector = targetGroup;
+                
+                // If we swap the effector, the chain length increases by 1.
+                // 2-Bone solver might not handle this if it strictly expects Root->Mid->Effector
+                // So we force CCD or adapt 2-Bone.
+                // For now, let's pass this new effector to the solvers.
+                // But solveTwoBone needs to know the REAL structure.
+                
+                // Actually, let's just update the 'chain.effector' logic locally?
+                // We can't change the 'chain' object easily.
+                // Let's call a specific internal method.
+            }
+
+            // We need to pass the resolved 'effector' group to the solvers
+            ModelGroup actualEffector = (targetGroup != null && effector != null && targetGroup.parent == effector) 
+                ? targetGroup 
+                : model.getGroup(chain.effector);
+
+            if ("2_bone".equals(chain.solver) && actualEffector == model.getGroup(chain.effector))
             {
                 solveTwoBone(model, chain, finalTargetPos, polePos);
             }
             else
             {
-                solveChainCCD(model, chain, finalTargetPos);
+                // Fallback to CCD if structure is complex (e.g. Target is child of Effector)
+                // or if explicitly not 2_bone
+                solveChainCCD(model, chain, finalTargetPos, actualEffector);
             }
         }
     }
@@ -146,7 +174,7 @@ public class IKSolver
         if (bones.size() != 3)
         {
             // Fallback to CCD if chain length is wrong
-            solveChainCCD(model, chain, targetPos);
+            solveChainCCD(model, chain, targetPos, effector);
             return;
         }
 
@@ -250,32 +278,34 @@ public class IKSolver
         
         // Get Current Local
         Quaternionf localRot = new Quaternionf()
-            .rotateZ(MathUtils.toRad(bone.current.rotate.z))
+            .rotateX(MathUtils.toRad(-bone.current.rotate.x)) // XYZ order, Invert X
             .rotateY(MathUtils.toRad(bone.current.rotate.y))
-            .rotateX(MathUtils.toRad(bone.current.rotate.x));
+            .rotateZ(MathUtils.toRad(bone.current.rotate.z));
             
         // Calculate New Local
         Quaternionf newLocal = new Quaternionf(parentRot).invert().mul(alignRot).mul(parentRot).mul(localRot);
         
         // Convert to Euler and Apply
         Vector3f euler = new Vector3f();
-        newLocal.getEulerAnglesZYX(euler);
+        newLocal.getEulerAnglesXYZ(euler); // Use XYZ output
         
         if (!Float.isNaN(euler.x) && !Float.isNaN(euler.y) && !Float.isNaN(euler.z))
         {
             bone.current.rotate.set(
-                (float) Math.toDegrees(euler.x),
+                (float) Math.toDegrees(-euler.x), // Invert X back
                 (float) Math.toDegrees(euler.y),
                 (float) Math.toDegrees(euler.z)
             );
         }
     }
 
-    private static void solveChainCCD(Model model, IKChain chain, Vector3f targetPos)
+    private static void solveChainCCD(Model model, IKChain chain, Vector3f targetPos, ModelGroup actualEffector)
     {
         ModelGroup target = model.getGroup(chain.name);
-        ModelGroup effector = model.getGroup(chain.effector);
         ModelGroup root = model.getGroup(chain.root);
+
+        // Use actualEffector passed from resolveIK
+        ModelGroup effector = actualEffector;
 
         if (effector == null || root == null) return;
         
@@ -335,18 +365,18 @@ public class IKSolver
                 parentMatrix.getUnnormalizedRotation(parentRot);
                 
                 Quaternionf localRotation = new Quaternionf()
-                    .rotateZ(MathUtils.toRad(bone.current.rotate.z))
+                    .rotateX(MathUtils.toRad(-bone.current.rotate.x)) // XYZ order, Invert X
                     .rotateY(MathUtils.toRad(bone.current.rotate.y))
-                    .rotateX(MathUtils.toRad(bone.current.rotate.x));
+                    .rotateZ(MathUtils.toRad(bone.current.rotate.z));
 
                 Quaternionf newLocalRot = new Quaternionf(parentRot).invert().mul(rotation).mul(parentRot).mul(localRotation);
                 
-                newLocalRot.getEulerAnglesZYX(euler);
+                newLocalRot.getEulerAnglesXYZ(euler); // Use XYZ output
                 
                 if (Float.isNaN(euler.x) || Float.isNaN(euler.y) || Float.isNaN(euler.z)) continue;
 
                 bone.current.rotate.set(
-                    (float) Math.toDegrees(euler.x),
+                    (float) Math.toDegrees(-euler.x), // Invert X back
                     (float) Math.toDegrees(euler.y),
                     (float) Math.toDegrees(euler.z)
                 );
@@ -388,16 +418,16 @@ public class IKSolver
                 dest.translate(g.current.pivot);
             }
 
-            // Apply rotations in correct order: Z * Y * X
-            // Use values AS IS (already negated by Animator if needed)
-            dest.rotateZ(MathUtils.toRad(g.current.rotate.z));
+            // Apply rotations in XYZ order as requested ("output uses xyz")
+            // Invert X-axis as requested
+            dest.rotateX(MathUtils.toRad(-g.current.rotate.x));
             dest.rotateY(MathUtils.toRad(g.current.rotate.y));
-            dest.rotateX(MathUtils.toRad(g.current.rotate.x));
+            dest.rotateZ(MathUtils.toRad(g.current.rotate.z));
             
             // Apply second rotation channel if needed (usually 0)
-            dest.rotateZ(MathUtils.toRad(g.current.rotate2.z));
+            dest.rotateX(MathUtils.toRad(-g.current.rotate2.x));
             dest.rotateY(MathUtils.toRad(g.current.rotate2.y));
-            dest.rotateX(MathUtils.toRad(g.current.rotate2.x));
+            dest.rotateZ(MathUtils.toRad(g.current.rotate2.z));
             
             dest.scale(g.current.scale);
 

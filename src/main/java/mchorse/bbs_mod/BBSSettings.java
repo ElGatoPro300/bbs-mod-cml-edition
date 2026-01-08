@@ -16,6 +16,8 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSSettings
 {
@@ -36,6 +38,7 @@ public class BBSSettings
     public static ValueBoolean clickSound;
     public static ValueBoolean disablePivotTransform;
     public static ValueBoolean gizmos;
+    public static ValueInt defaultInterpolation;
 
     public static ValueBoolean enableCursorRendering;
     public static ValueBoolean enableMouseButtonRendering;
@@ -186,10 +189,12 @@ public class BBSSettings
         clickSound = builder.getBoolean("click_sound", false);
         disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
         gizmos = builder.getBoolean("gizmos", true);
-        
+
         // gizmoDynamic = builder.getBoolean("dynamic", false);
         gizmoDesign = builder.getInt("design", 0);
         gizmoPlanes = builder.getBoolean("planes", false);
+
+        defaultInterpolation = builder.getInt("default_interpolation", 0);
 
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
