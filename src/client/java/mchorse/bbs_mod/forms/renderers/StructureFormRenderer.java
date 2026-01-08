@@ -1394,15 +1394,12 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         this.vaoBuiltWithShaders = shaders;
 
         // NEW: Wrapper for lightmap support
-        LightmapStructureVAOCollector lightWrapper = null;
-        if (shaders)
-        {
-            lightWrapper = new LightmapStructureVAOCollector(collector);
-            // La luz virtual se maneja automáticamente en renderStructureCulledWorld mediante VirtualBlockRenderView
-        }
+        // Always use light wrapper to ensure lightmap data is captured for both Vanilla and Shaders
+        LightmapStructureVAOCollector lightWrapper = new LightmapStructureVAOCollector(collector);
+        // La luz virtual se maneja automáticamente en renderStructureCulledWorld mediante VirtualBlockRenderView
 
         // Sustituir cualquier consumidor por nuestro colector
-        final VertexConsumer finalCollector = (lightWrapper != null) ? lightWrapper : collector;
+        final VertexConsumer finalCollector = lightWrapper;
         provider.setSubstitute(vc -> finalCollector);
 
         MatrixStack captureStack = new MatrixStack();
@@ -1444,14 +1441,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         ModelVAOData data = collector.toData();
         
-        if (shaders && lightWrapper != null)
-        {
-            this.structureVao = new LightmapModelVAO(data, lightWrapper.getLightmapData());
-        }
-        else
-        {
-            this.structureVao = new ModelVAO(data);
-        }
+        // Always use LightmapModelVAO to support virtual lighting in both Vanilla and Shaders
+        this.structureVao = new LightmapModelVAO(data, lightWrapper.getLightmapData());
         
         this.vaoDirty = false;
     }
@@ -1762,13 +1753,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                         if (contrib > max)
                         {
                             max = contrib;
-                            if (max >= 15)
-                            {
-                                return 15;
-                            }
                         }
                     }
-                    return max;
+                    // Limit block light by virtual ambient (intensity) to allow manipulation
+                    return Math.min(max, this.virtualAmbient);
                 }
             }
 
