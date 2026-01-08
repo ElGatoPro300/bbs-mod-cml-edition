@@ -11,8 +11,6 @@
     "bbs.config.appearance.freeze_models-comment": "When enabled, models in form picker won't follow the mouse",
     "bbs.config.appearance.gizmos": "Gizmos",
     "bbs.config.appearance.gizmos-comment": "Whether grab-able axes elements for translation, scale and rotation are enabled",
-    "bbs.config.appearance.default_interpolation": "Default interpolation",
-    "bbs.config.appearance.default_interpolation-comment": "The interpolation type used by default when new keyframes are created (affects pose/keyframe workflow)",
 
     "bbs.config.appearance.enabled": "Activated",
     "bbs.config.appearance.enabled-comment": "Enable 3D gizmos",
@@ -826,7 +824,6 @@
     "bbs.ui.model_blocks.keys.teleport": "Teleport to model block",
     "bbs.ui.model_blocks.keys.toggle_rendering": "Toggle world rendering",
     "bbs.ui.model_blocks.shadow": "Shadow",
-    "bbs.ui.model_blocks.hitbox": "Enable Hitbox",
     "bbs.ui.model_blocks.title": "Model blocks",
     "bbs.ui.model_blocks.transform.default": "Default transform",
     "bbs.ui.model_blocks.transform.first_person": "First person transform",
