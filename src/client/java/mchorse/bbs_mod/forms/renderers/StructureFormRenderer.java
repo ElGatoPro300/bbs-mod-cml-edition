@@ -1271,6 +1271,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             {
                 ((ModelVAO) structureVao).delete();
             }
+            else if (structureVao instanceof LightmapModelVAO)
+            {
+                ((LightmapModelVAO) structureVao).delete();
+            }
             structureVao = null;
             if (structureVaoPicking instanceof ModelVAO)
             {
@@ -1304,6 +1308,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         if (structureVao instanceof ModelVAO)
         {
             ((ModelVAO) structureVao).delete();
+        }
+        else if (structureVao instanceof LightmapModelVAO)
+        {
+            ((LightmapModelVAO) structureVao).delete();
         }
         structureVao = null;
         if (structureVaoPicking instanceof ModelVAO)
@@ -1361,8 +1369,16 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         this.vaoBuiltWithShaders = shaders;
 
+        // NEW: Wrapper for lightmap support
+        LightmapStructureVAOCollector lightWrapper = null;
+        if (shaders)
+        {
+            lightWrapper = new LightmapStructureVAOCollector(collector);
+        }
+
         // Sustituir cualquier consumidor por nuestro colector
-        provider.setSubstitute(vc -> collector);
+        final VertexConsumer finalCollector = (lightWrapper != null) ? lightWrapper : collector;
+        provider.setSubstitute(vc -> finalCollector);
 
         MatrixStack captureStack = new MatrixStack();
         FormRenderingContext captureContext = new FormRenderingContext()
@@ -1396,9 +1412,22 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             ((ModelVAO) this.structureVao).delete();
         }
+        else if (this.structureVao instanceof LightmapModelVAO)
+        {
+            ((LightmapModelVAO) this.structureVao).delete();
+        }
 
         ModelVAOData data = collector.toData();
-        this.structureVao = new ModelVAO(data);
+        
+        if (shaders && lightWrapper != null)
+        {
+            this.structureVao = new LightmapModelVAO(data, lightWrapper.getLightmapData());
+        }
+        else
+        {
+            this.structureVao = new ModelVAO(data);
+        }
+        
         this.vaoDirty = false;
     }
 
@@ -1634,5 +1663,210 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         }
 
         return state;
+    }
+
+    private static class LightmapStructureVAOCollector implements VertexConsumer
+    {
+        private final StructureVAOCollector delegate;
+        private int[] lightData = new int[8192];
+        private int lightSize = 0;
+        private int[] quadLights = new int[4];
+        private int quadIndex = 0;
+
+        public LightmapStructureVAOCollector(StructureVAOCollector delegate)
+        {
+            this.delegate = delegate;
+        }
+
+        public StructureVAOCollector getDelegate()
+        {
+            return this.delegate;
+        }
+
+        @Override
+        public VertexConsumer vertex(double x, double y, double z)
+        {
+            delegate.vertex(x, y, z);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer color(int red, int green, int blue, int alpha)
+        {
+            delegate.color(red, green, blue, alpha);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer texture(float u, float v)
+        {
+            delegate.texture(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer overlay(int u, int v)
+        {
+            delegate.overlay(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer light(int u, int v)
+        {
+            this.quadLights[this.quadIndex] = (u & 0xFFFF) | ((v & 0xFFFF) << 16);
+            delegate.light(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer normal(float x, float y, float z)
+        {
+            delegate.normal(x, y, z);
+            return this;
+        }
+
+        @Override
+        public void next()
+        {
+            delegate.next();
+            this.quadIndex++;
+
+            if (this.quadIndex == 4)
+            {
+                this.addLight(this.quadLights[0]);
+                this.addLight(this.quadLights[1]);
+                this.addLight(this.quadLights[2]);
+
+                this.addLight(this.quadLights[0]);
+                this.addLight(this.quadLights[2]);
+                this.addLight(this.quadLights[3]);
+
+                this.quadIndex = 0;
+            }
+        }
+        
+        @Override
+        public void fixedColor(int red, int green, int blue, int alpha)
+        {
+            // Delegate default method if possible, or ignore if StructureVAOCollector doesn't support it
+        }
+
+        @Override
+        public void unfixColor()
+        {
+        }
+
+        private void addLight(int l)
+        {
+            if (this.lightSize >= this.lightData.length)
+            {
+                int[] n = new int[this.lightData.length * 2];
+                System.arraycopy(this.lightData, 0, n, 0, this.lightSize);
+                this.lightData = n;
+            }
+            this.lightData[this.lightSize++] = l;
+        }
+
+        public int[] getLightmapData()
+        {
+            return Arrays.copyOf(this.lightData, this.lightSize);
+        }
+    }
+
+    private static class LightmapModelVAO implements IModelVAO
+    {
+        private int vao;
+        private int count;
+        private int[] buffers;
+        
+        public LightmapModelVAO(ModelVAOData data, int[] lightmap)
+        {
+            this.vao = org.lwjgl.opengl.GL30.glGenVertexArrays();
+            org.lwjgl.opengl.GL30.glBindVertexArray(this.vao);
+
+            int vertexBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            int normalBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            int tangentsBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            int texCoordBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            int midTexCoordBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            int lightmapBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
+            
+            this.buffers = new int[] {vertexBuffer, normalBuffer, tangentsBuffer, texCoordBuffer, midTexCoordBuffer, lightmapBuffer};
+
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, vertexBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.vertices(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION, 3, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
+
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, normalBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.normals(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.NORMAL, 3, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
+
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, texCoordBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.texCoords(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.TEXTURE_UV, 2, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
+
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, tangentsBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.tangents(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS, 4, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
+
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, midTexCoordBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.texCoords(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV, 2, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
+            
+            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmapBuffer);
+            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
+            org.lwjgl.opengl.GL30.glVertexAttribIPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV, 2, org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT, 0, 0);
+
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.NORMAL);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TEXTURE_UV);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV);
+            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV);
+
+            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR);
+            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV);
+
+            this.count = data.vertices().length / 3;
+            
+            org.lwjgl.opengl.GL30.glBindVertexArray(0);
+        }
+
+        @Override
+        public void render(net.minecraft.client.render.VertexFormat format, float r, float g, float b, float a, int light, int overlay)
+        {
+            org.lwjgl.opengl.GL30.glBindVertexArray(this.vao);
+
+            org.lwjgl.opengl.GL20.glVertexAttrib4f(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR, r, g, b, a);
+            org.lwjgl.opengl.GL30.glVertexAttribI2i(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV, overlay & 0xFFFF, overlay >> 16 & 0xFFFF);
+            
+            boolean hasShaders = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled();
+            if (hasShaders) 
+            {
+                org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV);
+                org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS);
+            }
+            else 
+            {
+                org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV);
+                org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS);
+            }
+
+            org.lwjgl.opengl.GL11.glDrawArrays(org.lwjgl.opengl.GL11.GL_TRIANGLES, 0, this.count);
+            org.lwjgl.opengl.GL30.glBindVertexArray(0);
+        }
+        
+        public void delete()
+        {
+             org.lwjgl.opengl.GL30.glDeleteVertexArrays(this.vao);
+             if (this.buffers != null)
+             {
+                 for (int buffer : this.buffers)
+                 {
+                     org.lwjgl.opengl.GL15.glDeleteBuffers(buffer);
+                 }
+             }
+        }
     }
 }
