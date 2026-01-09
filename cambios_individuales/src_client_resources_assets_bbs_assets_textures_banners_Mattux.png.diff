@@ -1,0 +1,10 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/resources/assets/bbs/assets/textures/banners/Mattux.png b/src/client/resources/assets/bbs/assets/textures/banners/Mattux.png
+new file mode 100644
+index 00000000..685b63b4
+Binary files /dev/null and b/src/client/resources/assets/bbs/assets/textures/banners/Mattux.png differ

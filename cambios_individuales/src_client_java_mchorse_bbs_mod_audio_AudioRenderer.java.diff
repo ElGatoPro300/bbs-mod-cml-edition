@@ -1,0 +1,198 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/audio/AudioRenderer.java b/src/client/java/mchorse/bbs_mod/audio/AudioRenderer.java
+index b6468d7c..4372353b 100644
+--- a/src/client/java/mchorse/bbs_mod/audio/AudioRenderer.java
++++ b/src/client/java/mchorse/bbs_mod/audio/AudioRenderer.java
+@@ -22,158 +22,181 @@ import java.util.Map;
+ public class AudioRenderer
+ {
+     public static void renderAll(Batcher2D batcher, List<AudioClip> clips, float tick, int x, int y, int w, int h, int sw, int sh)
+     {
+         if (!BBSSettings.audioWaveformVisible.get())
+         {
+             return;
+         }
+ 
+         for (AudioClip clip : clips)
+         {
+             SoundBuffer audio = BBSModClient.getSounds().get(clip.audio.get(), true);
+ 
+             if (audio != null && audio.getWaveform() != null && clip.isInside((int) tick))
+             {
+                 renderWaveform(batcher, audio, clip, tick, x, y, w, h, sw, sh);
+ 
+                 y += h + 8;
+             }
+         }
+     }
+ 
+     public static void renderWaveform(Batcher2D batcher, SoundBuffer audio, AudioClip clip, float tick, int x, int y, int w, int h, int sw, int sh)
+     {
+         final float brightness = 0.45F;
+         int half = w / 2;
+ 
+         /* Draw background */
+         batcher.gradientVBox(x + 2, y + 2, x + w - 2, y + h, 0, Colors.A50);
+         batcher.box(x + 1, y, x + 2, y + h, 0xaaffffff);
+         batcher.box(x + w - 2, y, x + w - 1, y + h, 0xaaffffff);
+         batcher.box(x, y + h - 1, x + w, y + h, 0xffffffff);
+ 
+         batcher.clip(x + 2, y + 2, w - 4, h - 4, sw, sh);
+ 
+         Waveform wave = audio.getWaveform();
+ 
+         float duration = w / (float) wave.getPixelsPerSecond();
+         float playback = TimeUtils.toSeconds(tick - clip.tick.get() + clip.offset.get());
+         int offset = (int) (playback * wave.getPixelsPerSecond());
+         int waveW = wave.getWidth();
+ 
+         /* Draw the waveform */
+         int runningOffset = waveW - offset;
+ 
+         if (runningOffset > 0)
+         {
+             wave.render(batcher, Colors.WHITE, x + half, y, half, h, playback, playback + duration / 2);
+         }
+ 
+         /* Draw the passed waveform */
+         if (offset > 0)
+         {
+             int color = Colors.COLOR.set(brightness, brightness, brightness, 1F).getARGBColor();
+ 
+             wave.render(batcher, color, x, y, half, h, playback - duration / 2, playback);
+         }
+ 
+         batcher.unclip(sw, sh);
+ 
+         batcher.box(x + half, y + 1, x + half + 1, y + h - 1, 0xff57f52a);
+ 
+         FontRenderer fontRenderer = batcher.getFont();
+ 
+         if (BBSSettings.audioWaveformFilename.get())
+         {
+             batcher.textCard(audio.getId().toString(), x + 8, y + h / 2 - 4, 0xffffff, 0x99000000);
+         }
+ 
+         if (BBSSettings.audioWaveformTime.get())
+         {
+             int milliseconds = (int) (tick % 20 == 0 ? 0 : tick % 20 * 5D);
+ 
+             String tickLabel = tick + "t (" + (int) playback + "." + StringUtils.leftPad(String.valueOf(milliseconds), 2, "0") + "s)";
+ 
+             batcher.textCard(tickLabel, x + w - 8 - fontRenderer.getWidth(tickLabel), y + h / 2 - 4, 0xffffff, 0x99000000);
+         }
+     }
+ 
+     public static boolean renderAudio(File file, List<AudioClip> clips, int totalDuration, int sampleRate, float from, float to)
+     {
+         float total = totalDuration / 20F;
+         Map<AudioClip, Wave> map = new HashMap<>();
+ 
+         for (AudioClip clip : clips)
+         {
+             if (!clip.enabled.get())
+             {
+                 continue;
+             }
+ 
+             try
+             {
+                 Wave wave = AudioReader.read(BBSMod.getProvider(), clip.audio.get());
+ 
+                 map.put(clip, wave);
+             }
+             catch (Exception e)
+             {
+                 e.printStackTrace();
+             }
+         }
+ 
+         if (map.isEmpty())
+         {
+             return false;
+         }
+ 
+         int byteRate = sampleRate * 2;
+         int totalBytes = (int) Math.ceil(total * byteRate);
+         /* Ensure the buffer size is large enough to hold all
+          * audio data and maintain byte alignment. */
+         byte[] bytes = new byte[totalBytes + (totalBytes % 2)];
+         Wave finalWave = new Wave(1, 1, sampleRate, 16, bytes);
+         ByteBuffer buffer = MemoryUtil.memAlloc(2);
+ 
+         for (AudioClip clip : clips)
+         {
+             try
+             {
+                 Wave wave = map.get(clip);
+-
+                 if (wave != null)
+                 {
++                    /* Aplicar pendientes (envelope) al volumen durante la mezcla
++                     * Mezclamos por peque├▒os trozos para que el volumen siga la curva */
++                    float clipDurationSec = TimeUtils.toSeconds(clip.duration.get());
++                    float clipStartSec = TimeUtils.toSeconds(clip.tick.get());
++                    float sourceStartSec = TimeUtils.toSeconds(clip.offset.get());
++
++                    /* Paso de mezcla: 10 ms para transiciones suaves */
++                    final float stepSec = 0.01F;
++
++                    for (float t = 0F; t < clipDurationSec; t += stepSec)
++                    {
++                        float chunkSec = Math.min(stepSec, clipDurationSec - t);
++                        /* Envelope espera ticks relativos dentro del clip */
++                        float tickWithinClip = (t * 20F);
++                        float factor = clip.envelope.factorEnabled(clip.duration.get(), tickWithinClip);
++                        float gain = (clip.volume.get() / 100F) * factor;
++
++                        if (gain <= 0F)
++                        {
++                            continue;
++                        }
++
+                     finalWave.add(buffer, wave,
+-                        TimeUtils.toSeconds(clip.tick.get()),
+-                        TimeUtils.toSeconds(clip.offset.get()),
+-                        TimeUtils.toSeconds(clip.duration.get())
++                        TimeUtils.toSeconds(clip.tick.get()) + t,
++                        TimeUtils.toSeconds(clip.offset.get()) + t,
++                        chunkSec,
++                        gain
+                     );
++                    }
+                 }
+             }
+             catch (Exception e)
+             {
+                 e.printStackTrace();
+             }
+         }
+ 
+         MemoryUtil.memFree(buffer);
+ 
+         try
+         {
+             if (from != to && (from >= 0 && to >= 0))
+             {
+                 finalWave = finalWave.excerptMono(from, to);
+             }
+ 
+             WaveWriter.write(file, finalWave);
+ 
+             return true;
+         }
+         catch (IOException e)
+         {
+             e.printStackTrace();
+         }
+ 
+         return false;
+     }
+-}
+\ No newline at end of file
++}

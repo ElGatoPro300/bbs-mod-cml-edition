@@ -1,0 +1,73 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/forms/forms/utils/PivotSettings.java b/src/main/java/mchorse/bbs_mod/forms/forms/utils/PivotSettings.java
+new file mode 100644
+index 00000000..a2cbf543
+--- /dev/null
++++ b/src/main/java/mchorse/bbs_mod/forms/forms/utils/PivotSettings.java
+@@ -0,0 +1,60 @@
++package mchorse.bbs_mod.forms.forms.utils;
++
++import mchorse.bbs_mod.data.IMapSerializable;
++import mchorse.bbs_mod.data.types.MapType;
++import mchorse.bbs_mod.data.DataStorageUtils;
++import org.joml.Vector4f;
++import java.util.Objects;
++
++/**
++ * PivotSettings
++ *
++ * Tipo compuesto para una sola pista de tiempo que encapsula:
++ * - auto: si el pivote se calcula autom├íticamente
++ * - pivot: vector X/Y/Z (W sin uso) cuando auto es falso
++ */
++public class PivotSettings implements IMapSerializable
++{
++    public boolean auto = true;
++    public Vector4f pivot = new Vector4f();
++
++    public PivotSettings() {}
++
++    public PivotSettings(boolean auto, float x, float y, float z)
++    {
++        this.auto = auto;
++        this.pivot.set(x, y, z, 0f);
++    }
++
++    @Override
++    public void toData(MapType data)
++    {
++        data.putBool("auto", this.auto);
++        data.put("pivot", DataStorageUtils.vector4fToData(this.pivot));
++    }
++
++    @Override
++    public void fromData(MapType data)
++    {
++        this.auto = data.getBool("auto");
++        if (data.has("pivot"))
++        {
++            this.pivot = DataStorageUtils.vector4fFromData(data.get("pivot").asList());
++        }
++    }
++
++    @Override
++    public boolean equals(Object o)
++    {
++        if (this == o) return true;
++        if (!(o instanceof PivotSettings)) return false;
++        PivotSettings that = (PivotSettings) o;
++        return this.auto == that.auto && Objects.equals(this.pivot, that.pivot);
++    }
++
++    @Override
++    public int hashCode()
++    {
++        return Objects.hash(this.auto, this.pivot);
++    }
++}
+\ No newline at end of file

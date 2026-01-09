@@ -1,0 +1,32 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/particles/components/IComponentParticleRender.java b/src/client/java/mchorse/bbs_mod/particles/components/IComponentParticleRender.java
+index be7ae971..98883c4d 100644
+--- a/src/client/java/mchorse/bbs_mod/particles/components/IComponentParticleRender.java
++++ b/src/client/java/mchorse/bbs_mod/particles/components/IComponentParticleRender.java
+@@ -2,17 +2,17 @@ package mchorse.bbs_mod.particles.components;
+ 
+ import mchorse.bbs_mod.particles.emitter.Particle;
+ import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+-import net.minecraft.client.render.BufferBuilder;
++import net.minecraft.client.render.VertexConsumer;
+ import net.minecraft.client.render.VertexFormat;
+ import org.joml.Matrix4f;
+ 
+ public interface IComponentParticleRender extends IComponentBase
+ {
+     public void preRender(ParticleEmitter emitter, float transition);
+ 
+-    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, BufferBuilder builder, Matrix4f matrix, int overlay, float transition);
++    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, VertexConsumer builder, Matrix4f matrix, int overlay, float transition);
+ 
+-    public void renderUI(Particle particle, BufferBuilder builder, Matrix4f matrix, float transition);
++    public void renderUI(Particle particle, VertexConsumer builder, Matrix4f matrix, float transition);
+ 
+     public void postRender(ParticleEmitter emitter, float transition);
+ }
+\ No newline at end of file

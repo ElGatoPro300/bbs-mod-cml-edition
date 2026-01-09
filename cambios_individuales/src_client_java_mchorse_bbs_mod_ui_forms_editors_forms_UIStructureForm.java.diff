@@ -1,0 +1,33 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIStructureForm.java b/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIStructureForm.java
+new file mode 100644
+index 00000000..255e899a
+--- /dev/null
++++ b/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIStructureForm.java
+@@ -0,0 +1,20 @@
++package mchorse.bbs_mod.ui.forms.editors.forms;
++
++import mchorse.bbs_mod.forms.forms.StructureForm;
++import mchorse.bbs_mod.l10n.keys.IKey;
++import mchorse.bbs_mod.ui.forms.editors.panels.UIStructureFormPanel;
++import mchorse.bbs_mod.ui.utils.icons.Icons;
++
++public class UIStructureForm extends UIForm<StructureForm>
++{
++    public UIStructureForm()
++    {
++        super();
++
++        this.defaultPanel = new UIStructureFormPanel(this);
++
++        /* Usar el icono de ├írbol para estructuras */
++        this.registerPanel(this.defaultPanel, IKey.raw("Structure"), Icons.TREE);
++        this.registerDefaultPanels();
++    }
++}
+\ No newline at end of file

@@ -1,0 +1,57 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/camera/clips/misc/AudioClip.java b/src/main/java/mchorse/bbs_mod/camera/clips/misc/AudioClip.java
+index 2a62603d..20b928e9 100644
+--- a/src/main/java/mchorse/bbs_mod/camera/clips/misc/AudioClip.java
++++ b/src/main/java/mchorse/bbs_mod/camera/clips/misc/AudioClip.java
+@@ -12,41 +12,44 @@ import java.util.function.Predicate;
+ public class AudioClip extends CameraClip
+ {
+     public static final Predicate<Clip> NO_AUDIO = (clip) -> !(clip instanceof AudioClip);
+ 
+     public ValueLink audio = new ValueLink("audio", null);
+     public ValueInt offset = new ValueInt("offset", 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
++    /* Volumen m├íximo del clip: 0ÔÇô400 (por defecto 100) */
++    public ValueInt volume = new ValueInt("volume", 100, 0, 400);
+ 
+     public AudioClip()
+     {
+         super();
+ 
+         this.add(this.audio);
+         this.add(this.offset);
++        this.add(this.volume);
+     }
+ 
+     @Override
+     public void shiftLeft(int tick)
+     {
+         super.shiftLeft(tick);
+ 
+         this.offset.set(this.offset.get() - (this.tick.get() - tick));
+     }
+ 
+     @Override
+     protected void applyClip(ClipContext context, Position position)
+     {}
+ 
+     @Override
+     protected Clip create()
+     {
+         return new AudioClip();
+     }
+ 
+     @Override
+     protected void breakDownClip(Clip original, int offset)
+     {
+         super.breakDownClip(original, offset);
+ 
+         this.offset.set(this.offset.get() + offset);
+     }
+-}
+\ No newline at end of file
++}

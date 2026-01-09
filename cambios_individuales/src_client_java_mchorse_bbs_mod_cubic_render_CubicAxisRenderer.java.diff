@@ -1,0 +1,49 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/cubic/render/CubicAxisRenderer.java b/src/client/java/mchorse/bbs_mod/cubic/render/CubicAxisRenderer.java
+index 31a029be..858b2aa8 100644
+--- a/src/client/java/mchorse/bbs_mod/cubic/render/CubicAxisRenderer.java
++++ b/src/client/java/mchorse/bbs_mod/cubic/render/CubicAxisRenderer.java
+@@ -10,36 +10,36 @@ import org.joml.Vector4f;
+ public class CubicAxisRenderer implements ICubicRenderer
+ {
+     private Vector4f vector = new Vector4f();
+ 
+     @Override
+     public boolean renderGroup(BufferBuilder builder, MatrixStack stack, ModelGroup group, Model model)
+     {
+         stack.push();
+-        stack.translate(group.initial.translate.x / 16, group.initial.translate.y / 16, group.initial.translate.z / 16);
++        stack.translate(group.current.pivot.x / 16, group.current.pivot.y / 16, group.current.pivot.z / 16);
+ 
+         Matrix4f matrix = stack.peek().getPositionMatrix();
+         float f = 0.1F;
+ 
+         matrix.transform(this.vector.set(0, 0, 0, 1));
+         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(1, 0, 0, 1).next();
+ 
+         matrix.transform(this.vector.set(f, 0, 0, 1));
+         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(1, 0, 0, 1).next();
+ 
+         matrix.transform(this.vector.set(0, 0, 0, 1));
+         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, 1).next();
+ 
+         matrix.transform(this.vector.set(0, f, 0, 1));
+         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, 1).next();
+ 
+         matrix.transform(this.vector.set(0, 0, 0, 1));
+         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 0, 1, 1).next();
+ 
+         matrix.transform(this.vector.set(0, 0, f, 1));
+         builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 0, 1, 1).next();
+ 
+         stack.pop();
+ 
+         return false;
+     }
+ }
+\ No newline at end of file

@@ -1,0 +1,103 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/forms/FormCategories.java b/src/client/java/mchorse/bbs_mod/forms/FormCategories.java
+index cef4f62f..53f61e7c 100644
+--- a/src/client/java/mchorse/bbs_mod/forms/FormCategories.java
++++ b/src/client/java/mchorse/bbs_mod/forms/FormCategories.java
+@@ -1,5 +1,6 @@
+ package mchorse.bbs_mod.forms;
+ 
++import mchorse.bbs_mod.BBSSettings;
+ import mchorse.bbs_mod.forms.categories.FormCategory;
+ import mchorse.bbs_mod.forms.sections.ExtraFormSection;
+ import mchorse.bbs_mod.forms.sections.FormSection;
+@@ -7,6 +8,7 @@ import mchorse.bbs_mod.forms.sections.ModelFormSection;
+ import mchorse.bbs_mod.forms.sections.ParticleFormSection;
+ import mchorse.bbs_mod.forms.sections.RecentFormSection;
+ import mchorse.bbs_mod.forms.sections.UserFormSection;
++import mchorse.bbs_mod.forms.sections.StructureFormSection;
+ import mchorse.bbs_mod.utils.watchdog.IWatchDogListener;
+ import mchorse.bbs_mod.utils.watchdog.WatchDogEvent;
+ 
+@@ -17,71 +19,76 @@ import java.util.List;
+ public class FormCategories implements IWatchDogListener
+ {
+     public final VisibilityManager visibility = new VisibilityManager();
+ 
+     private List<FormSection> sections = new ArrayList<>();
+     private RecentFormSection recentForms = new RecentFormSection(this);
+     private UserFormSection userForms = new UserFormSection(this);
+ 
+     private long lastUpdate;
+ 
+     /* Setup */
+ 
+     public void setup()
+     {
+         this.sections.clear();
+         this.sections.add(this.recentForms);
+         this.sections.add(this.userForms);
+         this.sections.add(new ModelFormSection(this));
+         this.sections.add(new ParticleFormSection(this));
++        /* Mostrar la categor├¡a de estructuras s├│lo si est├í activada en ajustes */
++        if (BBSSettings.visualizeStructures != null && BBSSettings.visualizeStructures.get())
++        {
++            this.sections.add(new StructureFormSection(this));
++        }
+         this.sections.add(new ExtraFormSection(this));
+ 
+         for (FormSection section : this.sections)
+         {
+             section.initiate();
+         }
+ 
+         this.markDirty();
+         this.visibility.read();
+     }
+ 
+     public long getLastUpdate()
+     {
+         return lastUpdate;
+     }
+ 
+     public void markDirty()
+     {
+         this.lastUpdate = System.currentTimeMillis();
+     }
+ 
+     public RecentFormSection getRecentForms()
+     {
+         return this.recentForms;
+     }
+ 
+     public UserFormSection getUserForms()
+     {
+         return this.userForms;
+     }
+ 
+     public List<FormCategory> getAllCategories()
+     {
+         List<FormCategory> formCategories = new ArrayList<>();
+ 
+         for (FormSection section : this.sections)
+         {
+             formCategories.addAll(section.getCategories());
+         }
+ 
+         return formCategories;
+     }
+ 
+     @Override
+     public void accept(Path path, WatchDogEvent event)
+     {
+         for (FormSection section : this.sections)
+         {
+             section.accept(path, event);
+         }
+     }
+ }
+\ No newline at end of file

@@ -1,0 +1,26 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/settings/values/misc/ValuePivotSettings.java b/src/main/java/mchorse/bbs_mod/settings/values/misc/ValuePivotSettings.java
+new file mode 100644
+index 00000000..5a794392
+--- /dev/null
++++ b/src/main/java/mchorse/bbs_mod/settings/values/misc/ValuePivotSettings.java
+@@ -0,0 +1,13 @@
++package mchorse.bbs_mod.settings.values.misc;
++
++import mchorse.bbs_mod.forms.forms.utils.PivotSettings;
++import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
++import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
++
++public class ValuePivotSettings extends BaseKeyframeFactoryValue<PivotSettings>
++{
++    public ValuePivotSettings(String id, PivotSettings value)
++    {
++        super(id, KeyframeFactories.PIVOT_SETTINGS, value);
++    }
++}
+\ No newline at end of file

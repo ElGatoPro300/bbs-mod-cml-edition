@@ -1,0 +1,173 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/forms/FormUtilsClient.java b/src/client/java/mchorse/bbs_mod/forms/FormUtilsClient.java
+index 9c97baee..2dbcead9 100644
+--- a/src/client/java/mchorse/bbs_mod/forms/FormUtilsClient.java
++++ b/src/client/java/mchorse/bbs_mod/forms/FormUtilsClient.java
+@@ -14,6 +14,7 @@ import mchorse.bbs_mod.forms.forms.ModelForm;
+ import mchorse.bbs_mod.forms.forms.ParticleForm;
+ import mchorse.bbs_mod.forms.forms.TrailForm;
+ import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
++import mchorse.bbs_mod.forms.forms.StructureForm;
+ import mchorse.bbs_mod.forms.renderers.AnchorFormRenderer;
+ import mchorse.bbs_mod.forms.renderers.BillboardFormRenderer;
+ import mchorse.bbs_mod.forms.renderers.BlockFormRenderer;
+@@ -28,6 +29,7 @@ import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+ import mchorse.bbs_mod.forms.renderers.ParticleFormRenderer;
+ import mchorse.bbs_mod.forms.renderers.TrailFormRenderer;
+ import mchorse.bbs_mod.forms.renderers.VanillaParticleFormRenderer;
++import mchorse.bbs_mod.forms.renderers.StructureFormRenderer;
+ import mchorse.bbs_mod.ui.framework.UIContext;
+ import net.minecraft.client.render.BufferBuilder;
+ import net.minecraft.client.render.RenderLayer;
+@@ -46,139 +48,145 @@ import java.util.Stack;
+ public class FormUtilsClient
+ {
+     private static Map<Class, IFormRendererFactory> map = new HashMap<>();
+     private static CustomVertexConsumerProvider customVertexConsumerProvider;
+     private static Stack<Form> currentForm = new Stack<>();
+ 
+     static
+     {
+         BlockBufferBuilderStorage storage = new BlockBufferBuilderStorage();
+         SortedMap sortedMap = Util.make(new Object2ObjectLinkedOpenHashMap(), map -> {
+             map.put(TexturedRenderLayers.getEntitySolid(), storage.get(RenderLayer.getSolid()));
+             map.put(TexturedRenderLayers.getEntityCutout(), storage.get(RenderLayer.getCutout()));
+             map.put(TexturedRenderLayers.getBannerPatterns(), storage.get(RenderLayer.getCutoutMipped()));
+             map.put(TexturedRenderLayers.getEntityTranslucentCull(), storage.get(RenderLayer.getTranslucent()));
++            /* Asegurar soporte de capas base de bloques para miniaturas (vidrio, portales, hojas, etc.) */
++            assignBufferBuilder(map, RenderLayer.getSolid());
++            assignBufferBuilder(map, RenderLayer.getCutout());
++            assignBufferBuilder(map, RenderLayer.getTranslucent());
++            assignBufferBuilder(map, RenderLayer.getCutoutMipped());
+             assignBufferBuilder(map, TexturedRenderLayers.getShieldPatterns());
+             assignBufferBuilder(map, TexturedRenderLayers.getBeds());
+             assignBufferBuilder(map, TexturedRenderLayers.getShulkerBoxes());
+             assignBufferBuilder(map, TexturedRenderLayers.getSign());
+             assignBufferBuilder(map, TexturedRenderLayers.getHangingSign());
+             map.put(TexturedRenderLayers.getChest(), new BufferBuilder(786432));
+             assignBufferBuilder(map, RenderLayer.getArmorGlint());
+             assignBufferBuilder(map, RenderLayer.getArmorEntityGlint());
+             assignBufferBuilder(map, RenderLayer.getGlint());
+             assignBufferBuilder(map, RenderLayer.getDirectGlint());
+             assignBufferBuilder(map, RenderLayer.getGlintTranslucent());
+             assignBufferBuilder(map, RenderLayer.getEntityGlint());
+             assignBufferBuilder(map, RenderLayer.getDirectEntityGlint());
+             assignBufferBuilder(map, RenderLayer.getWaterMask());
+             ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer));
+         });
+ 
+         customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferBuilder(1536), sortedMap);
+ 
+         register(BillboardForm.class, BillboardFormRenderer::new);
+         register(ExtrudedForm.class, ExtrudedFormRenderer::new);
+         register(LabelForm.class, LabelFormRenderer::new);
+         register(ModelForm.class, ModelFormRenderer::new);
+         register(ParticleForm.class, ParticleFormRenderer::new);
+         register(BlockForm.class, BlockFormRenderer::new);
+         register(ItemForm.class, ItemFormRenderer::new);
+         register(AnchorForm.class, AnchorFormRenderer::new);
+         register(MobForm.class, MobFormRenderer::new);
+         register(VanillaParticleForm.class, VanillaParticleFormRenderer::new);
+         register(TrailForm.class, TrailFormRenderer::new);
+         register(FramebufferForm.class, FramebufferFormRenderer::new);
++        register(StructureForm.class, StructureFormRenderer::new);
+     }
+ 
+     private static void assignBufferBuilder(Object2ObjectLinkedOpenHashMap<RenderLayer, BufferBuilder> builderStorage, RenderLayer layer)
+     {
+         builderStorage.put(layer, new BufferBuilder(layer.getExpectedBufferSize()));
+     }
+ 
+     public static CustomVertexConsumerProvider getProvider()
+     {
+         return customVertexConsumerProvider;
+     }
+ 
+     public static <T extends Form> void register(Class<T> clazz, IFormRendererFactory<T> function)
+     {
+         map.put(clazz, function);
+     }
+ 
+     public static Form getCurrentForm()
+     {
+         return currentForm.isEmpty() ? null : currentForm.peek();
+     }
+ 
+     public static FormRenderer getRenderer(Form form)
+     {
+         if (form == null)
+         {
+             return null;
+         }
+ 
+         if (form.getRenderer() instanceof FormRenderer renderer)
+         {
+             return renderer;
+         }
+ 
+         IFormRendererFactory factory = map.get(form.getClass());
+ 
+         if (factory != null)
+         {
+             FormRenderer formRenderer = factory.create(form);
+ 
+             form.setRenderer(formRenderer);
+ 
+             return formRenderer;
+         }
+ 
+         return null;
+     }
+ 
+     public static void renderUI(Form form, UIContext context, int x1, int y1, int x2, int y2)
+     {
+         FormRenderer renderer = getRenderer(form);
+ 
+         if (renderer != null)
+         {
+             renderer.renderUI(context, x1, y1, x2, y2);
+         }
+     }
+ 
+     public static void render(Form form, FormRenderingContext context)
+     {
+         FormRenderer renderer = getRenderer(form);
+ 
+         if (renderer != null)
+         {
+             currentForm.push(form);
+ 
+             try
+             {
+                 renderer.render(context);
+             }
+             catch (Exception e)
+             {}
+ 
+             currentForm.pop();
+         }
+     }
+ 
+     public static List<String> getBones(Form form)
+     {
+         FormRenderer renderer = getRenderer(form);
+ 
+         if (renderer != null)
+         {
+             return renderer.getBones();
+         }
+ 
+         return Collections.emptyList();
+     }
+ 
+     public static interface IFormRendererFactory <T extends Form>
+     {
+         public FormRenderer<T> create(T form);
+     }
+ }
+\ No newline at end of file

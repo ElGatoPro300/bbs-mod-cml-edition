@@ -1,0 +1,40 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/net/minecraft/client/render/BBSModRenderLayerHelper.java b/src/client/java/net/minecraft/client/render/BBSModRenderLayerHelper.java
+new file mode 100644
+index 00000000..4d4df62d
+--- /dev/null
++++ b/src/client/java/net/minecraft/client/render/BBSModRenderLayerHelper.java
+@@ -0,0 +1,27 @@
++package net.minecraft.client.render;
++
++import net.minecraft.util.Identifier;
++
++public class BBSModRenderLayerHelper
++{
++    public static RenderLayer createParticleLayer(Identifier texture)
++    {
++        RenderLayer.MultiPhaseParameters params = RenderLayer.MultiPhaseParameters.builder()
++            .program(RenderPhase.ENTITY_TRANSLUCENT_PROGRAM)
++            .texture(new RenderPhase.Texture(texture, false, false))
++            .transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY)
++            .cull(RenderPhase.DISABLE_CULLING)
++            .lightmap(RenderPhase.ENABLE_LIGHTMAP)
++            .overlay(RenderPhase.ENABLE_OVERLAY_COLOR)
++            .build(false);
++
++        return RenderLayer.of("bbs_particle",
++            VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL,
++            VertexFormat.DrawMode.TRIANGLES,
++            256,
++            true,
++            true,
++            params
++        );
++    }
++}
+\ No newline at end of file

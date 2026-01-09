@@ -1,0 +1,99 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/particles/components/appearance/ParticleComponentAppearanceTinting.java b/src/client/java/mchorse/bbs_mod/particles/components/appearance/ParticleComponentAppearanceTinting.java
+index f5805a7d..94dd94a9 100644
+--- a/src/client/java/mchorse/bbs_mod/particles/components/appearance/ParticleComponentAppearanceTinting.java
++++ b/src/client/java/mchorse/bbs_mod/particles/components/appearance/ParticleComponentAppearanceTinting.java
+@@ -11,84 +11,84 @@ import mchorse.bbs_mod.particles.components.appearance.colors.Solid;
+ import mchorse.bbs_mod.particles.components.appearance.colors.Tint;
+ import mchorse.bbs_mod.particles.emitter.Particle;
+ import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+-import net.minecraft.client.render.BufferBuilder;
++import net.minecraft.client.render.VertexConsumer;
+ import net.minecraft.client.render.VertexFormat;
+ import org.joml.Matrix4f;
+ 
+ public class ParticleComponentAppearanceTinting extends ParticleComponentBase implements IComponentParticleRender
+ {
+     public Tint color = new Solid(MolangParser.ONE, MolangParser.ONE, MolangParser.ONE, MolangParser.ONE);
+ 
+     @Override
+     protected void toData(MapType data)
+     {
+         BaseType color = this.color.toData();
+ 
+         if (!ParticleParser.isEmpty(color))
+         {
+             data.put("color", color);
+         }
+     }
+ 
+     @Override
+     public ParticleComponentBase fromData(BaseType data, MolangParser parser) throws MolangException
+     {
+         if (!data.isMap())
+         {
+             return super.fromData(data, parser);
+         }
+ 
+         MapType map = data.asMap();
+ 
+         if (map.has("color"))
+         {
+             BaseType color = map.get("color");
+ 
+             if (color.isList() || BaseType.isPrimitive(color))
+             {
+                 this.color = Tint.parseColor(color, parser);
+             }
+             else if (color.isMap())
+             {
+                 this.color = Tint.parseGradient(color.asMap(), parser);
+             }
+         }
+ 
+         return super.fromData(map, parser);
+     }
+ 
+     /* Interface implementations */
+ 
+     @Override
+     public void preRender(ParticleEmitter emitter, float transition)
+     {}
+ 
+     @Override
+-    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, BufferBuilder builder, Matrix4f matrix, int overlay, float transition)
++    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, VertexConsumer builder, Matrix4f matrix, int overlay, float transition)
+     {
+         this.renderUI(particle, builder, matrix, transition);
+     }
+ 
+     @Override
+-    public void renderUI(Particle particle, BufferBuilder builder, Matrix4f matrix, float transition)
++    public void renderUI(Particle particle, VertexConsumer builder, Matrix4f matrix, float transition)
+     {
+         if (this.color != null)
+         {
+             this.color.compute(particle);
+         }
+         else
+         {
+             particle.r = particle.g = particle.b = particle.a = 1;
+         }
+     }
+ 
+     @Override
+     public void postRender(ParticleEmitter emitter, float transition)
+     {}
+ 
+     @Override
+     public int getSortingIndex()
+     {
+         return -10;
+     }
+ }
+\ No newline at end of file

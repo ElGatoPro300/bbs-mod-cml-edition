@@ -1,0 +1,80 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/forms/categories/UserFormCategory.java b/src/client/java/mchorse/bbs_mod/forms/categories/UserFormCategory.java
+index e357f273..8493d7a1 100644
+--- a/src/client/java/mchorse/bbs_mod/forms/categories/UserFormCategory.java
++++ b/src/client/java/mchorse/bbs_mod/forms/categories/UserFormCategory.java
+@@ -11,47 +11,68 @@ import mchorse.bbs_mod.ui.forms.categories.UIUserFormCategory;
+ public class UserFormCategory extends FormCategory
+ {
+     private UserFormSection section;
+ 
+     public UserFormCategory(IKey title, ValueBoolean visibility, UserFormSection section)
+     {
+         super(title, visibility);
+ 
+         this.section = section;
+     }
+ 
+     @Override
+     public boolean canModify(Form form)
+     {
+         return true;
+     }
+ 
+     @Override
+     public UIFormCategory createUI(UIFormList list)
+     {
+         return new UIUserFormCategory(this, list);
+     }
+ 
+     @Override
+     public void addForm(Form form)
+     {
+         super.addForm(form);
+ 
+         this.section.writeUserCategories(this);
+     }
+ 
++    @Override
++    public void addForm(int index, Form form)
++    {
++        super.addForm(index, form);
++
++        this.section.writeUserCategories(this);
++    }
++
+     @Override
+     public void replaceForm(int index, Form form)
+     {
+         super.replaceForm(index, form);
+ 
+         this.section.writeUserCategories(this);
+     }
+ 
+     @Override
+     public void removeForm(Form form)
+     {
+         super.removeForm(form);
+ 
+         this.section.writeUserCategories(this);
+     }
++
++    public void moveForm(int from, int to)
++    {
++        java.util.List<Form> forms = this.getDirectForms();
++
++        if (from >= 0 && from < forms.size() && to >= 0 && to < forms.size() && from != to)
++        {
++            Form form = forms.remove(from);
++            forms.add(to, form);
++
++            this.section.writeUserCategories(this);
++        }
++    }
+ }
+\ No newline at end of file

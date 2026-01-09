@@ -1,0 +1,121 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/forms/CustomVertexConsumerProvider.java b/src/client/java/mchorse/bbs_mod/forms/CustomVertexConsumerProvider.java
+index 111b736b..69d15a9d 100644
+--- a/src/client/java/mchorse/bbs_mod/forms/CustomVertexConsumerProvider.java
++++ b/src/client/java/mchorse/bbs_mod/forms/CustomVertexConsumerProvider.java
+@@ -1,9 +1,11 @@
+ package mchorse.bbs_mod.forms;
+ 
+ import com.mojang.blaze3d.systems.RenderSystem;
++import mchorse.bbs_mod.client.BBSRendering;
+ import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
+ import net.minecraft.client.render.BufferBuilder;
+ import net.minecraft.client.render.RenderLayer;
++import net.minecraft.client.render.TexturedRenderLayers;
+ import net.minecraft.client.render.VertexConsumer;
+ import net.minecraft.client.render.VertexConsumerProvider;
+ import org.lwjgl.opengl.GL11;
+@@ -15,76 +17,92 @@ import java.util.function.Function;
+ public class CustomVertexConsumerProvider extends VertexConsumerProvider.Immediate
+ {
+     private static Consumer<RenderLayer> runnables;
+ 
+     private Function<VertexConsumer, VertexConsumer> substitute;
+     private boolean ui;
+ 
+     public static void drawLayer(RenderLayer layer)
+     {
+         if (runnables != null)
+         {
+             runnables.accept(layer);
+         }
+     }
+ 
+     public static void hijackVertexFormat(Consumer<RenderLayer> runnable)
+     {
+         runnables = runnable;
+     }
+ 
+     public static void clearRunnables()
+     {
+         runnables = null;
+     }
+ 
+     public CustomVertexConsumerProvider(BufferBuilder fallback, Map<RenderLayer, BufferBuilder> layers)
+     {
+         super(fallback, layers);
+     }
+ 
+     public void setSubstitute(Function<VertexConsumer, VertexConsumer> substitute)
+     {
+         this.substitute = substitute;
+ 
+         if (this.substitute == null)
+         {
+             RecolorVertexConsumer.newColor = null;
+         }
+     }
+ 
+     public void setUI(boolean ui)
+     {
+         this.ui = ui;
+     }
+ 
+     @Override
+     public VertexConsumer getBuffer(RenderLayer renderLayer)
+     {
+-        VertexConsumer buffer = super.getBuffer(renderLayer);
++        // Si hay recolor activo con alpha < 1, forzar capas cutout a transl├║cidas
++        // para que el fade se aplique tambi├®n a entidades/banners con shaders.
++        RenderLayer selectedLayer = renderLayer;
++        if (RecolorVertexConsumer.newColor != null && RecolorVertexConsumer.newColor.a < 0.999f)
++        {
++            boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
++            if (renderLayer == RenderLayer.getCutout()
++                || renderLayer == RenderLayer.getCutoutMipped()
++                || renderLayer == TexturedRenderLayers.getEntityCutout()
++                || renderLayer == TexturedRenderLayers.getBannerPatterns())
++            {
++                selectedLayer = shadersEnabled ? TexturedRenderLayers.getEntityTranslucentCull() : RenderLayer.getTranslucent();
++            }
++        }
++
++        VertexConsumer buffer = super.getBuffer(selectedLayer);
+ 
+         if (this.substitute != null)
+         {
+             VertexConsumer apply = this.substitute.apply(buffer);
+ 
+             if (apply != null)
+             {
+                 return apply;
+             }
+         }
+ 
+         return buffer;
+     }
+ 
+     public void draw()
+     {
+         super.draw();
+ 
+         if (this.ui)
+         {
+-            /* Force back the depth func because it seems like stuff rendered by a vertex
+-             * consumer is resetting the depth func to GL_LESS, and since this vertex consumer
+-             * is designed  */
+-            RenderSystem.depthFunc(GL11.GL_ALWAYS);
++            /* Restore the default depth function used by 3D UI rendering.
++             * Some vertex consumer paths may change it (e.g., to GL_LESS),
++             * so bring it back to GL_LEQUAL to avoid leaking incorrect state
++             * into subsequent renders. */
++            RenderSystem.depthFunc(GL11.GL_LEQUAL);
+         }
+     }
+ }
+\ No newline at end of file

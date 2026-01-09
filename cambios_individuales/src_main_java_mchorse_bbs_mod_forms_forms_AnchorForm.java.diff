@@ -1,0 +1,29 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/forms/forms/AnchorForm.java b/src/main/java/mchorse/bbs_mod/forms/forms/AnchorForm.java
+index 4a69a7cb..2f112cd0 100644
+--- a/src/main/java/mchorse/bbs_mod/forms/forms/AnchorForm.java
++++ b/src/main/java/mchorse/bbs_mod/forms/forms/AnchorForm.java
+@@ -1,4 +1,15 @@
+ package mchorse.bbs_mod.forms.forms;
+ 
++import mchorse.bbs_mod.settings.values.core.ValueString;
++
+ public class AnchorForm extends Form
+-{}
+\ No newline at end of file
++{
++    public final ValueString ikChain = new ValueString("ik_chain", "");
++
++    public AnchorForm()
++    {
++        super();
++
++        this.add(this.ikChain);
++    }
++}
+\ No newline at end of file

@@ -1,0 +1,69 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/ui/forms/editors/panels/widgets/UIModelPoseEditor.java b/src/client/java/mchorse/bbs_mod/ui/forms/editors/panels/widgets/UIModelPoseEditor.java
+index 3159eb4e..c9fc61fa 100644
+--- a/src/client/java/mchorse/bbs_mod/ui/forms/editors/panels/widgets/UIModelPoseEditor.java
++++ b/src/client/java/mchorse/bbs_mod/ui/forms/editors/panels/widgets/UIModelPoseEditor.java
+@@ -10,55 +10,55 @@ import mchorse.bbs_mod.utils.pose.PoseTransform;
+ public class UIModelPoseEditor extends UIPoseEditor
+ {
+     private ValuePose valuePose;
+ 
+     public void setValuePose(ValuePose valuePose)
+     {
+         this.valuePose = valuePose;
+     }
+ 
+     @Override
+     protected UIPropTransform createTransformEditor()
+     {
+         return super.createTransformEditor().callbacks(() -> this.valuePose);
+     }
+ 
+     @Override
+     protected void pastePose(MapType data)
+     {
+         this.valuePose.preNotify(IValueListener.FLAG_UNMERGEABLE);
+         super.pastePose(data);
+         this.valuePose.postNotify(IValueListener.FLAG_UNMERGEABLE);
+     }
+ 
+     @Override
+     protected void flipPose()
+     {
+         this.valuePose.preNotify(IValueListener.FLAG_UNMERGEABLE);
+         super.flipPose();
+         this.valuePose.postNotify(IValueListener.FLAG_UNMERGEABLE);
+     }
+ 
+     @Override
+     protected void setFix(PoseTransform transform, float value)
+     {
+         this.valuePose.preNotify(IValueListener.FLAG_UNMERGEABLE);
+         super.setFix(transform, value);
+         this.valuePose.postNotify(IValueListener.FLAG_UNMERGEABLE);
+     }
+ 
+     @Override
+     protected void setColor(PoseTransform transform, int value)
+     {
+-        this.valuePose.preNotify();
++        this.valuePose.preNotify(IValueListener.FLAG_UNMERGEABLE);
+         super.setColor(transform, value);
+-        this.valuePose.postNotify();
++        this.valuePose.postNotify(IValueListener.FLAG_UNMERGEABLE);
+     }
+ 
+     @Override
+     protected void setLighting(PoseTransform transform, boolean value)
+     {
+         this.valuePose.preNotify(IValueListener.FLAG_UNMERGEABLE);
+         super.setLighting(transform, value);
+         this.valuePose.postNotify(IValueListener.FLAG_UNMERGEABLE);
+     }
+ }
+\ No newline at end of file

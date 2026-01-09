@@ -1,0 +1,56 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/cubic/data/model/IKChain.java b/src/main/java/mchorse/bbs_mod/cubic/data/model/IKChain.java
+new file mode 100644
+index 00000000..39ac0fcc
+--- /dev/null
++++ b/src/main/java/mchorse/bbs_mod/cubic/data/model/IKChain.java
+@@ -0,0 +1,44 @@
++package mchorse.bbs_mod.cubic.data.model;
++
++import mchorse.bbs_mod.data.IMapSerializable;
++import mchorse.bbs_mod.data.types.MapType;
++
++public class IKChain implements IMapSerializable
++{
++    public String name = "";
++    public String root = "";
++    public String effector = "";
++    public String solver = "2_bone";
++    public String poleTarget = "";
++    public boolean lockRotation = false;
++
++    @Override
++    public void fromData(MapType data)
++    {
++        this.name = data.getString("name");
++        this.root = data.getString("root");
++        this.effector = data.getString("effector");
++        this.solver = data.getString("solver");
++        this.poleTarget = data.getString("pole_target");
++        this.lockRotation = data.getBool("lock_rotation");
++    }
++
++    @Override
++    public void toData(MapType data)
++    {
++        data.putString("name", this.name);
++        data.putString("root", this.root);
++        data.putString("effector", this.effector);
++        data.putString("solver", this.solver);
++        
++        if (!this.poleTarget.isEmpty())
++        {
++            data.putString("pole_target", this.poleTarget);
++        }
++        
++        if (this.lockRotation)
++        {
++            data.putBool("lock_rotation", this.lockRotation);
++        }
++    }
++}

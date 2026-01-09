@@ -1,0 +1,10 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/resources/assets/bbs/assets/structures/tree.nbt b/src/client/resources/assets/bbs/assets/structures/tree.nbt
+new file mode 100644
+index 00000000..81b10ce2
+Binary files /dev/null and b/src/client/resources/assets/bbs/assets/structures/tree.nbt differ

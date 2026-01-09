@@ -1,0 +1,41 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/settings/values/mc/ValueItemStack.java b/src/main/java/mchorse/bbs_mod/settings/values/mc/ValueItemStack.java
+index 555dd075..57676931 100644
+--- a/src/main/java/mchorse/bbs_mod/settings/values/mc/ValueItemStack.java
++++ b/src/main/java/mchorse/bbs_mod/settings/values/mc/ValueItemStack.java
+@@ -1,26 +1,13 @@
+ package mchorse.bbs_mod.settings.values.mc;
+ 
+-import mchorse.bbs_mod.data.types.BaseType;
+-import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
++import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
+ import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+ import net.minecraft.item.ItemStack;
+ 
+-public class ValueItemStack extends BaseValueBasic<ItemStack>
++public class ValueItemStack extends BaseKeyframeFactoryValue<ItemStack>
+ {
+     public ValueItemStack(String id)
+     {
+-        super(id, ItemStack.EMPTY);
+-    }
+-
+-    @Override
+-    public BaseType toData()
+-    {
+-        return KeyframeFactories.ITEM_STACK.toData(this.value);
+-    }
+-
+-    @Override
+-    public void fromData(BaseType data)
+-    {
+-        this.set(KeyframeFactories.ITEM_STACK.fromData(data));
++        super(id, KeyframeFactories.ITEM_STACK, ItemStack.EMPTY);
+     }
+ }
+\ No newline at end of file

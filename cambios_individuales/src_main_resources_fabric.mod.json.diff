@@ -1,0 +1,77 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/resources/fabric.mod.json b/src/main/resources/fabric.mod.json
+index 16f32f63..7de052b0 100644
+--- a/src/main/resources/fabric.mod.json
++++ b/src/main/resources/fabric.mod.json
+@@ -1,58 +1,61 @@
+ {
+     "schemaVersion": 1,
+     "id": "bbs",
+     "version": "${version}",
+     "name": "BBS mod",
+     "description": "A new generation of video production mod",
+     "authors": [
+-        "McHorse"
++        "McHorse",
++        "ElGatoPro300",
++        "Diobede"
+     ],
+     "contributors": [
+         "Chryfi (tracker clip)",
+         "FunkyFight (minor features and bug fixes)",
+         "ElGatoPro300 (bug fixes)",
+         "McMiro (Arabic translations)",
+         "Chunk7 (Chinese translations)",
+         "CheesyKirah (German translations)",
+         "aoa (Korean translations)",
+         "Nioum (French translations)",
+         "csabee (Hungarian translations)",
+         "Nikashi33 (Indonesian translations)",
+         "Legoego19 (Polish translations)",
+         "Fanyel (Portuguese translations)",
+         "El_Redstoniano (Spanish translations)",
+         "Sam Su~ (Thai translations)",
+         "R├╝yaperest (Turkish translations)",
+         "Kirkus (Ukrainian translations)",
+         "Eleeter (Urdu translations)",
+-        "Diobede (Vietnamese translations)"
++        "Diobede (Vietnamese translations)",
++        "bay4lly.java (bug fixes)"
+     ],
+     "contact": {
+-        "homepage": "https://www.patreon.com/McHorse"
++        "homepage": "https://discord.gg/MAHVQBSce6"
+     },
+     "license": "MIT",
+     "icon": "assets/bbs/icon.png",
+     "environment": "*",
+     "entrypoints": {
+         "main": [
+             "mchorse.bbs_mod.BBSMod"
+         ],
+         "client": [
+             "mchorse.bbs_mod.BBSModClient"
+         ]
+     },
+     "mixins": [
+         "bbs.mixins.json",
+         {
+             "config": "bbs.client.mixins.json",
+             "environment": "client"
+         }
+     ],
+     "accessWidener": "bbs.accesswidener",
+     "depends": {
+-        "fabricloader": ">=0.15.0",
++        "fabricloader": ">=0.16.14",
+         "minecraft": "~1.20.4",
+         "java": ">=17",
+         "fabric-api": "*"
+     }
+ }
+\ No newline at end of file

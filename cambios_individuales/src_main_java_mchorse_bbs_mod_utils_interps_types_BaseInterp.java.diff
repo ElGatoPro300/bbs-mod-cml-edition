@@ -1,0 +1,45 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/utils/interps/types/BaseInterp.java b/src/main/java/mchorse/bbs_mod/utils/interps/types/BaseInterp.java
+index 23778c56..f1a27204 100644
+--- a/src/main/java/mchorse/bbs_mod/utils/interps/types/BaseInterp.java
++++ b/src/main/java/mchorse/bbs_mod/utils/interps/types/BaseInterp.java
+@@ -5,23 +5,34 @@ import mchorse.bbs_mod.utils.interps.IInterp;
+ public abstract class BaseInterp implements IInterp
+ {
+     public final String key;
+     public final int keybind;
+ 
+     public BaseInterp(String key, int keybind)
+     {
+         this.key = key;
+         this.keybind = keybind;
+     }
+ 
+     @Override
+     public String getKey()
+     {
+         return this.key;
+     }
+ 
+     @Override
+     public int getKeyCode()
+     {
+         return this.keybind;
+     }
++
++    @Override
++    public boolean equals(Object obj)
++    {
++        if (obj instanceof BaseInterp)
++        {
++            return this.key.equals(((BaseInterp) obj).key);
++        }
++
++        return super.equals(obj);
++    }
+ }

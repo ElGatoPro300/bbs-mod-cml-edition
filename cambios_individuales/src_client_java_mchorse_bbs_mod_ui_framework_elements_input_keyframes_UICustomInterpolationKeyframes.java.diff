@@ -1,0 +1,44 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/ui/framework/elements/input/keyframes/UICustomInterpolationKeyframes.java b/src/client/java/mchorse/bbs_mod/ui/framework/elements/input/keyframes/UICustomInterpolationKeyframes.java
+new file mode 100644
+index 00000000..bc5bf3bb
+--- /dev/null
++++ b/src/client/java/mchorse/bbs_mod/ui/framework/elements/input/keyframes/UICustomInterpolationKeyframes.java
+@@ -0,0 +1,32 @@
++package mchorse.bbs_mod.ui.framework.elements.input.keyframes;
++
++import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.UICustomInterpolationGraph;
++import mchorse.bbs_mod.utils.keyframes.Keyframe;
++
++import java.util.function.Consumer;
++
++public class UICustomInterpolationKeyframes extends UIKeyframes
++{
++    public UICustomInterpolationKeyframes(Consumer<Keyframe> callback)
++    {
++        super(callback);
++    }
++
++    @Override
++    public void editSheet(UIKeyframeSheet sheet)
++    {
++        if (sheet == null)
++        {
++            this.currentGraph = this.dopeSheet;
++        }
++        else
++        {
++            this.dopeSheet.clearSelection();
++            this.dopeSheet.pickSelected();
++
++            this.currentGraph = new UICustomInterpolationGraph(this, sheet);
++
++            this.resetView();
++        }
++    }
++}

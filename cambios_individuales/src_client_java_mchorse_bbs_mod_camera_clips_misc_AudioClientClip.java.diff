@@ -1,0 +1,139 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/camera/clips/misc/AudioClientClip.java b/src/client/java/mchorse/bbs_mod/camera/clips/misc/AudioClientClip.java
+index 962f5d8d..cc7a568c 100644
+--- a/src/client/java/mchorse/bbs_mod/camera/clips/misc/AudioClientClip.java
++++ b/src/client/java/mchorse/bbs_mod/camera/clips/misc/AudioClientClip.java
+@@ -14,106 +14,126 @@ import java.util.concurrent.ConcurrentHashMap;
+ public class AudioClientClip extends AudioClip
+ {
+     public AudioClientClip()
+     {
+         super();
+     }
+ 
+     public static Map<Link, Float> getPlayback(ClipContext context)
+     {
+         return context.clipData.get("audio", ConcurrentHashMap::new);
+     }
+ 
++    /** Aggregate gain contributions per audio link for this frame */
++    public static Map<Link, Float> getVolumes(ClipContext context)
++    {
++        return context.clipData.get("audio_gain", ConcurrentHashMap::new);
++    }
++
+     public static void manageSounds(ClipContext context)
+     {
+         Map<Link, Float> playback = getPlayback(context);
++        Map<Link, Float> volumes = getVolumes(context);
+ 
+         for (Map.Entry<Link, Float> entry : playback.entrySet())
+         {
+             float tickTime = entry.getValue();
+             SoundPlayer player = BBSModClient.getSounds().playUnique(entry.getKey());
+ 
+             if (player == null)
+             {
+                 continue;
+             }
+ 
+             if (tickTime < 0 || tickTime >= player.getBuffer().getDuration())
+             {
+                 if (player.isPlaying())
+                 {
+                     player.pause();
+                 }
+ 
+                 continue;
+             }
+ 
+             float time = player.getPlaybackPosition();
+             float diff = Math.abs(tickTime - time);
+ 
+             if (context.playing && !player.isPlaying())
+             {
+                 player.play();
+             }
+             else if (!context.playing && player.isPlaying())
+             {
+                 player.pause();
+             }
+ 
+             if (diff > 0.05F)
+             {
+                 player.setPlaybackPosition(tickTime);
+             }
++
++            /* Apply aggregated volume for this link (sum of active clips, clamped 0..1) */
++            float gain = Math.min(100F, Math.max(0F, volumes.getOrDefault(entry.getKey(), 0F)));
++            player.setVolume(gain);
+         }
++
++        /* Clear volume contributions after applying them to avoid stale values next frame */
++        volumes.clear();
+     }
+ 
+     @Override
+     public boolean isGlobal()
+     {
+         return true;
+     }
+ 
+     @Override
+     public void shutdown(ClipContext context)
+     {
+         Link link = this.audio.get();
+ 
+         if (link != null)
+         {
+             BBSModClient.getSounds().stop(link);
+         }
+     }
+ 
+     @Override
+     protected void applyClip(ClipContext context, Position position)
+     {
+         Link link = this.audio.get();
+ 
+         if (link != null)
+         {
+             SoundPlayer player = BBSModClient.getSounds().playUnique(link);
+ 
+             if (player == null)
+             {
+                 return;
+             }
+ 
+             float tickTime = (context.relativeTick + context.transition) / 20F;
+             Map<Link, Float> playback = getPlayback(context);
++            Map<Link, Float> volumes = getVolumes(context);
+ 
+             if (context.relativeTick >= this.duration.get() || tickTime < 0)
+             {
+                 playback.putIfAbsent(link, -1F);
+             }
+             else
+             {
+                 playback.put(link, TimeUtils.toSeconds(this.offset.get()) + tickTime);
++
++                /* Contribute this clip's gain to the shared player of the link */
++                float factor = this.envelope.factorEnabled(this.duration.get(), context.relativeTick + context.transition);
++                float gain = (this.volume.get() / 100F) * factor;
++                volumes.merge(link, gain, Float::sum);
+             }
+         }
+     }
+ 
+     @Override
+     protected Clip create()
+     {
+         return new AudioClientClip();
+     }
+-}
+\ No newline at end of file
++}

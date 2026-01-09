@@ -1,0 +1,180 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIForm.java b/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIForm.java
+index cfb38c23..904d519f 100644
+--- a/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIForm.java
++++ b/src/client/java/mchorse/bbs_mod/ui/forms/editors/forms/UIForm.java
+@@ -5,6 +5,7 @@ import mchorse.bbs_mod.forms.FormUtils;
+ import mchorse.bbs_mod.forms.FormUtilsClient;
+ import mchorse.bbs_mod.forms.forms.Form;
+ import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
++import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
+ import mchorse.bbs_mod.graphics.window.Window;
+ import mchorse.bbs_mod.ui.Keys;
+ import mchorse.bbs_mod.ui.UIKeys;
+@@ -25,114 +26,153 @@ import org.joml.Matrix4f;
+ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>>
+ {
+     public UIFormEditor editor;
+ 
+     public T form;
+     public UIFormPanel<T> defaultPanel;
+     public UIGeneralFormPanel generalPanel;
+ 
+     private UIPropTransform general;
+ 
+     public UIForm()
+     {
+         super(Direction.LEFT);
+ 
+         this.keys().register(Keys.FILM_CONTROLLER_CYCLE_EDITORS, this::cyclePanels);
+     }
+ 
+     public UIPropTransform getEditableTransform()
+     {
+         this.setPanel(this.generalPanel);
+ 
+         return this.general;
+     }
+ 
+     private void cyclePanels()
+     {
+         int index = this.panels.indexOf(this.view);
+         int newIndex = MathUtils.cycler(index + (Window.isShiftPressed() ? -1 : 1), this.panels);
+ 
+         this.setPanel(this.panels.get(newIndex));
+         UIUtils.playClick();
+     }
+ 
+     public Matrix4f getOrigin(float transition)
+     {
+         return this.getOrigin(transition, FormUtils.getPath(this.form), this.generalPanel != null && this.generalPanel.transform.isLocal());
+     }
+ 
+     protected Matrix4f getOrigin(float transition, String path, boolean local)
+     {
++        if (path == null)
++        {
++            return Matrices.EMPTY_4F;
++        }
++
+         Form root = FormUtils.getRoot(this.form);
+         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
+-        Matrix4f matrix = local ? map.get(path).matrix() : map.get(path).origin();
++        
++        boolean forceOrigin = path.endsWith("#origin");
++        
++        if (forceOrigin) path = path.substring(0, path.length() - 7);
++        
++        MatrixCacheEntry entry = map.get(path);
++
++        if (entry == null)
++        {
++            return Matrices.EMPTY_4F;
++        }
++
++        Matrix4f matrix = forceOrigin ? entry.origin() : (local ? entry.matrix() : entry.origin());
+ 
+         return matrix == null ? Matrices.EMPTY_4F : matrix;
+     }
+ 
+     protected void registerDefaultPanels()
+     {
+         UIGeneralFormPanel panel = new UIGeneralFormPanel(this);
+ 
+         this.registerPanel(panel, UIKeys.FORMS_EDITORS_GENERAL, Icons.GEAR);
+ 
+         this.generalPanel = panel;
+         this.general = panel.transform;
+     }
+ 
+     public void setEditor(UIFormEditor editor)
+     {
+         this.editor = editor;
+     }
+ 
+     public void startEdit(T form)
+     {
+         this.form = form;
+ 
++        /* Ensure a current view exists before any panel's startEdit triggers
++         * value changes that may collect undo data. */
++        this.setPanel(this.defaultPanel);
++
+         for (UIFormPanel<T> panel : this.panels)
+         {
+             panel.startEdit(form);
+         }
+-
+-        this.setPanel(this.defaultPanel);
+     }
+ 
+     public void finishEdit()
+     {
+         for (UIFormPanel<T> panel : this.panels)
+         {
+             panel.finishEdit();
+         }
+     }
+ 
+     public void pickBone(String bone)
+     {
+         if (this.view != null)
+         {
+             this.view.pickBone(bone);
+         }
+     }
+ 
+     @Override
+     protected void renderBackground(UIContext context, int x, int y, int w, int h)
+     {
+         context.batcher.box(x, y, x + w, y + h, Colors.A100);
+     }
+ 
+     @Override
+     public void collectUndoData(MapType data)
+     {
+         super.collectUndoData(data);
+ 
+-        data.putInt("panel", this.panels.indexOf(this.view));
+-        data.putDouble("scroll", this.view.options.scroll.getScroll());
++        int panelIndex = this.panels.indexOf(this.view);
++        data.putInt("panel", panelIndex);
++
++        double scroll = 0D;
++        if (this.view != null && this.view.options != null)
++        {
++            scroll = this.view.options.scroll.getScroll();
++        }
++
++        data.putDouble("scroll", scroll);
+     }
+ 
+     @Override
+     public void applyUndoData(MapType data)
+     {
+         super.applyUndoData(data);
+ 
+-        this.setPanel(this.panels.get(data.getInt("panel")));
+-        this.view.options.scroll.setScroll(data.getDouble("scroll"));
++        int panelIndex = data.getInt("panel");
++        if (panelIndex >= 0 && panelIndex < this.panels.size())
++        {
++            this.setPanel(this.panels.get(panelIndex));
++        }
++        else
++        {
++            this.setPanel(this.defaultPanel);
++        }
++
++        if (this.view != null && this.view.options != null)
++        {
++            this.view.options.scroll.setScroll(data.getDouble("scroll"));
++        }
+     }
+ }
+\ No newline at end of file

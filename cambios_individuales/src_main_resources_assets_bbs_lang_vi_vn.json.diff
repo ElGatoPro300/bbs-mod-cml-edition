@@ -1,0 +1,41 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/resources/assets/bbs/lang/vi_vn.json b/src/main/resources/assets/bbs/lang/vi_vn.json
+index c078d25f..2decf156 100644
+--- a/src/main/resources/assets/bbs/lang/vi_vn.json
++++ b/src/main/resources/assets/bbs/lang/vi_vn.json
+@@ -1,29 +1,27 @@
+ {
+     "block.bbs.model": "Khß╗æi model",
+-    "item.bbs.gun": "s├║ng BBS",
+     "block.bbs.chroma_red": "Ph├┤ng ─æß╗Å",
+     "block.bbs.chroma_green": "Ph├┤ng xanh",
+     "block.bbs.chroma_blue": "Ph├┤ng xanh dã░ãíng",
+     "block.bbs.chroma_cyan": "Ph├┤ng xanh da trß╗Øi",
+     "block.bbs.chroma_magenta": "Ph├┤ng t├¡m",
+     "block.bbs.chroma_yellow": "Ph├┤ng v├áng",
+     "block.bbs.chroma_black": "Ph├┤ng ─æen",
+     "block.bbs.chroma_white": "Ph├┤ng trß║»ng",
+     "item.bbs.gun": "S├║ng BBS",
+     "itemGroup.bbs.main": "BBS mod",
+ 
+     "key.bbs.item_editor": "chß╗ënh vß║¡t phß║®m",
+     "key.bbs.dashboard": "Bß║úng ─æiß╗üu khiß╗ân",
+     "key.bbs.demorph": "Gß╗í biß║┐n ─æß╗òi",
+     "key.bbs.open_replays": "Mß╗ƒ ph├ít lß║íi",
+     "key.bbs.open_morphing": "Mß╗ƒ menu biß║┐n ─æß╗òi",
+     "key.bbs.play_film": "Play film",
+     "key.bbs.record_replay": "quay ph├ít lß║íi",
+     "key.bbs.record_video": "quay video",
+     "key.bbs.teleport": "Dß╗ïch chuyß╗ân ─æß║┐n ph├ít lß║íi hiß╗çn tß║íi",
+     "key.bbs.zoom": "Zoom (S├║ng BBS)",
+     "category.bbs.main": "BBS mod",
+ 
+     "gamerule.bbsEditing": "Quyß╗ün chß╗ënh sß╗¡a cß╗ºa BBS mod"
+ }
+-}
+\ No newline at end of file

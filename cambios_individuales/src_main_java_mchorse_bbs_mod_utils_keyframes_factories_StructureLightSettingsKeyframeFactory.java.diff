@@ -1,0 +1,67 @@
+﻿commit e7192aa54da459f1e71dc9f26c72e8b570ceb396
+Author: ElGatoPro300 <catgamer207@gmail.com>
+Date:   Thu Jan 8 22:17:17 2026 -0600
+
+    Upload CML files for registration and clean the code
+
+diff --git a/src/main/java/mchorse/bbs_mod/utils/keyframes/factories/StructureLightSettingsKeyframeFactory.java b/src/main/java/mchorse/bbs_mod/utils/keyframes/factories/StructureLightSettingsKeyframeFactory.java
+new file mode 100644
+index 00000000..ba8524e6
+--- /dev/null
++++ b/src/main/java/mchorse/bbs_mod/utils/keyframes/factories/StructureLightSettingsKeyframeFactory.java
+@@ -0,0 +1,54 @@
++package mchorse.bbs_mod.utils.keyframes.factories;
++
++import mchorse.bbs_mod.data.types.BaseType;
++import mchorse.bbs_mod.data.types.MapType;
++import mchorse.bbs_mod.forms.forms.utils.StructureLightSettings;
++import mchorse.bbs_mod.utils.interps.IInterp;
++
++public class StructureLightSettingsKeyframeFactory implements IKeyframeFactory<StructureLightSettings>
++{
++    private final StructureLightSettings i = new StructureLightSettings();
++
++    @Override
++    public StructureLightSettings fromData(BaseType data)
++    {
++        StructureLightSettings value = new StructureLightSettings();
++
++        if (data.isMap())
++        {
++            value.fromData(data.asMap());
++        }
++
++        return value;
++    }
++
++    @Override
++    public BaseType toData(StructureLightSettings value)
++    {
++        return value == null ? new MapType() : value.toData();
++    }
++
++    @Override
++    public StructureLightSettings createEmpty()
++    {
++        return new StructureLightSettings();
++    }
++
++    @Override
++    public StructureLightSettings copy(StructureLightSettings value)
++    {
++        return value == null ? null : value.copy();
++    }
++
++    @Override
++    public StructureLightSettings interpolate(StructureLightSettings preA, StructureLightSettings a, StructureLightSettings b, StructureLightSettings postB, IInterp interpolation, float x)
++    {
++        // enabled: discreto, tomar el estado de "a"
++        this.i.enabled = a.enabled;
++        // intensity: interpolaci├│n num├®rica est├índar con l├¡mites 0..15
++        int y = (int) Math.round(interpolation.interpolate(IInterp.context.set(preA.intensity, a.intensity, b.intensity, postB.intensity, x)));
++        if (y < 0) y = 0; else if (y > 15) y = 15;
++        this.i.intensity = y;
++        return this.i;
++    }
++}
+\ No newline at end of file
