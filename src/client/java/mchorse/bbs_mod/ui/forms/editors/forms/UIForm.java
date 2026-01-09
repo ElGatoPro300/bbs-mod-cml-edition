@@ -5,7 +5,6 @@ import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
-import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -63,26 +62,9 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
 
     protected Matrix4f getOrigin(float transition, String path, boolean local)
     {
-        if (path == null)
-        {
-            return Matrices.EMPTY_4F;
-        }
-
         Form root = FormUtils.getRoot(this.form);
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(this.editor.renderer.getTargetEntity(), transition);
-        
-        boolean forceOrigin = path.endsWith("#origin");
-        
-        if (forceOrigin) path = path.substring(0, path.length() - 7);
-        
-        MatrixCacheEntry entry = map.get(path);
-
-        if (entry == null)
-        {
-            return Matrices.EMPTY_4F;
-        }
-
-        Matrix4f matrix = forceOrigin ? entry.origin() : (local ? entry.matrix() : entry.origin());
+        Matrix4f matrix = local ? map.get(path).matrix() : map.get(path).origin();
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }
@@ -106,14 +88,12 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
     {
         this.form = form;
 
-        /* Ensure a current view exists before any panel's startEdit triggers
-         * value changes that may collect undo data. */
-        this.setPanel(this.defaultPanel);
-
         for (UIFormPanel<T> panel : this.panels)
         {
             panel.startEdit(form);
         }
+
+        this.setPanel(this.defaultPanel);
     }
 
     public void finishEdit()
@@ -143,16 +123,8 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
     {
         super.collectUndoData(data);
 
-        int panelIndex = this.panels.indexOf(this.view);
-        data.putInt("panel", panelIndex);
-
-        double scroll = 0D;
-        if (this.view != null && this.view.options != null)
-        {
-            scroll = this.view.options.scroll.getScroll();
-        }
-
-        data.putDouble("scroll", scroll);
+        data.putInt("panel", this.panels.indexOf(this.view));
+        data.putDouble("scroll", this.view.options.scroll.getScroll());
     }
 
     @Override
@@ -160,19 +132,7 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
     {
         super.applyUndoData(data);
 
-        int panelIndex = data.getInt("panel");
-        if (panelIndex >= 0 && panelIndex < this.panels.size())
-        {
-            this.setPanel(this.panels.get(panelIndex));
-        }
-        else
-        {
-            this.setPanel(this.defaultPanel);
-        }
-
-        if (this.view != null && this.view.options != null)
-        {
-            this.view.options.scroll.setScroll(data.getDouble("scroll"));
-        }
+        this.setPanel(this.panels.get(data.getInt("panel")));
+        this.view.options.scroll.setScroll(data.getDouble("scroll"));
     }
 }
