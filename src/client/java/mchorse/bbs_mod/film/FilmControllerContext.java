@@ -34,6 +34,7 @@ public class FilmControllerContext
 
     public String nameTag = "";
     public boolean relative;
+    public org.joml.Matrix4f localGroupTransform;
 
     private FilmControllerContext()
     {}
@@ -47,6 +48,7 @@ public class FilmControllerContext
         this.local = false;
         this.nameTag = "";
         this.relative = false;
+        this.localGroupTransform = null;
     }
 
     public FilmControllerContext setup(IntObjectMap<IEntity> entities, IEntity entity, Replay replay, WorldRenderContext context)
