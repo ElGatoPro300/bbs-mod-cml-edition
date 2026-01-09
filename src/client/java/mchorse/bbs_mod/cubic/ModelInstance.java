@@ -7,6 +7,7 @@ import mchorse.bbs_mod.cubic.data.model.Model;
 import mchorse.bbs_mod.cubic.data.model.ModelGroup;
 import mchorse.bbs_mod.cubic.model.ArmorSlot;
 import mchorse.bbs_mod.cubic.model.ArmorType;
+import mchorse.bbs_mod.cubic.model.View;
 import mchorse.bbs_mod.cubic.model.bobj.BOBJModel;
 import mchorse.bbs_mod.cubic.render.CubicCubeRenderer;
 import mchorse.bbs_mod.cubic.render.CubicMatrixRenderer;
@@ -60,12 +61,7 @@ public class ModelInstance implements IModelInstance
     public boolean onCpu;
     public String anchorGroup = "";
 
-    /* Look-at configuration (per model, from config.json) */
-    public boolean lookAtConfigured = false;
-    public String lookAtHeadBone = "head";
-    public String lookAtAnchorBone = "anchor";
-    public boolean lookAtAllowPitch = true;
-    public float lookAtHeadLimitDeg = 45F;
+    public View view;
 
     public Vector3f scale = new Vector3f(1F);
     public float uiScale = 1F;
@@ -220,13 +216,9 @@ public class ModelInstance implements IModelInstance
         /* Optional look-at configuration */
         if (config.has("look_at", BaseType.TYPE_MAP))
         {
-            this.lookAtConfigured = true;
-            MapType lookAt = config.getMap("look_at");
+            this.view = new View();
 
-            if (lookAt.has("head")) this.lookAtHeadBone = lookAt.getString("head", this.lookAtHeadBone);
-            if (lookAt.has("anchor")) this.lookAtAnchorBone = lookAt.getString("anchor", this.lookAtAnchorBone);
-            if (lookAt.has("pitch")) this.lookAtAllowPitch = lookAt.getBool("pitch", this.lookAtAllowPitch);
-            if (lookAt.has("head_limit")) this.lookAtHeadLimitDeg = lookAt.getFloat("head_limit", this.lookAtHeadLimitDeg);
+            this.view.fromData(config.getMap("look_at"));
         }
     }
 
@@ -307,15 +299,12 @@ public class ModelInstance implements IModelInstance
                     group.initial.translate.z / 16
                 );
                 matrix.rotateY(MathUtils.PI);
-
-                /* Also provide origin matrix captured before rotation/scale at the group's pivot */
                 origin.translate(
-                    group.initial.translate.x / 8192,
-                    group.initial.translate.y / 8192,
-                    group.initial.translate.z / 8192
+                    group.initial.translate.x / 16,
+                    group.initial.translate.y / 16,
+                    group.initial.translate.z / 16
                 );
                 origin.rotateY(MathUtils.PI);
-                
                 bones.put(group.id, matrix, origin);
             }
         }
@@ -335,13 +324,13 @@ public class ModelInstance implements IModelInstance
         }
     }
 
-    public void render(MatrixStack stack, Supplier<ShaderProgram> program, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys, Link defaultTexture)
+    public void render(MatrixStack stack, Supplier<ShaderProgram> program, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys)
     {
         if (this.model instanceof Model model)
         {
             boolean isVao = this.isVAORendered();
             CubicCubeRenderer renderProcessor = isVao
-                ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys, defaultTexture)
+                ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys)
                 : new CubicCubeRenderer(light, overlay, stencilMap, keys);
 
             renderProcessor.setColor(color.r, color.g, color.b, color.a);

@@ -30,8 +30,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import net.minecraft.client.render.VertexConsumer;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +54,6 @@ public class ParticleEmitter
     /* Intermediate values */
     public Vector3d lastGlobal = new Vector3d();
     public Matrix3f rotation = new Matrix3f();
-    private Vector3f sortVector = new Vector3f();
 
     /* Runtime properties */
     public float spawnRemainder;
@@ -467,45 +464,6 @@ public class ParticleEmitter
         }
     }
 
-    private void sortParticles(float transition)
-    {
-        if (this.particles.isEmpty())
-        {
-            return;
-        }
-
-        this.particles.sort((a, b) ->
-        {
-            double d1 = this.getSquaredDistance(a, transition);
-            double d2 = this.getSquaredDistance(b, transition);
-
-            return Double.compare(d2, d1);
-        });
-    }
-
-    private double getSquaredDistance(Particle particle, float transition)
-    {
-        double px = Lerps.lerp(particle.prevPosition.x, particle.position.x, transition);
-        double py = Lerps.lerp(particle.prevPosition.y, particle.position.y, transition);
-        double pz = Lerps.lerp(particle.prevPosition.z, particle.position.z, transition);
-
-        if (particle.relativePosition && particle.relativeRotation)
-        {
-            this.sortVector.set((float) px, (float) py, (float) pz);
-            this.rotation.transform(this.sortVector);
-
-            px = this.sortVector.x + this.lastGlobal.x;
-            py = this.sortVector.y + this.lastGlobal.y;
-            pz = this.sortVector.z + this.lastGlobal.z;
-        }
-
-        double dx = px - this.cX;
-        double dy = py - this.cY;
-        double dz = pz - this.cZ;
-
-        return dx * dx + dy * dy + dz * dz;
-    }
-
     /**
      * Render all the particles in this particle emitter
      */
@@ -525,8 +483,6 @@ public class ParticleEmitter
 
         if (!this.particles.isEmpty())
         {
-            this.sortParticles(transition);
-
             Matrix4f matrix = stack.peek().getPositionMatrix();
             BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
@@ -545,62 +501,10 @@ public class ParticleEmitter
             }
 
             RenderSystem.setShader(program);
-            
-            /* Enable blending and disable depth mask for correct semi-transparency */
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.disableCull();
-            
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            
-            RenderSystem.enableCull();
             RenderSystem.disableBlend();
-        }
-
-        for (IComponentParticleRender component : renders)
-        {
-            component.postRender(this, transition);
-        }
-    }
-
-    /**
-     * Render all the particles in this particle emitter to a VertexConsumer (buffered)
-     */
-    public void render(VertexConsumer consumer, MatrixStack stack, int overlay, float transition)
-    {
-        if (this.scheme == null)
-        {
-            return;
-        }
-
-        List<IComponentParticleRender> renders = this.scheme.particleRender;
-
-        for (IComponentParticleRender component : renders)
-        {
-            component.preRender(this, transition);
-        }
-
-        if (!this.particles.isEmpty())
-        {
-            this.sortParticles(transition);
-
-            Matrix4f matrix = stack.peek().getPositionMatrix();
-
-            for (Particle particle : this.particles)
-            {
-                this.setEmitterVariables(transition);
-                this.setParticleVariables(particle, transition);
-
-                for (IComponentParticleRender component : renders)
-                {
-                    /* We pass null as format, as VertexConsumer handles it? 
-                     * Actually components use format to decide what to write.
-                     * We should pass the format corresponding to the RenderLayer.
-                     * Usually it is POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL for entities.
-                     */
-                    component.render(this, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, particle, consumer, matrix, overlay, transition);
-                }
-            }
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
         }
 
         for (IComponentParticleRender component : renders)

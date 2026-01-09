@@ -24,6 +24,9 @@ public class ModelBlockEntity extends BlockEntity
     private ModelProperties properties = new ModelProperties();
     private IEntity entity = new StubEntity();
 
+    private float lastYaw = Float.NaN;
+    private float currentYaw = Float.NaN;
+
     public ModelBlockEntity(BlockPos pos, BlockState state)
     {
         super(BBSMod.MODEL_BLOCK_ENTITY, pos, state);
@@ -53,51 +56,49 @@ public class ModelBlockEntity extends BlockEntity
         return this.entity;
     }
 
+    public void setLookYaw(float yaw)
+    {
+        this.lastYaw = yaw;
+        this.currentYaw = yaw;
+    }
+
+    public float updateLookYawContinuous(float yaw)
+    {
+        if (Float.isNaN(this.currentYaw))
+        {
+            this.setLookYaw(yaw);
+
+            return this.currentYaw;
+        }
+
+        float diff = yaw - this.lastYaw;
+
+        while (diff > Math.PI) diff -= (float) (Math.PI * 2);
+        while (diff < -Math.PI) diff += (float) (Math.PI * 2);
+
+        this.currentYaw += diff;
+        this.lastYaw = yaw;
+
+        return this.currentYaw;
+    }
+
+    public void resetLookYaw()
+    {
+        this.lastYaw = this.currentYaw = Float.NaN;
+    }
+
+    public void snapLookYawToBase(float lastYaw, float currentYaw)
+    {
+        this.lastYaw = lastYaw;
+        this.currentYaw = currentYaw;
+    }
+
     public void tick(World world, BlockPos pos, BlockState state)
     {
         ModelBlockEntityUpdateCallback.EVENT.invoker().update(this);
-        /* Asegura que el StubEntity tenga posición y mundo correctos para cálculos de luz/bioma.
-         * Sin esto, el entity se queda en (0,0,0) y los renders toman luz de esa zona,
-         * provocando oscurecimiento en editor, miniatura y bloque de modelo. */
-        this.entity.setWorld(world);
-
-        double x = pos.getX() + 0.5D;
-        double y = pos.getY();
-        double z = pos.getZ() + 0.5D;
-
-        this.entity.setPosition(x, y, z);
-
-        /* Initialize previous position/yaw on the very first tick to avoid
-         * a huge movement delta (spike) when the block is placed. */
-        try
-        {
-            if (this.entity.getAge() == 0)
-            {
-                this.entity.setPrevX(x);
-                this.entity.setPrevY(y);
-                this.entity.setPrevZ(z);
-
-                this.entity.setPrevYaw(this.entity.getYaw());
-                this.entity.setPrevHeadYaw(this.entity.getHeadYaw());
-                this.entity.setPrevPitch(this.entity.getPitch());
-                this.entity.setPrevBodyYaw(this.entity.getBodyYaw());
-                this.entity.setPrevPrevBodyYaw(this.entity.getPrevBodyYaw());
-
-                float[] extra = this.entity.getExtraVariables();
-                float[] prevExtra = this.entity.getPrevExtraVariables();
-
-                if (extra != null && prevExtra != null)
-                {
-                    for (int i = 0; i < Math.min(extra.length, prevExtra.length); i++)
-                    {
-                        prevExtra[i] = extra[i];
-                    }
-                }
-            }
-        }
-        catch (Exception e) {}
 
         this.entity.update();
+        this.entity.setWorld(world);
         this.properties.update(this.entity);
     }
 
@@ -135,22 +136,6 @@ public class ModelBlockEntity extends BlockEntity
         {
             this.properties.fromData(mapType);
         }
-        /* Ensure block state reflects stored light level when chunk/block is loaded */
-        if (this.world != null && !this.world.isClient)
-        {
-            try
-            {
-                int level = this.properties.getLightLevel();
-                BlockPos pos = this.getPos();
-                BlockState state = this.world.getBlockState(pos);
-
-                if (state.getBlock() instanceof net.minecraft.block.Block)
-                {
-                    this.world.setBlockState(pos, state.with(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
-                }
-            }
-            catch (Exception e) {}
-        }
     }
 
     public void updateForm(MapType data, World world)
@@ -160,17 +145,7 @@ public class ModelBlockEntity extends BlockEntity
         BlockPos pos = this.getPos();
         BlockState blockState = world.getBlockState(pos);
 
-        try
-        {
-            int level = this.properties.getLightLevel();
-
-            world.setBlockState(pos, blockState.with(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
-        }
-        catch (Exception e)
-        {
-            world.updateListeners(pos, blockState, blockState, Block.NOTIFY_LISTENERS);
-        }
-
+        world.updateListeners(pos, blockState, blockState, Block.NOTIFY_LISTENERS);
         world.markDirty(pos);
     }
 }

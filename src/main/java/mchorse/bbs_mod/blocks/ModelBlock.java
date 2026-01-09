@@ -9,9 +9,6 @@ import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +20,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -37,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class ModelBlock extends Block implements BlockEntityProvider, Waterloggable
 {
-    public static final IntProperty LIGHT_LEVEL = IntProperty.of("light_level", 0, 15);
     public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> validateTicker(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker)
     {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
@@ -48,14 +43,13 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
         super(settings);
 
         this.setDefaultState(getDefaultState()
-            .with(Properties.WATERLOGGED, false)
-            .with(LIGHT_LEVEL, 0));
+            .with(Properties.WATERLOGGED, false));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder)
     {
-        builder.add(Properties.WATERLOGGED, LIGHT_LEVEL);
+        builder.add(Properties.WATERLOGGED);
     }
 
     @Nullable
@@ -77,9 +71,6 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
             NbtCompound compound = new NbtCompound();
 
             compound.put("BlockEntityTag", modelBlock.createNbtWithId());
-            NbtCompound stateTag = new NbtCompound();
-            stateTag.putInt("light_level", modelBlock.getProperties().getLightLevel());
-            compound.put("BlockStateTag", stateTag);
             stack.setNbt(compound);
 
             return stack;
@@ -120,29 +111,6 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
-    {
-        try
-        {
-            if (world instanceof World w)
-            {
-                BlockEntity be = w.getBlockEntity(pos);
-
-                if (be instanceof ModelBlockEntity model && model.getProperties().isHitbox())
-                {
-                    return VoxelShapes.fullCube();
-                }
-            }
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        return VoxelShapes.empty();
-    }
-
-    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
     {
         if (hand == Hand.MAIN_HAND)
@@ -177,9 +145,6 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
                 NbtCompound wrapper = new NbtCompound();
 
                 wrapper.put("BlockEntityTag", model.createNbtWithId());
-                NbtCompound stateTag = new NbtCompound();
-                stateTag.putInt("light_level", model.getProperties().getLightLevel());
-                wrapper.put("BlockStateTag", stateTag);
                 stack.setNbt(wrapper);
 
                 ItemScatterer.spawn(world, pos, DefaultedList.ofSize(1, stack));

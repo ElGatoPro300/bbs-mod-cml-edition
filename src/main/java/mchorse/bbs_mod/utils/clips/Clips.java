@@ -131,6 +131,21 @@ public class Clips extends ValueGroup
         return null;
     }
 
+    public <T extends Clip> List<T> getClips(Class<T> clazz)
+    {
+        List<T> clips = new ArrayList<>();
+
+        for (Clip clip : this.clips)
+        {
+            if (clazz.isAssignableFrom(clip.getClass()))
+            {
+                clips.add(clazz.cast(clip));
+            }
+        }
+
+        return clips;
+    }
+
     public List<Clip> getClips(int tick)
     {
         return this.getClips(tick, Integer.MAX_VALUE);
@@ -222,24 +237,6 @@ public class Clips extends ValueGroup
     public List<Clip> get()
     {
         return Collections.unmodifiableList(this.clips);
-    }
-
-    /**
-     * Get all clips that are instances of the given type.
-     */
-    public <T extends Clip> List<T> getClips(Class<T> type)
-    {
-        List<T> result = new ArrayList<>();
-
-        for (Clip clip : this.clips)
-        {
-            if (type.isInstance(clip))
-            {
-                result.add(type.cast(clip));
-            }
-        }
-
-        return result;
     }
 
     public int findNextTick(int tick)

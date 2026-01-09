@@ -6,8 +6,6 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.audio.AudioRenderer;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.clips.misc.AudioClip;
-import mchorse.bbs_mod.camera.clips.misc.VideoClip;
-import mchorse.bbs_mod.client.video.VideoRenderer;
 import mchorse.bbs_mod.camera.controller.RunnerCameraController;
 import mchorse.bbs_mod.camera.data.Angle;
 import mchorse.bbs_mod.camera.data.Point;
@@ -225,15 +223,7 @@ public class UIFilmPreview extends UIElement
     private void renderAudio()
     {
         Clips camera = this.panel.getData().camera;
-        List<AudioClip> audioClips = new ArrayList<>();
-
-        for (Clip clip : camera.get())
-        {
-            if (clip instanceof AudioClip audioClip)
-            {
-                audioClips.add(audioClip);
-            }
-        }
+        List<AudioClip> audioClips = camera.getClips(AudioClip.class);
 
         String name = StringUtils.createTimestampFilename() + ".wav";
         File videos = BBSRendering.getVideoFolder();
@@ -301,24 +291,6 @@ public class UIFilmPreview extends UIElement
             context.batcher.texturedBox(texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, texture.height, texture.width, 0, texture.width, texture.height);
         }
 
-        if (this.panel.getData() != null)
-        {
-            /* Render global video clips (overlays) */
-            VideoRenderer.renderClips(
-                context.batcher.getContext().getMatrices(),
-                context.batcher,
-                this.panel.getData().camera.getClips(this.panel.getCursor()),
-                this.panel.getCursor(),
-                this.panel.getRunner().isRunning(),
-                this.getViewport(),
-                context.menu.viewport,
-                context,
-                context.menu.width,
-                context.menu.height,
-                true
-            );
-        }
-
         this.renderCursor(context);
 
         /* Render rule of thirds */
@@ -330,10 +302,8 @@ public class UIFilmPreview extends UIElement
             context.batcher.box(area.x + area.w - area.w / 3, area.y, area.x + area.w - area.w / 3 + 1, area.y + area.h, guidesColor);
 
             context.batcher.box(area.x, area.y + area.h / 3 - 1, area.x + area.w, area.y + area.h / 3, guidesColor);
-            context.batcher.box(area.x, area.y + area.h - area.h / 3 - 1, area.x + area.w, area.y + area.h - area.h / 3, guidesColor);
+            context.batcher.box(area.x, area.y + area.h - area.h / 3, area.x + area.w, area.y + area.h - area.h / 3 + 1, guidesColor);
         }
-
-        VideoRenderer.update();
 
         if (BBSSettings.editorCenterLines.get())
         {

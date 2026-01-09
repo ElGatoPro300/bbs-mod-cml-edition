@@ -5,9 +5,7 @@
     "name": "BBS mod",
     "description": "A new generation of video production mod",
     "authors": [
-        "McHorse",
-        "ElGatoPro300",
-        "Diobede"
+        "McHorse"
     ],
     "contributors": [
         "Chryfi (tracker clip)",
@@ -27,11 +25,10 @@
         "Rüyaperest (Turkish translations)",
         "Kirkus (Ukrainian translations)",
         "Eleeter (Urdu translations)",
-        "Diobede (Vietnamese translations)",
-        "bay4lly.java (bug fixes)"
+        "Diobede (Vietnamese translations)"
     ],
     "contact": {
-        "homepage": "https://discord.gg/MAHVQBSce6"
+        "homepage": "https://www.patreon.com/McHorse"
     },
     "license": "MIT",
     "icon": "assets/bbs/icon.png",
@@ -53,7 +50,7 @@
     ],
     "accessWidener": "bbs.accesswidener",
     "depends": {
-        "fabricloader": ">=0.16.14",
+        "fabricloader": ">=0.15.0",
         "minecraft": "=1.20.1",
         "java": ">=17",
         "fabric-api": "*"

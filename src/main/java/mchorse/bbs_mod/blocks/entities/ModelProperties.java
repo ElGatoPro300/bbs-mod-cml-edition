@@ -23,14 +23,7 @@ public class ModelProperties implements IMapSerializable
     private boolean enabled = true;
     private boolean global;
     private boolean shadow;
-    private boolean lookAt; // Face the player/camera when rendering
-
-    /* Runtime-only state for continuous look-at yaw unwrapping (not serialized) */
-    private boolean lookYawInitialized;
-    private float lookYawLastAbs;
-    private float lookYawContinuous;
-    private boolean hitbox;
-    private int lightLevel = 0;
+    private boolean lookAt;
 
     public Form getForm()
     {
@@ -132,16 +125,6 @@ public class ModelProperties implements IMapSerializable
         this.shadow = shadow;
     }
 
-    public boolean isHitbox()
-    {
-        return this.hitbox;
-    }
-
-    public void setHitbox(boolean hitbox)
-    {
-        this.hitbox = hitbox;
-    }
-
     public boolean isLookAt()
     {
         return this.lookAt;
@@ -152,64 +135,6 @@ public class ModelProperties implements IMapSerializable
         this.lookAt = lookAt;
     }
 
-    /* Runtime helpers */
-    public boolean isLookYawInitialized()
-    {
-        return this.lookYawInitialized;
-    }
-
-    public void initLookYaw(float yawAbs)
-    {
-        this.lookYawInitialized = true;
-        this.lookYawLastAbs = yawAbs;
-        this.lookYawContinuous = yawAbs;
-    }
-
-    public float updateLookYawContinuous(float yawAbs)
-    {
-        if (!this.lookYawInitialized)
-        {
-            initLookYaw(yawAbs);
-            return this.lookYawContinuous;
-        }
-
-        float d = yawAbs - this.lookYawLastAbs;
-        while (d > Math.PI) d -= (float) (Math.PI * 2);
-        while (d < -Math.PI) d += (float) (Math.PI * 2);
-
-        this.lookYawContinuous += d;
-        this.lookYawLastAbs = yawAbs;
-
-        return this.lookYawContinuous;
-    }
-
-    public void resetLookYaw()
-    {
-        this.lookYawInitialized = false;
-        this.lookYawLastAbs = 0F;
-        this.lookYawContinuous = 0F;
-    }
-
-    /**
-     * Rebasea el yaw continuo al yaw base actual, evitando saltos tras un ciclo.
-     * Mantiene la inicialización y actualiza el último yaw absoluto.
-     */
-    public void snapLookYawToBase(float yawAbs, float baseYaw)
-    {
-        this.lookYawInitialized = true;
-        this.lookYawLastAbs = yawAbs;
-        this.lookYawContinuous = baseYaw;
-    }   
-    
-    public int getLightLevel()
-    {
-        return this.lightLevel;
-    }
-
-    public void setLightLevel(int level)
-    {
-        this.lightLevel = Math.max(0, Math.min(15, level));
-    }
     public Form getForm(ModelTransformationMode mode)
     {
         Form form = this.form;
@@ -267,8 +192,6 @@ public class ModelProperties implements IMapSerializable
         this.shadow = data.getBool("shadow");
         this.global = data.getBool("global");
         this.lookAt = data.getBool("look_at");
-        if (data.has("hitbox")) this.hitbox = data.getBool("hitbox");
-        if (data.has("light_level")) this.lightLevel = data.getInt("light_level");
     }
 
     @Override
@@ -287,9 +210,7 @@ public class ModelProperties implements IMapSerializable
         data.putBool("enabled", this.enabled);
         data.putBool("shadow", this.shadow);
         data.putBool("global", this.global);
-        data.putBool("hitbox", this.hitbox);
         data.putBool("look_at", this.lookAt);
-        data.putInt("light_level", this.lightLevel);
     }
 
     public void update(IEntity entity)

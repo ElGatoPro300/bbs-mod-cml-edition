@@ -2,21 +2,17 @@ package mchorse.bbs_mod.cubic.data.model;
 
 import mchorse.bbs_mod.bobj.BOBJBone;
 import mchorse.bbs_mod.cubic.CubicModelAnimator;
-import mchorse.bbs_mod.cubic.IKSolver;
 import mchorse.bbs_mod.cubic.IModel;
 import mchorse.bbs_mod.cubic.MolangHelper;
 import mchorse.bbs_mod.cubic.data.animation.Animation;
 import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
-import mchorse.bbs_mod.utils.resources.LinkUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,8 +29,6 @@ public class Model implements IMapSerializable, IModel
     public int textureHeight;
 
     public final MolangParser parser;
-
-    public final List<IKChain> ikChains = new ArrayList<>();
 
     /**
      * This list contains only the root groups of the model (and not all of the groups)
@@ -109,7 +103,6 @@ public class Model implements IMapSerializable, IModel
 
             poseTransform.copy(group.current);
             poseTransform.translate.sub(group.initial.translate);
-            poseTransform.pivot.sub(group.initial.pivot);
             poseTransform.rotate.sub(group.initial.rotate);
 
             poseTransform.rotate.x = MathUtils.toRad(poseTransform.rotate.x);
@@ -154,17 +147,8 @@ public class Model implements IMapSerializable, IModel
 
             group.lighting = transform.lighting;
             group.color.copy(transform.color);
-            // Apply optional per-group texture override from pose
-            Link texture = transform.texture;
-            group.textureOverride = texture != null ? LinkUtils.copy(texture) : null;
             group.current.translate.add(transform.translate);
             group.current.scale.add(transform.scale).sub(1, 1, 1);
-            /* Para modelos/pose: el pivote de la pose debe sobreponer la posición
-             * sin alterar el modelo original, y además actualizar el punto de rotación.
-             * Aplicamos el delta de pivot a la traslación (override de posición)
-             * y también al pivot actual (centro de rotación de la pose). */
-            group.current.translate.add(transform.pivot);
-            group.current.pivot.add(transform.pivot);
             group.current.rotate.add(
                 (float) Math.toDegrees(transform.rotate.x),
                 (float) Math.toDegrees(transform.rotate.y),
@@ -176,8 +160,6 @@ public class Model implements IMapSerializable, IModel
                 (float) Math.toDegrees(transform.rotate2.z)
             );
         }
-
-        IKSolver.resolveIK(this, null);
     }
 
     @Override
@@ -260,7 +242,6 @@ public class Model implements IMapSerializable, IModel
     {
         MolangHelper.setMolangVariables(this.parser, target, tick, transition);
         CubicModelAnimator.animate(this, action, tick, blend, skipInitial);
-        IKSolver.resolveIK(this, target);
     }
 
     @Override
@@ -268,7 +249,6 @@ public class Model implements IMapSerializable, IModel
     {
         MolangHelper.setMolangVariables(this.parser, target, tick, transition);
         CubicModelAnimator.postAnimate(this, action, tick);
-        IKSolver.resolveIK(this, target);
     }
 
     /* Deserialization / Serialization */
@@ -341,15 +321,27 @@ public class Model implements IMapSerializable, IModel
         texture.addInt(this.textureWidth);
         texture.addInt(this.textureHeight);
 
+        Map<String, String> parents = new HashMap<>();
+        Collection<ModelGroup> allGroups = this.getAllGroups();
+
+        for (ModelGroup parent : allGroups)
+        {
+            for (ModelGroup child : parent.children)
+            {
+                parents.put(child.id, parent.id);
+            }
+        }
+
         MapType groups = new MapType();
 
-        for (ModelGroup group : this.getOrderedGroups())
+        for (ModelGroup group : allGroups)
         {
             MapType groupData = group.toData();
+            String parentId = parents.get(group.id);
 
-            if (group.parent != null)
+            if (parentId != null)
             {
-                groupData.putString("parent", group.parent.id);
+                groupData.putString("parent", parentId);
             }
 
             groups.put(group.id, groupData);

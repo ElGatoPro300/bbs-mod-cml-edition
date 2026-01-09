@@ -4,20 +4,14 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
-import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UITransformKeyframeFactory;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.forms.editors.UIFormEditor;
-import mchorse.bbs_mod.ui.forms.editors.forms.UIModelForm;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
@@ -95,22 +89,6 @@ public class UIPickableFormRenderer extends UIFormRenderer
     @Override
     public boolean subMouseClicked(UIContext context)
     {
-        /* Dar prioridad al gizmo: si el cursor está sobre un handle del gizmo,
-         * consumimos el clic para evitar seleccionar otro hueso o arrastrar la cámara. */
-        if (
-            BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 &&
-            this.area.isInside(context) &&
-            BoneGizmoSystem.get().isHoveringHandle()
-        )
-        {
-            /* Consumir clic izquierdo, derecho y botón medio */
-            if (context.mouseButton == 0 || context.mouseButton == 1 || context.mouseButton == 2)
-            {
-                return true;
-            }
-        }
-
-        /* Si no está sobre el gizmo, permitimos el pick de huesos en el viewport */
         if (this.formEditor.clickViewport(context, this.stencil))
         {
             return true;
@@ -146,45 +124,6 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
         this.renderAxes(context);
 
-        /* Gizmo en el editor de modelos: posicionar en el pivote del hueso seleccionado */
-        Matrix4f originRaw = this.formEditor.getOrigin(context.getTransition());
-        Matrix4f origin = originRaw != null ? MatrixStackUtils.stripScale(originRaw) : null;
-        UIPropTransform activeTransform = null;
-
-        /* Priorizar el transform del editor de estados cuando está visible y la pista es de pose/pose_overlay o transform/transform_overlay */
-        if (this.formEditor.statesEditor.isVisible()
-            && this.formEditor.statesKeyframes != null
-            && this.formEditor.statesKeyframes.keyframeEditor != null)
-        {
-            Object factory = this.formEditor.statesKeyframes.keyframeEditor.editor;
-
-            if (factory instanceof UIPoseKeyframeFactory poseFactory)
-            {
-                activeTransform = poseFactory.poseEditor.transform;
-            }
-            else if (factory instanceof UITransformKeyframeFactory transformFactory)
-            {
-                activeTransform = transformFactory.getTransform();
-            }
-        }
-        else if (this.formEditor.editor instanceof UIModelForm uiModelForm)
-        {
-            /* Fallback al transform del editor de modelo cuando no está el de estados */
-            activeTransform = uiModelForm.modelPanel.poseEditor.transform;
-        }
-
-        /* La vista usada para renderizar el modelo aplica rotación y luego traslada
-         * por la posición de la cámara en el MatrixStack. Para alinear el gizmo con
-         * lo que se ve en pantalla, debemos incorporar también esa traslación en la
-         * matriz de vista que pasamos al gizmo. */
-        Matrix4f viewWithTranslation = new Matrix4f(this.camera.view)
-            .translate(-(float) this.camera.position.x, -(float) this.camera.position.y, -(float) this.camera.position.z);
-
-        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
-        {
-            BoneGizmoSystem.get().update(context, this.area, origin, this.camera.projection, viewWithTranslation, activeTransform);
-        }
-
         if (this.area.isInside(context))
         {
             GlStateManager._disableScissorTest();
@@ -194,18 +133,6 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
             FormUtilsClient.render(this.form, formContext.stencilMap(this.stencilMap));
 
-            /* Evitar el picking de huesos cuando el mouse está sobre un gizmo.
-             * Esto permite manipular el gizmo sin seleccionar otro hueso por accidente. */
-            boolean blockPicking = BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 && BoneGizmoSystem.get().isHoveringHandle();
-
-            if (!blockPicking)
-            {
-                this.stencil.pickGUI(context, this.area);
-            }
-            else
-            {
-                this.stencil.clearPicking();
-            }
             Matrix4f matrix = this.formEditor.getOrigin(context.getTransition());
             MatrixStack stack = context.render.batcher.getContext().getMatrices();
 
@@ -235,8 +162,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
     private void renderAxes(UIContext context)
     {
-        Matrix4f matrixRaw = this.formEditor.getOrigin(context.getTransition());
-        Matrix4f matrix = matrixRaw != null ? MatrixStackUtils.stripScale(matrixRaw) : null;
+        Matrix4f matrix = this.formEditor.getOrigin(context.getTransition());
         MatrixStack stack = context.render.batcher.getContext().getMatrices();
 
         stack.push();
@@ -246,18 +172,12 @@ public class UIPickableFormRenderer extends UIFormRenderer
             MatrixStackUtils.multiply(stack, MatrixStackUtils.stripScale(matrix));
         }
 
-        /* Draw axes (desactivar cuando el gizmo nuevo está activo) */
-        if (UIBaseMenu.renderAxes && (!BBSSettings.gizmos.get() || BBSSettings.gizmoDesign.get() == 0))
+        /* Draw axes */
+        if (UIBaseMenu.renderAxes)
         {
             RenderSystem.disableDepthTest();
             Gizmo.INSTANCE.render(stack);
             RenderSystem.enableDepthTest();
-        }
-
-        /* Render gizmos 3D en el origen del modelo cuando están habilitados */
-        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
-        {
-            BoneGizmoSystem.get().render3D(stack);
         }
 
         stack.pop();
@@ -292,13 +212,6 @@ public class UIPickableFormRenderer extends UIFormRenderer
     public void render(UIContext context)
     {
         super.render(context);
-
-        /* Render overlay del gizmo al final para que siempre quede por encima
-         * de cualquier overlay de previsualización del picker. */
-        if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
-        {
-            BoneGizmoSystem.get().renderOverlay(context.render, this.area);
-        }
 
         if (!this.stencil.hasPicked())
         {
