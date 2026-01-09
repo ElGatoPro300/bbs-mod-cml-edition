@@ -1,5 +1,4 @@
 package mchorse.bbs_mod.ui;
-
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 import org.lwjgl.glfw.GLFW;
@@ -138,4 +137,14 @@ public class Keys
 
     /* Texture picker */
     public static final KeyCombo TEXTURE_PICKER_FIND = new KeyCombo("find", UIKeys.TEXTURE_KEYS_FIND_ALL, GLFW.GLFW_KEY_F, GLFW.GLFW_KEY_LEFT_CONTROL).categoryKey("texture_picker");
+    
+    /* Gizmos */
+    public static final KeyCombo GIZMOS_TOGGLE_ROTATION_CHANNEL = new KeyCombo("toggle_rotation_channel", UIKeys.GIZMOS_KEYS_TOGGLE_ROTATION_CHANNEL, GLFW.GLFW_KEY_Q).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_TOGGLE_ENABLED = new KeyCombo("toggle_enabled", UIKeys.GIZMOS_KEYS_TOGGLE_ENABLED, GLFW.GLFW_KEY_U).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_TRANSLATE = new KeyCombo("translate", UIKeys.GIZMOS_KEYS_TRANSLATE, GLFW.GLFW_KEY_G).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_ROTATE = new KeyCombo("rotate", UIKeys.GIZMOS_KEYS_ROTATE, GLFW.GLFW_KEY_R).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_SCALE = new KeyCombo("scale", UIKeys.GIZMOS_KEYS_SCALE, GLFW.GLFW_KEY_S).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_PIVOT = new KeyCombo("pivot", UIKeys.GIZMOS_KEYS_PIVOT, GLFW.GLFW_KEY_P).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_FREE_ROTATE_XY = new KeyCombo("free_rotate_xy", UIKeys.GIZMOS_KEYS_FREE_ROTATE_XY, GLFW.GLFW_KEY_LEFT_CONTROL).categoryKey("gizmos");
+    public static final KeyCombo GIZMOS_FREE_ROTATE_ZY = new KeyCombo("free_rotate_zy", UIKeys.GIZMOS_KEYS_FREE_ROTATE_ZY, GLFW.GLFW_KEY_LEFT_SHIFT, GLFW.GLFW_KEY_LEFT_CONTROL).categoryKey("gizmos");
 }

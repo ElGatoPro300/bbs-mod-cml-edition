@@ -5,6 +5,7 @@ import mchorse.bbs_mod.data.IMapSerializable;
 import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.pose.Transform;
 
@@ -20,10 +21,13 @@ public class ModelGroup implements IMapSerializable
     public List<ModelCube> cubes = new ArrayList<>();
     public List<ModelMesh> meshes = new ArrayList<>();
     public boolean visible = true;
+    public boolean isNullObject = false;
     public int index = -1;
 
     public float lighting = 0F;
     public Color color = new Color().set(1F, 1F, 1F);
+    /** Optional texture override applied at render-time (e.g., per-bone). */
+    public Link textureOverride;
     public Transform initial = new Transform();
     public Transform current = new Transform();
 
@@ -36,6 +40,7 @@ public class ModelGroup implements IMapSerializable
     {
         this.lighting = 0F;
         this.color.set(1F, 1F, 1F);
+        this.textureOverride = null;
         this.current.copy(this.initial);
     }
 
@@ -45,6 +50,8 @@ public class ModelGroup implements IMapSerializable
         /* Setup initial transformations */
         if (data.has("origin")) this.initial.translate.set(DataStorageUtils.vector3fFromData(data.getList("origin")));
         if (data.has("rotate")) this.initial.rotate.set(DataStorageUtils.vector3fFromData(data.getList("rotate")));
+        if (data.has("pivot")) this.initial.pivot.set(DataStorageUtils.vector3fFromData(data.getList("pivot")));
+        else this.initial.pivot.set(this.initial.translate);
 
         /* Setup cubes and meshes */
         if (data.has("cubes"))
@@ -71,6 +78,43 @@ public class ModelGroup implements IMapSerializable
                 this.meshes.add(mesh);
             }
         }
+
+        if (data.has("null_objects"))
+        {
+            for (BaseType element : data.getList("null_objects"))
+            {
+                if (element instanceof MapType)
+                {
+                    MapType map = (MapType) element;
+                    String name = map.getString("name");
+                    ModelGroup nullGroup = new ModelGroup(name);
+
+                    nullGroup.isNullObject = true;
+                    nullGroup.fromData(map);
+                    this.children.add(nullGroup);
+                }
+            }
+        }
+
+        if (data.has("locators"))
+        {
+            for (BaseType element : data.getList("locators"))
+            {
+                if (element instanceof MapType)
+                {
+                    MapType map = (MapType) element;
+                    String name = map.getString("name");
+                    ModelGroup locatorGroup = new ModelGroup(name);
+
+                    // Locators act like Null Objects (transform only, no geometry)
+                    locatorGroup.isNullObject = true;
+                    // Hidden flag for future use (Keyframe system)
+                    locatorGroup.visible = false; 
+                    locatorGroup.fromData(map);
+                    this.children.add(locatorGroup);
+                }
+            }
+        }
     }
 
     @Override
@@ -78,6 +122,7 @@ public class ModelGroup implements IMapSerializable
     {
         data.put("origin", DataStorageUtils.vector3fToData(this.initial.translate));
         data.put("rotate", DataStorageUtils.vector3fToData(this.initial.rotate));
+        data.put("pivot", DataStorageUtils.vector3fToData(this.initial.pivot));
 
         if (!this.cubes.isEmpty())
         {
