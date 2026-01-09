@@ -22,6 +22,8 @@ import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -38,6 +40,8 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeEditor;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
@@ -67,12 +71,15 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+
+import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -1011,6 +1018,80 @@ public class UIFilmController extends UIElement
 
         this.renderPickingPreview(context, area);
 
+        /* Update and render gizmo overlay based on current bone selection */
+        if (!this.panel.isFlying() && BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
+        {
+            UIPropTransform activeTransform = null;
+
+            UIKeyframeEditor keyframeEditor = this.panel.replayEditor != null ? this.panel.replayEditor.keyframeEditor : null;
+
+            if (keyframeEditor != null)
+            {
+                if (keyframeEditor.editor instanceof UIPoseKeyframeFactory poseFactory)
+                {
+                    activeTransform = poseFactory.poseEditor.transform;
+                }
+                else if (keyframeEditor.editor instanceof mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UITransformKeyframeFactory tfFactory)
+                {
+                    // Obtener el editor de transform para keyframes de transform/transform_overlay
+                    activeTransform = tfFactory.getTransform();
+                }
+            }
+
+            Pair<String, Boolean> boneSel = this.getBone();
+
+            if (activeTransform != null && boneSel != null)
+            {
+                IEntity entity = this.getCurrentEntity();
+
+                if (entity != null && entity.getForm() != null && this.panel.lastProjection != null && this.panel.lastView != null)
+                {
+                    float transition = this.worldRenderContext != null ? this.worldRenderContext.tickDelta() : 0F;
+
+                    /* Compute entity's target matrix in world space */
+                    Vector3d cameraPos = this.panel.getCamera().position;
+                    Matrix4f defaultMatrix = BaseFilmController.getMatrixForRenderWithRotation(entity, cameraPos.x, cameraPos.y, cameraPos.z, transition);
+                    Pair<Matrix4f, Float> total = BaseFilmController.getTotalMatrix(this.getEntities(), entity.getForm().anchor.get(), defaultMatrix, cameraPos.x, cameraPos.y, cameraPos.z, transition, 0);
+                    Matrix4f targetMatrix = total != null && total.a != null ? total.a : defaultMatrix;
+
+                    /* Collect bone matrices; when local is true, pass null to collect all */
+                    Form root = entity.getForm();
+                    MatrixCache matrices = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
+                    Matrix4f boneMatrix = null;
+
+                    if (matrices != null)
+                {
+                    String key = boneSel.a;
+                    boolean forceOrigin = key.endsWith("#origin");
+                    
+                    if (forceOrigin) key = key.substring(0, key.length() - 7);
+                    
+                    MatrixCacheEntry entry = matrices.get(key);
+
+                    if (entry != null)
+                    {
+                        // Preferir la matriz de origen del hueso, si está disponible o si se fuerza
+                        boneMatrix = entry.origin();
+
+                        if (boneMatrix == null)
+                        {
+                            boneMatrix = entry.matrix();
+                        }
+                    }
+                }
+
+                    if (boneMatrix != null)
+                    {
+                        Matrix4f originRaw = new Matrix4f(targetMatrix).mul(boneMatrix);
+                        Matrix4f origin = MatrixStackUtils.stripScale(originRaw);
+
+                        BoneGizmoSystem.get().update(context, area, origin, this.panel.lastProjection, this.panel.lastView, activeTransform);
+                        BoneGizmoSystem.get().renderOverlay(context.render, area);
+                    }
+                }
+            }
+        }
+
         this.orbit.handleOrbiting(context);
     }
 
@@ -1219,7 +1300,19 @@ public class UIFilmController extends UIElement
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);
         int y = (int) ((1F - (context.mouseY - viewport.y) / (float) viewport.h) * mainTexture.height);
 
-        this.stencil.pick(x, y);
+        /* Evitar el picking de huesos cuando el mouse está sobre un gizmo
+         * en la vista de cámara de films. Esto prioriza la interacción del
+         * gizmo sobre la selección por stencil. */
+        boolean blockPicking = BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0 && BoneGizmoSystem.get().isHoveringHandle();
+
+        if (!blockPicking)
+        {
+            this.stencil.pick(x, y);
+        }
+        else
+        {
+            this.stencil.clearPicking();
+        }
         this.stencil.unbind(this.stencilMap);
 
         MinecraftClient.getInstance().getFramebuffer().beginWrite(true);

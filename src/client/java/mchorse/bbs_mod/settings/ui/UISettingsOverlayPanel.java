@@ -96,6 +96,26 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
                     continue;
                 }
 
+                /* Populate interpolation labels for default interpolation setting on client side */
+                if (value == BBSSettings.defaultInterpolation)
+                {
+                    try
+                    {
+                        java.util.List<mchorse.bbs_mod.l10n.keys.IKey> interpKeys = new java.util.ArrayList<>();
+
+                        for (String k : mchorse.bbs_mod.utils.interps.Interpolations.MAP.keySet())
+                        {
+                            interpKeys.add(mchorse.bbs_mod.ui.UIKeys.C_INTERPOLATION.get(k));
+                        }
+
+                        if (value instanceof mchorse.bbs_mod.settings.values.numeric.ValueInt)
+                        {
+                            ((mchorse.bbs_mod.settings.values.numeric.ValueInt) value).modes(interpKeys.toArray(new mchorse.bbs_mod.l10n.keys.IKey[0]));
+                        }
+                    }
+                    catch (Throwable ignored) {}
+                }
+
                 List<UIElement> elements = UIValueMap.create(value, this);
 
                 for (UIElement element : elements)

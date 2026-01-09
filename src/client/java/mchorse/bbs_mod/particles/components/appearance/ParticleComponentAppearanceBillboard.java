@@ -14,7 +14,7 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import mchorse.bbs_mod.utils.joml.Vectors;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -268,7 +268,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
     {}
 
     @Override
-    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, BufferBuilder builder, Matrix4f matrix, int overlay, float transition)
+    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, VertexConsumer builder, Matrix4f matrix, int overlay, float transition)
     {
         this.calculateUVs(particle, emitter, transition);
 
@@ -363,7 +363,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
         this.build(builder, format, matrix, particle, overlay);
     }
 
-    private void build(BufferBuilder builder, VertexFormat format, Matrix4f matrix, Particle particle, int overlay)
+    private void build(VertexConsumer builder, VertexFormat format, Matrix4f matrix, Particle particle, int overlay)
     {
         float u1 = this.u1 / (float) this.textureWidth;
         float u2 = this.u2 / (float) this.textureWidth;
@@ -383,7 +383,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
         this.writeVertex(builder, format, matrix, this.vertices[0], u2, v2, overlay, particle);
     }
 
-    private void writeVertex(BufferBuilder builder, VertexFormat format, Matrix4f matrix, Vector4f vertex, float u, float v, int overlay, Particle particle)
+    private void writeVertex(VertexConsumer builder, VertexFormat format, Matrix4f matrix, Vector4f vertex, float u, float v, int overlay, Particle particle)
     {
         if (format == VertexFormats.POSITION_TEXTURE_COLOR_LIGHT)
         {
@@ -408,10 +408,10 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
     }
 
     @Override
-    public void renderUI(Particle particle, BufferBuilder builder, Matrix4f matrix, float transition)
+    public void renderUI(Particle particle, VertexConsumer builder, Matrix4f matrix, float transition)
     {
         this.calculateUVs(particle, null, transition);
-
+        
         this.w = this.h = 0.5F;
         float angle = Lerps.lerp(particle.prevRotation, particle.rotation, transition);
 
@@ -430,7 +430,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
         this.buildUI(builder, matrix, particle);
     }
 
-    private void buildUI(BufferBuilder builder, Matrix4f matrix, Particle particle)
+    private void buildUI(VertexConsumer builder, Matrix4f matrix, Particle particle)
     {
         float u1 = this.u1 / (float) this.textureWidth;
         float u2 = this.u2 / (float) this.textureWidth;
@@ -450,7 +450,7 @@ public class ParticleComponentAppearanceBillboard extends ParticleComponentBase 
         this.writeVertexUI(builder, matrix, this.vertices[2], u2, v2, particle);
     }
 
-    private void writeVertexUI(BufferBuilder builder, Matrix4f matrix, Vector4f vertex, float u, float v, Particle particle)
+    private void writeVertexUI(VertexConsumer builder, Matrix4f matrix, Vector4f vertex, float u, float v, Particle particle)
     {
         builder.vertex(matrix, vertex.x, vertex.y, 0F)
             .texture(u, v)

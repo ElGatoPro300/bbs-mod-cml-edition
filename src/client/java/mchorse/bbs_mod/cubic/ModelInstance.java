@@ -299,12 +299,15 @@ public class ModelInstance implements IModelInstance
                     group.initial.translate.z / 16
                 );
                 matrix.rotateY(MathUtils.PI);
+
+                /* Also provide origin matrix captured before rotation/scale at the group's pivot */
                 origin.translate(
-                    group.initial.translate.x / 16,
-                    group.initial.translate.y / 16,
-                    group.initial.translate.z / 16
+                    group.initial.translate.x / 8192,
+                    group.initial.translate.y / 8192,
+                    group.initial.translate.z / 8192
                 );
                 origin.rotateY(MathUtils.PI);
+                
                 bones.put(group.id, matrix, origin);
             }
         }
@@ -324,13 +327,13 @@ public class ModelInstance implements IModelInstance
         }
     }
 
-    public void render(MatrixStack stack, Supplier<ShaderProgram> program, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys)
+    public void render(MatrixStack stack, Supplier<ShaderProgram> program, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys, Link defaultTexture)
     {
         if (this.model instanceof Model model)
         {
             boolean isVao = this.isVAORendered();
             CubicCubeRenderer renderProcessor = isVao
-                ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys)
+                ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys, defaultTexture)
                 : new CubicCubeRenderer(light, overlay, stencilMap, keys);
 
             renderProcessor.setColor(color.r, color.g, color.b, color.a);

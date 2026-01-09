@@ -353,6 +353,10 @@ public class BBSModClient implements ClientModInitializer
         BBSMod.events.post(new RegisterClientSettingsEvent());
 
         BBSSettings.language.postCallback((v, f) -> reloadLanguage(getLanguageKey()));
+        /* Reconfigurar las categorías de formularios cuando se cambie la visualización de estructuras */
+        BBSSettings.visualizeStructures.postCallback((v, f) -> {
+            getFormCategories().setup();
+        });
         BBSSettings.editorSeconds.postCallback((v, f) ->
         {
             if (dashboard != null && dashboard.getPanels().panel instanceof UIFilmPanel panel)
@@ -372,6 +376,14 @@ public class BBSModClient implements ClientModInitializer
             UIKeys.ENGINE_KEYSTROKES_POSITION_BOTTOM_RIGHT,
             UIKeys.ENGINE_KEYSTROKES_POSITION_TOP_RIGHT,
             UIKeys.ENGINE_KEYSTROKES_POSITION_TOP_LEFT
+        );
+
+        /* Gizmo design modes: 0=Default (Gizmo.java), 1=CML, 2=Classic, 3=Blockbench */
+        BBSSettings.gizmoDesign.modes(
+            UIKeys.GIZMOS_DESIGN_DEFAULT,
+            UIKeys.GIZMOS_DESIGN_CML,
+            UIKeys.GIZMOS_DESIGN_CLASSIC,
+            UIKeys.GIZMOS_DESIGN_BLOCKBENCH
         );
 
         UIKeys.C_KEYBIND_CATGORIES.load(KeyCombo.getCategoryKeys());

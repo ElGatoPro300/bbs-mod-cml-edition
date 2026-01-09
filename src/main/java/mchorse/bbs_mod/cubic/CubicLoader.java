@@ -1,9 +1,12 @@
 package mchorse.bbs_mod.cubic;
 
 import mchorse.bbs_mod.cubic.data.animation.Animations;
+import mchorse.bbs_mod.cubic.data.model.IKChain;
 import mchorse.bbs_mod.cubic.data.model.Model;
 import mchorse.bbs_mod.data.DataToString;
 import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.math.molang.MolangParser;
 import mchorse.bbs_mod.utils.IOUtils;
@@ -48,6 +51,26 @@ public class CubicLoader
             {
                 info.model = new Model(parser);
                 info.model.fromData(root.getMap("model"));
+
+                if (root.has("kinematics"))
+                {
+                    MapType kinematics = root.getMap("kinematics");
+
+                    if (kinematics.has("ik_chains"))
+                    {
+                        for (BaseType chainData : kinematics.getList("ik_chains"))
+                        {
+                            if (chainData instanceof MapType)
+                            {
+                                IKChain chain = new IKChain();
+
+                                chain.fromData((MapType) chainData);
+                                info.model.ikChains.add(chain);
+                            }
+                        }
+                    }
+                }
+
                 info.model.initialize();
             }
 
@@ -73,6 +96,28 @@ public class CubicLoader
         if (model.getModel() instanceof IMapSerializable serializable)
         {
             data.put("model", serializable.toData());
+        }
+
+        if (model.getModel() instanceof Model)
+        {
+            Model m = (Model) model.getModel();
+
+            if (!m.ikChains.isEmpty())
+            {
+                MapType kinematics = new MapType();
+                ListType chains = new ListType();
+
+                for (IKChain chain : m.ikChains)
+                {
+                    MapType chainData = new MapType();
+
+                    chain.toData(chainData);
+                    chains.add(chainData);
+                }
+
+                kinematics.put("ik_chains", chains);
+                data.put("kinematics", kinematics);
+            }
         }
 
         if (model.getAnimations() != null)
