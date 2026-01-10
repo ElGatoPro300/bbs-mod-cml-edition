@@ -55,10 +55,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.DataInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -73,47 +70,27 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     {
         final BlockState state;
         final BlockPos pos;
-        final NbtCompound nbt;
 
-        BlockEntry(BlockState state, BlockPos pos, NbtCompound nbt)
+        BlockEntry(BlockState state, BlockPos pos)
         {
             this.state = state;
             this.pos = pos;
-            this.nbt = nbt;
         }
     }
 
     private final List<BlockEntry> blocks = new ArrayList<>();
-    private final List<BlockEntry> animatedBlocks = new ArrayList<>();
-    private final List<BlockEntry> biomeTintedBlocks = new ArrayList<>();
-    private final List<BlockEntry> blockEntitiesList = new ArrayList<>();
     private String lastFile = null;
     private BlockPos size = BlockPos.ORIGIN;
     private BlockPos boundsMin = null;
     private BlockPos boundsMax = null;
     private IModelVAO structureVao = null;
-    private ModelVAOData cachedGeometry = null;
-    private boolean geometryDirty = true;
     private boolean vaoDirty = true;
-    private boolean vaoBuiltWithShaders = false;
     private boolean capturingVAO = false;
     // VAO dedicado para picking (incluye bloques animados y con tinte por bioma)
     private IModelVAO structureVaoPicking = null;
     private boolean vaoPickingDirty = true;
-    
-    // Cache de luz para detectar cambios y reconstruir VAO
-    private boolean lastEmitLight = false;
-    private int lastLightIntensity = 0;
-
     // Controla si, durante la captura del VAO, se deben incluir bloques especiales
     private boolean capturingIncludeSpecialBlocks = false;
-    private boolean hasTranslucentLayer = false;
-    private boolean hasCutoutLayer = false;
-    private boolean hasAnimatedLayer = false;
-    private boolean hasBiomeTintedLayer = false;
-    private boolean hasBlockEntityLayer = false;
-    private mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry[] entriesCache = null;
-    private mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView cachedView = null;
 
     public StructureFormRenderer(StructureForm form)
     {
@@ -170,13 +147,14 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         // Si la luz de la estructura está habilitada, forzar el camino BufferBuilder
         // para que el cálculo de luz dinámico mediante VirtualBlockRenderView aplique.
         // Esto evita que el VAO (iluminación más simple) ignore el panel de luz.
-        /* 
-           MODIFICACIÓN: Permitir optimización (VAO) incluso con luces habilitadas,
-           ya que ahora LightmapStructureVAOCollector maneja la luz virtual.
-           
-           Se mantiene la lógica original de renderizado si la optimización está desactivada globalmente.
-        */
-        
+        {
+            mchorse.bbs_mod.forms.forms.utils.StructureLightSettings sl = this.form.structureLight.getRuntimeValue();
+            boolean lightsEnabled = (sl != null) ? sl.enabled : this.form.emitLight.get();
+            if (lightsEnabled)
+            {
+                optimize = false;
+            }
+        }
         if (!optimize)
         {
             // Modo BufferBuilder: mejor iluminación, peor rendimiento
@@ -189,7 +167,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             {
                 FormRenderingContext uiContext = new FormRenderingContext()
                     .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
-                renderStructureCulledWorld(uiContext, matrices, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, shaders, null);
+                renderStructureCulledWorld(uiContext, matrices, consumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, shaders);
                 if (consumers instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                 {
                     immediate.draw();
@@ -217,81 +195,66 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 RenderSystem.setShader(() -> shader);
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-                boolean needBlendUI = tint.a < 0.999f || this.hasTranslucentLayer;
-                if (needBlendUI)
-                {
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                }
-                else
-                {
-                    RenderSystem.disableBlend();
-                }
-                RenderSystem.enableCull();
+                // Habilitar blending para soportar capas translúcidas (vidrios, portal, hojas, etc.)
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
                 ModelVAORenderer.render(shader, this.structureVao, matrices, tint.r, tint.g, tint.b, tint.a, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
 
-                if (this.hasBlockEntityLayer)
+                // Pase de Block Entities tras VAO
+                try
                 {
-                    try
+                    net.minecraft.client.render.VertexConsumerProvider beConsumers = net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+                    FormRenderingContext beContext = new FormRenderingContext()
+                        .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
+                    renderBlockEntitiesOnly(beContext, matrices, beConsumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+                    if (beConsumers instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                     {
-                        net.minecraft.client.render.VertexConsumerProvider beConsumers = net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-                        FormRenderingContext beContext = new FormRenderingContext()
-                            .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
-                        renderBlockEntitiesOnly(beContext, matrices, beConsumers, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-                        if (beConsumers instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
-                        {
-                            immediate.draw();
-                        }
+                        immediate.draw();
                     }
-                    catch (Throwable ignored) {}
                 }
+                catch (Throwable ignored) {}
 
-                if (this.hasBiomeTintedLayer)
+                // Pase adicional: bloques con tinte por bioma (hojas/grass/vines/lily pad)
+                try
                 {
-                    try
+                    boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
+                    net.minecraft.client.render.VertexConsumerProvider consumersTint = shadersEnabled
+                        ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
+                        : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+
+                    FormRenderingContext tintContext = new FormRenderingContext()
+                        .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
+                    renderBiomeTintedBlocksVanilla(tintContext, matrices, consumersTint, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+
+                    if (consumersTint instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                     {
-                        boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
-                        net.minecraft.client.render.VertexConsumerProvider consumersTint = shadersEnabled
-                            ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                            : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-
-                        FormRenderingContext tintContext = new FormRenderingContext()
-                            .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
-                        renderBiomeTintedBlocksVanilla(tintContext, matrices, consumersTint, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-
-                        if (consumersTint instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
-                        {
-                            immediate.draw();
-                        }
+                        immediate.draw();
                     }
-                    catch (Throwable ignored) {}
                 }
+                catch (Throwable ignored) {}
 
-                if (this.hasAnimatedLayer)
+                // Pase adicional: bloques animados (portal/fluido) con capa moving block
+                try
                 {
-                    try
+                    boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
+                    net.minecraft.client.render.VertexConsumerProvider consumersAnim = shadersEnabled
+                        ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
+                        : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+
+                    FormRenderingContext animContext = new FormRenderingContext()
+                        .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
+                    renderAnimatedBlocksVanilla(animContext, matrices, consumersAnim, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
+
+                    if (consumersAnim instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                     {
-                        boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
-                        net.minecraft.client.render.VertexConsumerProvider consumersAnim = shadersEnabled
-                            ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                            : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-
-                        FormRenderingContext animContext = new FormRenderingContext()
-                            .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
-                        renderAnimatedBlocksVanilla(animContext, matrices, consumersAnim, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);
-
-                        if (consumersAnim instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
-                        {
-                            immediate.draw();
-                        }
+                        immediate.draw();
                     }
-                    catch (Throwable ignored) {}
                 }
+                catch (Throwable ignored) {}
 
                 gameRenderer.getLightmapTextureManager().disable();
                 gameRenderer.getOverlayTexture().teardownOverlayColor();
                 RenderSystem.disableBlend();
-                RenderSystem.enableCull();
             }
         }
 
@@ -308,24 +271,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         boolean optimize = mchorse.bbs_mod.BBSSettings.structureOptimization.get();
         boolean picking = context.isPicking();
-
-        if (this.structureVao != null && this.vaoBuiltWithShaders != mchorse.bbs_mod.cubic.render.vao.ModelVAO.isShadersEnabled())
-        {
-            this.vaoDirty = true;
-        }
-
-        // Detectar cambios en configuración de luz para reconstruir VAO
-        mchorse.bbs_mod.forms.forms.utils.StructureLightSettings sl = this.form.structureLight.getRuntimeValue();
-        boolean currentEmitLight = (sl != null) ? sl.enabled : this.form.emitLight.get();
-        int currentLightIntensity = (sl != null) ? sl.intensity : this.form.lightIntensity.get();
-
-        if (currentEmitLight != this.lastEmitLight || currentLightIntensity != this.lastLightIntensity)
-        {
-            this.vaoDirty = true;
-            this.lastEmitLight = currentEmitLight;
-            this.lastLightIntensity = currentLightIntensity;
-        }
-
         if (optimize && (this.structureVao == null || this.vaoDirty))
         {
             buildStructureVAO();
@@ -380,7 +325,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 try
                 {
-                    renderStructureCulledWorld(context, context.stack, consumers, light, context.overlay, shaders, null);
+                    renderStructureCulledWorld(context, context.stack, consumers, light, context.overlay, shaders);
                     if (consumers instanceof net.minecraft.client.render.VertexConsumerProvider.Immediate immediate)
                     {
                         immediate.draw();
@@ -421,42 +366,15 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
             else
             {
-                net.minecraft.client.gl.ShaderProgram shader;
-                boolean irisActive = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
-                if (irisActive)
-                {
-                    boolean translucentNeeded = this.hasTranslucentLayer || tint3D.a < 0.999f;
-                    if (translucentNeeded)
-                    {
-                        shader = net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentCullProgram();
-                    }
-                    else if (this.hasCutoutLayer)
-                    {
-                        shader = net.minecraft.client.render.GameRenderer.getRenderTypeEntityCutoutProgram();
-                    }
-                    else
-                    {
-                        shader = net.minecraft.client.render.GameRenderer.getRenderTypeSolidProgram();
-                    }
-                }
-                else
-                {
-                    shader = BBSShaders.getModel();
-                }
+                // VAO con shader compatible con packs: usar programa de entidad translúcida cuando Iris está activo
+                net.minecraft.client.gl.ShaderProgram shader = (mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld())
+                    ? net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentCullProgram()
+                    : BBSShaders.getModel();
 
                 RenderSystem.setShader(() -> shader);
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-                boolean needBlend3D = tint3D.a < 0.999f || this.hasTranslucentLayer;
-                if (needBlend3D)
-                {
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                }
-                else
-                {
-                    RenderSystem.disableBlend();
-                }
-                RenderSystem.enableCull();
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
                 ModelVAORenderer.render(shader, this.structureVao, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
 
                 // Pase de Block Entities tras VAO
@@ -471,27 +389,23 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 }
                 catch (Throwable ignored) {}
 
-                if (this.hasBiomeTintedLayer)
+                // Pase adicional: bloques con tinte por bioma
+                try
                 {
-                    try
-                    {
-                        net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-                        renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
-                        tintConsumers.draw();
-                    }
-                    catch (Throwable ignored) {}
+                    net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
+                    tintConsumers.draw();
                 }
+                catch (Throwable ignored) {}
 
-                if (this.hasAnimatedLayer)
+                // Pase adicional: bloques animados (portal/fluido) con capa moving block
+                try
                 {
-                    try
-                    {
-                        net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-                        renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
-                        animConsumers.draw();
-                    }
-                    catch (Throwable ignored) {}
+                    net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
+                    animConsumers.draw();
                 }
+                catch (Throwable ignored) {}
             }
 
             gameRenderer.getLightmapTextureManager().disable();
@@ -557,7 +471,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
      * Render con culling usando BlockRenderView virtual para aprovechar la lógica vanilla.
      * Mantiene el mismo centrado y paridad que renderStructure.
      */
-    private void renderStructureCulledWorld(FormRenderingContext context, MatrixStack stack, net.minecraft.client.render.VertexConsumerProvider consumers, int light, int overlay, boolean useEntityLayers, LightmapStructureVAOCollector flushTarget)
+    private void renderStructureCulledWorld(FormRenderingContext context, MatrixStack stack, net.minecraft.client.render.VertexConsumerProvider consumers, int light, int overlay, boolean useEntityLayers)
     {
         // Centrado basado en límites reales (min/max) para compensar offsets del NBT
         float cx;
@@ -593,9 +507,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         float pivotZ = cz - parityZAuto2;
 
         // Construir vista virtual con todos los bloques
-        java.util.List<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = (this.entriesCache != null)
-            ? Arrays.asList(this.entriesCache)
-            : java.util.Collections.emptyList();
+        java.util.ArrayList<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = new java.util.ArrayList<>();
+        for (BlockEntry be : blocks)
+        {
+            entries.add(new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(be.state, be.pos));
+        }
         // Resolve unified structure light settings with legacy fallback
         boolean lightsEnabled;
         int lightIntensity;
@@ -611,15 +527,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             lightIntensity = this.form.lightIntensity.get();
         }
 
-        StructureVirtualBlockRenderView view = new StructureVirtualBlockRenderView(entries);
-        view.setBiomeOverride(this.form.biomeId.get())
+        mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
+            .setBiomeOverride(this.form.biomeId.get())
             .setLightsEnabled(lightsEnabled)
             .setLightIntensity(lightIntensity);
-        
-        if (lightsEnabled)
-        {
-            view.setVirtualMode(true, lightIntensity);
-        }
 
         BlockEntityRenderDispatcher beDispatcher = MinecraftClient.getInstance().getBlockEntityRenderDispatcher();
 
@@ -658,10 +569,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         int baseDz = (int)Math.floor(-pivotZ);
         view.setWorldAnchor(anchor, baseDx, baseDy, baseDz)
             // En UI/miniatura/ítem inventario, forzar luz de cielo máxima para evitar oscurecer
-            // EXCEPTO si estamos capturando VAO, donde queremos la iluminación calculada real (VirtualBlockRenderView).
-            .setForceMaxSkyLight(!this.capturingVAO && (context.ui
+            .setForceMaxSkyLight(context.ui
                 || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.PREVIEW
-                || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.ITEM_INVENTORY));
+                || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.ITEM_INVENTORY);
 
         for (BlockEntry entry : blocks)
         {
@@ -707,11 +617,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
             MinecraftClient.getInstance().getBlockRenderManager().renderBlock(entry.state, entry.pos, view, stack, vc, true, Random.create());
 
-            if (flushTarget != null && flushTarget.getQuadIndex() != 0)
-            {
-                flushTarget.flush();
-            }
-
             // Renderizar bloques con entidad (cofres, camas, carteles, cráneos, etc.)
             Block block = entry.state.getBlock();
             if (!this.capturingVAO && block instanceof BlockEntityProvider)
@@ -725,11 +630,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 BlockEntity be = ((BlockEntityProvider) block).createBlockEntity(worldPos, entry.state);
                 if (be != null)
                 {
-                    if (entry.nbt != null)
-                    {
-                        be.readNbt(entry.nbt);
-                    }
-
                     // Asociar mundo real para que el renderer pueda consultar luz y efectos
                     if (MinecraftClient.getInstance().world != null)
                     {
@@ -821,15 +721,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         float pivotZ = cz - parityZAuto3;
 
         // Vista virtual para culling/colores/luz correctos
-        mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = this.cachedView;
-        if (view == null)
+        java.util.ArrayList<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = new java.util.ArrayList<>();
+        for (BlockEntry be : blocks)
         {
-            java.util.List<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = (this.entriesCache != null)
-                ? Arrays.asList(this.entriesCache)
-                : java.util.Collections.emptyList();
-            view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries);
+            entries.add(new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(be.state, be.pos));
         }
-
         // Resolve unified structure light settings with legacy fallback
         boolean lightsEnabled2;
         int lightIntensity2;
@@ -845,7 +741,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             lightIntensity2 = this.form.lightIntensity.get();
         }
 
-        view.setBiomeOverride(this.form.biomeId.get())
+        mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
+            .setBiomeOverride(this.form.biomeId.get())
             .setLightsEnabled(lightsEnabled2)
             .setLightIntensity(lightIntensity2);
 
@@ -877,23 +774,21 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.PREVIEW
                 || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.ITEM_INVENTORY);
 
-        for (BlockEntry entry : animatedBlocks)
+        for (BlockEntry entry : blocks)
         {
+            if (!isAnimatedTexture(entry.state))
+            {
+                continue;
+            }
+
             stack.push();
             stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
-            // Selección de capa: elegir según el bloque animado
+            // Selección de capa: en shaders usar variante de entidad para que el pack procese la animación
             boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
-            RenderLayer layer;
-            FluidState fsAnim = entry.state.getFluidState();
-            if (entry.state.isOf(Blocks.NETHER_PORTAL) || (fsAnim != null && (fsAnim.getFluid() == Fluids.WATER || fsAnim.getFluid() == Fluids.FLOWING_WATER || fsAnim.getFluid() == Fluids.LAVA || fsAnim.getFluid() == Fluids.FLOWING_LAVA)))
-            {
-                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state, true) : RenderLayer.getTranslucentMovingBlock();
-            }
-            else
-            {
-                layer = shadersEnabled ? RenderLayers.getEntityBlockLayer(entry.state, false) : RenderLayers.getBlockLayer(entry.state);
-            }
+            RenderLayer layer = shadersEnabled
+                ? RenderLayers.getEntityBlockLayer(entry.state, true)
+                : RenderLayer.getTranslucentMovingBlock();
 
             // Si hay alpha global, preferir capa translúcida de entidad en shaders para asegurar fade suave
             float globalAlphaAnim = this.form.color.get().a;
@@ -961,16 +856,13 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         float pivotZ = cz - parityZAuto4;
 
         // Vista virtual para culling/colores/luz correctos
-        mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = this.cachedView;
-        if (view == null)
+        java.util.ArrayList<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = new java.util.ArrayList<>();
+        for (BlockEntry be : blocks)
         {
-            java.util.List<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = (this.entriesCache != null)
-                ? Arrays.asList(this.entriesCache)
-                : java.util.Collections.emptyList();
-            view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries);
+            entries.add(new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(be.state, be.pos));
         }
-        
-        view.setBiomeOverride(this.form.biomeId.get())
+        mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView view = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
+            .setBiomeOverride(this.form.biomeId.get())
             .setLightsEnabled(this.form.emitLight.get())
             .setLightIntensity(this.form.lightIntensity.get());
 
@@ -1002,8 +894,13 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.PREVIEW
                 || context.type == mchorse.bbs_mod.forms.renderers.FormRenderType.ITEM_INVENTORY);
 
-        for (BlockEntry entry : biomeTintedBlocks)
+        for (BlockEntry entry : blocks)
         {
+            if (!isBiomeTinted(entry.state))
+            {
+                continue;
+            }
+
             stack.push();
             stack.translate(entry.pos.getX() - pivotX, entry.pos.getY() - pivotY, entry.pos.getZ() - pivotZ);
 
@@ -1064,16 +961,10 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
         }
 
-        // Fuego normal y fuego de alma: animación de textura en atlas
-        if (state.isOf(Blocks.FIRE) || state.isOf(Blocks.SOUL_FIRE))
-        {
-            return true;
-        }
-
         return false;
     }
 
-    /** Heurística: determina si el bloque requiere tinte especial (bioma/redstone). */
+    /** Heurística: determina si el bloque usa tinte por bioma (foliage/grass/vine/lily pad). */
     private boolean isBiomeTinted(BlockState state)
     {
         if (state == null) return false;
@@ -1081,17 +972,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         return (b instanceof net.minecraft.block.LeavesBlock)
             || (b instanceof net.minecraft.block.GrassBlock)
             || (b instanceof net.minecraft.block.VineBlock)
-            || (b instanceof net.minecraft.block.LilyPadBlock)
-            // Redstone wire usa color provider dependiente de potencia
-            || (b instanceof net.minecraft.block.RedstoneWireBlock)
-            // Vegetación adicional que requiere tinte de bioma
-            || state.isOf(Blocks.FERN)
-            || state.isOf(Blocks.SUGAR_CANE)
-            || (b instanceof net.minecraft.block.StemBlock)
-            || (b instanceof net.minecraft.block.AttachedStemBlock)
-            || state.isOf(Blocks.SHORT_GRASS)
-            || state.isOf(Blocks.TALL_GRASS)
-            || state.isOf(Blocks.LARGE_FERN);
+            || (b instanceof net.minecraft.block.LilyPadBlock);
     }
 
     /**
@@ -1171,11 +1052,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         BlockEntityRenderDispatcher beDispatcher = net.minecraft.client.MinecraftClient.getInstance().getBlockEntityRenderDispatcher();
 
-        for (BlockEntry entry : blockEntitiesList)
+        for (BlockEntry entry : blocks)
         {
             Block block = entry.state.getBlock();
-            // Ya filtramos en parseStructure, pero mantenemos la obtención de 'block'
-            // para el instanceof (que debería ser true) y el cast.
             if (!(block instanceof BlockEntityProvider))
             {
                 continue;
@@ -1200,17 +1079,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 net.minecraft.client.render.block.entity.BlockEntityRenderer<?> renderer = beDispatcher.get(be);
                 // Cuando se renderiza BE sobre VAO, calcular luz con una vista virtual
                 // para aplicar la misma iluminación artificial.
-                
-                // Usar cachedView si está disponible
-                mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView beView = this.cachedView;
-                if (beView == null)
+                java.util.ArrayList<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = new java.util.ArrayList<>();
+                for (BlockEntry beEntry : blocks)
                 {
-                    java.util.List<mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry> entries = (this.entriesCache != null)
-                        ? Arrays.asList(this.entriesCache)
-                        : java.util.Collections.emptyList();
-                    beView = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries);
+                    entries.add(new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(beEntry.state, beEntry.pos));
                 }
-
                 boolean lightsEnabledBE;
                 int lightIntensityBE;
                 mchorse.bbs_mod.forms.forms.utils.StructureLightSettings slRuntimeBE = this.form.structureLight.getRuntimeValue();
@@ -1224,8 +1097,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     lightsEnabledBE = this.form.emitLight.get();
                     lightIntensityBE = this.form.lightIntensity.get();
                 }
-                
-                beView.setBiomeOverride(this.form.biomeId.get())
+                mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView beView = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(entries)
+                    .setBiomeOverride(this.form.biomeId.get())
                     .setLightsEnabled(lightsEnabledBE)
                     .setLightIntensity(lightIntensityBE)
                     .setWorldAnchor(anchor, (int)Math.floor(-pivotX), (int)Math.floor(-pivotY), (int)Math.floor(-pivotZ));
@@ -1287,11 +1160,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             // Nada seleccionado; limpiar para evitar render fantasma
             blocks.clear();
-            animatedBlocks.clear();
-            biomeTintedBlocks.clear();
-            blockEntitiesList.clear();
-            entriesCache = null;
-            cachedView = null;
             size = BlockPos.ORIGIN;
             boundsMin = null;
             boundsMax = null;
@@ -1301,10 +1169,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (structureVao instanceof ModelVAO)
             {
                 ((ModelVAO) structureVao).delete();
-            }
-            else if (structureVao instanceof LightmapModelVAO)
-            {
-                ((LightmapModelVAO) structureVao).delete();
             }
             structureVao = null;
             if (structureVaoPicking instanceof ModelVAO)
@@ -1325,11 +1189,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         
 
         blocks.clear();
-        animatedBlocks.clear();
-        biomeTintedBlocks.clear();
-        blockEntitiesList.clear();
-        entriesCache = null;
-        cachedView = null;
         size = BlockPos.ORIGIN;
         boundsMin = null;
         boundsMax = null;
@@ -1339,10 +1198,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         if (structureVao instanceof ModelVAO)
         {
             ((ModelVAO) structureVao).delete();
-        }
-        else if (structureVao instanceof LightmapModelVAO)
-        {
-            ((LightmapModelVAO) structureVao).delete();
         }
         structureVao = null;
         if (structureVaoPicking instanceof ModelVAO)
@@ -1391,23 +1246,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         // Capturar geometría en un VAO usando el pipeline vanilla pero sustituyendo el consumidor
         CustomVertexConsumerProvider provider = FormUtilsClient.getProvider();
         StructureVAOCollector collector = new StructureVAOCollector();
-        boolean shaders = mchorse.bbs_mod.cubic.render.vao.ModelVAO.isShadersEnabled();
-        try
-        {
-            collector.setComputeTangents(shaders);
-        }
-        catch (Throwable ignored) {}
-
-        this.vaoBuiltWithShaders = shaders;
-
-        // NEW: Wrapper for lightmap support
-        // Always use light wrapper to ensure lightmap data is captured for both Vanilla and Shaders
-        LightmapStructureVAOCollector lightWrapper = new LightmapStructureVAOCollector(collector);
-        // La luz virtual se maneja automáticamente en renderStructureCulledWorld mediante VirtualBlockRenderView
 
         // Sustituir cualquier consumidor por nuestro colector
-        final VertexConsumer finalCollector = lightWrapper;
-        provider.setSubstitute(vc -> finalCollector);
+        provider.setSubstitute(vc -> collector);
 
         MatrixStack captureStack = new MatrixStack();
         FormRenderingContext captureContext = new FormRenderingContext()
@@ -1426,7 +1267,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         this.capturingIncludeSpecialBlocks = false; // para VAO normal, omitir animados/bioma
         try
         {
-            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers, lightWrapper);
+            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers);
         }
         finally
         {
@@ -1437,34 +1278,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         provider.draw();
         provider.setSubstitute(null);
 
-        if (this.structureVao instanceof ModelVAO)
-        {
-            ((ModelVAO) this.structureVao).delete();
-        }
-        else if (this.structureVao instanceof LightmapModelVAO)
-        {
-            ((LightmapModelVAO) this.structureVao).delete();
-        }
-
         ModelVAOData data = collector.toData();
-
-        int[] lightData = lightWrapper.getLightmapData();
-        int vertexCount = data.vertices().length / 3;
-        if (lightData.length != vertexCount)
-        {
-            System.err.println("[StructureFormRenderer] Lightmap mismatch: Vertices=" + vertexCount + ", Lights=" + lightData.length);
-            // Pad lightData if necessary to avoid crash
-            if (lightData.length < vertexCount)
-            {
-                int[] padded = new int[vertexCount];
-                System.arraycopy(lightData, 0, padded, 0, lightData.length);
-                lightData = padded;
-            }
-        }
-        
-        // Always use LightmapModelVAO to support virtual lighting in both Vanilla and Shaders
-        this.structureVao = new LightmapModelVAO(data, lightData);
-        
+        this.structureVao = new ModelVAO(data);
         this.vaoDirty = false;
     }
 
@@ -1476,11 +1291,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     {
         CustomVertexConsumerProvider provider = FormUtilsClient.getProvider();
         StructureVAOCollector collector = new StructureVAOCollector();
-        try
-        {
-            collector.setComputeTangents(mchorse.bbs_mod.cubic.render.vao.ModelVAO.isShadersEnabled());
-        }
-        catch (Throwable ignored) {}
         provider.setSubstitute(vc -> collector);
 
         MatrixStack captureStack = new MatrixStack();
@@ -1499,7 +1309,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         this.capturingIncludeSpecialBlocks = true; // incluir animados y bioma para picking
         try
         {
-            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers, null);
+            renderStructureCulledWorld(captureContext, captureStack, provider, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, useEntityLayers);
         }
         finally
         {
@@ -1509,11 +1319,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         provider.draw();
         provider.setSubstitute(null);
-
-        if (this.structureVaoPicking instanceof ModelVAO)
-        {
-            ((ModelVAO) this.structureVaoPicking).delete();
-        }
 
         ModelVAOData data = collector.toData();
         this.structureVaoPicking = new ModelVAO(data);
@@ -1558,7 +1363,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 BlockPos pos = readBlockPos(be.getList("pos", NbtElement.INT_TYPE));
                 int stateIndex = be.getInt("state");
-                NbtCompound nbt = be.contains("nbt") ? be.getCompound("nbt") : null;
 
                 if (stateIndex >= 0 && stateIndex < paletteStates.size())
                 {
@@ -1567,7 +1371,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     {
                         continue;
                     }
-                    blocks.add(new BlockEntry(state, pos, nbt));
+                    blocks.add(new BlockEntry(state, pos));
 
                     // Actualizar límites
                     if (pos.getX() < minX) minX = pos.getX();
@@ -1584,48 +1388,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 boundsMin = new BlockPos(minX, minY, minZ);
                 boundsMax = new BlockPos(maxX, maxY, maxZ);
 
-                boolean translucent = false;
-                boolean cutout = false;
-                boolean animated = false;
-                boolean biomeTinted = false;
-                boolean blockEntities = false;
-                mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry[] cache = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry[blocks.size()];
-                for (int i = 0; i < blocks.size(); i++)
-                {
-                    BlockEntry e = blocks.get(i);
-                    RenderLayer l = RenderLayers.getBlockLayer(e.state);
-                    if (l == RenderLayer.getTranslucent() || l == RenderLayer.getTranslucentMovingBlock())
-                    {
-                        translucent = true;
-                    }
-                    if (l == RenderLayer.getCutout() || l == RenderLayer.getCutoutMipped())
-                    {
-                        cutout = true;
-                    }
-                    if (isAnimatedTexture(e.state))
-                    {
-                        animated = true;
-                        animatedBlocks.add(e);
-                    }
-                    if (isBiomeTinted(e.state))
-                    {
-                        biomeTinted = true;
-                        biomeTintedBlocks.add(e);
-                    }
-                    if (e.state.getBlock() instanceof BlockEntityProvider)
-                    {
-                        blockEntities = true;
-                        blockEntitiesList.add(e);
-                    }
-                    cache[i] = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView.Entry(e.state, e.pos);
-                }
-                hasTranslucentLayer = translucent;
-                hasCutoutLayer = cutout;
-                hasAnimatedLayer = animated;
-                hasBiomeTintedLayer = biomeTinted;
-                hasBlockEntityLayer = blockEntities;
-                entriesCache = cache;
-                cachedView = new mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView(java.util.Arrays.asList(cache));
+                
             }
         }
     }
@@ -1700,350 +1463,5 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         }
 
         return state;
-    }
-
-    private static class StructureVirtualBlockRenderView extends mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView
-    {
-        private final List<BlockPos> emitters = new ArrayList<>();
-        private final List<Integer> emitterLevels = new ArrayList<>();
-        private boolean virtualMode = false;
-        private int virtualAmbient = 0;
-        private boolean myForceMaxSkyLight = false;
-
-        public StructureVirtualBlockRenderView(List<Entry> entries)
-        {
-            super(entries);
-            this.findEmitters(entries);
-        }
-
-        private void findEmitters(List<Entry> entries)
-        {
-            this.emitters.clear();
-            this.emitterLevels.clear();
-
-            for (Entry e : entries)
-            {
-                BlockState st = e.state;
-                int lum = st == null ? 0 : st.getLuminance();
-                if (lum > 0)
-                {
-                    this.emitters.add(e.pos);
-                    this.emitterLevels.add(lum);
-                }
-            }
-        }
-
-        public StructureVirtualBlockRenderView setVirtualMode(boolean enabled, int ambient)
-        {
-            this.virtualMode = enabled;
-            this.virtualAmbient = ambient;
-            return this;
-        }
-
-        @Override
-        public mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView setForceMaxSkyLight(boolean force)
-        {
-            this.myForceMaxSkyLight = force;
-            return super.setForceMaxSkyLight(force);
-        }
-
-        @Override
-        public int getLightLevel(net.minecraft.world.LightType type, BlockPos pos)
-        {
-            if (this.myForceMaxSkyLight)
-            {
-                return 15;
-            }
-
-            // Siempre obtener el nivel base del mundo (o super implementación)
-            int baseLevel = super.getLightLevel(type, pos);
-
-            if (this.virtualMode && type == net.minecraft.world.LightType.BLOCK)
-            {
-                int max = 0;
-                for (int i = 0; i < this.emitters.size(); i++)
-                {
-                    BlockPos sp = this.emitters.get(i);
-                    int L = this.emitterLevels.get(i);
-                    int dist = Math.abs(sp.getX() - pos.getX()) + Math.abs(sp.getY() - pos.getY()) + Math.abs(sp.getZ() - pos.getZ());
-                    int contrib = L - dist;
-                    
-                    if (contrib > max)
-                    {
-                        max = contrib;
-                    }
-                }
-                
-                // Escalar la luz virtual con la intensidad configurada
-                // La intensidad (virtualAmbient) actúa como un techo para la luz emitida internamente
-                int virtualResult = Math.min(max, this.virtualAmbient);
-                
-                // Combinar con la luz del mundo (baseLevel)
-                return Math.max(baseLevel, virtualResult);
-            }
-
-            return baseLevel;
-        }
-    }
-
-    private static class LightmapStructureVAOCollector implements VertexConsumer
-    {
-        private final StructureVAOCollector delegate;
-        private int[] lightData = new int[8192];
-        private int lightSize = 0;
-        private int[] quadLights = new int[4];
-        private int quadIndex = 0;
-
-        // Configuración de luz virtual
-        private int minBlockLight = 0;
-        private int minSkyLight = 0;
-
-        public LightmapStructureVAOCollector(StructureVAOCollector delegate)
-        {
-            this.delegate = delegate;
-        }
-
-        public void setVirtualLight(int blockLight, int skyLight)
-        {
-            this.minBlockLight = blockLight;
-            this.minSkyLight = skyLight;
-        }
-
-        public StructureVAOCollector getDelegate()
-        {
-            return this.delegate;
-        }
-
-        @Override
-        public VertexConsumer vertex(double x, double y, double z)
-        {
-            delegate.vertex(x, y, z);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer color(int red, int green, int blue, int alpha)
-        {
-            delegate.color(red, green, blue, alpha);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer texture(float u, float v)
-        {
-            delegate.texture(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer overlay(int u, int v)
-        {
-            delegate.overlay(u, v);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer light(int u, int v)
-        {
-            // Aplicar luz virtual: asegurar mínimo de luz configurada
-            // Nota: u = block light, v = sky light (valores desempaquetados 0-240)
-            int finalBlock = Math.max(u & 0xFFFF, this.minBlockLight);
-            int finalSky = Math.max(v & 0xFFFF, this.minSkyLight);
-            
-            this.quadLights[this.quadIndex] = (finalBlock & 0xFFFF) | ((finalSky & 0xFFFF) << 16);
-            delegate.light(finalBlock, finalSky);
-            return this;
-        }
-
-        @Override
-        public VertexConsumer normal(float x, float y, float z)
-        {
-            delegate.normal(x, y, z);
-            return this;
-        }
-
-        @Override
-        public void next()
-        {
-            delegate.next();
-            this.quadIndex++;
-
-            if (this.quadIndex == 4)
-            {
-                this.addLight(this.quadLights[0]);
-                this.addLight(this.quadLights[1]);
-                this.addLight(this.quadLights[2]);
-
-                this.addLight(this.quadLights[0]);
-                this.addLight(this.quadLights[2]);
-                this.addLight(this.quadLights[3]);
-
-                this.quadIndex = 0;
-            }
-        }
-        
-        @Override
-        public void fixedColor(int red, int green, int blue, int alpha)
-        {
-            // Delegate default method if possible
-        }
-
-        @Override
-        public void unfixColor()
-        {
-        }
-
-        private void addLight(int l)
-        {
-            if (this.lightSize >= this.lightData.length)
-            {
-                int[] n = new int[this.lightData.length * 2];
-                System.arraycopy(this.lightData, 0, n, 0, this.lightSize);
-                this.lightData = n;
-            }
-            this.lightData[this.lightSize++] = l;
-        }
-
-        public int[] getLightmapData()
-        {
-            return Arrays.copyOf(this.lightData, this.lightSize);
-        }
-
-        public int getQuadIndex()
-        {
-            return this.quadIndex;
-        }
-
-        public void flush()
-        {
-            if (this.quadIndex != 0)
-            {
-                while (this.quadIndex != 0)
-                {
-                    this.vertex(0, 0, 0);
-                    this.light(0, 0);
-                    this.next();
-                }
-            }
-        }
-    }
-
-    private static class LightmapModelVAO implements IModelVAO
-    {
-        private int vao;
-        private int count;
-        private int[] buffers;
-        private int lightmapBuffer;
-        
-        public LightmapModelVAO(ModelVAOData data, int[] lightmap)
-        {
-            this.vao = org.lwjgl.opengl.GL30.glGenVertexArrays();
-            org.lwjgl.opengl.GL30.glBindVertexArray(this.vao);
-
-            int vertexBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            int normalBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            int tangentsBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            int texCoordBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            int midTexCoordBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            this.lightmapBuffer = org.lwjgl.opengl.GL15.glGenBuffers();
-            
-            this.buffers = new int[] {vertexBuffer, normalBuffer, tangentsBuffer, texCoordBuffer, midTexCoordBuffer, this.lightmapBuffer};
-
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, vertexBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.vertices(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
-            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION, 3, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
-
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, normalBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.normals(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
-            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.NORMAL, 3, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
-
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, texCoordBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.texCoords(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
-            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.TEXTURE_UV, 2, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
-
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, tangentsBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.tangents(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
-            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS, 4, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
-
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, midTexCoordBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, data.texCoords(), org.lwjgl.opengl.GL15.GL_STATIC_DRAW);
-            org.lwjgl.opengl.GL20.glVertexAttribPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV, 2, org.lwjgl.opengl.GL11.GL_FLOAT, false, 0, 0);
-            
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, this.lightmapBuffer);
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW);
-            // IMPORTANTE: LIGHTMAP_UV es short/int, usar IPointer si es necesario, pero vanilla usa Pointer normal para UVs?
-            // Lightmap suele ser ushort.
-            org.lwjgl.opengl.GL30.glVertexAttribIPointer(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV, 2, org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT, 0, 0);
-
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.NORMAL);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TEXTURE_UV);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV);
-
-            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR);
-            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV);
-
-            this.count = data.vertices().length / 3;
-            
-            org.lwjgl.opengl.GL30.glBindVertexArray(0);
-        }
-
-        public void updateLightmap(int[] lightmap)
-        {
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, this.lightmapBuffer);
-            // Use glBufferSubData if size matches, or glBufferData (orphaning) if we want to replace safely
-            // Using glBufferData with DYNAMIC_DRAW is safe and handles synchronization
-            org.lwjgl.opengl.GL15.glBufferData(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, lightmap, org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW);
-            org.lwjgl.opengl.GL15.glBindBuffer(org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER, 0);
-        }
-
-        @Override
-        public void render(net.minecraft.client.render.VertexFormat format, float r, float g, float b, float a, int light, int overlay)
-        {
-            org.lwjgl.opengl.GL30.glBindVertexArray(this.vao);
-
-            // Asegurar estado de atributos para evitar GL_INVALID_OPERATION
-            // Atributos habilitados (con buffers)
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.POSITION);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.NORMAL);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TEXTURE_UV);
-            org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.LIGHTMAP_UV);
-
-            // Atributos constantes (sin buffers)
-            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR);
-            org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV);
-
-            org.lwjgl.opengl.GL20.glVertexAttrib4f(mchorse.bbs_mod.cubic.render.vao.Attributes.COLOR, r, g, b, a);
-            org.lwjgl.opengl.GL30.glVertexAttribI2i(mchorse.bbs_mod.cubic.render.vao.Attributes.OVERLAY_UV, overlay & 0xFFFF, overlay >> 16 & 0xFFFF);
-            
-            boolean hasShaders = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled();
-            if (hasShaders) 
-            {
-                org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV);
-                org.lwjgl.opengl.GL20.glEnableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS);
-            }
-            else 
-            {
-                org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.MID_TEXTURE_UV);
-                org.lwjgl.opengl.GL20.glDisableVertexAttribArray(mchorse.bbs_mod.cubic.render.vao.Attributes.TANGENTS);
-            }
-
-            org.lwjgl.opengl.GL11.glDrawArrays(org.lwjgl.opengl.GL11.GL_TRIANGLES, 0, this.count);
-            org.lwjgl.opengl.GL30.glBindVertexArray(0);
-        }
-        
-        public void delete()
-        {
-             org.lwjgl.opengl.GL30.glDeleteVertexArrays(this.vao);
-             if (this.buffers != null)
-             {
-                 for (int buffer : this.buffers)
-                 {
-                     org.lwjgl.opengl.GL15.glDeleteBuffers(buffer);
-                 }
-             }
-        }
     }
 }
