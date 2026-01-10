@@ -20,10 +20,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.component.type.BlockStateComponent;
-import java.util.Map;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
@@ -78,9 +74,13 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
         if (entity instanceof ModelBlockEntity modelBlock)
         {
             ItemStack stack = new ItemStack(this);
-            stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(modelBlock.createNbtWithId(world.getRegistryManager())));
-            
-            stack.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(Map.of("light_level", String.valueOf(modelBlock.getProperties().getLightLevel()))));
+            NbtCompound compound = new NbtCompound();
+
+            compound.put("BlockEntityTag", modelBlock.createNbtWithId());
+            NbtCompound stateTag = new NbtCompound();
+            stateTag.putInt("light_level", modelBlock.getProperties().getLightLevel());
+            compound.put("BlockStateTag", stateTag);
+            stack.setNbt(compound);
 
             return stack;
         }
@@ -143,14 +143,19 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
     {
-        if (player instanceof ServerPlayerEntity serverPlayer)
+        if (hand == Hand.MAIN_HAND)
         {
-            ServerNetwork.sendClickedModelBlock(serverPlayer, pos);
+            if (player instanceof ServerPlayerEntity serverPlayer)
+            {
+                ServerNetwork.sendClickedModelBlock(serverPlayer, pos);
+            }
+
+            return ActionResult.SUCCESS;
         }
 
-        return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     /* Waterloggable implementation */
@@ -169,9 +174,13 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
             if (be instanceof ModelBlockEntity model)
             {
                 ItemStack stack = new ItemStack(this);
-                stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(model.createNbtWithId(world.getRegistryManager())));
-                
-                stack.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(Map.of("light_level", String.valueOf(model.getProperties().getLightLevel()))));
+                NbtCompound wrapper = new NbtCompound();
+
+                wrapper.put("BlockEntityTag", model.createNbtWithId());
+                NbtCompound stateTag = new NbtCompound();
+                stateTag.putInt("light_level", model.getProperties().getLightLevel());
+                wrapper.put("BlockStateTag", stateTag);
+                stack.setNbt(wrapper);
 
                 ItemScatterer.spawn(world, pos, DefaultedList.ofSize(1, stack));
             }

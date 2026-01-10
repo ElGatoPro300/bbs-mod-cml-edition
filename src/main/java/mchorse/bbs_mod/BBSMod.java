@@ -49,7 +49,6 @@ import mchorse.bbs_mod.events.BBSAddonMod;
 import mchorse.bbs_mod.events.EventBus;
 import mchorse.bbs_mod.events.register.RegisterSettingsEvent;
 import mchorse.bbs_mod.events.register.RegisterSourcePacksEvent;
-import mchorse.bbs_mod.data.DataStorageUtils;
 import mchorse.bbs_mod.film.FilmManager;
 import mchorse.bbs_mod.forms.FormArchitect;
 import mchorse.bbs_mod.forms.forms.AnchorForm;
@@ -106,10 +105,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.component.type.BlockStateComponent;
-import java.util.Map;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -157,7 +152,7 @@ public class BBSMod implements ModInitializer
 
     public static final EntityType<ActorEntity> ACTOR_ENTITY = Registry.register(
         Registries.ENTITY_TYPE,
-        Identifier.of(MOD_ID, "actor"),
+        new Identifier(MOD_ID, "actor"),
         FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, ActorEntity::new)
             .dimensions(EntityDimensions.fixed(0.6F, 1.8F))
             .trackRangeBlocks(256)
@@ -166,7 +161,7 @@ public class BBSMod implements ModInitializer
 
     public static final EntityType<GunProjectileEntity> GUN_PROJECTILE_ENTITY = Registry.register(
         Registries.ENTITY_TYPE,
-        Identifier.of(MOD_ID, "gun_projectile"),
+        new Identifier(MOD_ID, "gun_projectile"),
         FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, GunProjectileEntity::new)
             .dimensions(EntityDimensions.fixed(0.25F, 0.25F))
             .trackRangeChunks(24)
@@ -205,7 +200,7 @@ public class BBSMod implements ModInitializer
 
     public static final BlockEntityType<ModelBlockEntity> MODEL_BLOCK_ENTITY = Registry.register(
         Registries.BLOCK_ENTITY_TYPE,
-        Identifier.of(MOD_ID, "model_block_entity"),
+        new Identifier(MOD_ID, "model_block_entity"),
         FabricBlockEntityTypeBuilder.create(ModelBlockEntity::new, MODEL_BLOCK).build()
     );
 
@@ -231,7 +226,7 @@ public class BBSMod implements ModInitializer
 
     private static SoundEvent registerSound(String path)
     {
-        Identifier id = Identifier.of(MOD_ID, path);
+        Identifier id = new Identifier(MOD_ID, path);
 
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
     }
@@ -251,6 +246,7 @@ public class BBSMod implements ModInitializer
     {
         ItemStack stack = new ItemStack(MODEL_BLOCK_ITEM);
         ModelBlockEntity entity = new ModelBlockEntity(BlockPos.ORIGIN, MODEL_BLOCK.getDefaultState());
+        NbtCompound nbt = new NbtCompound();
         BillboardForm form = new BillboardForm();
         ModelProperties properties = entity.getProperties();
 
@@ -259,14 +255,15 @@ public class BBSMod implements ModInitializer
         properties.setForm(form);
         properties.getTransformFirstPerson().translate.set(0F, 0F, -0.25F);
 
-        NbtCompound nbt = new NbtCompound();
-        nbt.putString("id", Identifier.of(MOD_ID, "model_block_entity").toString());
-        nbt.put("Properties", DataStorageUtils.toNbt(properties.toData()));
-        stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(nbt));
-        
+        NbtCompound compound = entity.createNbtWithId();
+
+        nbt.put("BlockEntityTag", compound);
         /* BlockStateTag allows mods derive luminance
          * from the item stack's block state. */
-        stack.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(Map.of("light_level", String.valueOf(properties.getLightLevel()))));
+        NbtCompound stateTag = new NbtCompound();
+        stateTag.putInt("light_level", properties.getLightLevel());
+        nbt.put("BlockStateTag", stateTag);
+        stack.setNbt(nbt);
 
         return stack;
     }
@@ -496,28 +493,28 @@ public class BBSMod implements ModInitializer
         FabricDefaultAttributeRegistry.register(ACTOR_ENTITY, ActorEntity.createActorAttributes());
 
         /* Blocks */
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "model"), MODEL_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_red"), CHROMA_RED_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_green"), CHROMA_GREEN_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_blue"), CHROMA_BLUE_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_cyan"), CHROMA_CYAN_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_magenta"), CHROMA_MAGENTA_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_yellow"), CHROMA_YELLOW_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_black"), CHROMA_BLACK_BLOCK);
-        Registry.register(Registries.BLOCK, Identifier.of(MOD_ID, "chroma_white"), CHROMA_WHITE_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "model"), MODEL_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_red"), CHROMA_RED_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_green"), CHROMA_GREEN_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_blue"), CHROMA_BLUE_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_cyan"), CHROMA_CYAN_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_magenta"), CHROMA_MAGENTA_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_yellow"), CHROMA_YELLOW_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_black"), CHROMA_BLACK_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_white"), CHROMA_WHITE_BLOCK);
 
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "model"), MODEL_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "gun"), GUN_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_red"), CHROMA_RED_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_green"), CHROMA_GREEN_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_blue"), CHROMA_BLUE_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_cyan"), CHROMA_CYAN_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_magenta"), CHROMA_MAGENTA_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_yellow"), CHROMA_YELLOW_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_black"), CHROMA_BLACK_BLOCK_ITEM);
-        Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "chroma_white"), CHROMA_WHITE_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "model"), MODEL_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "gun"), GUN_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_red"), CHROMA_RED_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_green"), CHROMA_GREEN_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_blue"), CHROMA_BLUE_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_cyan"), CHROMA_CYAN_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_magenta"), CHROMA_MAGENTA_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_yellow"), CHROMA_YELLOW_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_black"), CHROMA_BLACK_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_white"), CHROMA_WHITE_BLOCK_ITEM);
 
-        Registry.register(Registries.ITEM_GROUP, Identifier.of(MOD_ID, "main"), ITEM_GROUP);
+        Registry.register(Registries.ITEM_GROUP, new Identifier(MOD_ID, "main"), ITEM_GROUP);
     }
 
     private void registerEvents()

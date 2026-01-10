@@ -52,10 +52,6 @@ public class UIScreen extends Screen implements IFileDropListener
 
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        // Asegurar que el campo heredado `client` no sea nulo antes de `init()`
-        // evitando NPEs en rutas de render donde se consulta el tick counter.
-        this.client = mc;
-
         this.menu = menu;
         this.context = new UIRenderingContext(new DrawContext(mc, mc.getBufferBuilders().getEntityVertexConsumers()));
 
@@ -198,8 +194,7 @@ public class UIScreen extends Screen implements IFileDropListener
     {
         super.render(context, mouseX, mouseY, delta);
 
-        // Usar `client` ya inicializado para obtener el tick delta de render
-        this.menu.context.setTransition(this.client.getRenderTickCounter().getTickDelta(false));
+        this.menu.context.setTransition(this.client.getTickDelta());
         this.menu.renderMenu(this.context, mouseX, mouseY);
         this.menu.context.render.executeRunnables();
     }

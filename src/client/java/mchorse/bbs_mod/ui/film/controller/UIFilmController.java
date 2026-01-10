@@ -72,7 +72,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
@@ -156,7 +155,7 @@ public class UIFilmController extends UIElement
             HitResult result = RayTracing.rayTrace(
                 world,
                 RayTracing.fromVector3d(camera.position),
-                RayTracing.fromVector3f(camera.getMouseDirectionFov(context.mouseX, context.mouseY, area.x, area.y, area.w, area.h)),
+                RayTracing.fromVector3f(camera.getMouseDirection(context.mouseX, context.mouseY, area.x, area.y, area.w, area.h)),
                 512F
             );
 
@@ -1047,7 +1046,7 @@ public class UIFilmController extends UIElement
 
                 if (entity != null && entity.getForm() != null && this.panel.lastProjection != null && this.panel.lastView != null)
                 {
-        float transition = this.worldRenderContext != null ? this.worldRenderContext.tickCounter().getTickDelta(false) : 0F;
+                    float transition = this.worldRenderContext != null ? this.worldRenderContext.tickDelta() : 0F;
 
                     /* Compute entity's target matrix in world space */
                     Vector3d cameraPos = this.panel.getCamera().position;
@@ -1085,10 +1084,9 @@ public class UIFilmController extends UIElement
                     {
                         Matrix4f originRaw = new Matrix4f(targetMatrix).mul(boneMatrix);
                         Matrix4f origin = MatrixStackUtils.stripScale(originRaw);
-                        Area fullScreen = new Area(0, 0, context.menu.width, context.menu.height);
 
-                        BoneGizmoSystem.get().update(context, fullScreen, origin, this.panel.lastProjection, BBSRendering.camera, activeTransform);
-                        BoneGizmoSystem.get().renderOverlay(context.render, fullScreen);
+                        BoneGizmoSystem.get().update(context, area, origin, this.panel.lastProjection, this.panel.lastView, activeTransform);
+                        BoneGizmoSystem.get().renderOverlay(context.render, area);
                     }
                 }
             }
@@ -1112,33 +1110,16 @@ public class UIFilmController extends UIElement
         MatrixStackUtils.cacheMatrices();
 
         RenderSystem.setProjectionMatrix(this.panel.lastProjection, VertexSorter.BY_Z);
+        RenderSystem.setInverseViewRotationMatrix(new Matrix3f(this.panel.lastView).invert());
 
         /* Render the stencil */
         MatrixStack worldStack = this.worldRenderContext.matrixStack();
-        if (worldStack != null)
-        {
-            worldStack.push();
-            worldStack.loadIdentity();
-            // Usar la matriz de cámara capturada en setupFrustum para replicar el ORIGINAL
-            MatrixStackUtils.multiply(worldStack, BBSRendering.camera);
-            this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
-            worldStack.pop();
-        }
-        else
-        {
-            // Fallback: usar el ModelViewStack global cuando no hay MatrixStack del mundo
-            Matrix4fStack mvStack = RenderSystem.getModelViewStack();
-            mvStack.pushMatrix();
-            mvStack.identity();
-            // Mantener la vista sincronizada con la cámara del mundo
-            mvStack.set(BBSRendering.camera);
-            RenderSystem.applyModelViewMatrix();
 
-            this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
-
-            mvStack.popMatrix();
-            RenderSystem.applyModelViewMatrix();
-        }
+        worldStack.push();
+        worldStack.loadIdentity();
+        MatrixStackUtils.multiply(worldStack, this.panel.lastView);
+        this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
+        worldStack.pop();
 
         /* Return back to orthographic projection */
         MatrixStackUtils.restoreMatrices();
@@ -1298,7 +1279,7 @@ public class UIFilmController extends UIElement
 
                 BaseFilmController.renderEntity(FilmControllerContext.instance
                     .setup(this.getEntities(), entry.getValue(), replay, renderContext)
-            .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+                    .transition(isPlaying ? renderContext.tickDelta() : 0)
                     .stencil(this.stencilMap)
                     .relative(replay.relative.get()));
             }
@@ -1310,7 +1291,7 @@ public class UIFilmController extends UIElement
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
-            .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+                .transition(isPlaying ? renderContext.tickDelta() : 0)
                 .stencil(this.stencilMap)
                 .relative(replay.relative.get())
                 .bone(bone == null ? null : bone.a, bone != null && bone.b));

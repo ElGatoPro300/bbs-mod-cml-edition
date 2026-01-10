@@ -22,8 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -72,16 +70,10 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Iluminación de GUI coherente para ítems de modelo */
-                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
-                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
-                /* Usar luz máxima para que el modelo como ítem no se vea oscuro */
-                int maxLight = 15728880; // LightmapTextureManager.pack(15, 15)
+                /* Usar luz mundial para que el modelo de estructura como ítem respete la iluminación */
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getTickDelta())
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-                net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();
 
                 matrices.pop();
@@ -101,23 +93,18 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
             return this.map.get(stack);
         }
 
+        NbtCompound nbt = stack.getNbt();
         ModelBlockEntity entity = new ModelBlockEntity(BlockPos.ORIGIN, BBSMod.MODEL_BLOCK.getDefaultState());
         Item item = new Item(entity);
 
         this.map.put(stack, item);
 
-        NbtComponent nbtComponent = stack.get(DataComponentTypes.BLOCK_ENTITY_DATA);
-        if (nbtComponent == null)
+        if (nbt == null)
         {
             return item;
         }
 
-        NbtCompound nbt = nbtComponent.getNbt();
-        var world = MinecraftClient.getInstance().world;
-        if (world != null)
-        {
-            entity.readNbt(nbt, world.getRegistryManager());
-        }
+        entity.readNbt(nbt.getCompound("BlockEntityTag"));
 
         return item;
     }

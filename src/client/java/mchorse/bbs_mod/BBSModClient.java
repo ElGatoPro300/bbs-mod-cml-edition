@@ -1,7 +1,5 @@
 package mchorse.bbs_mod;
 
-import mchorse.bbs_mod.client.BBSShaders;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
@@ -74,13 +72,12 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import org.joml.Matrix4fStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -413,9 +410,10 @@ public class BBSModClient implements ClientModInitializer
 
         WorldRenderEvents.AFTER_ENTITIES.register((context) ->
         {
-            // Siempre renderizamos nuestros elementos después de las entidades.
-            // Bajo Iris, este punto mantiene las matrices correctas del mundo.
-            BBSRendering.renderCoolStuff(context);
+            if (!BBSRendering.isIrisShadersEnabled())
+            {
+                BBSRendering.renderCoolStuff(context);
+            }
 
             if (BBSSettings.chromaSkyEnabled.get())
             {
@@ -435,7 +433,9 @@ public class BBSModClient implements ClientModInitializer
                     stack.translate(0F, 0F, -d);
 
                     RenderSystem.enableDepthTest();
-                    BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+                    BufferBuilder builder = Tessellator.getInstance().getBuffer();
+
+                    builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
                     float fov = MinecraftClient.getInstance().options.getFov().getValue();
                     float dd = d * (float) Math.pow(fov / 40F, 2F);
@@ -450,16 +450,7 @@ public class BBSModClient implements ClientModInitializer
 
                     RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
-                    Matrix4fStack mvStack = RenderSystem.getModelViewStack();
-                    mvStack.pushMatrix();
-                    mvStack.identity();
-                    RenderSystem.applyModelViewMatrix();
-
                     BufferRenderer.drawWithGlobalProgram(builder.end());
-
-                    mvStack.popMatrix();
-                    RenderSystem.applyModelViewMatrix();
-
                     RenderSystem.disableDepthTest();
 
                     stack.pop();
@@ -564,13 +555,13 @@ public class BBSModClient implements ClientModInitializer
             }
         });
 
-        HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) ->
         {
-            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(false));
+            BBSRendering.renderHud(drawContext, tickDelta);
 
             if (gunZoom != null)
             {
-                gunZoom.update(keyZoom.isPressed(), tickCounter.getLastFrameDuration());
+                gunZoom.update(keyZoom.isPressed(), MinecraftClient.getInstance().getLastFrameDuration());
 
                 if (gunZoom.canBeRemoved())
                 {

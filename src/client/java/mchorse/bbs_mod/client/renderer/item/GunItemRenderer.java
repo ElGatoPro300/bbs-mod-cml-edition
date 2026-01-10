@@ -82,15 +82,9 @@ public class GunItemRenderer implements BuiltinItemRendererRegistry.DynamicItemR
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Iluminación de GUI coherente para ítems de pistola y zoom */
-                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
-                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
-                int maxLight = net.minecraft.client.render.LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getTickDelta())
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-                net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();
 
                 matrices.pop();

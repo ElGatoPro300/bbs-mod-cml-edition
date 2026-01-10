@@ -8,9 +8,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
-// Note: In MC 1.21, RenderSystem.getModelViewMatrix() returns JOML Matrix4f, and
-// RenderSystem.getModelViewStack() returns a JOML Matrix4fStack.
 
 public class MatrixStackUtils
 {
@@ -31,24 +28,29 @@ public class MatrixStackUtils
         /* Cache the global stuff */
         oldProjection.set(RenderSystem.getProjectionMatrix());
         oldMV.set(RenderSystem.getModelViewMatrix());
-        // En 1.21 no existe getInverseViewRotationMatrix; guardamos solo la rotación del ModelView
-        oldInverse.set(new Matrix3f(RenderSystem.getModelViewMatrix()));
+        oldInverse.set(RenderSystem.getInverseViewRotationMatrix());
 
-        Matrix4fStack mvStack = RenderSystem.getModelViewStack();
-        mvStack.identity();
+        MatrixStack renderStack = RenderSystem.getModelViewStack();
+
+        renderStack.push();
+        renderStack.loadIdentity();
         RenderSystem.applyModelViewMatrix();
+        renderStack.pop();
     }
 
     public static void restoreMatrices()
     {
         /* Return back to orthographic projection */
         RenderSystem.setProjectionMatrix(oldProjection, VertexSorter.BY_Z);
-        // Ya no aplicamos explícitamente la inversa de rotación; restauramos el ModelView completo abajo
+        RenderSystem.setInverseViewRotationMatrix(oldInverse);
 
-        Matrix4fStack mvStack = RenderSystem.getModelViewStack();
-        // Restore the ModelView matrix from the cached value
-        mvStack.set(oldMV);
+        MatrixStack renderStack = RenderSystem.getModelViewStack();
+
+        renderStack.push();
+        renderStack.loadIdentity();
+        MatrixStackUtils.multiply(renderStack, oldMV);
         RenderSystem.applyModelViewMatrix();
+        renderStack.pop();
     }
 
     public static void applyTransform(MatrixStack stack, Transform transform)

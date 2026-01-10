@@ -60,7 +60,6 @@ import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.PlayerUtils;
 import mchorse.bbs_mod.utils.Timer;
-import net.minecraft.client.util.math.MatrixStack;
 import mchorse.bbs_mod.utils.clips.Clip;
 import mchorse.bbs_mod.utils.clips.Clips;
 import mchorse.bbs_mod.utils.colors.Colors;
@@ -1091,16 +1090,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         if (!BBSRendering.isIrisShadowPass())
         {
             this.lastProjection.set(RenderSystem.getProjectionMatrix());
-            MatrixStack ms = context.matrixStack();
-            if (ms != null)
-            {
-                this.lastView.set(ms.peek().getPositionMatrix());
-            }
-            else
-            {
-                // Fallback when WorldRenderContext.matrixStack() is unavailable (e.g., Iris shadow pass quirks)
-                this.lastView.set(RenderSystem.getModelViewMatrix());
-            }
+            this.lastView.set(context.matrixStack().peek().getPositionMatrix());
         }
 
         this.controller.renderFrame(context);

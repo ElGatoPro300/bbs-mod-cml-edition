@@ -175,18 +175,9 @@ public abstract class FormRenderer <T extends Form>
     {
         if (context.isPicking())
         {
-            ShaderProgram program = picking.get();
+            this.setupTarget(context, picking.get());
 
-            // Si el shader de picking no está disponible, usar el shader normal para evitar crash
-            if (program == null)
-            {
-                return normal;
-            }
-
-            this.setupTarget(context, program);
-
-            // Devolver un supplier seguro que siempre retorna el programa no nulo
-            return () -> program;
+            return picking;
         }
 
         return normal;
@@ -194,11 +185,6 @@ public abstract class FormRenderer <T extends Form>
 
     protected void setupTarget(FormRenderingContext context, ShaderProgram program)
     {
-        if (program == null)
-        {
-            return;
-        }
-
         GlUniform target = program.getUniform("Target");
 
         if (target != null)
