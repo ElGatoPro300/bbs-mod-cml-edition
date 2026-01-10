@@ -41,7 +41,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtTagSizeTracker;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
@@ -183,7 +183,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             boolean shaders = this.isShadersActive();
             net.minecraft.client.render.VertexConsumerProvider consumers = shaders
                 ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(1536));
 
             try
             {
@@ -253,7 +253,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                         boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
                         net.minecraft.client.render.VertexConsumerProvider consumersTint = shadersEnabled
                             ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                            : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                            : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(1536));
 
                         FormRenderingContext tintContext = new FormRenderingContext()
                             .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -274,7 +274,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                         boolean shadersEnabled = mchorse.bbs_mod.client.BBSRendering.isIrisShadersEnabled() && mchorse.bbs_mod.client.BBSRendering.isRenderingWorld();
                         net.minecraft.client.render.VertexConsumerProvider consumersAnim = shadersEnabled
                             ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                            : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                            : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(1536));
 
                         FormRenderingContext animContext = new FormRenderingContext()
                             .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -368,7 +368,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 boolean shaders = this.isShadersActive();
                 net.minecraft.client.render.VertexConsumerProvider consumers = shaders
                     ? net.minecraft.client.MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                    : net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    : net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(1536));
 
                 // Alinear el manejo de estados con el camino VAO para evitar fugas
                 // de estado que afectan al primer modelo renderizado después.
@@ -475,7 +475,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 {
                     try
                     {
-                        net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        net.minecraft.client.render.VertexConsumerProvider.Immediate tintConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(1536));
                         renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
                         tintConsumers.draw();
                     }
@@ -486,7 +486,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 {
                     try
                     {
-                        net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        net.minecraft.client.render.VertexConsumerProvider.Immediate animConsumers = net.minecraft.client.render.VertexConsumerProvider.immediate(new net.minecraft.client.util.BufferAllocator(1536));
                         renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
                         animConsumers.draw();
                     }
@@ -725,9 +725,9 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 BlockEntity be = ((BlockEntityProvider) block).createBlockEntity(worldPos, entry.state);
                 if (be != null)
                 {
-                    if (entry.nbt != null)
+                    if (entry.nbt != null && net.minecraft.client.MinecraftClient.getInstance().world != null)
                     {
-                        be.readNbt(entry.nbt);
+                        be.read(entry.nbt, net.minecraft.client.MinecraftClient.getInstance().world.getRegistryManager());
                     }
 
                     // Asociar mundo real para que el renderer pueda consultar luz y efectos
@@ -1356,7 +1356,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtSizeTracker.ofUnlimitedBytes());
                 parseStructure(root);
                 return;
             }
@@ -1371,7 +1371,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
                 parseStructure(root);
             }
             catch (IOException e)
@@ -1652,7 +1652,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         try
         {
-            Identifier id = new Identifier(name);
+        Identifier id = Identifier.of(name);
             block = Registries.BLOCK.get(id);
             if (block == null)
             {
@@ -1793,6 +1793,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         private int lightSize = 0;
         private int[] quadLights = new int[4];
         private int quadIndex = 0;
+        private boolean hasCurrent;
 
         // Configuración de luz virtual
         private int minBlockLight = 0;
@@ -1815,8 +1816,13 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         }
 
         @Override
-        public VertexConsumer vertex(double x, double y, double z)
+        public VertexConsumer vertex(float x, float y, float z)
         {
+            if (this.hasCurrent)
+            {
+                this.completeVertex();
+            }
+            this.hasCurrent = true;
             delegate.vertex(x, y, z);
             return this;
         }
@@ -1862,10 +1868,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             return this;
         }
 
-        @Override
-        public void next()
+        public void completeVertex()
         {
-            delegate.next();
             this.quadIndex++;
 
             if (this.quadIndex == 4)
@@ -1882,17 +1886,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             }
         }
         
-        @Override
-        public void fixedColor(int red, int green, int blue, int alpha)
-        {
-            // Delegate default method if possible
-        }
-
-        @Override
-        public void unfixColor()
-        {
-        }
-
         private void addLight(int l)
         {
             if (this.lightSize >= this.lightData.length)
@@ -1922,7 +1915,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 {
                     this.vertex(0, 0, 0);
                     this.light(0, 0);
-                    this.next();
                 }
             }
         }

@@ -268,6 +268,10 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             BBSModClient.getTextures().bindTexture(texture);
             RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
+            org.joml.Vector3f light0 = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
+            org.joml.Vector3f light1 = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+            RenderSystem.setupLevelDiffuseLighting(light0, light1);
+
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
                 ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
@@ -286,6 +290,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             stack.pop();
             stack.pop();
 
+            net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
             RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }

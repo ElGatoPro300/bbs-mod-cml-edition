@@ -34,8 +34,8 @@ public class MinecraftSourcePack implements ISourcePack
     {
         MinecraftClient mc = MinecraftClient.getInstance();
         // Check if we are in a world and if the link points to a structure (data pack resource)
-        // Structures are usually under "structures/" path or have .nbt extension
-        if (mc.getServer() != null && (link.path.startsWith("structures/") || link.path.endsWith(".nbt")))
+        // Structures are usually under "structure/" path or have .nbt extension
+        if (mc.getServer() != null && (link.path.startsWith("structure/") || link.path.endsWith(".nbt")))
         {
             return mc.getServer().getResourceManager();
         }
@@ -89,7 +89,7 @@ public class MinecraftSourcePack implements ISourcePack
     @Override
     public boolean hasAsset(Link link)
     {
-        Identifier id = new Identifier(link.toString());
+        Identifier id = Identifier.of(link.source, link.path);
         ResourceManager effectiveManager = this.getEffectiveManager(link);
         
         if (effectiveManager.getResource(id).isPresent())
@@ -97,10 +97,10 @@ public class MinecraftSourcePack implements ISourcePack
             return true;
         }
         
-        // Try prepending "structures/" if missing and it looks like a structure
-        if (!link.path.startsWith("structures/") && link.path.endsWith(".nbt"))
+        // Try prepending "structure/" if missing and it looks like a structure
+        if (!link.path.startsWith("structure/") && link.path.endsWith(".nbt"))
         {
-             Identifier structureId = new Identifier(link.source, "structures/" + link.path);
+             Identifier structureId = Identifier.of(link.source, "structure/" + link.path);
              if (effectiveManager.getResource(structureId).isPresent())
              {
                  return true;
@@ -113,15 +113,15 @@ public class MinecraftSourcePack implements ISourcePack
     @Override
     public InputStream getAsset(Link link) throws IOException
     {
-        Identifier id = new Identifier(link.toString());
+        Identifier id = Identifier.of(link.source, link.path);
         ResourceManager effectiveManager = this.getEffectiveManager(link);
         
         Optional<Resource> resource = effectiveManager.getResource(id);
 
-        // Try prepending "structures/" if missing and it looks like a structure
-        if (resource.isEmpty() && !link.path.startsWith("structures/") && link.path.endsWith(".nbt"))
+        // Try prepending "structure/" if missing and it looks like a structure
+        if (resource.isEmpty() && !link.path.startsWith("structure/") && link.path.endsWith(".nbt"))
         {
-             Identifier structureId = new Identifier(link.source, "structures/" + link.path);
+             Identifier structureId = Identifier.of(link.source, "structure/" + link.path);
              resource = effectiveManager.getResource(structureId);
         }
 

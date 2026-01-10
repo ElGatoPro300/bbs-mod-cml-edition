@@ -8,6 +8,8 @@ import mchorse.bbs_mod.events.ModelBlockEntityUpdateCallback;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.StubEntity;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.BillboardForm;
+import mchorse.bbs_mod.resources.Link;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -149,15 +151,15 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt()
+    public NbtCompound toInitialChunkDataNbt(net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
     {
-        return createNbt();
+        return this.createNbtWithId(registryLookup);
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt)
+    protected void writeNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
     {
-        super.writeNbt(nbt);
+        super.writeNbt(nbt, registryLookup);
 
         MapType data = this.properties.toData();
 
@@ -165,9 +167,9 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public void readNbt(NbtCompound nbt)
+    public void readNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
     {
-        super.readNbt(nbt);
+        super.readNbt(nbt, registryLookup);
 
         BaseType baseType = DataStorageUtils.readFromNbtCompound(nbt, "Properties");
 

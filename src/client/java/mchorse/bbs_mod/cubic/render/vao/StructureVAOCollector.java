@@ -1,6 +1,8 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
 import net.minecraft.client.render.VertexConsumer;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +87,7 @@ public class StructureVAOCollector implements VertexConsumer
 
     private final Vtx[] quad = new Vtx[4];
     private int quadIndex = 0;
+    private boolean hasCurrent = false;
 
     // working per-vertex state until next()
     private float vx, vy, vz;
@@ -104,11 +107,28 @@ public class StructureVAOCollector implements VertexConsumer
     }
 
     @Override
-    public VertexConsumer vertex(double x, double y, double z)
+    public VertexConsumer vertex(float x, float y, float z)
     {
-        this.vx = (float) x;
-        this.vy = (float) y;
-        this.vz = (float) z;
+        // Finalizar vértice previo si existía
+        if (hasCurrent) finalizeCurrent();
+        this.vx = x;
+        this.vy = y;
+        this.vz = z;
+        this.hasCurrent = true;
+        return this;
+    }
+
+    @Override
+    public VertexConsumer vertex(Matrix4f matrix, float x, float y, float z)
+    {
+        // Finalizar vértice previo si existía
+        if (hasCurrent) finalizeCurrent();
+        Vector4f v = new Vector4f(x, y, z, 1F);
+        v.mul(matrix);
+        this.vx = v.x;
+        this.vy = v.y;
+        this.vz = v.z;
+        this.hasCurrent = true;
         return this;
     }
 
@@ -150,8 +170,7 @@ public class StructureVAOCollector implements VertexConsumer
         return this;
     }
 
-    @Override
-    public void next()
+    private void finalizeCurrent()
     {
         Vtx v = quad[quadIndex];
         v.x = vx; v.y = vy; v.z = vz;
@@ -223,13 +242,11 @@ public class StructureVAOCollector implements VertexConsumer
         tangentTmp[0] = tx / len; tangentTmp[1] = ty / len; tangentTmp[2] = tz / len; return tangentTmp;
     }
 
-    @Override
     public void fixedColor(int red, int green, int blue, int alpha)
     {
         // no-op
     }
 
-    @Override
     public void unfixColor()
     {
         // no-op

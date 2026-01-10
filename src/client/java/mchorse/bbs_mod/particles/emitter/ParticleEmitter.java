@@ -22,6 +22,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
@@ -451,19 +452,21 @@ public class ParticleEmitter
             this.setParticleVariables(this.uiParticle, transition);
 
             Matrix4f matrix = stack.peek().getPositionMatrix();
-            BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
-            builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-            for (IComponentParticleRender render : list)
+            try (BufferAllocator allocator = new BufferAllocator(1536))
             {
-                render.renderUI(this.uiParticle, builder, matrix, transition);
-            }
+                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-            RenderSystem.disableCull();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            RenderSystem.enableCull();
+                for (IComponentParticleRender render : list)
+                {
+                    render.renderUI(this.uiParticle, builder, matrix, transition);
+                }
+
+                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+                RenderSystem.disableCull();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
+                RenderSystem.enableCull();
+            }
         }
     }
 
@@ -528,21 +531,17 @@ public class ParticleEmitter
             this.sortParticles(transition);
 
             Matrix4f matrix = stack.peek().getPositionMatrix();
-            BufferBuilder builder = Tessellator.getInstance().getBuffer();
 
-            this.bindTexture();
-            builder.begin(VertexFormat.DrawMode.TRIANGLES, format);
-
-            for (Particle particle : this.particles)
+            try (BufferAllocator allocator = new BufferAllocator(1536))
             {
-                this.setEmitterVariables(transition);
-                this.setParticleVariables(particle, transition);
+                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, format);
 
-                for (IComponentParticleRender component : renders)
+                this.bindTexture();
+
+                for (Particle particle : this.particles)
                 {
-                    component.render(this, format, particle, builder, matrix, overlay, transition);
-                }
-            }
+                    this.setEmitterVariables(transition);
+                    this.setParticleVariables(particle, transition);
 
             RenderSystem.setShader(program);
             
@@ -561,6 +560,8 @@ public class ParticleEmitter
         {
             component.postRender(this, transition);
         }
+    }
+    }
     }
 
     /**
@@ -623,5 +624,14 @@ public class ParticleEmitter
         this.cX = camera.position.x;
         this.cY = camera.position.y;
         this.cZ = camera.position.z;
+    }
+
+    public void setupCameraProperties(net.minecraft.client.render.Camera camera)
+    {
+        this.cYaw = 180 - camera.getYaw();
+        this.cPitch = -camera.getPitch();
+        this.cX = camera.getPos().x;
+        this.cY = camera.getPos().y;
+        this.cZ = camera.getPos().z;
     }
 }
