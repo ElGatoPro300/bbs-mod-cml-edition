@@ -279,11 +279,11 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     }
     
     /**
-     * Drop a single item stack with vanilla-like physics
+     * Drop a single item stack with configurable physics from replay settings
      */
     private void dropItemStack(ItemStack stack)
     {
-        if (stack.isEmpty())
+        if (stack.isEmpty() || this.replay == null)
         {
             return;
         }
@@ -297,10 +297,20 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
             stack
         );
         
-        // Apply random velocity with reduced intensity
-        double velocityX = this.random.nextDouble() * 0.2 - 0.1;
-        double velocityY = this.random.nextDouble() * 0.15 + 0.1;
-        double velocityZ = this.random.nextDouble() * 0.2 - 0.1;
+        // Apply random velocity using replay's configured values
+        float minX = this.replay.dropVelocityMinX.get();
+        float maxX = this.replay.dropVelocityMaxX.get();
+        float minY = this.replay.dropVelocityMinY.get();
+        float maxY = this.replay.dropVelocityMaxY.get();
+        float minZ = this.replay.dropVelocityMinZ.get();
+        float maxZ = this.replay.dropVelocityMaxZ.get();
+        
+        // Debug: Print velocity values to console
+        System.out.println("[BBS Debug] Drop velocities - X: [" + minX + ", " + maxX + "], Y: [" + minY + ", " + maxY + "], Z: [" + minZ + ", " + maxZ + "]");
+        
+        double velocityX = minX + this.random.nextDouble() * (maxX - minX);
+        double velocityY = minY + this.random.nextDouble() * (maxY - minY);
+        double velocityZ = minZ + this.random.nextDouble() * (maxZ - minZ);
         
         itemEntity.setVelocity(velocityX, velocityY, velocityZ);
         itemEntity.setToDefaultPickupDelay();
