@@ -162,7 +162,8 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
     private void renderAxes(UIContext context)
     {
-        Matrix4f matrix = this.formEditor.getOrigin(context.getTransition());
+        Matrix4f matrixRaw = this.formEditor.getOrigin(context.getTransition());
+        Matrix4f matrix = matrixRaw != null ? MatrixStackUtils.stripScale(matrixRaw) : null;
         MatrixStack stack = context.render.batcher.getContext().getMatrices();
 
         stack.push();
