@@ -73,7 +73,7 @@ public class ActionPlayer
             for (int i = 0; i < this.serverPlayer.getInventory().size(); i++)
             {
                 this.cachedInventory.add(serverPlayer.getInventory().getStack(i).copy());
-                this.serverPlayer.getInventory().setStack(i, CollectionUtils.getSafe(this.film.inventory.getStacks(), i, ItemStack.EMPTY));
+                this.serverPlayer.getInventory().setStack(i, CollectionUtils.getSafe(fpReplay.inventory.getStacks(), i, ItemStack.EMPTY));
             }
 
             Morph morph = Morph.getMorph(this.serverPlayer);
