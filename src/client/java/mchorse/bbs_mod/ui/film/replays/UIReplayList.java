@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.ui.film.replays;
 
+import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
 import mchorse.bbs_mod.camera.Camera;
@@ -13,15 +14,19 @@ import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.film.Film;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.film.replays.Replays;
+import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.AnchorForm;
 import mchorse.bbs_mod.forms.forms.BodyPart;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.MobForm;
+import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.math.IExpression;
 import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.settings.values.IValueListener;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.core.ValueForm;
@@ -37,8 +42,10 @@ import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UINumberOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.CollectionUtils;
@@ -58,13 +65,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.io.File;
+import java.nio.file.Path;
 
 /**
  * This GUI is responsible for drawing replays available in the 
@@ -125,6 +134,7 @@ public class UIReplayList extends UIList<Replay>
                 {
                     menu.action(Icons.ALL_DIRECTIONS, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS, this::processReplays);
                     menu.action(Icons.TIME, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME, this::offsetTimeReplays);
+                    menu.action(Icons.BLOCK, UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS, this::applyRandomSkins);
                 }
                 
                 menu.action(Icons.FOLDER, UIKeys.SCENE_REPLAYS_CONTEXT_ADD_GROUP, this::addGroup);
@@ -817,6 +827,132 @@ public class UIReplayList extends UIList<Replay>
             this.updateFilmEditor();
         }
     }
+
+    private void applyRandomSkins()
+    {
+        if (this.isDeselected())
+        {
+            return;
+        }
+
+        UIPromptOverlayPanel panel = new UIPromptOverlayPanel(
+            UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS,
+            IKey.constant("Paste the full path to the folder containing PNG skin files:"),
+            (folderPath) -> this.processRandomSkins(folderPath)
+        );
+        
+        UIOverlay.addOverlay(this.getContext(), panel);
+    }
+
+    private void processRandomSkins(String folderPath)
+    {
+        if (folderPath == null || folderPath.trim().isEmpty())
+        {
+            return;
+        }
+
+        File skinsFolder = new File(folderPath.trim());
+        
+        if (!skinsFolder.exists() || !skinsFolder.isDirectory())
+        {
+            UIOverlay.addOverlay(this.getContext(), 
+                new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR, 
+                IKey.constant("The specified folder does not exist or is not a directory.")));
+            return;
+        }
+
+        /* Get all PNG files from the folder */
+        List<File> skinFiles = new ArrayList<>();
+        File[] files = skinsFolder.listFiles();
+        
+        if (files != null)
+        {
+            for (File file : files)
+            {
+                if (file.isFile() && file.getName().toLowerCase().endsWith(".png"))
+                {
+                    skinFiles.add(file);
+                }
+            }
+        }
+
+        if (skinFiles.isEmpty())
+        {
+            UIOverlay.addOverlay(this.getContext(), 
+                new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR, 
+                IKey.constant("No PNG files found in the specified folder.")));
+            return;
+        }
+
+        /* Shuffle the skins for random assignment */
+        Collections.shuffle(skinFiles);
+
+        /* Get selected replays */
+        List<Replay> selectedReplays = this.getCurrent();
+        
+        if (selectedReplays.isEmpty())
+        {
+            return;
+        }
+
+        /* Apply skins to replays */
+        int skinIndex = 0;
+        int successCount = 0;
+        
+        for (Replay replay : selectedReplays)
+        {
+            File skinFile = skinFiles.get(skinIndex % skinFiles.size());
+            
+            /* Create a Link using the AssetProvider */
+            Link skinLink = BBSMod.getProvider().getLink(skinFile);
+            
+            if (skinLink == null)
+            {
+                /* If the file is not in the assets folder, skip it */
+                skinIndex++;
+                continue;
+            }
+            
+            /* Get the form and set the texture */
+            ValueForm formValue = replay.form;
+            if (formValue != null && formValue.get() != null)
+            {
+                Form form = formValue.get();
+                
+                if (form instanceof MobForm)
+                {
+                    ((MobForm) form).texture.set(skinLink);
+                    successCount++;
+                }
+                else if (form instanceof ModelForm)
+                {
+                    ((ModelForm) form).texture.set(skinLink);
+                    successCount++;
+                }
+            }
+            
+            skinIndex++;
+        }
+
+        /* Update UI */
+        this.update();
+        this.updateFilmEditor();
+        
+        if (successCount > 0)
+        {
+            UIOverlay.addOverlay(this.getContext(), 
+                new UIMessageOverlayPanel(UIKeys.GENERAL_SUCCESS, 
+                IKey.constant(String.format("Applied %d random skins to %d replays.", 
+                    successCount, selectedReplays.size()))));
+        }
+        else
+        {
+            UIOverlay.addOverlay(this.getContext(), 
+                new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR, 
+                IKey.constant("The skins folder must be inside the BBS assets folder. For example: config/bbs/assets/models/!Skins/")));
+        }
+    }
+
 
     private void removeReplay()
     {
