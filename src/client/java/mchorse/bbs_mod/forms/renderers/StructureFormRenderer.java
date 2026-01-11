@@ -21,6 +21,7 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.joml.Vectors;
+import net.minecraft.block.AttachedStemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -28,6 +29,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.GrassBlock;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.LilyPadBlock;
+import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.StemBlock;
 import net.minecraft.block.VineBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -841,6 +844,12 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             return true;
         }
 
+        /* Fire */
+        if (state.isOf(Blocks.FIRE) || state.isOf(Blocks.SOUL_FIRE))
+        {
+            return true;
+        }
+
         /* Fluids: water and lava (including flowing variants). */
         fs = state.getFluidState();
 
@@ -871,7 +880,17 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         return (b instanceof LeavesBlock)
             || (b instanceof GrassBlock)
             || (b instanceof VineBlock)
-            || (b instanceof LilyPadBlock);
+            || (b instanceof LilyPadBlock)
+            || (b instanceof RedstoneWireBlock)
+            || (b instanceof StemBlock)
+            || (b instanceof AttachedStemBlock)
+            || state.isOf(Blocks.FERN)
+            || state.isOf(Blocks.SUGAR_CANE)
+            || state.isOf(Blocks.SHORT_GRASS)
+            || state.isOf(Blocks.TALL_GRASS)
+            || state.isOf(Blocks.LARGE_FERN);
+
+            
     }
 
     /**
