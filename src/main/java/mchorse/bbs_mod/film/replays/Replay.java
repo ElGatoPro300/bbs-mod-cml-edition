@@ -31,6 +31,7 @@ public class Replay extends ValueGroup
     public final ReplayKeyframes keyframes = new ReplayKeyframes("keyframes");
     public final FormProperties properties = new FormProperties("properties");
     public final Clips actions = new Clips("actions", BBSMod.getFactoryActionClips());
+    public final Inventory inventory = new Inventory("inventory");
 
     public final ValueBoolean enabled = new ValueBoolean("enabled", true);
     public final ValueString label = new ValueString("label", "");
@@ -61,6 +62,7 @@ public class Replay extends ValueGroup
         this.add(this.keyframes);
         this.add(this.properties);
         this.add(this.actions);
+        this.add(this.inventory);
 
         this.add(this.enabled);
         this.add(this.label);

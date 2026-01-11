@@ -912,7 +912,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
                     }
                 }
 
-                f.inventory.fromData(recorder.inventory.toData());
+                rp.inventory.fromData(recorder.inventory.toData());
                 f.hp.set(recorder.hp);
                 f.hunger.set(recorder.hunger);
                 f.xpLevel.set(recorder.xpLevel);
