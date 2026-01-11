@@ -17,17 +17,6 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 
-import mchorse.bbs_mod.graphics.Draw;
-
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
-import com.mojang.blaze3d.systems.RenderSystem;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-
 public class CubicVAORenderer extends CubicCubeRenderer
 {
     private ShaderProgram program;
@@ -50,59 +39,6 @@ public class CubicVAORenderer extends CubicCubeRenderer
     @Override
     public boolean renderGroup(BufferBuilder builder, MatrixStack stack, ModelGroup group, Model model)
     {
-        if (group.isNullObject && group.visible)
-        {
-            stack.push();
-            
-            // Move to pivot (position of the Null Object)
-            CubicCubeRenderer.moveToPivot(stack, group.initial.pivot);
-            
-            // Billboard Logic: Cancel out rotation to face camera
-            Matrix4f mat = stack.peek().getPositionMatrix();
-            Quaternionf rot = new Quaternionf();
-            mat.getUnnormalizedRotation(rot);
-            rot.invert();
-            stack.multiply(rot);
-
-            // Draw Filled Circle (Billboard)
-            float radius = 0.25F; // Adjust size as needed
-            int segments = 24;
-            
-            // We use a separate buffer/draw call for this visual helper
-            // Or we can append to the existing builder if it's compatible (PositionColor)
-            // But builder passed here might be textured.
-            // Safe to use Tessellator directly for a debug visual?
-            // The 'builder' passed is likely the main model builder.
-            // If we break batching, we might cause issues.
-            // But Draw.renderBox uses Tessellator.getInstance().getBuffer() internally and draws immediately!
-            // So we should do the same.
-            
-            BufferBuilder circleBuilder = Tessellator.getInstance().getBuffer();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-            RenderSystem.enableBlend();
-            
-            circleBuilder.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-            
-            Matrix4f drawMat = stack.peek().getPositionMatrix();
-            float r = 1F, g = 1F, b = 0F, a = 0.5F; // Yellow, semi-transparent
-            
-            // Center
-            circleBuilder.vertex(drawMat, 0, 0, 0).color(r, g, b, a).next();
-            
-            // Perimeter
-            for (int i = 0; i <= segments; i++)
-            {
-                float angle = (float) (i * Math.PI * 2 / segments);
-                float x = (float) Math.cos(angle) * radius;
-                float y = (float) Math.sin(angle) * radius;
-                circleBuilder.vertex(drawMat, x, y, 0).color(r, g, b, a).next();
-            }
-            
-            BufferRenderer.drawWithGlobalProgram(circleBuilder.end());
-            
-            stack.pop();
-        }
-
         ModelVAO modelVAO = this.model.getVaos().get(group);
 
         if (modelVAO != null && group.visible)
