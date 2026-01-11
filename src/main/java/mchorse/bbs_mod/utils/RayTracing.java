@@ -35,12 +35,15 @@ public class RayTracing
 
     public static BlockHitResult rayTrace(World world, Vec3d pos, Vec3d direction, double d)
     {
+        ActorEntity entity = new ActorEntity(BBSMod.ACTOR_ENTITY, world);
+        entity.setPos(pos.x, pos.y, pos.z);
+        
         return world.raycast(new RaycastContext(
             pos,
             pos.add(direction.normalize().multiply(d)),
             RaycastContext.ShapeType.COLLIDER,
             RaycastContext.FluidHandling.NONE,
-            ShapeContext.absent()
+            entity
         ));
     }
 
