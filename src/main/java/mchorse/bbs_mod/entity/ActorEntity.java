@@ -47,6 +47,9 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     private Film film;
     private Replay replay;
     private int currentTick;
+    
+    /* Track items picked up during replay playback */
+    private List<ItemStack> pickedUpItems = new java.util.ArrayList<>();
 
     public ActorEntity(EntityType<? extends LivingEntity> entityType, World world)
     {
@@ -181,6 +184,9 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
 
                 if (!entity.isRemoved() && !itemEntity.cannotPickup())
                 {
+                    // Add picked up item to the list for later dropping on death
+                    this.pickedUpItems.add(itemStack.copy());
+                    
                     ((ServerWorld) this.getWorld()).getChunkManager().sendToOtherNearbyPlayers(entity, new ItemPickupAnimationS2CPacket(entity.getId(), this.getId(), i));
                     entity.discard();
                 }
@@ -259,6 +265,15 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
                 {
                     this.dropItemStack(stack.copy());
                 }
+            }
+        }
+        
+        // Drop items that were picked up during replay playback
+        for (ItemStack stack : this.pickedUpItems)
+        {
+            if (stack != null && !stack.isEmpty())
+            {
+                this.dropItemStack(stack.copy());
             }
         }
     }
