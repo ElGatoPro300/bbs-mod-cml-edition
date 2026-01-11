@@ -546,6 +546,7 @@ public class ParticleEmitter
             RenderSystem.setShader(program);
             
             /* Enable blending and disable depth mask for correct semi-transparency */
+            RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableCull();
             

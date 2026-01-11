@@ -16,6 +16,8 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSSettings
 {
@@ -34,7 +36,9 @@ public class BBSSettings
     public static ValueFloat axesScale;
     public static ValueBoolean uniformScale;
     public static ValueBoolean clickSound;
+    public static ValueBoolean disablePivotTransform;
     public static ValueBoolean gizmos;
+    public static ValueInt defaultInterpolation;
 
     public static ValueBoolean enableCursorRendering;
     public static ValueBoolean enableMouseButtonRendering;
@@ -103,6 +107,10 @@ public class BBSSettings
     public static ValueInt audioWaveformHeight;
     public static ValueBoolean audioWaveformFilename;
     public static ValueBoolean audioWaveformTime;
+    /* Pose track bone anchoring */
+    public static ValueBoolean boneAnchoringEnabled;
+    public static ValueBoolean anchorOverrideEnabled;
+    public static ValueBoolean autoKeyframe;
 
     public static ValueString cdnUrl;
     public static ValueString cdnToken;
@@ -163,7 +171,9 @@ public class BBSSettings
         axesScale = builder.getFloat("axes_scale", 1F, 0F, 2F);
         uniformScale = builder.getBoolean("uniform_scale", false);
         clickSound = builder.getBoolean("click_sound", false);
+        disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
         gizmos = builder.getBoolean("gizmos", true);
+        defaultInterpolation = builder.getInt("default_interpolation", 0);
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
         disabledSheets.set(defaultFilters);
@@ -234,6 +244,7 @@ public class BBSSettings
         builder.category("model_blocks");
         renderAllModelBlocks = builder.getBoolean("render_all", true);
         clickModelBlocks = builder.getBoolean("click", true);
+        modelBlockCategoriesPanelEnabled = builder.getBoolean("categories_panel_enabled", false);
 
         builder.category("entity_selectors");
         entitySelectorsPropertyWhitelist = builder.getString("whitelist", "CustomName,Name");
@@ -252,6 +263,12 @@ public class BBSSettings
         audioWaveformFilename = builder.getBoolean("waveform_filename", false);
         audioWaveformTime = builder.getBoolean("waveform_time", false);
 
+
+        /* Pose track selection */
+        builder.category("pose_track_selection");
+        boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", false);
+        anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
+        autoKeyframe = builder.getBoolean("auto_keyframe", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
