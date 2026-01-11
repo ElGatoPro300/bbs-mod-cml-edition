@@ -52,6 +52,14 @@ public class Replay extends ValueGroup
     public final ValueBoolean isGroup = new ValueBoolean("is_group", false);
     public final ValueString uuid = new ValueString("uuid", "");
 
+    /* Item drop velocity configuration */
+    public final ValueFloat dropVelocityMinX = new ValueFloat("drop_velocity_min_x", -0.1F);
+    public final ValueFloat dropVelocityMaxX = new ValueFloat("drop_velocity_max_x", 0.1F);
+    public final ValueFloat dropVelocityMinY = new ValueFloat("drop_velocity_min_y", 0.1F);
+    public final ValueFloat dropVelocityMaxY = new ValueFloat("drop_velocity_max_y", 0.25F);
+    public final ValueFloat dropVelocityMinZ = new ValueFloat("drop_velocity_min_z", -0.1F);
+    public final ValueFloat dropVelocityMaxZ = new ValueFloat("drop_velocity_max_z", 0.1F);
+
     public Replay(String id)
     {
         super(id);
@@ -77,6 +85,12 @@ public class Replay extends ValueGroup
 
         this.add(this.axesPreview);
         this.add(this.axesPreviewBone);
+        this.add(this.dropVelocityMinX);
+        this.add(this.dropVelocityMaxX);
+        this.add(this.dropVelocityMinY);
+        this.add(this.dropVelocityMaxY);
+        this.add(this.dropVelocityMinZ);
+        this.add(this.dropVelocityMaxZ);
         this.add(this.isGroup);
         this.add(this.uuid);
         

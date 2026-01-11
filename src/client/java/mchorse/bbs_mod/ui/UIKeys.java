@@ -303,6 +303,13 @@ public class UIKeys
     public static final IKey FILM_REPLAY_SHADOW = L10n.lang("bbs.ui.film.replay.shadow");
     public static final IKey FILM_REPLAY_SHADOW_SIZE = L10n.lang("bbs.ui.film.replay.shadow_size");
     public static final IKey FILM_REPLAY_TITLE = L10n.lang("bbs.ui.film.replay.title");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY = L10n.lang("bbs.ui.film.replay.drop_velocity");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY_MIN_X = L10n.lang("bbs.ui.film.replay.drop_velocity_min_x");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY_MAX_X = L10n.lang("bbs.ui.film.replay.drop_velocity_max_x");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY_MIN_Y = L10n.lang("bbs.ui.film.replay.drop_velocity_min_y");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY_MAX_Y = L10n.lang("bbs.ui.film.replay.drop_velocity_max_y");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY_MIN_Z = L10n.lang("bbs.ui.film.replay.drop_velocity_min_z");
+    public static final IKey FILM_REPLAY_DROP_VELOCITY_MAX_Z = L10n.lang("bbs.ui.film.replay.drop_velocity_max_z");
     public static final IKey FILM_RESET_REPLAYS = L10n.lang("bbs.ui.film.reset_replays");
     public static final IKey FILM_SCREENSHOT = L10n.lang("bbs.ui.film.screenshot");
     public static final IKey FILM_SCREENSHOT_DESCRIPTION = L10n.lang("bbs.ui.film.screenshot-description");
