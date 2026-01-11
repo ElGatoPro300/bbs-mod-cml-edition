@@ -61,6 +61,7 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.world.LightType;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
@@ -245,7 +246,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
                     VertexConsumerProvider consumersTint = shadersEnabled
                         ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                        : VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        : VertexConsumerProvider.immediate(new BufferAllocator(1536));
                     FormRenderingContext tintContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
 
@@ -265,7 +266,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
                     VertexConsumerProvider consumersAnim = shadersEnabled
                         ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                        : VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        : VertexConsumerProvider.immediate(new BufferAllocator(1536));
                     FormRenderingContext animContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
 
@@ -429,7 +430,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Additional pass: biome tinted blocks */
                 try
                 {
-                    VertexConsumerProvider.Immediate tintConsumers = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    VertexConsumerProvider.Immediate tintConsumers = VertexConsumerProvider.immediate(new BufferAllocator(1536));
 
                     this.renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
                     tintConsumers.draw();
@@ -440,7 +441,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Additional pass: animated blocks (portal/fluid) with moving block layer */
                 try
                 {
-                    VertexConsumerProvider.Immediate animConsumers = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    VertexConsumerProvider.Immediate animConsumers = VertexConsumerProvider.immediate(new BufferAllocator(1536));
 
                     this.renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
                     animConsumers.draw();
@@ -1052,7 +1053,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtSizeTracker.ofUnlimitedBytes());
 
                 this.parseStructure(root);
 
@@ -1067,7 +1068,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
 
                 this.parseStructure(root);
             }
@@ -1274,7 +1275,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         try
         {
-            Identifier id = new Identifier(name);
+            Identifier id = Identifier.of(name);
 
             block = Registries.BLOCK.get(id);
 
