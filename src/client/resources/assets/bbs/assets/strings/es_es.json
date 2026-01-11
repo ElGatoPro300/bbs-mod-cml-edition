@@ -782,6 +782,7 @@
     "bbs.ui.model_blocks.shadow": "Sombra",
     "bbs.ui.model_blocks.title": "Bloques de modelos",
     "bbs.ui.model_blocks.transform.default": "Transformación predeterminada",
+    "bbs.ui.scene.replays.context.random_skins": "Aplicar skins aleatorias...",
     "bbs.ui.model_blocks.transform.first_person": "Transformación en primera persona",
     "bbs.ui.model_blocks.transform.inventory": "Transformación de inventario (GUI)",
     "bbs.ui.model_blocks.transform.third_person": "Transformación en tercera persona",
