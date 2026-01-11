@@ -2,12 +2,10 @@ package mchorse.bbs_mod.cubic.data.model;
 
 import mchorse.bbs_mod.bobj.BOBJBone;
 import mchorse.bbs_mod.cubic.CubicModelAnimator;
-import mchorse.bbs_mod.cubic.IKSolver;
 import mchorse.bbs_mod.cubic.IModel;
 import mchorse.bbs_mod.cubic.MolangHelper;
 import mchorse.bbs_mod.cubic.data.animation.Animation;
 import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.entities.IEntity;
@@ -33,8 +31,6 @@ public class Model implements IMapSerializable, IModel
     public int textureHeight;
 
     public final MolangParser parser;
-
-    public final List<IKChain> ikChains = new ArrayList<>();
 
     /**
      * This list contains only the root groups of the model (and not all of the groups)
@@ -176,8 +172,6 @@ public class Model implements IMapSerializable, IModel
                 (float) Math.toDegrees(transform.rotate2.z)
             );
         }
-
-        IKSolver.resolveIK(this, null);
     }
 
     @Override
@@ -260,7 +254,6 @@ public class Model implements IMapSerializable, IModel
     {
         MolangHelper.setMolangVariables(this.parser, target, tick, transition);
         CubicModelAnimator.animate(this, action, tick, blend, skipInitial);
-        IKSolver.resolveIK(this, target);
     }
 
     @Override
@@ -268,7 +261,6 @@ public class Model implements IMapSerializable, IModel
     {
         MolangHelper.setMolangVariables(this.parser, target, tick, transition);
         CubicModelAnimator.postAnimate(this, action, tick);
-        IKSolver.resolveIK(this, target);
     }
 
     /* Deserialization / Serialization */
@@ -341,15 +333,27 @@ public class Model implements IMapSerializable, IModel
         texture.addInt(this.textureWidth);
         texture.addInt(this.textureHeight);
 
+        Map<String, String> parents = new HashMap<>();
+        Collection<ModelGroup> allGroups = this.getAllGroups();
+
+        for (ModelGroup parent : allGroups)
+        {
+            for (ModelGroup child : parent.children)
+            {
+                parents.put(child.id, parent.id);
+            }
+        }
+
         MapType groups = new MapType();
 
-        for (ModelGroup group : this.getOrderedGroups())
+        for (ModelGroup group : allGroups)
         {
             MapType groupData = group.toData();
+            String parentId = parents.get(group.id);
 
-            if (group.parent != null)
+            if (parentId != null)
             {
-                groupData.putString("parent", group.parent.id);
+                groupData.putString("parent", parentId);
             }
 
             groups.put(group.id, groupData);
