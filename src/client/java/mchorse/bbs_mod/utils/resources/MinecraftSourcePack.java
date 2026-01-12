@@ -33,8 +33,6 @@ public class MinecraftSourcePack implements ISourcePack
     private ResourceManager getEffectiveManager(Link link)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        // Check if we are in a world and if the link points to a structure (data pack resource)
-        // Structures are usually under "structures/" path or have .nbt extension
         if (mc.getServer() != null && (link.path.startsWith("structures/") || link.path.endsWith(".nbt")))
         {
             return mc.getServer().getResourceManager();
@@ -97,7 +95,6 @@ public class MinecraftSourcePack implements ISourcePack
             return true;
         }
         
-        // Try prepending "structures/" if missing and it looks like a structure
         if (!link.path.startsWith("structures/") && link.path.endsWith(".nbt"))
         {
              Identifier structureId = new Identifier(link.source, "structures/" + link.path);
@@ -118,7 +115,6 @@ public class MinecraftSourcePack implements ISourcePack
         
         Optional<Resource> resource = effectiveManager.getResource(id);
 
-        // Try prepending "structures/" if missing and it looks like a structure
         if (resource.isEmpty() && !link.path.startsWith("structures/") && link.path.endsWith(".nbt"))
         {
              Identifier structureId = new Identifier(link.source, "structures/" + link.path);

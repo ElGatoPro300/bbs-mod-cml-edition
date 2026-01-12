@@ -342,8 +342,9 @@ public class UIInterpolationContextMenu extends UIContextMenu
 
         if (icon == null && interp != null)
         {
-            // Fallback: try to find the icon by checking equality with keys in the map
-            // This handles cases where the interp object is a different instance but equals() returns true
+            /* Fallback: try to find the icon by checking equality with keys in the map
+             This handles cases where the interp object is a different instance but equals() returns true
+            */
             for (Map.Entry<IInterp, UIIcon> entry : this.icons.entrySet())
             {
                 if (entry.getKey().equals(interp))

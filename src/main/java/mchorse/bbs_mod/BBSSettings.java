@@ -94,21 +94,6 @@ public class BBSSettings
 
     public static ValueBoolean renderAllModelBlocks;
     public static ValueBoolean clickModelBlocks;
-    /** Habilitar gizmos 3D para edición de transformaciones en bloques de modelo */
-    public static ValueBoolean modelBlockGizmosEnabled;
-    /** Mostrar/ocultar el panel de categorías de huesos en editores de pose */
-    public static ValueBoolean modelBlockCategoriesPanelEnabled;
-    /** Escalado dinámico del gizmo basado en distancia cámara↔pivote */
-    public static ValueBoolean gizmoDynamic;
-    /** Escala base del gizmo cuando el modo dinámico está desactivado */
-    public static ValueFloat gizmoScale;
-    /** Diseño del gizmo: 0=Predeterminado (con contorno), 1=Clásico (delgado) */
-    public static ValueInt gizmoDesign;
-    /** Mostrar controladores de planos (XY, ZX, YZ) en TRANSLATE/PIVOT */
-    public static ValueBoolean gizmoPlanes;
-    public static ValueBoolean visualizeStructures;
-    /** Toggle: optimización de estructuras (VAO) vs BufferBuilder (iluminación mejor). */
-    public static ValueBoolean structureOptimization;
 
     public static ValueString entitySelectorsPropertyWhitelist;
 
@@ -122,7 +107,6 @@ public class BBSSettings
     public static ValueInt audioWaveformHeight;
     public static ValueBoolean audioWaveformFilename;
     public static ValueBoolean audioWaveformTime;
-    
     /* Pose track bone anchoring */
     public static ValueBoolean boneAnchoringEnabled;
     public static ValueBoolean anchorOverrideEnabled;
@@ -189,13 +173,7 @@ public class BBSSettings
         clickSound = builder.getBoolean("click_sound", false);
         disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
         gizmos = builder.getBoolean("gizmos", true);
-
-        // gizmoDynamic = builder.getBoolean("dynamic", false);
-        gizmoDesign = builder.getInt("design", 0);
-        gizmoPlanes = builder.getBoolean("planes", false);
-
         defaultInterpolation = builder.getInt("default_interpolation", 0);
-
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
         disabledSheets.set(defaultFilters);
@@ -266,13 +244,7 @@ public class BBSSettings
         builder.category("model_blocks");
         renderAllModelBlocks = builder.getBoolean("render_all", true);
         clickModelBlocks = builder.getBoolean("click", true);
-        /* Panel de categorías en editores de pose (afecta editor y timeline) */
         modelBlockCategoriesPanelEnabled = builder.getBoolean("categories_panel_enabled", false);
-
-        /* Estructuras: modo de renderizado */
-        builder.category("structures");
-        structureOptimization = builder.getBoolean("structure_optimization", true);
-        visualizeStructures = builder.getBoolean("visualize_structures", false);
 
         builder.category("entity_selectors");
         entitySelectorsPropertyWhitelist = builder.getString("whitelist", "CustomName,Name");
@@ -292,7 +264,7 @@ public class BBSSettings
         audioWaveformTime = builder.getBoolean("waveform_time", false);
 
 
-        /* Pose track selection: restaurar opciones visibles en el panel */
+        /* Pose track selection */
         builder.category("pose_track_selection");
         boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", false);
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);

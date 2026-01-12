@@ -299,8 +299,6 @@ public class ModelInstance implements IModelInstance
                     group.initial.translate.z / 16
                 );
                 matrix.rotateY(MathUtils.PI);
-
-                /* Also provide origin matrix captured before rotation/scale at the group's pivot */
                 origin.translate(
                     group.initial.translate.x / 8192,
                     group.initial.translate.y / 8192,
