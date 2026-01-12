@@ -106,8 +106,6 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
     {
         this.form = form;
 
-        /* Ensure a current view exists before any panel's startEdit triggers
-         * value changes that may collect undo data. */
         this.setPanel(this.defaultPanel);
 
         for (UIFormPanel<T> panel : this.panels)

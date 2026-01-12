@@ -75,7 +75,6 @@ public class UIAnchorKeyframeFactory extends UIKeyframeFactory<Anchor>
         Form form = entity.getForm();
         List<String> attachments = new ArrayList<>(FormUtilsClient.getRenderer(form).collectMatrices(entity, 0F).keySet());
 
-        // Ocultar entradas que terminan con "#origin" para evitar duplicados en el panel
         for (int i = attachments.size() - 1; i >= 0; i--)
         {
             String name = attachments.get(i);

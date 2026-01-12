@@ -37,6 +37,7 @@ import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -178,7 +179,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
                 poseTransform.pivot.add(value.pivot);
             }
 
-            /* Also apply visual properties of the overlay (color, lighting and texture) */
             if (value.fix != 0)
             {
                 poseTransform.color.lerp(value.color, value.fix);
@@ -187,7 +187,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             if (value.texture != null)
             {
-                poseTransform.texture = mchorse.bbs_mod.utils.resources.LinkUtils.copy(value.texture);
+                poseTransform.texture = LinkUtils.copy(value.texture);
             }
         }
     }
@@ -223,6 +223,11 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         this.lastConfigs = new ActionsConfig();
         this.lastConfigs.copy(actionsConfig);
         this.lastModel = model;
+    }
+
+    public MatrixCache getBonesCache()
+    {
+        return this.bones;
     }
 
     @Override
@@ -297,6 +302,8 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     private void renderModel(IEntity target, Supplier<ShaderProgram> program, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
     {
+        this.bones.clear();
+
         if (!model.culling)
         {
             RenderSystem.disableCull();
@@ -573,7 +580,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             context.stack.pop();
         }
 
-        this.bones.clear();
         context.stack.pop();
     }
 
@@ -670,6 +676,21 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         if (this.animator != null)
         {
             this.animator.update(entity);
+        }
+
+        for (BodyPart part : this.form.parts.getAllTyped())
+        {
+            Form form = part.getForm();
+
+            if (form != null)
+            {
+                FormRenderer renderer = FormUtilsClient.getRenderer(form);
+
+                if (renderer instanceof ITickable)
+                {
+                    ((ITickable) renderer).tick(part.useTarget.get() ? entity : part.getEntity());
+                }
+            }
         }
     }
 }

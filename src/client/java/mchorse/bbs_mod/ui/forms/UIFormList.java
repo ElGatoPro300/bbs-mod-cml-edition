@@ -4,6 +4,7 @@ import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.forms.FormCategories;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.categories.FormCategory;
+import mchorse.bbs_mod.forms.categories.UserFormCategory;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -196,7 +197,7 @@ public class UIFormList extends UIElement
     {
         for (UIFormCategory category : this.categories)
         {
-            if (category != source && category.area.isInside(mouseX, mouseY) && category.category instanceof mchorse.bbs_mod.forms.categories.UserFormCategory)
+            if (category != source && category.area.isInside(mouseX, mouseY) && category.category instanceof UserFormCategory)
             {
                 int index = category.getIndexAt(mouseX, mouseY);
                 
@@ -204,7 +205,7 @@ public class UIFormList extends UIElement
                 {
                     Form form = source.category.getForms().get(sourceIndex);
                     
-                    ((mchorse.bbs_mod.forms.categories.UserFormCategory) category.category).addForm(index, form);
+                    ((UserFormCategory) category.category).addForm(index, form);
                     source.category.removeForm(form);
                     
                     return true;

@@ -1,13 +1,11 @@
 package mchorse.bbs_mod.ui.model_blocks;
 
-import mchorse.bbs_mod.blocks.ModelBlock;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
+import mchorse.bbs_mod.blocks.ModelBlock;
 import mchorse.bbs_mod.camera.CameraUtils;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.graphics.Draw;
@@ -27,13 +25,13 @@ import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.model_blocks.camera.ImmersiveModelBlockCameraController;
 import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.AABB;
 import mchorse.bbs_mod.utils.PlayerUtils;
 import mchorse.bbs_mod.utils.RayTracing;
@@ -47,6 +45,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -181,7 +181,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             }
             catch (Exception e)
             {
-                // Intentionally ignored - best effort client-side update
+
             }
         }).integer().limit(0, 15);
 
@@ -192,9 +192,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
-        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global,
-            this.lookAt, this.hitbox, this.transform,
-            UI.row(5, 0, 20, new UIElement()
+        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, this.transform, UI.row(5, 0, 20, new UIElement()
             {
                 @Override
                 public void render(UIContext context)
@@ -205,8 +203,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
                 }
             }.w(20).h(20), this.lightLevel));
 
-        /* Tooltip for the light control should be on the trackpad, not the icon */
-        this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, mchorse.bbs_mod.utils.Direction.BOTTOM);
+        this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, Direction.BOTTOM);
 
         this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
         this.scrollView.scroll.opposite().cancelScrolling();
@@ -423,8 +420,6 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         context.batcher.textCard(label, x, y, Colors.WHITE, Colors.A50);
         super.render(context);
-
-        /* Gizmo removido del panel de bloque de modelo */
     }
 
     @Override

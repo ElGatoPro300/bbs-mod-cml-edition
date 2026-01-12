@@ -140,21 +140,18 @@ public class AudioRenderer
             try
             {
                 Wave wave = map.get(clip);
+
                 if (wave != null)
                 {
-                    /* Aplicar pendientes (envelope) al volumen durante la mezcla
-                     * Mezclamos por pequeños trozos para que el volumen siga la curva */
                     float clipDurationSec = TimeUtils.toSeconds(clip.duration.get());
                     float clipStartSec = TimeUtils.toSeconds(clip.tick.get());
                     float sourceStartSec = TimeUtils.toSeconds(clip.offset.get());
 
-                    /* Paso de mezcla: 10 ms para transiciones suaves */
                     final float stepSec = 0.01F;
 
                     for (float t = 0F; t < clipDurationSec; t += stepSec)
                     {
                         float chunkSec = Math.min(stepSec, clipDurationSec - t);
-                        /* Envelope espera ticks relativos dentro del clip */
                         float tickWithinClip = (t * 20F);
                         float factor = clip.envelope.factorEnabled(clip.duration.get(), tickWithinClip);
                         float gain = (clip.volume.get() / 100F) * factor;
