@@ -19,13 +19,13 @@ public class Replays extends ValueList<Replay>
         java.util.List<Replay> allReplays = this.getList();
         java.util.Set<String> existingUUIDs = new java.util.HashSet<>();
         
-        // 1. Collect existing UUIDs
+        /* Collect existing UUIDs */
         for (Replay r : allReplays)
         {
             existingUUIDs.add(r.uuid.get());
         }
 
-        // 2. Identify old groups and their members
+        /* Identify old groups and their members */
         java.util.Map<String, java.util.List<Replay>> oldGroups = new java.util.LinkedHashMap<>();
         
         for (Replay replay : allReplays)
@@ -38,13 +38,13 @@ public class Replays extends ValueList<Replay>
             }
         }
 
-        // If no old groups found, exit early
+        /* If no old groups found, exit early */
         if (oldGroups.isEmpty())
         {
             return;
         }
 
-        // 3. Reconstruct list with new Group Replays and contiguous members
+        /* Reconstruct list with new Group Replays and contiguous members */
         java.util.List<Replay> newList = new java.util.ArrayList<>();
         java.util.Set<Replay> processed = new java.util.HashSet<>();
         java.util.Map<String, Replay> createdGroups = new java.util.HashMap<>();
@@ -61,14 +61,14 @@ public class Replays extends ValueList<Replay>
 
             if (isOldGroupMember)
             {
-                // We encountered the first member of an old group
+                /* We encountered the first member of an old group */
                 if (!createdGroups.containsKey(groupName))
                 {
-                    // Create the Group Replay
+                    /* Create the Group Replay */
                     Replay groupReplay = new Replay(String.valueOf(allReplays.size() + createdGroups.size()));
                     groupReplay.isGroup.set(true);
                     groupReplay.label.set(groupName);
-                    // Ensure unique UUID if by chance it collides (unlikely but safe)
+                    /* Ensure unique UUID if by chance it collides (unlikely but safe) */
                     while (existingUUIDs.contains(groupReplay.uuid.get()))
                     {
                         groupReplay.uuid.set(java.util.UUID.randomUUID().toString());
@@ -78,7 +78,7 @@ public class Replays extends ValueList<Replay>
                     createdGroups.put(groupName, groupReplay);
                     newList.add(groupReplay);
 
-                    // Add all members of this group immediately
+                    /* Add all members of this group immediately */
                     java.util.List<Replay> members = oldGroups.get(groupName);
                     if (members != null)
                     {
@@ -93,13 +93,13 @@ public class Replays extends ValueList<Replay>
             }
             else
             {
-                // Normal replay or already valid group member
+                /* Normal replay or already valid group member */
                 newList.add(replay);
                 processed.add(replay);
             }
         }
 
-        // 4. Update the main list
+        /* Update the main list */
         this.list.clear();
         this.list.addAll(newList);
         this.sync();

@@ -61,8 +61,6 @@ public class UIModelFormPanel extends UIFormPanel<ModelForm>
         this.color = new UIColor((c) -> this.form.color.set(new Color().set(c))).withAlpha();
         this.color.direction(Direction.LEFT);
         this.poseEditor = new UIModelPoseEditor();
-        /* Proveedor de textura por defecto: usa la textura del formulario si existe,
-         * de lo contrario la textura del modelo instanciado. */
         this.poseEditor.setDefaultTextureSupplier(() ->
         {
             Link base = this.form.texture.get();

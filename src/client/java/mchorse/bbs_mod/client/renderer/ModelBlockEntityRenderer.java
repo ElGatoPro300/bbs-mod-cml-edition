@@ -111,7 +111,6 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
         ModelProperties properties = entity.getProperties();
         Transform transform = properties.getTransform();
         BlockPos pos = entity.getPos();
-        // Avoid persistent mutations during render; use runtime overlay
         boolean appliedRuntimeOverlay = false;
 
         matrices.push();
@@ -181,7 +180,6 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
             renderShadow(vertexConsumers, matrices, tickDelta, x, y, z, tx, ty, tz);
         }
 
-        /* Clear runtime pose overlay if it was applied */
         if (appliedRuntimeOverlay && properties.getForm() instanceof ModelForm modelForm)
         {
             modelForm.poseOverlay.setRuntimeValue(null);

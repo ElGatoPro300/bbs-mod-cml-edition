@@ -8,16 +8,18 @@ import mchorse.bbs_mod.entity.ActorEntity;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.ITickable;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.entities.StubEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
+import mchorse.bbs_mod.forms.renderers.FormRenderer;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.graphics.Draw;
-import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
 import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.mixin.client.ClientPlayerEntityAccessor;
 import mchorse.bbs_mod.morphing.Morph;
@@ -30,8 +32,12 @@ import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.Pair;
 import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -52,15 +58,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
-import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.colors.Colors;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -171,7 +172,6 @@ public abstract class BaseFilmController
             MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
             MatrixCacheEntry entry = map.get(context.bone);
 
-            // Preferir el origen del hueso para dibujar ejes/gizmo en el pivot real
             Matrix4f matrix = entry.origin();
 
             if (matrix == null)
@@ -183,14 +183,6 @@ public abstract class BaseFilmController
             {
                 stack.push();
                 MatrixStackUtils.multiply(stack, matrix);
-                if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
-                {
-                    BoneGizmoSystem.get().render3D(stack);
-                }
-                else
-                {
-                    Draw.coolerAxes(stack, 0.25F, 0.01F, 0.26F, 0.02F);
-                }
 
                 if (context.map == null)
                 {
@@ -210,7 +202,6 @@ public abstract class BaseFilmController
 
         stack.pop();
 
-        /* No renderizar sombra cuando el modelo está oculto (visible=false) */
         if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F && form.visible.get())
         {
             stack.push();
@@ -316,7 +307,6 @@ public abstract class BaseFilmController
                 }
 
                 MatrixCache map = FormUtilsClient.getRenderer(form).collectMatrices(entity, transition);
-                // Normalizar el nombre del adjunto para ignorar sufijo "#origin" en anclajes antiguos
                 boolean forceOrigin = anchor.attachment != null && anchor.attachment.endsWith("#origin");
                 String core = anchor.attachment == null ? null : anchor.attachment.replace("#origin", "");
                 
@@ -331,7 +321,6 @@ public abstract class BaseFilmController
                     }
                     else if (anchor.translate)
                     {
-                        // Heredar solo traslación: preferir matriz de origen
                         matrix = entry.origin();
                         if (matrix == null)
                         {
@@ -340,7 +329,6 @@ public abstract class BaseFilmController
                     }
                     else
                     {
-                        // Heredar rotación y traslación: preferir matriz completa
                         matrix = entry.matrix();
                         if (matrix == null)
                         {
@@ -620,9 +608,18 @@ public abstract class BaseFilmController
     {
         entity.update();
 
-        if (entity.getForm() != null)
+        Form form = entity.getForm();
+
+        if (form != null)
         {
-            entity.getForm().update(entity);
+            form.update(entity);
+
+            FormRenderer renderer = FormUtilsClient.getRenderer(form);
+
+            if (renderer instanceof ITickable tickable)
+            {
+                tickable.tick(entity);
+            }
         }
     }
 

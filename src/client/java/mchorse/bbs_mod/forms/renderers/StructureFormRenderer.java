@@ -2,7 +2,6 @@ package mchorse.bbs_mod.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.cubic.render.vao.IModelVAO;
@@ -133,7 +132,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         float auto;
         float finalScale;
 
-        boolean optimize = BBSSettings.structureOptimization.get();
+        boolean optimize = true;
         boolean lightsEnabled;
 
         if (this.boundsMin != null && this.boundsMax != null)
@@ -298,7 +297,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         context.stack.push();
 
-        boolean optimize = BBSSettings.structureOptimization.get();
+        boolean optimize = true;
         boolean picking = context.isPicking();
 
         if (optimize && (this.structureVao == null || this.vaoDirty))

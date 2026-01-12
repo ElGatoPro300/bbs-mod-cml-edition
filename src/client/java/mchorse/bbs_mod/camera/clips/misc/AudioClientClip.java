@@ -23,7 +23,6 @@ public class AudioClientClip extends AudioClip
         return context.clipData.get("audio", ConcurrentHashMap::new);
     }
 
-    /** Aggregate gain contributions per audio link for this frame */
     public static Map<Link, Float> getVolumes(ClipContext context)
     {
         return context.clipData.get("audio_gain", ConcurrentHashMap::new);
@@ -71,12 +70,10 @@ public class AudioClientClip extends AudioClip
                 player.setPlaybackPosition(tickTime);
             }
 
-            /* Apply aggregated volume for this link (sum of active clips, clamped 0..1) */
             float gain = Math.min(100F, Math.max(0F, volumes.getOrDefault(entry.getKey(), 0F)));
             player.setVolume(gain);
         }
 
-        /* Clear volume contributions after applying them to avoid stale values next frame */
         volumes.clear();
     }
 
@@ -123,7 +120,6 @@ public class AudioClientClip extends AudioClip
             {
                 playback.put(link, TimeUtils.toSeconds(this.offset.get()) + tickTime);
 
-                /* Contribute this clip's gain to the shared player of the link */
                 float factor = this.envelope.factorEnabled(this.duration.get(), context.relativeTick + context.transition);
                 float gain = (this.volume.get() / 100F) * factor;
                 volumes.merge(link, gain, Float::sum);

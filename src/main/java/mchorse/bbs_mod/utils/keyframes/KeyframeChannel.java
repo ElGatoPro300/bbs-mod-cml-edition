@@ -244,7 +244,6 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             if (tick < prev.getTick())
             {
                 Keyframe<T> kf = new Keyframe<>("", this.factory, tick, value);
-                /* Apply default interpolation from settings */
                 if (BBSSettings.defaultInterpolation != null)
                 {
                     int idx = BBSSettings.defaultInterpolation.get();
