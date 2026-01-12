@@ -266,13 +266,12 @@ public class BBSMod implements ModInitializer
         properties.setForm(form);
         properties.getTransformFirstPerson().translate.set(0F, 0F, -0.25F);
 
-        NbtCompound compound = entity.createNbtWithId();
+        NbtCompound compound = new NbtCompound();
+        compound.putString("id", BlockEntityType.getId(MODEL_BLOCK_ENTITY).toString());
+        mchorse.bbs_mod.data.DataStorageUtils.writeToNbtCompound(compound, "Properties", properties.toData());
 
-        nbt.put("BlockEntityTag", compound);
-        NbtCompound stateTag = new NbtCompound();
-        stateTag.putInt("light_level", properties.getLightLevel());
-        nbt.put("BlockStateTag", stateTag);
-        stack.setNbt(nbt);
+        stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(compound));
+        stack.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(Map.of("light_level", String.valueOf(properties.getLightLevel()))));
 
         return stack;
     }

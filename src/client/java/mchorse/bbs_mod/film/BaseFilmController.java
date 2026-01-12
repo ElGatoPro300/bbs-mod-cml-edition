@@ -191,11 +191,6 @@ public abstract class BaseFilmController
                 else
                 {
                     Gizmo.INSTANCE.renderStencil(stack, context.map);
-
-                    if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
-                    {
-                        BoneGizmoSystem.get().renderStencil(stack, context.map);
-                    }
                 }
 
                 RenderSystem.enableDepthTest();
@@ -248,11 +243,6 @@ public abstract class BaseFilmController
             else
             {
                 Gizmo.INSTANCE.renderStencil(stack, stencilMap);
-                
-                if (BBSSettings.gizmos.get() && BBSSettings.gizmoDesign.get() != 0)
-                {
-                    BoneGizmoSystem.get().renderStencil(stack, stencilMap);
-                }
             }
 
             RenderSystem.enableDepthTest();

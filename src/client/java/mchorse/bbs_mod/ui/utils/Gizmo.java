@@ -63,9 +63,6 @@ public class Gizmo
     public boolean start(int index, int mouseX, int mouseY, UIPropTransform transform)
     {
         if (!BBSSettings.gizmos.get())
-        {
-            return mchorse.bbs_mod.gizmos.BoneGizmoSystem.get().start(index, mouseX, mouseY, transform);
-        }
 
         if (index >= STENCIL_X && index <= STENCIL_ZY)
         {
