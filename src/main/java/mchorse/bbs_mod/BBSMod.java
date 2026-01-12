@@ -177,7 +177,7 @@ public class BBSMod implements ModInitializer
         .nonOpaque()
         .notSolid()
         .strength(0F)
-        .luminance((state) -> state.get(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL)));
+        .luminance((state) -> state.get(ModelBlock.LIGHT_LEVEL)));
     public static final Block CHROMA_RED_BLOCK = createChromaBlock();
     public static final Block CHROMA_GREEN_BLOCK = createChromaBlock();
     public static final Block CHROMA_BLUE_BLOCK = createChromaBlock();
@@ -260,8 +260,6 @@ public class BBSMod implements ModInitializer
         NbtCompound compound = entity.createNbtWithId();
 
         nbt.put("BlockEntityTag", compound);
-        /* BlockStateTag allows mods derive luminance
-         * from the item stack's block state. */
         NbtCompound stateTag = new NbtCompound();
         stateTag.putInt("light_level", properties.getLightLevel());
         nbt.put("BlockStateTag", stateTag);
@@ -368,9 +366,6 @@ public class BBSMod implements ModInitializer
         return films;
     }
 
-    /**
-     * Expose current world's root folder. Returns null when no world is loaded.
-     */
     public static File getWorldFolder()
     {
         return worldFolder;

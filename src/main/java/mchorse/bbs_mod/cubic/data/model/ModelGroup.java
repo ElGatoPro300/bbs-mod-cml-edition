@@ -25,7 +25,6 @@ public class ModelGroup implements IMapSerializable
 
     public float lighting = 0F;
     public Color color = new Color().set(1F, 1F, 1F);
-    /** Optional texture override applied at render-time (e.g., per-bone). */
     public Link textureOverride;
     public Transform initial = new Transform();
     public Transform current = new Transform();

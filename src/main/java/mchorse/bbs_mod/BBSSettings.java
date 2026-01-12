@@ -94,6 +94,7 @@ public class BBSSettings
 
     public static ValueBoolean renderAllModelBlocks;
     public static ValueBoolean clickModelBlocks;
+    public static ValueBoolean modelBlockCategoriesPanelEnabled;
 
     public static ValueString entitySelectorsPropertyWhitelist;
 

@@ -36,6 +36,25 @@ import java.util.function.Consumer;
 
 public class UIReplaysEditorUtils
 {
+        public static UIPropTransform getEditableTransform(UIKeyframeEditor editor)
+    {
+        if (editor == null || editor.editor == null)
+        {
+            return null;
+        }
+
+        if (editor.editor instanceof UITransformKeyframeFactory transformKeyframeFactory)
+        {
+            return transformKeyframeFactory.transform;
+        }
+        else if (editor.editor instanceof UIPoseKeyframeFactory keyframeFactory)
+        {
+            return keyframeFactory.poseEditor.transform;
+        }
+
+        return null;
+    }
+
     /* Picking form and form properties */
 
     public static void pickFormProperty(UIContext context, UIKeyframeEditor editor, ICursor cursor, Form form, String bone)
@@ -277,15 +296,5 @@ public class UIReplaysEditorUtils
                 menu.autoKeys();
             });
         }
-    }
-
-    public static getEditableTransform(UIKeyframeEditor editor)
-    {
-        if (editor.editor instanceof UIPoseKeyframeFactory poseFactory)
-        {
-            return poseFactory.poseEditor.transform;
-        }
-
-        return null;
     }
 }

@@ -27,11 +27,9 @@ public class UIStringKeyframeFactory extends UIKeyframeFactory<String>
     {
         super(keyframe, editor);
 
-        /* Campo de texto por defecto */
         this.string = new UITextbox(1000, this::setValue);
         this.string.setText(keyframe.getValue());
 
-        /* Si la pista es structure_file, añadir botón de selección de estructura */
         UIKeyframeSheet sheet = editor.getGraph().getSheet(keyframe);
         boolean isStructureFile = sheet != null && ("structure_file".equals(sheet.id) || sheet.id.endsWith("/structure_file"));
         boolean isBiomeId = sheet != null && ("biome_id".equals(sheet.id) || sheet.id.endsWith("/biome_id"));
