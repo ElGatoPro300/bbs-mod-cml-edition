@@ -8,14 +8,12 @@ import mchorse.bbs_mod.entity.ActorEntity;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.ITickable;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.entities.StubEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
-import mchorse.bbs_mod.forms.renderers.FormRenderer;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.gizmos.BoneGizmoSystem;
@@ -622,18 +620,9 @@ public abstract class BaseFilmController
     {
         entity.update();
 
-        Form form = entity.getForm();
-
-        if (form != null)
+        if (entity.getForm() != null)
         {
-            form.update(entity);
-
-            FormRenderer renderer = FormUtilsClient.getRenderer(form);
-
-            if (renderer instanceof ITickable tickable)
-            {
-                tickable.tick(entity);
-            }
+            entity.getForm().update(entity);
         }
     }
 

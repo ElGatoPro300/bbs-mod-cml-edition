@@ -7,7 +7,6 @@ import mchorse.bbs_mod.forms.forms.AnchorForm;
 import mchorse.bbs_mod.forms.forms.BillboardForm;
 import mchorse.bbs_mod.forms.forms.BlockForm;
 import mchorse.bbs_mod.forms.forms.ExtrudedForm;
-import mchorse.bbs_mod.forms.forms.FluidForm;
 import mchorse.bbs_mod.forms.forms.FramebufferForm;
 import mchorse.bbs_mod.forms.forms.ItemForm;
 import mchorse.bbs_mod.forms.forms.LabelForm;
@@ -55,7 +54,6 @@ public class ExtraFormSection extends FormSection
         ItemForm item = new ItemForm();
         VanillaParticleForm vanillaParticle = new VanillaParticleForm();
         TrailForm trail = new TrailForm();
-        FluidForm fluid = new FluidForm();
         StructureForm structure = new StructureForm();
         try
         {
@@ -99,7 +97,6 @@ public class ExtraFormSection extends FormSection
         extra.addForm(item);
         extra.addForm(vanillaParticle);
         extra.addForm(trail);
-        extra.addForm(fluid);
         extra.addForm(structure);
 
         this.mobsAnimals = new FormCategory(UIKeys.FORMS_CATEGORIES_MOBS_ANIMALS, this.parent.visibility.get("mobs_animals"));

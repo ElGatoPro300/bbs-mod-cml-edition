@@ -225,11 +225,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         this.lastModel = model;
     }
 
-    public MatrixCache getBonesCache()
-    {
-        return this.bones;
-    }
-
     @Override
     public List<String> getBones()
     {
@@ -297,8 +292,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     private void renderModel(IEntity target, Supplier<ShaderProgram> program, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
     {
-        this.bones.clear();
-
         if (!model.culling)
         {
             RenderSystem.disableCull();
@@ -575,6 +568,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             context.stack.pop();
         }
 
+        this.bones.clear();
         context.stack.pop();
     }
 
@@ -671,21 +665,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         if (this.animator != null)
         {
             this.animator.update(entity);
-        }
-
-        for (BodyPart part : this.form.parts.getAllTyped())
-        {
-            Form form = part.getForm();
-
-            if (form != null)
-            {
-                FormRenderer renderer = FormUtilsClient.getRenderer(form);
-
-                if (renderer instanceof ITickable)
-                {
-                    ((ITickable) renderer).tick(part.useTarget.get() ? entity : part.getEntity());
-                }
-            }
         }
     }
 }
