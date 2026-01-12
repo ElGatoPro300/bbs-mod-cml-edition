@@ -55,13 +55,10 @@ public class UIMcmetaEditorPanel extends UIOverlayPanel
         this.height = new UITrackpad((v) -> this.updateData());
         this.height.integer().limit(1, Float.POSITIVE_INFINITY).tooltip(UIKeys.TEXTURES_MCMETA_HEIGHT);
 
-        // Layout
-        // Frametime
         this.content.add(new UILabel(UIKeys.TEXTURES_MCMETA_FRAMETIME).relative(this.content).x(10).y(20).anchor(0, 1));
         this.frametime.relative(this.content).x(10).y(20).w(1F, -20);
         this.content.add(this.frametime);
 
-        // Resize button (initially visible)
         this.resize.relative(this.content).x(10).y(60).w(1F, -20);
         this.content.add(this.resize);
 
@@ -73,12 +70,10 @@ public class UIMcmetaEditorPanel extends UIOverlayPanel
         this.resizeVisible = true;
         this.resize.removeFromParent();
         
-        // Width
         this.content.add(new UILabel(UIKeys.TEXTURES_MCMETA_WIDTH).relative(this.content).x(10).y(60).anchor(0, 1));
         this.width.relative(this.content).x(10).y(60).w(0.5F, -15);
         this.content.add(this.width);
         
-        // Height
         this.content.add(new UILabel(UIKeys.TEXTURES_MCMETA_HEIGHT).relative(this.content).x(0.5F, 5).y(60).anchor(0, 1));
         this.height.relative(this.content).x(0.5F, 5).y(60).w(0.5F, -15);
         this.content.add(this.height);
@@ -104,7 +99,6 @@ public class UIMcmetaEditorPanel extends UIOverlayPanel
         }
         else
         {
-            // Default values
             this.frametime.setValue(1);
         }
     }

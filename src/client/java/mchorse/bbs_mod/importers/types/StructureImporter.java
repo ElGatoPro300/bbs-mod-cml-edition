@@ -10,11 +10,6 @@ import mchorse.bbs_mod.ui.UIKeys;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * StructureImporter
- * Permite importar archivos de estructura (.nbt) mediante arrastrar y soltar
- * hacia la carpeta assets/structures para que puedan usarse en StructureForm.
- */
 public class StructureImporter implements IImporter
 {
     @Override

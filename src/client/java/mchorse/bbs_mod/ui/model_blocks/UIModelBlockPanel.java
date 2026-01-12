@@ -1,6 +1,9 @@
 package mchorse.bbs_mod.ui.model_blocks;
 
+import mchorse.bbs_mod.blocks.ModelBlock;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
@@ -23,6 +26,9 @@ import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.model_blocks.camera.ImmersiveModelBlockCameraController;
@@ -58,8 +64,10 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UINestedEdit pickEdit;
     public UIToggle enabled;
     public UIToggle shadow;
+    public UIToggle hitbox;
     public UIToggle global;
     public UIToggle lookAt;
+    public UITrackpad lightLevel;
     public UIPropTransform transform;
 
     private ModelBlockEntity modelBlock;
@@ -142,6 +150,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         this.enabled = new UIToggle(UIKeys.CAMERA_PANELS_ENABLED, (b) -> this.modelBlock.getProperties().setEnabled(b.getValue()));
         this.shadow = new UIToggle(UIKeys.MODEL_BLOCKS_SHADOW, (b) -> this.modelBlock.getProperties().setShadow(b.getValue()));
+        this.hitbox = new UIToggle(UIKeys.MODEL_BLOCKS_HITBOX, (b) -> this.modelBlock.getProperties().setHitbox(b.getValue()));
         this.global = new UIToggle(UIKeys.MODEL_BLOCKS_GLOBAL, (b) ->
         {
             this.modelBlock.getProperties().setGlobal(b.getValue());
@@ -149,12 +158,54 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         });
         this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
 
-        this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
+        this.lightLevel = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            int lvl = v.intValue();
+
+            this.modelBlock.getProperties().setLightLevel(lvl);
+
+            try
+            {
+                MinecraftClient mc = MinecraftClient.getInstance();
+
+                if (mc.world != null)
+                {
+                    BlockPos p = this.modelBlock.getPos();
+                    BlockState state = mc.world.getBlockState(p);
+
+                    mc.world.setBlockState(p, state.with(ModelBlock.LIGHT_LEVEL, lvl), Block.NOTIFY_LISTENERS);
+                }
+            }
+            catch (Exception e)
+            {
+                // Intentionally ignored - best effort client-side update
+            }
+        }).integer().limit(0, 15);
+
+        /* Make the trackpad visually distinct: wider and yellow numbers */
+        this.lightLevel.textbox.setColor(Colors.YELLOW);
+        this.lightLevel.w(1F);
 
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
-        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.transform);
+        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global,
+            this.lookAt, this.hitbox, this.transform,
+            UI.row(5, 0, 20, new UIElement()
+            {
+                @Override
+                public void render(UIContext context)
+                {
+                    super.render(context);
+
+                    context.batcher.icon(Icons.LIGHT, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
+                }
+            }.w(20).h(20), this.lightLevel));
+
+        /* Tooltip for the light control should be on the trackpad, not the icon */
+        this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, mchorse.bbs_mod.utils.Direction.BOTTOM);
 
         this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
         this.scrollView.scroll.opposite().cancelScrolling();
@@ -324,8 +375,10 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform.setTransform(properties.getTransform());
         this.enabled.setValue(properties.isEnabled());
         this.shadow.setValue(properties.isShadow());
+        this.hitbox.setValue(properties.isHitbox());
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
+        this.lightLevel.setValue(properties.getLightLevel());
     }
 
     private void save(ModelBlockEntity modelBlock)

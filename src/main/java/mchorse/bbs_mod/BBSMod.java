@@ -57,6 +57,7 @@ import mchorse.bbs_mod.forms.forms.BlockForm;
 import mchorse.bbs_mod.forms.forms.ExtrudedForm;
 import mchorse.bbs_mod.forms.forms.FluidForm;
 import mchorse.bbs_mod.forms.forms.FramebufferForm;
+import mchorse.bbs_mod.forms.forms.StructureForm;
 import mchorse.bbs_mod.forms.forms.ItemForm;
 import mchorse.bbs_mod.forms.forms.LabelForm;
 import mchorse.bbs_mod.forms.forms.MobForm;
@@ -73,6 +74,7 @@ import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.resources.packs.DynamicSourcePack;
 import mchorse.bbs_mod.resources.packs.ExternalAssetsSourcePack;
 import mchorse.bbs_mod.resources.packs.InternalAssetsSourcePack;
+import mchorse.bbs_mod.resources.packs.WorldStructuresSourcePack;
 import mchorse.bbs_mod.settings.Settings;
 import mchorse.bbs_mod.settings.SettingsBuilder;
 import mchorse.bbs_mod.settings.SettingsManager;
@@ -175,7 +177,8 @@ public class BBSMod implements ModInitializer
         .noCollision()
         .nonOpaque()
         .notSolid()
-        .strength(0F));
+        .strength(0F)
+        .luminance((state) -> state.get(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL)));
     public static final Block CHROMA_RED_BLOCK = createChromaBlock();
     public static final Block CHROMA_GREEN_BLOCK = createChromaBlock();
     public static final Block CHROMA_BLUE_BLOCK = createChromaBlock();
@@ -258,6 +261,11 @@ public class BBSMod implements ModInitializer
         NbtCompound compound = entity.createNbtWithId();
 
         nbt.put("BlockEntityTag", compound);
+        /* BlockStateTag allows mods derive luminance
+         * from the item stack's block state. */
+        NbtCompound stateTag = new NbtCompound();
+        stateTag.putInt("light_level", properties.getLightLevel());
+        nbt.put("BlockStateTag", stateTag);
         stack.setNbt(nbt);
 
         return stack;
@@ -402,8 +410,7 @@ public class BBSMod implements ModInitializer
         dynamicSourcePack = new DynamicSourcePack(originalSourcePack);
         provider = new AssetProvider();
         provider.register(dynamicSourcePack);
-        /* Registrar primero el pack de estructuras del mundo para priorizar archivos del mundo */
-        provider.registerFirst(new mchorse.bbs_mod.resources.packs.WorldStructuresSourcePack());
+        provider.registerFirst(new WorldStructuresSourcePack());
         provider.register(new InternalAssetsSourcePack());
 
         events.post(new RegisterSourcePacksEvent(provider));
@@ -424,7 +431,7 @@ public class BBSMod implements ModInitializer
         .register(Link.bbs("vanilla_particles"), VanillaParticleForm.class, null)
         .register(Link.bbs("trail"), TrailForm.class, null)
         .register(Link.bbs("framebuffer"), FramebufferForm.class, null)
-        .register(Link.bbs("structure"), mchorse.bbs_mod.forms.forms.StructureForm.class, null);
+        .register(Link.bbs("structure"), StructureForm.class, null);
 
         films = new FilmManager(() -> new File(worldFolder, "bbs/films"));
 

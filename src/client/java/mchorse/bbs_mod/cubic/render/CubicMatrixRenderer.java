@@ -38,7 +38,6 @@ public class CubicMatrixRenderer implements ICubicRenderer
 
         ICubicRenderer.moveToGroupPivot(stack, group);
 
-        /* Capture matrix at the group's pivot before rotation/scale */
         this.origins.get(group.index).set(stack.peek().getPositionMatrix());
 
         if (!Objects.equals(group.id, this.target))
