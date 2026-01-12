@@ -21,7 +21,6 @@ public class ModelGroup implements IMapSerializable
     public List<ModelCube> cubes = new ArrayList<>();
     public List<ModelMesh> meshes = new ArrayList<>();
     public boolean visible = true;
-    public boolean isNullObject = false;
     public int index = -1;
 
     public float lighting = 0F;
@@ -76,43 +75,6 @@ public class ModelGroup implements IMapSerializable
                 mesh.fromData((MapType) element);
 
                 this.meshes.add(mesh);
-            }
-        }
-
-        if (data.has("null_objects"))
-        {
-            for (BaseType element : data.getList("null_objects"))
-            {
-                if (element instanceof MapType)
-                {
-                    MapType map = (MapType) element;
-                    String name = map.getString("name");
-                    ModelGroup nullGroup = new ModelGroup(name);
-
-                    nullGroup.isNullObject = true;
-                    nullGroup.fromData(map);
-                    this.children.add(nullGroup);
-                }
-            }
-        }
-
-        if (data.has("locators"))
-        {
-            for (BaseType element : data.getList("locators"))
-            {
-                if (element instanceof MapType)
-                {
-                    MapType map = (MapType) element;
-                    String name = map.getString("name");
-                    ModelGroup locatorGroup = new ModelGroup(name);
-
-                    // Locators act like Null Objects (transform only, no geometry)
-                    locatorGroup.isNullObject = true;
-                    // Hidden flag for future use (Keyframe system)
-                    locatorGroup.visible = false; 
-                    locatorGroup.fromData(map);
-                    this.children.add(locatorGroup);
-                }
             }
         }
     }
