@@ -42,10 +42,10 @@ import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIFolderPickerOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UINumberOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.CollectionUtils;
@@ -835,29 +835,23 @@ public class UIReplayList extends UIList<Replay>
             return;
         }
 
-        UIPromptOverlayPanel panel = new UIPromptOverlayPanel(
-            UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS,
-            IKey.constant("Paste the full path to the folder containing PNG skin files:"),
-            (folderPath) -> this.processRandomSkins(folderPath)
-        );
-        
+        UIFolderPickerOverlayPanel panel = new UIFolderPickerOverlayPanel(
+                UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS,
+                IKey.constant("Select the folder containing PNG skin files:"),
+                (folder) -> this.processRandomSkins(folder));
+
         UIOverlay.addOverlay(this.getContext(), panel);
     }
 
-    private void processRandomSkins(String folderPath)
-    {
-        if (folderPath == null || folderPath.trim().isEmpty())
-        {
+    private void processRandomSkins(File skinsFolder) {
+        if (skinsFolder == null) {
             return;
         }
 
-        File skinsFolder = new File(folderPath.trim());
-        
-        if (!skinsFolder.exists() || !skinsFolder.isDirectory())
-        {
-            UIOverlay.addOverlay(this.getContext(), 
-                new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR, 
-                IKey.constant("The specified folder does not exist or is not a directory.")));
+        if (!skinsFolder.exists() || !skinsFolder.isDirectory()) {
+            UIOverlay.addOverlay(this.getContext(),
+                    new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR,
+                            IKey.constant("The specified folder does not exist or is not a directory.")));
             return;
         }
 
@@ -937,19 +931,12 @@ public class UIReplayList extends UIList<Replay>
         /* Update UI */
         this.update();
         this.updateFilmEditor();
-        
-        if (successCount > 0)
-        {
-            UIOverlay.addOverlay(this.getContext(), 
-                new UIMessageOverlayPanel(UIKeys.GENERAL_SUCCESS, 
-                IKey.constant(String.format("Applied %d random skins to %d replays.", 
-                    successCount, selectedReplays.size()))));
-        }
-        else
-        {
-            UIOverlay.addOverlay(this.getContext(), 
-                new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR, 
-                IKey.constant("The skins folder must be inside the BBS assets folder. For example: config/bbs/assets/models/!Skins/")));
+
+        if (successCount == 0) {
+            UIOverlay.addOverlay(this.getContext(),
+                    new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR,
+                            IKey.constant(
+                                    "The skins folder must be inside the BBS assets folder. For example: config/bbs/assets/models/!Skins/")));
         }
     }
 
