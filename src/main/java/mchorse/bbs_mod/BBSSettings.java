@@ -112,6 +112,7 @@ public class BBSSettings
     public static ValueBoolean boneAnchoringEnabled;
     public static ValueBoolean anchorOverrideEnabled;
     public static ValueBoolean autoKeyframe;
+    public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
     public static ValueString cdnToken;
@@ -273,5 +274,8 @@ public class BBSSettings
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
+
+        builder.category("fluid_simulation");
+        fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
     }
 }
