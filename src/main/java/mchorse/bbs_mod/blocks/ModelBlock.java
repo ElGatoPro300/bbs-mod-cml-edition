@@ -95,7 +95,6 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
         return BlockRenderType.INVISIBLE;
     }
 
-    // @Override
     protected boolean isTransparent(BlockState state, BlockView world, BlockPos pos)
     {
         return true;

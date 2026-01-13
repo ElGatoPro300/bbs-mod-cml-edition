@@ -1,6 +1,7 @@
 package mchorse.bbs_mod;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.MapCodec;
 import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
@@ -78,12 +79,15 @@ import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.render.item.model.special.SpecialModelTypes;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.registry.RegistryKeys;
 import org.joml.Matrix4fStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -93,13 +97,11 @@ import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.joml.Matrix4f;
 
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.item.model.special.SpecialModelTypes;
-import com.mojang.serialization.MapCodec;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Arrays;
 
 public class BBSModClient implements ClientModInitializer
 {
@@ -341,7 +343,7 @@ public class BBSModClient implements ClientModInitializer
     {
         System.out.println("BBSModClient.onInitializeClient() called! Registering SpecialModelTypes.");
         try {
-            System.out.println("SpecialModelTypes fields: " + java.util.Arrays.toString(SpecialModelTypes.class.getFields()));
+            System.out.println("SpecialModelTypes fields: " + Arrays.toString(SpecialModelTypes.class.getFields()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -350,8 +352,6 @@ public class BBSModClient implements ClientModInitializer
         System.out.println("Registered SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
 
         AssetProvider provider = BBSMod.getProvider();
-        // provider.register(new MinecraftSourcePack());
-        // provider.registerFirst(new MinecraftSourcePack(Link.ASSETS));
         
         ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
         {
@@ -606,28 +606,17 @@ public class BBSModClient implements ClientModInitializer
         ClientLifecycleEvents.CLIENT_STOPPING.register((e) -> BBSResources.stopWatchdog());
         ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
         {
-            // BBSMod.getProvider().lateInit(client.getResourceManager());
             BBSRendering.setupFramebuffer();
             System.out.println("CLIENT_STARTED check: SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
             try {
                 System.out.println("RegistryKeys fields:");
-                for (java.lang.reflect.Field field : net.minecraft.registry.RegistryKeys.class.getFields()) {
+                for (java.lang.reflect.Field field : RegistryKeys.class.getFields()) {
                     System.out.println(field.getName());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            /*
-            if (!SpecialModelTypes.ID_MAPPER.containsKey(Identifier.of(BBSMod.MOD_ID, "gun"))) {
-                 System.out.println("WARNING: bbs:gun missing from SpecialModelTypes! Re-registering.");
-                 SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
-                 SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
-            }
-            */
         });
-
-        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
-        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         URLTextureErrorCallback.EVENT.register((url, error) ->
         {

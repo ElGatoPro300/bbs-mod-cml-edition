@@ -12,7 +12,6 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-
 import net.minecraft.server.world.ServerWorld;
 
 public class AttackActionClip extends ActionClip

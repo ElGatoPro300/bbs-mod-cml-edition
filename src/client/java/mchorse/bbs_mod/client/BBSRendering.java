@@ -381,14 +381,6 @@ public class BBSRendering
         renderingWorld = false;
     }
 
-    public static void render(float partialTicks)
-    {
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        // mc.getProfiler().push("bbs_render");
-        // mc.getProfiler().pop();
-    }
-
     public static void onRenderBeforeScreen()
     {
         Texture texture = getTexture();

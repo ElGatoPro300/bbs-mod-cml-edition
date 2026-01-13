@@ -24,6 +24,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -34,8 +35,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-
-import net.minecraft.server.world.ServerWorld;
 
 public class GunProjectileEntity extends ProjectileEntity implements IEntityFormProvider
 {
@@ -213,7 +212,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
             this.extinguish();
         }
 
-        // this.checkBlockCollision();
+        /* this.checkBlockCollision(); */
 
         if (this.stuck && this.properties.collideBlocks)
         {
@@ -282,7 +281,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
 
             this.setVelocity(v.multiply(friction).subtract(0, gravity, 0));
             this.setPosition(x, y, z);
-            // this.checkBlockCollision();
+            /* this.checkBlockCollision(); */
         }
     }
 

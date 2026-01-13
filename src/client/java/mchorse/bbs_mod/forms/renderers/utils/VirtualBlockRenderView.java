@@ -222,10 +222,6 @@ public class VirtualBlockRenderView implements BlockRenderView
         return Math.min(lum, this.lightIntensity);
     }
 
-
-
-    // BlockRenderView
-    // @Override
     public float getBrightness(Direction direction, boolean shaded)
     {
         if (MinecraftClient.getInstance().world != null)
@@ -340,19 +336,16 @@ public class VirtualBlockRenderView implements BlockRenderView
     /* Method removed: now using the O(1) precomputed map */
 
     // HeightLimitView
-    // @Override
     public int getBottomY()
     {
         return this.bottomY;
     }
 
-    // @Override
     public int getTopY()
     {
         return this.topY;
     }
 
-    // @Override
     public int getHeight()
     {
         return this.topY - this.bottomY + 1;

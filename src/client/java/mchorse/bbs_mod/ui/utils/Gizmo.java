@@ -205,8 +205,6 @@ public class Gizmo
         axisSize *= scale;
         axisOffset *= scale;
 
-        RenderSystem.disableDepthTest();
-        // RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
 
         if (this.mode == Mode.ROTATE)

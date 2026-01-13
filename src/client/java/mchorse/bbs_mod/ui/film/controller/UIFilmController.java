@@ -1075,12 +1075,6 @@ public class UIFilmController extends UIElement
         int h = texture.height;
 
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
-        
-        if (previewProgram == null)
-        {
-            return;
-        }
-
         Supplier<ShaderProgram> getPickerPreviewProgram = BBSShaders::getPickerPreviewProgram;
         GlUniform target = previewProgram.getUniform("Target");
 
@@ -1090,7 +1084,7 @@ public class UIFilmController extends UIElement
         }
 
         RenderSystem.enableBlend();
-        context.batcher.texturedBox(previewProgram, texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
+        context.batcher.texturedBox(getPickerPreviewProgram.get(), texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
 
         if (altPressed)
         {

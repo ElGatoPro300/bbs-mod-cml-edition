@@ -8,7 +8,6 @@ import mchorse.bbs_mod.settings.values.core.ValueString;
 import mchorse.bbs_mod.utils.clips.Clip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.command.ServerCommandSource;
-
 import net.minecraft.server.world.ServerWorld;
 
 public class CommandActionClip extends ActionClip
