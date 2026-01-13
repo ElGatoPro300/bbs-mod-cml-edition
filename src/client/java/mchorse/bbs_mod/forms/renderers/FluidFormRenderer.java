@@ -685,6 +685,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     @Override
     public void tick(IEntity entity)
     {
+        this.controller.debugEnabled = this.form.debug.get();
         float transition = 0F;
         float scaleX = Math.max(this.form.sizeX.get(), 0.001f);
         float scaleZ = Math.max(this.form.sizeZ.get(), 0.001f);

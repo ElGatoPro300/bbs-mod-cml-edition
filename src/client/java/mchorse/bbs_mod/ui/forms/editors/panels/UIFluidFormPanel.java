@@ -25,6 +25,7 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
     public UITrackpad physicsSensitivity;
     public UITrackpad subdivisions;
     public UIToggle smoothShading;
+    public UIToggle debug;
     public UIColor color;
     public UITrackpad opacity;
     public UIButton texture;
@@ -77,6 +78,9 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         this.smoothShading = new UIToggle(UIKeys.FLUID_SMOOTH_SHADING, true, (b) -> this.form.smoothShading.set(b.getValue()));
         this.smoothShading.tooltip(UIKeys.FLUID_SMOOTH_SHADING);
 
+        this.debug = new UIToggle(L10n.lang("bbs.fluid.debug"), false, (b) -> this.form.debug.set(b.getValue()));
+        this.debug.tooltip(L10n.lang("bbs.fluid.debug"));
+
         this.color = new UIColor((c) -> this.form.color.set(Color.rgba(c))).direction(Direction.LEFT).withAlpha();
         
         this.opacity = new UITrackpad((v) -> this.form.opacity.set(v.floatValue()));
@@ -123,7 +127,8 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         this.options.add(UI.label(categoryCommon).marginTop(8));
         this.options.add(this.texture, this.color);
         this.options.add(UI.row(this.flowSpeed, this.turbulence, this.physicsSensitivity));
-        this.options.add(UI.row(this.opacity, this.subdivisions, this.smoothShading));
+        this.options.add(UI.row(this.opacity, this.subdivisions));
+        this.options.add(UI.row(this.smoothShading, this.debug));
 
         this.options.add(UI.label(categoryOcean).marginTop(8));
         this.options.add(UI.row(this.sizeX, this.sizeY, this.sizeZ));
@@ -198,6 +203,7 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         this.subdivisions.setValue(form.subdivisions.get());
         
         this.smoothShading.setValue(form.smoothShading.get());
+        this.debug.setValue(form.debug.get());
         this.color.setColor(form.color.get().getARGBColor());
         this.opacity.setValue(form.opacity.get());
         

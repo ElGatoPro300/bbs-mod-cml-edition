@@ -26,6 +26,7 @@ public class FluidForm extends Form
     public final ValueFloat physicsSensitivity = new ValueFloat("physicsSensitivity", 1F);
     public final ValueInt subdivisions = new ValueInt("subdivisions", 1, 1, 8);
     public final ValueBoolean smoothShading = new ValueBoolean("smoothShading", true);
+    public final ValueBoolean debug = new ValueBoolean("debug", false);
 
     /* Full Ocean */
     public final ValueFloat sizeX = new ValueFloat("sizeX", 10F);
@@ -53,6 +54,7 @@ public class FluidForm extends Form
         this.add(this.physicsSensitivity);
         this.add(this.subdivisions);
         this.add(this.smoothShading);
+        this.add(this.debug);
 
         this.add(this.sizeX);
         this.add(this.sizeY);

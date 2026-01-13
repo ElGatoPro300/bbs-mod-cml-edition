@@ -1360,9 +1360,6 @@
     "bbs.fluid.scale_x": "Scale X",
     "bbs.fluid.scale_y": "Scale Y",
     "bbs.fluid.scale_z": "Scale Z",
-    "bbs.fluid.size_x": "Size X",
-    "bbs.fluid.size_y": "Size Y",
-    "bbs.fluid.size_z": "Size Z",
     "bbs.fluid.fill_block": "Fill Block",
     "bbs.fluid.wave_amplitude": "Wave Amplitude",
     "bbs.fluid.wave_frequency": "Wave Frequency",
@@ -1378,8 +1375,6 @@
     "bbs.fluid.mode.procedural": "Procedural Ocean",
     "bbs.forms.editors.fluid.title": "Fluid Form",
     "bbs.forms.editors.fluid.subdivisions": "Subdivisions",
-    "bbs.forms.editors.fluid.resolution": "Resolution",
-    "bbs.forms.editors.fluid.smooth_shading": "Smooth Shading"
-}
-    "studio.ui.utility.title": "Utility panel"
+    "bbs.forms.editors.fluid.smooth_shading": "Smooth Shading",
+    "bbs.fluid.debug": "Debug"
 }
