@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITickable
 {
     private static final Link WHITE_TEXTURE = Link.bbs("textures/block/white.png");
+    private static final Link FLUID_PREVIEW = Link.assets("textures/fluid.png");
 
     private FluidSimulation simulation;
     private FluidController controller = new FluidController();
@@ -47,34 +48,14 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     @Override
     protected void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
     {
-        MatrixStack stack = context.batcher.getContext().getMatrices();
+        Texture texture = context.render.getTextures().getTexture(FLUID_PREVIEW);
 
-        stack.push();
-        
-        Matrix4f uiMatrix = ModelFormRenderer.getUIMatrix(context, x1, y1, x2, y2);
-        this.applyTransforms(uiMatrix, context.getTransition());
+        int w = texture.width;
+        int h = texture.height;
+        int x = (x1 + x2) / 2;
+        int y = (y1 + y2) / 2;
 
-        /* Apply matrix to stack */
-        MatrixStackUtils.multiply(stack, uiMatrix);
-        stack.translate(0F, 0.5F, 0F); /* Center it a bit */
-        
-        float scale = this.form.uiScale.get();
-        stack.scale(scale, scale, scale);
-
-        /* Shading fix for UI */
-        Vector3f normalScale = new Vector3f();
-        stack.peek().getNormalMatrix().getScale(normalScale);
-        stack.peek().getNormalMatrix().scale(1F / normalScale.x, -1F / normalScale.y, 1F / normalScale.z);
-
-        VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
-        
-        this.renderFluid(format, GameRenderer::getRenderTypeEntityTranslucentProgram,
-            stack,
-            OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
-            context.getTransition()
-        );
-
-        stack.pop();
+        context.batcher.fullTexturedBox(texture, x - w / 2, y - h / 2, w, h);
     }
 
     @Override
