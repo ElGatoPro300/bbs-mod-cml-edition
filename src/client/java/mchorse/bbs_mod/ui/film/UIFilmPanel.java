@@ -7,7 +7,6 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.actions.ActionState;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.clips.misc.VideoClip;
-import mchorse.bbs_mod.client.video.VideoRenderer;
 import mchorse.bbs_mod.camera.clips.modifiers.TranslateClip;
 import mchorse.bbs_mod.camera.clips.overwrite.IdleClip;
 import mchorse.bbs_mod.camera.controller.CameraController;
@@ -15,6 +14,7 @@ import mchorse.bbs_mod.camera.controller.RunnerCameraController;
 import mchorse.bbs_mod.camera.data.Position;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.client.renderer.MorphRenderer;
+import mchorse.bbs_mod.client.video.VideoRenderer;
 import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.film.Film;
@@ -928,26 +928,6 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     public void render(UIContext context)
     {
         if (this.data != null)
-        {
-            /*
-            int tick = this.getCursor();
-
-            for (Clip clip : this.data.camera.get())
-            {
-                if (clip instanceof VideoClip && clip.isInside(tick) && clip.enabled.get())
-                {
-                    VideoClip video = (VideoClip) clip;
-
-                    VideoRenderer.render(context.batcher.getContext().getMatrices(),
-                        video.video.get(),
-                        tick - video.tick.get() + video.offset.get(),
-                        this.runner.isRunning(),
-                        video.volume.get());
-                }
-            }
-            */
-        }
-
         if (this.controller.isControlling())
         {
             context.mouseX = context.mouseY = -1;

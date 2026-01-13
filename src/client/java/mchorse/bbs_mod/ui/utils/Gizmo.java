@@ -41,27 +41,6 @@ public class Gizmo
     private Gizmo()
     {}
 
-    /**
-     * El gizmo clásico de mchorse solo debe estar activo cuando
-     * el diseño seleccionado es el clásico (design == 0).
-     */
-    private boolean isClassicDesignActive()
-    {
-        return BBSSettings.gizmoDesign.get() == 0;
-    }
-
-    /**
-     * Si el diseño activo no es el clásico, cancelar cualquier
-     * interacción pendiente para evitar interferencias con BoneGizmoSystem.
-     */
-    private void ensureDisabledIfNotClassic()
-    {
-        if (!isClassicDesignActive())
-        {
-            this.stop();
-        }
-    }
-
     public Mode getMode()
     {
         return this.mode;
@@ -69,8 +48,7 @@ public class Gizmo
 
     public boolean setMode(Mode mode)
     {
-        /* Desactivar completamente el gizmo clásico cuando el diseño no es 0 */
-        if (!BBSSettings.gizmos.get() || !isClassicDesignActive())
+        if (!BBSSettings.gizmos.get())
         {
             return false;
         }
@@ -84,8 +62,7 @@ public class Gizmo
 
     public boolean start(int index, int mouseX, int mouseY, UIPropTransform transform)
     {
-        /* Si el diseño activo no es el clásico, delegar a BoneGizmoSystem */
-        if (!isClassicDesignActive())
+        if (!BBSSettings.gizmos.get())
         {
             return mchorse.bbs_mod.gizmos.BoneGizmoSystem.get().start(index, mouseX, mouseY, transform);
         }
@@ -125,13 +102,6 @@ public class Gizmo
 
     public void render(MatrixStack stack)
     {
-        /* Si no está el diseño clásico activo, no renderizar ni mantener estado */
-        if (!isClassicDesignActive())
-        {
-            ensureDisabledIfNotClassic();
-            return;
-        }
-
         if (BBSSettings.gizmos.get())
         {
             this.drawAxes(stack, 0.25F, 0.015F, 0.26F, 0.025F);
@@ -222,8 +192,7 @@ public class Gizmo
 
     public void renderStencil(MatrixStack stack, StencilMap map)
     {
-        /* Solo dibujar stencil cuando el diseño clásico está activo */
-        if (BBSSettings.gizmos.get() && isClassicDesignActive())
+        if (BBSSettings.gizmos.get())
         {
             this.drawAxes(stack, map, 0.25F, 0.015F);
         }

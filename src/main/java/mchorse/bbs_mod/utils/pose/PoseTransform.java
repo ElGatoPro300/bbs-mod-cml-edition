@@ -19,7 +19,6 @@ public class PoseTransform extends Transform
     public float fix;
     public final Color color = new Color().set(Colors.WHITE);
     public float lighting;
-    /** Optional texture override for this transform (per-bone texture). */
     public Link texture;
 
     @Override

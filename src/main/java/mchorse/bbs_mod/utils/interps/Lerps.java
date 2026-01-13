@@ -117,18 +117,17 @@ public class Lerps
             t1 = (w0_1 * m_minus_1 + w1_1 * m1) / (w0_1 + w1_1); // Standard Akima formula is slightly different, usually involves 4 slopes
 
         /* Correct Akima Slope Calculation:
-           t(i) = ( |m(i+1) - m(i)| * m(i-1) + |m(i-1) - m(i-2)| * m(i) ) / ...
-        */
-        
-        // Let's implement the FULL standard formula correctly using the 4 points we have + extrapolation
-        
-        // Slopes:
-        // s0 = (y1 - y0)
-        // s1 = (y2 - y1)
-        // s2 = (y3 - y2)
-        // Extrapolated:
-        // s_1 = 2*s0 - s1 (Slope before y0)
-        // s3 = 2*s2 - s1 (Slope after y3)
+         * t(i) = ( |m(i+1) - m(i)| * m(i-1) + |m(i-1) - m(i-2)| * m(i) ) / ...
+         * Let's implement the FULL standard formula correctly using the 4 points we have + extrapolation
+         * 
+         * Slopes:
+         * s0 = (y1 - y0)
+         * s1 = (y2 - y1)
+         * s2 = (y3 - y2)
+         * Extrapolated:
+         * s_1 = 2*s0 - s1 (Slope before y0)
+         * s3 = 2*s2 - s1 (Slope after y3)
+         */
         
         double s0 = m0;
         double s1 = m1;
@@ -136,9 +135,9 @@ public class Lerps
         double s_1 = m_minus_1;
         double s3 = m3;
         
-        // Tangent at y1 (requires s_1, s0, s1, s2)
+        /* Tangent at y1 (requires s_1, s0, s1, s2) */
         double w_a1 = Math.abs(s1 - s0);
-        double w_b1 = Math.abs(s_1 - s_1); // This term is usually |m(i+1) - m(i)| and |m(i-1) - m(i-2)|.
+        double w_b1 = Math.abs(s_1 - s_1); /* This term is usually |m(i+1) - m(i)| and |m(i-1) - m(i-2)|. */
         
         /* 
            Let's use the verified "Numerical Recipes" approach for the 4-point window provided by the context.
@@ -150,7 +149,7 @@ public class Lerps
         double k0 = Math.abs(s1 - s0);
         double k1 = Math.abs(s_1 - s0);
         
-        if (k0 + k1 < 1e-9) t1 = (s0 + s1) / 2.0; // Fallback to average
+        if (k0 + k1 < 1e-9) t1 = (s0 + s1) / 2.0; /*  Fallback to average */
         else t1 = (k0 * s0 + k1 * s1) / (k0 + k1);
 
         double k2 = Math.abs(s2 - s1);
@@ -160,10 +159,10 @@ public class Lerps
         if (k2 + k3 < 1e-9) t2 = (s1 + s2) / 2.0;
         else t2 = (k2 * s1 + k3 * s2) / (k2 + k3);
 
-        // Cubic Hermite using these tangents
-        // The standard Hermite function expects 4 points, but here we feed it tangents directly.
-        // We have to manually implement the Hermite polynomial here to use the tangents t1 and t2.
-        
+        /* Cubic Hermite using these tangents
+         The standard Hermite function expects 4 points, but here we feed it tangents directly.
+         We have to manually implement the Hermite polynomial here to use the tangents t1 and t2.
+        */
         double h1 = 2 * x * x * x - 3 * x * x + 1;
         double h2 = -2 * x * x * x + 3 * x * x;
         double h3 = x * x * x - 2 * x * x + x;
@@ -249,19 +248,20 @@ public class Lerps
         double t2 = t * t;
         double t3 = t2 * t;
         
-        // Basis functions
+        /* Basis functions */
         double n0 = (1 - 3 * t + 3 * t2 - t3) / 6.0;
         double n1 = (4 - 6 * t2 + 3 * t3) / 6.0;
         double n2 = (1 + 3 * t + 3 * t2 - 3 * t3) / 6.0;
         double n3 = t3 / 6.0;
 
-        // Apply weights
-        // R(t) = Sum(Ni * Wi * Pi) / Sum(Ni * Wi)
+        /* Apply weights
+        R(t) = Sum(Ni * Wi * Pi) / Sum(Ni * Wi)
+        */
         
         double numerator = n0 * w0 * y0 + n1 * w1 * y1 + n2 * w2 * y2 + n3 * w3 * y3;
         double denominator = n0 * w0 + n1 * w1 + n2 * w2 + n3 * w3;
         
-        if (Math.abs(denominator) < 1e-9) return y1; // Prevent division by zero
+        if (Math.abs(denominator) < 1e-9) return y1; /* Prevent division by zero */
         
         return numerator / denominator;
     }
