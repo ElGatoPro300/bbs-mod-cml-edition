@@ -36,7 +36,6 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
-// import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.Util;
 
 import java.util.Collections;
@@ -80,7 +79,7 @@ public class FormUtilsClient
             assignBufferBuilder(map, RenderLayer.getDirectEntityGlint());
             assignBufferBuilder(map, RenderLayer.getWaterMask());
             */
-            // ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer));
+            /* ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer)); */
         });
 
         customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferAllocator(1536), sortedMap);

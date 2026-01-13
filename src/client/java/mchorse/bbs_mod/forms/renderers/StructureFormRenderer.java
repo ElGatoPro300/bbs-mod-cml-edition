@@ -402,15 +402,19 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             else
             {
                 /* VAO with shader compatible with packs: use translucent entity program when Iris is active */
+                ShaderProgram shader = BBSShaders.getModel();
+
                 if (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld())
                 {
                     RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+
+                    ShaderProgram translucent = RenderSystem.getShader();
+
+                    if (translucent != null)
+                    {
+                        shader = translucent;
+                    }
                 }
-                else
-                {
-                    RenderSystem.setShader(BBSShaders.getModel());
-                }
-                ShaderProgram shader = RenderSystem.getShader();
 
                 RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
                 RenderSystem.enableBlend();

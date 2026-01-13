@@ -282,8 +282,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
                     {
                         this.bindTexture();
                         this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                        ShaderProgram program = BBSShaders.getPickerModelsProgram();
-                        if (program != null) program.bind();
+                        RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
 
                         first.bool = true;
                     }
