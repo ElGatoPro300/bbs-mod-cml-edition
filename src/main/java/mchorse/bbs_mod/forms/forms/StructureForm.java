@@ -5,8 +5,6 @@ import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
 import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
 import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.forms.forms.utils.PivotSettings;
-import mchorse.bbs_mod.settings.values.misc.ValuePivotSettings;
 import mchorse.bbs_mod.settings.values.misc.ValueStructureLightSettings;
 import mchorse.bbs_mod.forms.forms.utils.StructureLightSettings;
 import mchorse.bbs_mod.utils.colors.Color;
@@ -38,10 +36,6 @@ public class StructureForm extends Form
     public final ValueFloat pivotX = new ValueFloat("pivot_x", 0f);
     public final ValueFloat pivotY = new ValueFloat("pivot_y", 0f);
     public final ValueFloat pivotZ = new ValueFloat("pivot_z", 0f);
-    /** Pista unificada de pivote: auto + X/Y/Z (W sin uso) */
-    public final ValuePivotSettings pivot = new ValuePivotSettings("pivot", new PivotSettings(true, 0f, 0f, 0f));
-    /** Cuando está activo, el renderer calcula el centro automáticamente y omite el pivote manual */
-    public final ValueBoolean autoPivot = new ValueBoolean("auto_pivot", true);
 
     public StructureForm()
     {
@@ -68,11 +62,6 @@ public class StructureForm extends Form
         /* Nueva pista unificada de keyframes y ocultar pista booleana suelta */
         this.emitLight.invisible();
         this.lightIntensity.invisible();
-        /* Hide pivot track entirely; structure pivots automatically */
-        this.pivot.invisible();
-        this.add(this.pivot);
-        this.autoPivot.invisible();
-        this.add(this.autoPivot);
     }
 
     @Override

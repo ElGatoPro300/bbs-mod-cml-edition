@@ -37,6 +37,7 @@ import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -178,7 +179,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
                 poseTransform.pivot.add(value.pivot);
             }
 
-            /* Also apply visual properties of the overlay (color, lighting and texture) */
             if (value.fix != 0)
             {
                 poseTransform.color.lerp(value.color, value.fix);
@@ -187,7 +187,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             if (value.texture != null)
             {
-                poseTransform.texture = mchorse.bbs_mod.utils.resources.LinkUtils.copy(value.texture);
+                poseTransform.texture = LinkUtils.copy(value.texture);
             }
         }
     }

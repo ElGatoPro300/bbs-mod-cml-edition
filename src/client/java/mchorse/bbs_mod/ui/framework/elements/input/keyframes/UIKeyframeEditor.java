@@ -142,8 +142,8 @@ public class UIKeyframeEditor extends UIElement
                 {
                     String targetBone = sheet.anchoredBone != null && !sheet.anchoredBone.isEmpty() ? sheet.anchoredBone : currentFirst;
 
-                    /* Si el id incluye una ruta de propiedad (p.ej. formPath/pose o formPath/pose_overlayX),
-                     * mantener el prefijo del formulario para ubicar correctamente el hueso en el renderer. */
+                    /* If the ID includes a property path (e.g., formPath/pose or formPath/pose_overlayX),
+                     * retain the form prefix to correctly position the bone in the renderer.*/
                     if (sheet.id.contains("/pose") || sheet.id.contains("/pose_overlay"))
                     {
                         bone = sheet.id.substring(0, sheet.id.lastIndexOf('/') + 1) + targetBone;

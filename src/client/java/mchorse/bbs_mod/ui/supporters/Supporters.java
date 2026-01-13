@@ -806,7 +806,7 @@ public class Supporters
         this.add("And " + total + " others...");
 
         /* CML Animators */
-        // this.add("CML", "https://discord.gg/bV2MY3SXJG", "textures/banners/CML.png").withDate(12, 1);
+        this.add("Discord", "https://discord.gg/MAHVQBSce6", "textures/banners/CML.png").withDate(12, 1);
         this.add("ElGatoPro300", "https://www.youtube.com/@ElGatoPro300", "textures/banners/ElGatoPro300.png").withDate(12, 1);
         this.add("seb024xd", "https://www.youtube.com/@seb024yt", "textures/banners/seb024xd.png").withDate(12, 1);
         this.add("SEKZA_MC", "https://www.youtube.com/@secxavier49_official", "textures/banners/SEKZA_MC.png").withDate(12, 1);
@@ -866,11 +866,11 @@ public class Supporters
 
     public List<Supporter> getCCSupporters()
     {
-        return this.supporters.stream().filter(Supporter::hasBanner).filter(s -> !s.name.equals("ElGatoPro300") && !s.name.equals("seb024xd") && !s.name.equals("TobbyMC") && !s.name.equals("JaviCubito") && !s.name.equals("SEKZA_MC") && !s.name.equals("Jesuluto") && !s.name.equals("Kazu_MC") && !s.name.equals("SoyTon") && !s.name.equals("TheRocket") && !s.name.equals("AND_010") && !s.name.equals("Mattux") && !s.name.equals("SR400X") && !s.name.equals("MrJack") && !s.name.equals("Yeyo Sin Contexto") && !s.name.equals("Redbirdpro") && !s.name.equals("MiniSunn_") && !s.name.equals("lolinmalo") && !s.name.equals("ItzUkyo2013") && !s.name.equals("SoyFrann") && !s.name.equals("AymaWolf Omega")).sorted(Comparator.comparing((a) -> a.date)).collect(Collectors.toList());
+        return this.supporters.stream().filter(Supporter::hasBanner).filter(s -> !s.name.equals("Discord") && !s.name.equals("ElGatoPro300") && !s.name.equals("seb024xd") && !s.name.equals("TobbyMC") && !s.name.equals("JaviCubito") && !s.name.equals("SEKZA_MC") && !s.name.equals("Jesuluto") && !s.name.equals("Kazu_MC") && !s.name.equals("SoyTon") && !s.name.equals("TheRocket") && !s.name.equals("AND_010") && !s.name.equals("Mattux") && !s.name.equals("SR400X") && !s.name.equals("MrJack") && !s.name.equals("Yeyo Sin Contexto") && !s.name.equals("Redbirdpro") && !s.name.equals("MiniSunn_") && !s.name.equals("lolinmalo") && !s.name.equals("ItzUkyo2013") && !s.name.equals("SoyFrann") && !s.name.equals("AymaWolf Omega")).sorted(Comparator.comparing((a) -> a.date)).collect(Collectors.toList());
     }
 
     public List<Supporter> getCMLSupporters()
     {
-        return this.supporters.stream().filter(s -> s.name.equals("ElGatoPro300") || s.name.equals("seb024xd") || s.name.equals("TobbyMC") || s.name.equals("JaviCubito") || s.name.equals("SEKZA_MC") || s.name.equals("Jesuluto") || s.name.equals("Kazu_MC") || s.name.equals("SoyTon") || s.name.equals("TheRocket") || s.name.equals("AND_010") || s.name.equals("Mattux") || s.name.equals("SR400X") || s.name.equals("MrJack") || s.name.equals("Yeyo Sin Contexto") || s.name.equals("Redbirdpro") || s.name.equals("MiniSunn_") || s.name.equals("lolinmalo") || s.name.equals("ItzUkyo2013") || s.name.equals("SoyFrann") || s.name.equals("AymaWolf Omega")).sorted(Comparator.comparing((a) -> a.date)).collect(Collectors.toList());
+        return this.supporters.stream().filter(s -> s.name.equals("Discord") || s.name.equals("ElGatoPro300") || s.name.equals("seb024xd") || s.name.equals("TobbyMC") || s.name.equals("JaviCubito") || s.name.equals("SEKZA_MC") || s.name.equals("Jesuluto") || s.name.equals("Kazu_MC") || s.name.equals("SoyTon") || s.name.equals("TheRocket") || s.name.equals("AND_010") || s.name.equals("Mattux") || s.name.equals("SR400X") || s.name.equals("MrJack") || s.name.equals("Yeyo Sin Contexto") || s.name.equals("Redbirdpro") || s.name.equals("MiniSunn_") || s.name.equals("lolinmalo") || s.name.equals("ItzUkyo2013") || s.name.equals("SoyFrann") || s.name.equals("AymaWolf Omega")).sorted(Comparator.comparing((a) -> a.date)).collect(Collectors.toList());
     }
 }

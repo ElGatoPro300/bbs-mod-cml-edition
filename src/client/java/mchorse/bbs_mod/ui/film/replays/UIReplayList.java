@@ -171,7 +171,6 @@ public class UIReplayList extends UIList<Replay>
         Replay src = this.list.get(from);
         Replay dest = this.list.get(to);
 
-        // Prevent dragging parent into child
         if (src.isGroup.get())
         {
             String srcPath = getReplayPath(src);
@@ -180,7 +179,6 @@ public class UIReplayList extends UIList<Replay>
             String destPath = getReplayPath(dest);
             String destFullPath = destPath.isEmpty() ? dest.uuid.get() : destPath + "/" + dest.uuid.get();
 
-            // If dest is strictly inside src or is src itself (circular check)
             if (destFullPath.equals(srcFullPath) || destFullPath.startsWith(srcFullPath + "/") ||
                 dest.group.get().equals(srcFullPath) || dest.group.get().startsWith(srcFullPath + "/"))
             {
@@ -188,33 +186,25 @@ public class UIReplayList extends UIList<Replay>
             }
         }
 
-        // Logic for dropping INTO a group (Reparenting)
         if (dest.isGroup.get())
         {
             String destPath = getReplayPath(dest);
             String destGroupPath = destPath.isEmpty() ? dest.uuid.get() : destPath + "/" + dest.uuid.get();
             String srcGroup = src.group.get();
 
-            // If we are dragging onto a group that is NOT our current parent, we reparent
             if (!srcGroup.equals(destGroupPath))
             {
-                // Calculate insertionAnchor BEFORE modifying src
-                // We want to find the last child of dest to append src after it.
-                // We must be careful NOT to pick src or any of its children as the anchor.
                 
                 Replay insertionAnchor = dest;
                 List<Replay> allReplays = this.panel.getData().replays.getAllTyped();
                 
-                // Identify src's current full path to exclude its descendants
                 String srcPathForCheck = getReplayPath(src);
                 String srcFullPathForCheck = srcPathForCheck.isEmpty() ? src.uuid.get() : srcPathForCheck + "/" + src.uuid.get();
 
                 for (Replay r : allReplays)
                 {
-                    // Exclude src itself
                     if (r == src) continue;
 
-                    // Exclude descendants of src (using old path)
                     if (src.isGroup.get())
                     {
                         String g = r.group.get();
@@ -224,7 +214,6 @@ public class UIReplayList extends UIList<Replay>
                         }
                     }
 
-                    // Check if r is a child of dest
                     String g = r.group.get();
                     if (g.equals(destGroupPath) || g.startsWith(destGroupPath + "/"))
                     {
@@ -232,7 +221,6 @@ public class UIReplayList extends UIList<Replay>
                     }
                 }
 
-                // Update src parent
                 if (src.isGroup.get())
                 {
                     String oldPath = getReplayPath(src);
@@ -250,10 +238,8 @@ public class UIReplayList extends UIList<Replay>
                     src.group.set(destGroupPath);
                 }
 
-                // Move src and children to be inside dest (after last child of dest)
                 this.moveReplayAndChildren(src, insertionAnchor, true);
 
-                // Auto-expand the target group
                 this.expandedGroups.put(destGroupPath, true);
                 this.buildVisualList();
                 this.updateFilmEditor();
@@ -262,7 +248,6 @@ public class UIReplayList extends UIList<Replay>
             }
         }
 
-        // Standard Reorder (Same Parent or Move to Root)
         String destGroup = dest.group.get();
 
         if (src.isGroup.get())
@@ -294,10 +279,8 @@ public class UIReplayList extends UIList<Replay>
         List<Replay> list = data.replays.getAllTyped();
         List<Replay> toMove = new ArrayList<>();
 
-        // Add src itself
         toMove.add(src);
 
-        // Add descendants
         if (src.isGroup.get())
         {
             String srcPath = getReplayPath(src);
@@ -324,7 +307,6 @@ public class UIReplayList extends UIList<Replay>
         if (destIndex != -1)
         {
             int insertIndex = insertAfter ? destIndex + 1 : destIndex;
-            // Clamp index
             insertIndex = Math.max(0, Math.min(insertIndex, list.size()));
             list.addAll(insertIndex, toMove);
         }
@@ -339,7 +321,6 @@ public class UIReplayList extends UIList<Replay>
         this.buildVisualList();
         this.updateFilmEditor();
 
-        // Restore selection
         int newIndex = this.visualList.indexOf(src);
         if (newIndex != -1)
         {
@@ -1072,13 +1053,11 @@ public class UIReplayList extends UIList<Replay>
         List<Replay> all = film.replays.getList();
         boolean changed = false;
 
-        // Update expanded state key
         if (this.expandedGroups.containsKey(oldFullPath))
         {
             this.expandedGroups.put(newFullPath, this.expandedGroups.remove(oldFullPath));
         }
 
-        // Update children paths
         for (Replay r : all)
         {
             String group = r.group.get();

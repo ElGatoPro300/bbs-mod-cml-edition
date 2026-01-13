@@ -9,21 +9,21 @@ import mchorse.bbs_mod.forms.forms.FluidForm;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
+import mchorse.bbs_mod.forms.ITickable;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.render.*;
-import mchorse.bbs_mod.forms.ITickable;
-import mchorse.bbs_mod.simulation.FluidController;
-import mchorse.bbs_mod.simulation.FluidSimulation;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Transform;
+import mchorse.bbs_mod.simulation.FluidController;
+import mchorse.bbs_mod.simulation.FluidSimulation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.*;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITickable
 {
     private static final Link WHITE_TEXTURE = Link.bbs("textures/block/white.png");
+    private static final Link FLUID_PREVIEW = Link.assets("textures/fluid.png");
 
     private FluidSimulation simulation;
     private FluidController controller = new FluidController();
@@ -49,34 +50,14 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     @Override
     protected void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
     {
-        MatrixStack stack = context.batcher.getContext().getMatrices();
+        Texture texture = context.render.getTextures().getTexture(FLUID_PREVIEW);
 
-        stack.push();
-        
-        Matrix4f uiMatrix = ModelFormRenderer.getUIMatrix(context, x1, y1, x2, y2);
-        this.applyTransforms(uiMatrix, context.getTransition());
-        
-        // Apply matrix to stack
-        MatrixStackUtils.multiply(stack, uiMatrix);
-        stack.translate(0F, 0.5F, 0F); // Center it a bit
-        
-        float scale = this.form.uiScale.get();
-        stack.scale(scale, scale, scale);
+        int w = texture.width;
+        int h = texture.height;
+        int x = (x1 + x2) / 2;
+        int y = (y1 + y2) / 2;
 
-        // Shading fix for UI
-        Vector3f normalScale = new Vector3f();
-        stack.peek().getNormalMatrix().getScale(normalScale);
-        stack.peek().getNormalMatrix().scale(1F / normalScale.x, -1F / normalScale.y, 1F / normalScale.z);
-
-        VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
-        
-        this.renderFluid(format, GameRenderer::getRenderTypeEntityTranslucentProgram,
-            stack,
-            OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
-            context.getTransition()
-        );
-
-        stack.pop();
+        context.batcher.fullTexturedBox(texture, x - w / 2, y - h / 2, w, h);
     }
 
     @Override
@@ -186,7 +167,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float opacity = this.form.opacity.get();
         Color finalColor = new Color(color.r, color.g, color.b, opacity);
         
-        // Multiply by overlay color (usually WHITE unless hit)
+        /* Multiply by overlay color (usually WHITE unless hit) */
         finalColor.mul(overlayColor);
 
         FluidForm.FluidMode mode = this.form.mode.get();
@@ -284,7 +265,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
                 if (!smooth)
                 {
-                    // Triangle 1: (x1, y11, z1), (x1, y12, z2), (x2, y21, z1)
+                    /* Triangle 1: (x1, y11, z1), (x1, y12, z2), (x2, y21, z1) */
                     float nx = -stepZ * (y21 - y11);
                     float ny = stepX * stepZ;
                     float nz = -stepX * (y12 - y11);
@@ -292,16 +273,16 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
                     n2.set(n1);
                     n3.set(n1);
 
-                    // Triangle 2: (x2, y21, z1), (x1, y12, z2), (x2, y22, z2)
+                    /* Triangle 2: (x2, y21, z1), (x1, y12, z2), (x2, y22, z2) */
                     n4.set(stepZ * (y12 - y22), stepX * stepZ, -stepX * (y22 - y21)).normalize();
                 }
 
-                // Triangle 1: (x1, z1), (x1, z2), (x2, z1)
+                /* Triangle 1: (x1, z1), (x1, z2), (x2, z1) */
                 addVertex(builder, matrix, normalMatrix, x1, y11, z1, 0, 0, color, overlay, light, n1);
                 addVertex(builder, matrix, normalMatrix, x1, y12, z2, 0, 1, color, overlay, light, smooth ? n2 : n1);
                 addVertex(builder, matrix, normalMatrix, x2, y21, z1, 1, 0, color, overlay, light, smooth ? n3 : n1);
 
-                // Triangle 2: (x2, z1), (x1, z2), (x2, z2)
+                /* Triangle 2: (x2, z1), (x1, z2), (x2, z2) */
                 addVertex(builder, matrix, normalMatrix, x2, y21, z1, 1, 0, color, overlay, light, smooth ? n3 : n4);
                 addVertex(builder, matrix, normalMatrix, x1, y12, z2, 0, 1, color, overlay, light, smooth ? n2 : n4);
                 addVertex(builder, matrix, normalMatrix, x2, y22, z2, 1, 1, color, overlay, light, n4);
@@ -402,7 +383,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         Matrix4f matrix = matrices.peek().getPositionMatrix();
         Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
 
-        // Increase render resolution for smoother look
+        /* Increase render resolution for smoother look */
         int simWidth = this.simulation.getWidth();
         int simHeight = this.simulation.getHeight();
         int factor = this.form.subdivisions.get();
@@ -427,7 +408,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
                 float x2 = (x + 1) * stepX - scaleX / 2;
                 float z2 = (z + 1) * stepZ - scaleZ / 2;
 
-                // Map render coordinates to simulation coordinates
+                /* Map render coordinates to simulation coordinates */
                 float simX1 = (float) x / (renderWidth - 1) * (simWidth - 1);
                 float simZ1 = (float) z / (renderHeight - 1) * (simHeight - 1);
                 float simX2 = (float) (x + 1) / (renderWidth - 1) * (simWidth - 1);
@@ -445,31 +426,31 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
                 if (!smooth)
                 {
-                     // Calculate face normals for flat shading
-                     // Triangle 1: (x1, y11, z1), (x1, y12, z2), (x2, y21, z1)
+                     /* Calculate face normals for flat shading */
+                     /* Triangle 1: (x1, y11, z1), (x1, y12, z2), (x2, y21, z1) */
                      float v1x = x1 - x1; float v1y = y12 - y11; float v1z = z2 - z1;
                      float v2x = x2 - x1; float v2y = y21 - y11; float v2z = z1 - z1;
                      
-                     // Cross product
+                     /* Cross product */
                      float nx = v1y * v2z - v1z * v2y;
                      float ny = v1z * v2x - v1x * v2z;
                      float nz = v1x * v2y - v1y * v2x;
                      float len = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
                      n1.set(nx / len, ny / len, nz / len);
                      
-                     // Use n1 for all vertices of triangle 1
+                     /* Use n1 for all vertices of triangle 1 */
                      n2.set(n1);
                      n3.set(n1);
                 }
 
-                // Triangle 1: (x1, z1), (x1, z2), (x2, z1)
+                /* Triangle 1: (x1, z1), (x1, z2), (x2, z1) */
                 addVertex(builder, matrix, normalMatrix, x1, y11, z1, 0, 0, color, overlay, light, n1);
                 addVertex(builder, matrix, normalMatrix, x1, y12, z2, 0, 1, color, overlay, light, n2);
                 addVertex(builder, matrix, normalMatrix, x2, y21, z1, 1, 0, color, overlay, light, n3);
 
                 if (!smooth)
                 {
-                     // Triangle 2: (x2, y21, z1), (x1, y12, z2), (x2, y22, z2)
+                     /* Triangle 2: (x2, y21, z1), (x1, y12, z2), (x2, y22, z2) */
                      float v1x = x1 - x2; float v1y = y12 - y21; float v1z = z2 - z1;
                      float v2x = x2 - x2; float v2y = y22 - y21; float v2z = z2 - z1;
                      
@@ -477,13 +458,13 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
                      float ny = v1z * v2x - v1x * v2z;
                      float nz = v1x * v2y - v1y * v2x;
                      float len = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
-                     n3.set(nx / len, ny / len, nz / len); // Reuse n3
+                     n3.set(nx / len, ny / len, nz / len); /* Reuse n3 */
                      
                      n2.set(n3);
                      n4.set(n3);
                 }
 
-                // Triangle 2: (x2, z1), (x1, z2), (x2, z2)
+                /* Triangle 2: (x2, z1), (x1, z2), (x2, z2) */
                 addVertex(builder, matrix, normalMatrix, x2, y21, z1, 1, 0, color, overlay, light, n3);
                 addVertex(builder, matrix, normalMatrix, x1, y12, z2, 0, 1, color, overlay, light, n2);
                 addVertex(builder, matrix, normalMatrix, x2, y22, z2, 1, 1, color, overlay, light, n4);
@@ -506,7 +487,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float tx = x - x0;
         float tz = z - z0;
         
-        // Smoothstep interpolation: t * t * (3 - 2 * t)
+        /* Smoothstep interpolation: t * t * (3 - 2 * t) */
         float sx = tx * tx * (3 - 2 * tx);
         float sz = tz * tz * (3 - 2 * tz);
         
@@ -530,7 +511,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float simWidth = this.simulation.getWidth();
         float simHeight = this.simulation.getHeight();
         
-        // Adjust normal for world scale
+        /* Adjust normal for world scale */
         dest.set(-dx * simWidth / scaleX, 2 * delta, -dz * simHeight / scaleZ);
         dest.normalize();
     }
@@ -539,19 +520,19 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     {
         getDropVertex(lat, lng, baseSize, amp, time, dest);
         
-        // Map sphere UV to grid
-        // lat is -PI/2 to PI/2. v should be 0 to 1.
-        // lng is 0 to 2PI. u should be 0 to 1.
+        /* Map sphere UV to grid */
+        /* lat is -PI/2 to PI/2. v should be 0 to 1. */
+        /* lng is 0 to 2PI. u should be 0 to 1. */
         float u = (float) (lng / (2 * Math.PI));
         float v = (float) (lat / Math.PI + 0.5f);
         
-        // Clamp UV
+        /* Clamp UV */
         if (u < 0) u = 0; if (u > 1) u = 1;
         if (v < 0) v = 0; if (v > 1) v = 1;
         
         float simH = this.simulation.getHeight((int)(u * (width - 1)), (int)(v * (height - 1))) * 0.1f;
         
-        // Displace along the position vector (which is from center)
+        /* Displace along the position vector (which is from center) */
         dest.add(dest.x * simH, dest.y * simH, dest.z * simH);
     }
 
@@ -566,10 +547,10 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         getDisplacedDropVertex(lat + delta, lng, baseSize, amp, time, width, height, pLat);
         getDisplacedDropVertex(lat, lng + delta, baseSize, amp, time, width, height, pLng);
         
-        pLat.sub(p); // Tangent along Latitude
-        pLng.sub(p); // Tangent along Longitude
+        pLat.sub(p); /* Tangent along Latitude */
+        pLng.sub(p); /* Tangent along Longitude */
         
-        // Cross product: Longitude (Horizontal) x Latitude (Vertical) -> Normal
+        /* Cross product: Longitude (Horizontal) x Latitude (Vertical) -> Normal */
         dest.set(pLng).cross(pLat);
         dest.normalize();
     }
@@ -590,7 +571,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             this.lastUpdate = now;
         }
 
-        // Wobble parameters
+        /* Wobble parameters */
         float amp = (1.0f - tension) * 0.2f;
         float speed = 2.0f + (1.0f - viscosity) * 3.0f;
         float time = (System.currentTimeMillis() % 100000) / 1000f * speed;
@@ -648,7 +629,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
                 }
                 else
                 {
-                    // Triangle 1: v00, v10, v01
+                    /* Triangle 1: v00, v10, v01 */
                     t1.set(v10).sub(v00);
                     t2.set(v01).sub(v00);
                     n00.set(t1).cross(t2, n00).normalize();
@@ -657,19 +638,19 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
                     n10.set(n00);
                     n01.set(n00);
                     
-                    // Triangle 2: v01, v10, v11
+                    /* Triangle 2: v01, v10, v11 */
                     t1.set(v10).sub(v01);
                     t2.set(v11).sub(v01);
                     n11.set(t1).cross(t2, n11).normalize();
                     if (n11.dot(v11) < 0) n11.mul(-1);
                 }
 
-                // Triangle 1: v00, v10, v01
+                /* Triangle 1: v00, v10, v01 */
                 addVertex(builder, matrix, normalMatrix, v00.x, v00.y, v00.z, u0, v0, color, overlay, light, n00);
                 addVertex(builder, matrix, normalMatrix, v10.x, v10.y, v10.z, u0, v1, color, overlay, light, smooth ? n10 : n00);
                 addVertex(builder, matrix, normalMatrix, v01.x, v01.y, v01.z, u1, v0, color, overlay, light, smooth ? n01 : n00);
 
-                // Triangle 2: v01, v10, v11
+                /* Triangle 2: v01, v10, v11 */
                 addVertex(builder, matrix, normalMatrix, v01.x, v01.y, v01.z, u1, v0, color, overlay, light, smooth ? n01 : n11);
                 addVertex(builder, matrix, normalMatrix, v10.x, v10.y, v10.z, u0, v1, color, overlay, light, smooth ? n10 : n11);
                 addVertex(builder, matrix, normalMatrix, v11.x, v11.y, v11.z, u1, v1, color, overlay, light, n11);
@@ -684,7 +665,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float x = (float) Math.cos(lng) * r;
         float z = (float) Math.sin(lng) * r;
 
-        // Wobble
+        /* Wobble */
         float wobble = 1.0f + (float) Math.sin(lat * 5 + time) * (float) Math.cos(lng * 4 + time * 1.5f) * amp;
 
         dest.set(x * radius * wobble, y * radius * wobble, z * radius * wobble);

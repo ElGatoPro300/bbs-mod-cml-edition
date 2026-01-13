@@ -31,7 +31,7 @@ public class ValueEnum<E extends Enum<E>> extends BaseValueBasic<E>
             }
             catch (Exception e)
             {
-                // Ignore invalid values
+                /* Ignore invalid values */
             }
         }
     }

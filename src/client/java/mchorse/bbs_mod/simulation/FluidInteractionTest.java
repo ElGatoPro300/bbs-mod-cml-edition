@@ -14,14 +14,14 @@ public class FluidInteractionTest
     {
         FluidSimulation fluid = new FluidSimulation(32, 32);
         
-        // Simulate entity movement logic from BillboardFormRenderer
+        /* Simulate entity movement logic from BillboardFormRenderer */
         double lastX = 0;
         double lastY = 0;
         double lastZ = 0;
         
         double currentX = 1.0;
         double currentY = 0;
-        double currentZ = 0; // Moved 1 block in X
+        double currentZ = 0; /* Moved 1 block in X */
         
         double dx = currentX - lastX;
         double dy = currentY - lastY;
@@ -32,10 +32,10 @@ public class FluidInteractionTest
             fluid.addForce(16, 16, (float) Math.sqrt(dx * dx + dz * dz) * 5.0F);
         }
         
-        // Verify force was added
+        /* Verify force was added */
         fluid.update();
         
-        // After 1 update, getHeight(16,16) should show the spike
+        /* After 1 update, getHeight(16,16) should show the spike */
         float height = fluid.getHeight(16, 16);
         
         if (Math.abs(height) < 0.001)
@@ -54,11 +54,11 @@ public class FluidInteractionTest
         FluidSimulation fluidLowViscosity = new FluidSimulation(32, 32);
         fluidLowViscosity.viscosity = 0.5F;
         
-        // Add same force
+        /* Add same force */
         fluidHighViscosity.addForce(16, 16, 10.0F);
         fluidLowViscosity.addForce(16, 16, 10.0F);
         
-        // Run a few updates
+        /* Run a few updates */
         for (int i = 0; i < 5; i++)
         {
             fluidHighViscosity.update();
@@ -68,9 +68,9 @@ public class FluidInteractionTest
         float h1 = Math.abs(fluidHighViscosity.getHeight(16, 16));
         float h2 = Math.abs(fluidLowViscosity.getHeight(16, 16));
         
-        // Lower viscosity value means more damping (val *= viscosity), so height should be smaller?
-        // Wait, val *= 0.5 reduces it by half each step. val *= 0.99 reduces by 1%.
-        // So fluidLowViscosity (0.5) should have much smaller height than fluidHighViscosity (0.99).
+        /* Lower viscosity value means more damping (val *= viscosity), so height should be smaller?
+        Wait, val *= 0.5 reduces it by half each step. val *= 0.99 reduces by 1%.
+        So fluidLowViscosity (0.5) should have much smaller height than fluidHighViscosity (0.99). */
         
         if (h1 <= h2)
         {
@@ -96,10 +96,10 @@ public class FluidInteractionTest
         float h1 = fluidNormal.getHeight(16, 16);
         float h2 = fluidSensitive.getHeight(16, 16);
         
-        // h2 should be roughly 2x h1 (ignoring neighbor effects for single point update immediately)
-        // Wait, addForce adds to previousBuffer. update() uses it.
-        
-        if (Math.abs(h2 - h1 * 2.0F) > 0.1F) // Allow some margin
+        /* h2 should be roughly 2x h1 (ignoring neighbor effects for single point update immediately)
+        Wait, addForce adds to previousBuffer. update() uses it. */
+
+        if (Math.abs(h2 - h1 * 2.0F) > 0.1F) /* Allow some margin */
         {
              System.out.println("Sensitivity warning: h2 (" + h2 + ") is not exactly 2x h1 (" + h1 + "). This might be due to propagation logic.");
         }

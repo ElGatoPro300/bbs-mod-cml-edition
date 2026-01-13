@@ -43,9 +43,7 @@ public class StructureLightSettingsKeyframeFactory implements IKeyframeFactory<S
     @Override
     public StructureLightSettings interpolate(StructureLightSettings preA, StructureLightSettings a, StructureLightSettings b, StructureLightSettings postB, IInterp interpolation, float x)
     {
-        // enabled: discreto, tomar el estado de "a"
         this.i.enabled = a.enabled;
-        // intensity: interpolación numérica estándar con límites 0..15
         int y = (int) Math.round(interpolation.interpolate(IInterp.context.set(preA.intensity, a.intensity, b.intensity, postB.intensity, x)));
         if (y < 0) y = 0; else if (y > 15) y = 15;
         this.i.intensity = y;
