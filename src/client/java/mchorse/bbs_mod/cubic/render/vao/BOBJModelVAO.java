@@ -217,7 +217,6 @@ public class BOBJModelVAO
 
     public void render(ShaderProgram shader, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
     {
-        // Guard against null shader: choose a safe fallback to avoid NPE
         if (shader == null)
         {
             RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);

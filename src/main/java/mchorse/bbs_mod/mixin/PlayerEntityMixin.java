@@ -67,5 +67,4 @@ public class PlayerEntityMixin
         }
     }
 
-    // Eye height is handled in EntityMixin for 1.21.1
 }

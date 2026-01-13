@@ -15,7 +15,6 @@ public class ModelVAORenderer
 {
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
-        // Guard against null shader: try a safe fallback compatible with VAO format
         if (shader == null)
         {
             RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
@@ -23,7 +22,6 @@ public class ModelVAORenderer
 
             if (fallback == null)
             {
-                // No compatible program available; skip rendering to avoid crashing
                 return;
             }
 
@@ -78,12 +76,10 @@ public class ModelVAORenderer
             normalUniform.set(stack.peek().getNormalMatrix());
         }
 
-        // 1.21.1: viewRotationMat was removed; try optional uniform by name
         GlUniform viewRot = shader.getUniform("IViewRotMat");
         if (viewRot != null)
         {
-            // Use identity; billboard renderers adjust matrices separately
-            viewRot.set(new org.joml.Matrix4f().identity());
+            viewRot.set(new Matrix4f().identity());
         }
 
         /* TODO: 1.21.4 update - find replacement for RenderSystem.getShaderFogStart()

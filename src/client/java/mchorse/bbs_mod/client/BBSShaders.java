@@ -92,7 +92,6 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        // Usar programa vanilla para VAO en modo normal
         RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
         return RenderSystem.getShader();
     }

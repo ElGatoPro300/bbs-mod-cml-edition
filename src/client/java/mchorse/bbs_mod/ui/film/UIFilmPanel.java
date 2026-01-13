@@ -1078,7 +1078,6 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
             }
             else
             {
-                // Fallback when WorldRenderContext.matrixStack() is unavailable (e.g., Iris shadow pass quirks)
                 this.lastView.set(RenderSystem.getModelViewMatrix());
             }
         }

@@ -31,21 +31,18 @@ public class FixedColorVertexConsumer implements VertexConsumer
     @Override
     public VertexConsumer vertex(float x, float y, float z)
     {
-        // Inyectar color fijo por vértice
         return this.delegate.vertex(x, y, z).color(r, g, b, a);
     }
 
     @Override
     public VertexConsumer vertex(Matrix4f matrix, float x, float y, float z)
     {
-        // Inyectar color fijo por vértice
         return this.delegate.vertex(matrix, x, y, z).color(r, g, b, a);
     }
 
     @Override
     public VertexConsumer color(int red, int green, int blue, int alpha)
     {
-        // Con fixedColor activo, este valor no se usará; delegar por seguridad
         return this.delegate.color(red, green, blue, alpha);
     }
 
@@ -73,5 +70,4 @@ public class FixedColorVertexConsumer implements VertexConsumer
         return this.delegate.normal(x, y, z);
     }
 
-    // Métodos fixedColor/unfixColor no existen en MC 1.21; la inyección se hace en vertex().
 }

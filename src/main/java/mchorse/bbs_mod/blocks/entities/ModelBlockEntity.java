@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -151,13 +152,13 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt(net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
+    public NbtCompound toInitialChunkDataNbt(WrapperLookup registryLookup)
     {
         return this.createNbtWithId(registryLookup);
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
+    protected void writeNbt(NbtCompound nbt, WrapperLookup registryLookup)
     {
         super.writeNbt(nbt, registryLookup);
 
@@ -167,7 +168,7 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, net.minecraft.registry.RegistryWrapper.WrapperLookup registryLookup)
+    public void readNbt(NbtCompound nbt, WrapperLookup registryLookup)
     {
         super.readNbt(nbt, registryLookup);
 

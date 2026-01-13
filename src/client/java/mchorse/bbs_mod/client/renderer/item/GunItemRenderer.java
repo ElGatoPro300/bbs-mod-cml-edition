@@ -20,8 +20,11 @@ import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import org.joml.Vector3f;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,15 +93,15 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Iluminación de GUI coherente para ítems de pistola y zoom */
-                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
-                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
-                int maxLight = net.minecraft.client.render.LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
+
+                Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
+                Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+                RenderSystem.setupLevelDiffuseLighting(a, b);
+                int maxLight = LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
                     .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-                net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
+                DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();
 
                 matrices.pop();

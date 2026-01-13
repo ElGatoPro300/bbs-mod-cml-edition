@@ -21,7 +21,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.component.type.BlockStateComponent;
-import java.util.Map;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
@@ -38,6 +37,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class ModelBlock extends Block implements BlockEntityProvider, Waterloggable
 {

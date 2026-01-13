@@ -13,19 +13,19 @@ import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
+import org.joml.Vector3f;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -80,16 +80,14 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                /* Iluminación de GUI coherente para ítems de modelo */
-                org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-                org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
-                com.mojang.blaze3d.systems.RenderSystem.setupLevelDiffuseLighting(a, b);
-                /* Usar luz máxima para que el modelo como ítem no se vea oscuro */
-                int maxLight = 15728880; // LightmapTextureManager.pack(15, 15)
+                Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
+                Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+                RenderSystem.setupLevelDiffuseLighting(a, b);
+                int maxLight = 15728880;
                 FormUtilsClient.render(form, new FormRenderingContext()
                     .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-                net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
+                DiffuseLighting.disableGuiDepthLighting();
                 RenderSystem.disableDepthTest();
 
                 matrices.pop();

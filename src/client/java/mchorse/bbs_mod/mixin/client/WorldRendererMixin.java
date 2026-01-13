@@ -50,13 +50,6 @@ public class WorldRendererMixin
         }
     }
 
-    // Eliminado el render dentro de renderLayer para evitar duplicados.
-    // Bajo Iris y vanilla, ahora usamos WorldRenderEvents.AFTER_ENTITIES.
-
-    /**
-     * Captura la matriz de cámara (vista) al configurar el frustum para replicar
-     * el comportamiento del ORIGINAL en el picking de films.
-     */
     @Inject(method = "setupFrustum", at = @At("HEAD"))
     public void onSetupFrustum(Vec3d vec3d, Matrix4f matrix4f, Matrix4f positionMatrix, CallbackInfo info)
     {

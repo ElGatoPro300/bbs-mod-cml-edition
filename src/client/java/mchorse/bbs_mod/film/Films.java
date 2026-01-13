@@ -132,19 +132,14 @@ public class Films
         return null;
     }
 
-    public Recorder getRecorder()
-    {
-        return this.recorder;
-    }
-
-    /**
-     * Expose active film controllers (playing films) for runtime rendering.
-     * This is used by shadow pass integration to render entity shadows when
-     * a film is playing outside the UI.
-     */
     public List<BaseFilmController> getControllers()
     {
         return this.controllers;
+    }
+
+    public Recorder getRecorder()
+    {
+        return this.recorder;
     }
 
     public void startRecording(Film film, int replayId, int tick)

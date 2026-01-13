@@ -45,6 +45,7 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -52,6 +53,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -273,8 +275,8 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             BBSModClient.getTextures().bindTexture(texture);
             RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
-            org.joml.Vector3f light0 = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
-            org.joml.Vector3f light1 = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+            Vector3f light0 = new Vector3f(0.85F, 0.85F, -1F).normalize();
+            Vector3f light1 = new Vector3f(-0.85F, 0.85F, 1F).normalize();
             RenderSystem.setupLevelDiffuseLighting(light0, light1);
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
@@ -295,7 +297,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             stack.pop();
             stack.pop();
 
-            net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
+            DiffuseLighting.disableGuiDepthLighting();
             RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }

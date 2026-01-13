@@ -403,12 +403,29 @@ public abstract class BaseFilmController
         int background = (int) (opacity * 255F) << 24;
         float h = (float) (-textRenderer.getWidth(text) / 2);
 
-        textRenderer.draw(text, h, 0, 0x20ffffff, false, matrix4f, vertexConsumers, sneaking ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, background, light);
+        int maxLight = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 
-        if (sneaking)
-        {
-            textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, light);
-        }
+            RenderSystem.enableBlend();
+            RenderSystem.disableCull();
+
+            CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
+
+            CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
+            {
+                RenderSystem.disableDepthTest();
+            });
+
+            textRenderer.draw(text, h, 0, 0x00FFFFFF, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, background, maxLight);
+            consumers.draw();
+
+            textRenderer.draw(text, h, 0, -1, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, 0, maxLight);
+            consumers.draw();
+
+            CustomVertexConsumerProvider.clearRunnables();
+            RenderSystem.enableDepthTest();
+
+            RenderSystem.enableCull();
+            RenderSystem.disableBlend();
 
         matrices.pop();
     }
@@ -732,7 +749,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-        filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
 
             filmContext.stack.push();
 

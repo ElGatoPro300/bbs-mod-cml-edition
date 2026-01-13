@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.ui.forms;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.forms.FormCategories;
 import mchorse.bbs_mod.forms.FormUtils;
@@ -22,11 +23,8 @@ import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.render.DiffuseLighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.joml.Vector3f;
 import org.joml.Matrix3f;
-
-
 
 import java.util.ArrayList;
 import java.util.List;
