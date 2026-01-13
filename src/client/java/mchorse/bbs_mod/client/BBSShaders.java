@@ -43,6 +43,7 @@ public class BBSShaders
         try
         {
             ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+
             multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
             subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
 
@@ -60,7 +61,6 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        // Usar programa vanilla para VAO en modo normal; no cargar shader "model" propio
         return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
     }
 
@@ -113,7 +113,7 @@ public class BBSShaders
         {
             if (id.getPath().contains("/core/"))
             {
-        return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
+                return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
             }
 
             return this.manager.getResource(id);

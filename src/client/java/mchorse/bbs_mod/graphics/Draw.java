@@ -105,9 +105,6 @@ public class Draw
 
     public static void fillBoxTo(BufferBuilder builder, MatrixStack stack, float x1, float y1, float z1, float x2, float y2, float z2, float thickness, float r, float g, float b, float a)
     {
-        // Safeguard: if stack is null (can happen in some world render passes),
-        // create a new MatrixStack and apply the current ModelView matrix so
-        // drawing aligns with active camera transforms.
         if (stack == null)
         {
             stack = new MatrixStack();

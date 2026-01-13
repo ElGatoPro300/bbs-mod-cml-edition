@@ -401,35 +401,26 @@ public abstract class BaseFilmController
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         float opacity = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
-            int background = (int) (opacity * 255F) << 24;
-            float h = (float) (-textRenderer.getWidth(text) / 2);
+        int background = (int) (opacity * 255F) << 24;
+        float h = (float) (-textRenderer.getWidth(text) / 2);
 
-            // Ensure max light for the name tag so it doesn't get affected by shadows
-            int maxLight = net.minecraft.client.render.LightmapTextureManager.MAX_LIGHT_COORDINATE;
+        int maxLight = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 
             RenderSystem.enableBlend();
             RenderSystem.disableCull();
 
             CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
 
-            // Use hijack to force depth test disabled for both background and text
-            // We render in two passes to ensure the background is drawn BEFORE the text
-            // This prevents the background from rendering on top of the text (making it gray)
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 RenderSystem.disableDepthTest();
             });
 
-            // Pass 1: Background only
-            // Text color is 0 (transparent) so only background is visible
             textRenderer.draw(text, h, 0, 0x00FFFFFF, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, background, maxLight);
-            consumers.draw(); // Flush background layer
+            consumers.draw();
 
-            // Pass 2: Text only
-            // Background is 0 (disabled) so only text is visible
-            // This ensures text is drawn ON TOP of the background
             textRenderer.draw(text, h, 0, -1, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, 0, maxLight);
-            consumers.draw(); // Flush text layer
+            consumers.draw();
 
             CustomVertexConsumerProvider.clearRunnables();
             RenderSystem.enableDepthTest();
@@ -759,7 +750,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-        filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
 
             filmContext.stack.push();
 

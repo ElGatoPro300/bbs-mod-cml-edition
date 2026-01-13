@@ -103,9 +103,8 @@ public class UIVanillaStructureList extends UIStringList
         for (Map.Entry<Identifier, List<Resource>> entry : resources.entrySet())
         {
             Identifier id = entry.getKey();
-            String path = id.getPath(); // e.g., "structure/village/plains/house_1.nbt"
+            String path = id.getPath(); /* e.g., "structure/village/plains/house_1.nbt" */
             
-            // Remove "structure/" prefix and ".nbt" suffix for display
             String relativePath = path;
             if (relativePath.startsWith("structure/"))
             {

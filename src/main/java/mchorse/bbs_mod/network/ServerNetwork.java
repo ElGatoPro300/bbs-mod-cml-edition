@@ -149,7 +149,6 @@ public class ServerNetwork
 
     public static void setup()
     {
-        // Register codecs for server-bound (playC2S)
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_MODEL_BLOCK_FORM_PACKET), BufPayload.codecFor(idFor(SERVER_MODEL_BLOCK_FORM_PACKET)));
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_MODEL_BLOCK_TRANSFORMS_PACKET), BufPayload.codecFor(idFor(SERVER_MODEL_BLOCK_TRANSFORMS_PACKET)));
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_PLAYER_FORM_PACKET), BufPayload.codecFor(idFor(SERVER_PLAYER_FORM_PACKET)));
@@ -164,9 +163,6 @@ public class ServerNetwork
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_ZOOM), BufPayload.codecFor(idFor(SERVER_ZOOM)));
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_PAUSE_FILM), BufPayload.codecFor(idFor(SERVER_PAUSE_FILM)));
 
-        // Register codecs for client-bound (playS2C) only once per side.
-        // En entorno de cliente, el registro también ocurre en ClientNetwork.setup();
-        // aquí evitamos el doble registro que provoca "Id[id=bbs:c1] is already registered".
         try {
             Class<?> envTypeClass = Class.forName("net.fabricmc.api.EnvType");
             Class<?> loaderClass = Class.forName("net.fabricmc.loader.api.FabricLoader");
@@ -194,10 +190,8 @@ public class ServerNetwork
                 PayloadTypeRegistry.playS2C().register(idFor(CLIENT_REFRESH_MODEL_BLOCKS), BufPayload.codecFor(idFor(CLIENT_REFRESH_MODEL_BLOCKS)));
             }
         } catch (Throwable t) {
-            // Si por cualquier motivo la reflexión falla, no registrar aquí para evitar duplicados en cliente.
         }
 
-        // Register receivers for server-bound payloads
         ServerPlayNetworking.registerGlobalReceiver(idFor(SERVER_MODEL_BLOCK_FORM_PACKET), (payload, context) -> handleModelBlockFormPacket(context.server(), context.player(), payload.asPacketByteBuf()));
         ServerPlayNetworking.registerGlobalReceiver(idFor(SERVER_MODEL_BLOCK_TRANSFORMS_PACKET), (payload, context) -> handleModelBlockTransformsPacket(context.server(), context.player(), payload.asPacketByteBuf()));
         ServerPlayNetworking.registerGlobalReceiver(idFor(SERVER_PLAYER_FORM_PACKET), (payload, context) -> handlePlayerFormPacket(context.server(), context.player(), payload.asPacketByteBuf()));

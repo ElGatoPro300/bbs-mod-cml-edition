@@ -48,11 +48,6 @@ public class Camera
         return CameraUtils.getMouseDirection(this.projection, this.view, mx, my, vx, vy, w, h);
     }
 
-    /**
-     * Compute mouse ray using camera FOV and rotation only.
-     * This avoids relying on external matrices that may carry
-     * translation or stale state and fixes angle clamping issues.
-     */
     public Vector3f getMouseDirectionFov(int mx, int my, int vx, int vy, int w, int h)
     {
         float nx = ((mx - vx) - w / 2F) / (w / 2F);
@@ -61,22 +56,17 @@ public class Camera
         float aspect = w / (float) h;
         float tanHalfFov = (float) Math.tan(this.fov / 2F);
 
-        // Base de cámara a partir de la misma convención que getLookDirection
         Vector3f forward = Matrices.rotation(this.rotation.x, MathUtils.PI - this.rotation.y).normalize();
         Vector3f upWorld = new Vector3f(0F, 1F, 0F);
 
-        // right = forward x upWorld (sistema diestro, evita inversión lateral)
         Vector3f right = new Vector3f(forward).cross(upWorld).normalize();
         if (right.lengthSquared() < 1e-6f)
         {
-            // Mirando casi vertical: usa eje X como respaldo
             right.set(1F, 0F, 0F);
         }
 
-        // upCam = right x forward
         Vector3f upCam = new Vector3f(right).cross(forward).normalize();
 
-        // Construir el rayo desde el centro sumando offsets en right/up
         Vector3f dir = new Vector3f(forward)
             .add(new Vector3f(right).mul(nx * tanHalfFov * aspect))
             .add(new Vector3f(upCam).mul(ny * tanHalfFov))

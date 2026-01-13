@@ -45,7 +45,6 @@ public class StructureVAOCollector implements VertexConsumer
     @Override
     public VertexConsumer vertex(float x, float y, float z)
     {
-        // Finalizar vértice previo si existía
         if (hasCurrent) finalizeCurrent();
         this.vx = x;
         this.vy = y;
@@ -57,7 +56,6 @@ public class StructureVAOCollector implements VertexConsumer
     @Override
     public VertexConsumer vertex(Matrix4f matrix, float x, float y, float z)
     {
-        // Finalizar vértice previo si existía
         if (hasCurrent) finalizeCurrent();
         Vector4f v = new Vector4f(x, y, z, 1F);
         v.mul(matrix);

@@ -1,10 +1,12 @@
 package mchorse.bbs_mod.film;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.util.collection.IntObjectMap;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -63,9 +65,8 @@ public class FilmControllerContext
         this.stack = context.matrixStack();
         if (this.stack == null)
         {
-            // Fallback: create a MatrixStack and apply current ModelView matrix
-            this.stack = new net.minecraft.client.util.math.MatrixStack();
-            mchorse.bbs_mod.utils.MatrixStackUtils.multiply(this.stack, com.mojang.blaze3d.systems.RenderSystem.getModelViewMatrix());
+            this.stack = new MatrixStack();
+            MatrixStackUtils.multiply(this.stack, RenderSystem.getModelViewMatrix());
         }
         this.consumers = context.consumers();
         this.transition = context.tickCounter().getTickDelta(false);

@@ -347,9 +347,6 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
                     }
                 }
 
-                // EnchantmentHelper methods for damage events were removed in 1.21
-                // The enchantment system now handles this automatically through attribute modifiers
-
                 this.onHit(livingEntity);
             }
         }

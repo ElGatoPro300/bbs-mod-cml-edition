@@ -5,10 +5,6 @@ import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.resources.FilteredLink;
 import mchorse.bbs_mod.utils.resources.MultiLink;
 
-/**
- * Compile-safe helper for constructing prefixed texture links.
- * PBR integration is handled reflectively in IrisUtils.setup() and may be a no-op.
- */
 public class IrisTextureWrapperLoader
 {
     public IrisTextureWrapperLoader() {}

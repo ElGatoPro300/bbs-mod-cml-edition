@@ -62,6 +62,9 @@ public class Gizmo
     public boolean start(int index, int mouseX, int mouseY, UIPropTransform transform)
     {
         if (!BBSSettings.gizmos.get())
+        {
+            return false;
+        }
 
         if (index >= STENCIL_X && index <= STENCIL_ZY)
         {

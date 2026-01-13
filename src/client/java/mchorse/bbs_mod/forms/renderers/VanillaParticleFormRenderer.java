@@ -97,7 +97,6 @@ public class VanillaParticleFormRenderer extends FormRenderer<VanillaParticleFor
                 ParticleType<?> type = Registries.PARTICLE_TYPE.get(settings.particle);
                 ParticleEffect effect = ParticleTypes.FLAME;
 
-                // Crear el efecto a partir del tipo seleccionado (soporta tipos simples en 1.21.1)
                 if (type instanceof net.minecraft.particle.SimpleParticleType simple)
                 {
                     effect = simple;

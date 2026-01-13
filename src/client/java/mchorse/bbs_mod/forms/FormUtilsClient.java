@@ -54,7 +54,7 @@ public class FormUtilsClient
 
     static
     {
-        // BlockBufferAllocatorStorage storage = new BlockBufferAllocatorStorage();
+        /* BlockBufferAllocatorStorage storage = new BlockBufferAllocatorStorage(); */
         java.util.SequencedMap sortedMap = Util.make(new Object2ObjectLinkedOpenHashMap(), map -> {
             map.put(TexturedRenderLayers.getEntitySolid(), new BufferAllocator(RenderLayer.getSolid().getExpectedBufferSize()));
             map.put(TexturedRenderLayers.getEntityCutout(), new BufferAllocator(RenderLayer.getCutout().getExpectedBufferSize()));

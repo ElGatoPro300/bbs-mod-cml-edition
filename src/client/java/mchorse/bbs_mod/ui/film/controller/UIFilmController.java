@@ -1038,18 +1038,15 @@ public class UIFilmController extends UIElement
         {
             worldStack.push();
             worldStack.loadIdentity();
-            // Usar la matriz de cámara capturada en setupFrustum para replicar el ORIGINAL
             MatrixStackUtils.multiply(worldStack, BBSRendering.camera);
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
             worldStack.pop();
         }
         else
         {
-            // Fallback: usar el ModelViewStack global cuando no hay MatrixStack del mundo
             Matrix4fStack mvStack = RenderSystem.getModelViewStack();
             mvStack.pushMatrix();
             mvStack.identity();
-            // Mantener la vista sincronizada con la cámara del mundo
             mvStack.set(BBSRendering.camera);
             RenderSystem.applyModelViewMatrix();
 
@@ -1217,7 +1214,7 @@ public class UIFilmController extends UIElement
 
                 BaseFilmController.renderEntity(FilmControllerContext.instance
                     .setup(this.getEntities(), entry.getValue(), replay, renderContext)
-            .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+                    .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
                     .stencil(this.stencilMap)
                     .relative(replay.relative.get()));
             }
@@ -1229,7 +1226,7 @@ public class UIFilmController extends UIElement
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
-            .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+                .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
                 .stencil(this.stencilMap)
                 .relative(replay.relative.get())
                 .bone(bone == null ? null : bone.a, bone != null && bone.b));

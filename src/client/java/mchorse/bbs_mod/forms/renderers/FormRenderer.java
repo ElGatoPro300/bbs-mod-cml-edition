@@ -177,7 +177,6 @@ public abstract class FormRenderer <T extends Form>
         {
             ShaderProgram program = picking.get();
 
-            // Si el shader de picking no está disponible, usar el shader normal para evitar crash
             if (program == null)
             {
                 return normal;
@@ -185,7 +184,6 @@ public abstract class FormRenderer <T extends Form>
 
             this.setupTarget(context, program);
 
-            // Devolver un supplier seguro que siempre retorna el programa no nulo
             return () -> program;
         }
 

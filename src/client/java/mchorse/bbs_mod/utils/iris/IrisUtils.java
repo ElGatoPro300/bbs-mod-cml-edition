@@ -24,6 +24,7 @@ import net.irisshaders.iris.uniforms.custom.cached.IntCachedUniform;
 import net.irisshaders.iris.vertices.NormI8;
 import net.irisshaders.iris.vertices.NormalHelper;
 import net.irisshaders.iris.vertices.views.TriView;
+import net.minecraft.client.texture.AbstractTexture;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Constructor;
 
 public class IrisUtils
 {
@@ -152,7 +156,7 @@ public class IrisUtils
             }
 
             Object registryInstance = registryClass.getField("INSTANCE").get(null);
-            java.lang.reflect.Method register = registryClass.getMethod("register", Class.class, loaderInterface);
+            Method register = registryClass.getMethod("register", Class.class, loaderInterface);
 
             Class<?> pbrTypeClass;
             try
@@ -173,8 +177,8 @@ public class IrisUtils
 
             Class<?> singleColorClass = Class.forName("net.irisshaders.iris.targets.backed.NativeImageBackedSingleColorTexture");
 
-            java.lang.reflect.Method loadMethod = null;
-            for (java.lang.reflect.Method m : loaderInterface.getMethods())
+            Method loadMethod = null;
+            for (Method m : loaderInterface.getMethods())
             {
                 if (m.getName().equals("load") && m.getParameterTypes().length == 3)
                 {
@@ -183,25 +187,25 @@ public class IrisUtils
                 }
             }
 
-            final java.lang.reflect.Method finalLoadMethod = loadMethod;
+            final Method finalLoadMethod = loadMethod;
             final Class<?> consumerClass = loadMethod != null ? loadMethod.getParameterTypes()[2] : null;
-            final java.lang.reflect.Method acceptNormal;
-            final java.lang.reflect.Method acceptSpecular;
-            java.lang.reflect.Method acceptGeneric = null;
+            final Method acceptNormal;
+            final Method acceptSpecular;
+            Method acceptGeneric = null;
             if (consumerClass != null)
             {
-                java.lang.reflect.Method aNormal = null;
-                java.lang.reflect.Method aSpec = null;
-                for (java.lang.reflect.Method mth : consumerClass.getMethods())
+                Method aNormal = null;
+                Method aSpec = null;
+                for (Method mth : consumerClass.getMethods())
                 {
                     Class<?>[] pts = mth.getParameterTypes();
-                    if (pts.length == 1 && net.minecraft.client.texture.AbstractTexture.class.isAssignableFrom(pts[0]))
+                    if (pts.length == 1 && AbstractTexture.class.isAssignableFrom(pts[0]))
                     {
                         String nm = mth.getName().toLowerCase();
                         if (nm.contains("normal")) aNormal = mth;
                         if (nm.contains("specular")) aSpec = mth;
                     }
-                    else if (pts.length == 2 && pts[0].isEnum() && net.minecraft.client.texture.AbstractTexture.class.isAssignableFrom(pts[1]))
+                    else if (pts.length == 2 && pts[0].isEnum() && AbstractTexture.class.isAssignableFrom(pts[1]))
                     {
                         acceptGeneric = mth;
                     }
@@ -215,15 +219,15 @@ public class IrisUtils
                 acceptSpecular = null;
             }
 
-            final java.lang.reflect.Method getDefaultValue = pbrTypeClass.getMethod("getDefaultValue");
-            final Object normalEnum = java.lang.Enum.valueOf((Class<java.lang.Enum>) pbrTypeClass.asSubclass(java.lang.Enum.class), "NORMAL");
-            final Object specularEnum = java.lang.Enum.valueOf((Class<java.lang.Enum>) pbrTypeClass.asSubclass(java.lang.Enum.class), "SPECULAR");
+            final Method getDefaultValue = pbrTypeClass.getMethod("getDefaultValue");
+            final Object normalEnum = Enum.valueOf((Class<Enum>) pbrTypeClass.asSubclass(Enum.class), "NORMAL");
+            final Object specularEnum = Enum.valueOf((Class<Enum>) pbrTypeClass.asSubclass(Enum.class), "SPECULAR");
 
             final Object[] defaults = new Object[2];
 
-            final java.lang.reflect.Method finalAcceptGeneric = acceptGeneric;
+            final Method finalAcceptGeneric = acceptGeneric;
 
-            Object proxy = java.lang.reflect.Proxy.newProxyInstance(
+            Object proxy = Proxy.newProxyInstance(
                 loaderInterface.getClassLoader(),
                 new Class<?>[]{loaderInterface},
                 (p, m, args) -> {
@@ -237,9 +241,9 @@ public class IrisUtils
                             Object normalDefault = getDefaultValue.invoke(normalEnum);
                             Object specDefault = getDefaultValue.invoke(specularEnum);
 
-                            java.lang.reflect.Constructor<?> chosenN = null;
-                            java.lang.reflect.Constructor<?> chosenS = null;
-                            for (java.lang.reflect.Constructor<?> c : singleColorClass.getConstructors())
+                            Constructor<?> chosenN = null;
+                            Constructor<?> chosenS = null;
+                            for (Constructor<?> c : singleColorClass.getConstructors())
                             {
                                 Class<?>[] pt = c.getParameterTypes();
                                 if (pt.length == 1)
@@ -259,8 +263,8 @@ public class IrisUtils
                             Link normalKey = helper.createPrefixedCopy(wrapper.texture, "_n.png");
                             Link specularKey = helper.createPrefixedCopy(wrapper.texture, "_s.png");
 
-                            IrisTextureWrapper normalWrapper = new IrisTextureWrapper(normalKey, (net.minecraft.client.texture.AbstractTexture) defaults[0], wrapper.index);
-                            IrisTextureWrapper specWrapper = new IrisTextureWrapper(specularKey, (net.minecraft.client.texture.AbstractTexture) defaults[1], wrapper.index);
+                            IrisTextureWrapper normalWrapper = new IrisTextureWrapper(normalKey, (AbstractTexture) defaults[0], wrapper.index);
+                            IrisTextureWrapper specWrapper = new IrisTextureWrapper(specularKey, (AbstractTexture) defaults[1], wrapper.index);
 
                             if (acceptNormal != null) acceptNormal.invoke(consumer, normalWrapper);
                             if (acceptSpecular != null) acceptSpecular.invoke(consumer, specWrapper);
@@ -330,8 +334,8 @@ public class IrisUtils
 
                     Object tracker = trackerClass.getField("INSTANCE").get(null);
 
-                    java.lang.reflect.Method trackMethod = null;
-                    for (java.lang.reflect.Method m : trackerClass.getMethods())
+                    Method trackMethod = null;
+                    for (Method m : trackerClass.getMethods())
                     {
                         Class<?>[] p = m.getParameterTypes();
                         if (m.getName().equals("trackTexture") && p.length == 2 && p[0] == int.class)
@@ -343,7 +347,7 @@ public class IrisUtils
 
                     if (trackMethod == null)
                     {
-                        for (java.lang.reflect.Method m : trackerClass.getDeclaredMethods())
+                        for (Method m : trackerClass.getDeclaredMethods())
                         {
                             Class<?>[] p = m.getParameterTypes();
                             if (m.getName().equals("trackTexture") && p.length == 2 && p[0] == int.class)
