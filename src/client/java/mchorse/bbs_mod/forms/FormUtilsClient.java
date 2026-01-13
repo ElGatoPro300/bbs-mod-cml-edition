@@ -59,7 +59,7 @@ public class FormUtilsClient
             map.put(TexturedRenderLayers.getEntitySolid(), new BufferAllocator(RenderLayer.getSolid().getExpectedBufferSize()));
             map.put(TexturedRenderLayers.getEntityCutout(), new BufferAllocator(RenderLayer.getCutout().getExpectedBufferSize()));
             map.put(TexturedRenderLayers.getBannerPatterns(), new BufferAllocator(RenderLayer.getCutoutMipped().getExpectedBufferSize()));
-            map.put(TexturedRenderLayers.getEntityTranslucentCull(), new BufferAllocator(RenderLayer.getTranslucent().getExpectedBufferSize()));
+            map.put(TexturedRenderLayers.getItemEntityTranslucentCull(), new BufferAllocator(RenderLayer.getTranslucent().getExpectedBufferSize()));
             assignBufferBuilder(map, RenderLayer.getSolid());
             assignBufferBuilder(map, RenderLayer.getCutout());
             assignBufferBuilder(map, RenderLayer.getTranslucent());
@@ -80,7 +80,7 @@ public class FormUtilsClient
             assignBufferBuilder(map, RenderLayer.getDirectEntityGlint());
             assignBufferBuilder(map, RenderLayer.getWaterMask());
             */
-            ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer));
+            // ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer));
         });
 
         customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferAllocator(1536), sortedMap);

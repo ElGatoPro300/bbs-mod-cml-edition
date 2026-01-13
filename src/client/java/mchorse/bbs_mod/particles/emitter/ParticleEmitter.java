@@ -25,6 +25,7 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;

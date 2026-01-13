@@ -67,6 +67,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
+import org.joml.Matrix4fStack;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector2i;

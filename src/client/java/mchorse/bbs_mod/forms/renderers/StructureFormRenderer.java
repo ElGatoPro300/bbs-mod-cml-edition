@@ -34,6 +34,8 @@ import net.minecraft.block.VineBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.option.GraphicsMode;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -47,13 +49,14 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtTagSizeTracker;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.state.property.Property;
@@ -177,7 +180,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             boolean shaders = this.isShadersActive();
             VertexConsumerProvider consumers = shaders
                 ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                : VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                : VertexConsumerProvider.immediate(new BufferAllocator(256));
 
             try
             {
@@ -212,8 +215,8 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 gameRenderer.getOverlayTexture().setupOverlayColor();
 
                 /* Revert to own model shader in vanilla to ensure VAO compatibility */
-                RenderSystem.setShader(() -> shader);
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShader(shader);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
                 /* Enable blending to support translucent layers (glass, portal, leaves, etc.) */
                 RenderSystem.enableBlend();
@@ -244,7 +247,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
                     VertexConsumerProvider consumersTint = shadersEnabled
                         ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                        : VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        : VertexConsumerProvider.immediate(new BufferAllocator(256));
                     FormRenderingContext tintContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
 
@@ -264,7 +267,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                     boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
                     VertexConsumerProvider consumersAnim = shadersEnabled
                         ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                        : VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                        : VertexConsumerProvider.immediate(new BufferAllocator(256));
                     FormRenderingContext animContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
 
@@ -325,7 +328,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
                 RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
                 RenderSystem.enableBlend();
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
                 ModelVAORenderer.render(BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
 
@@ -343,14 +346,14 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 boolean shaders = this.isShadersActive();
                 VertexConsumerProvider consumers = shaders
                     ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                    : VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    : VertexConsumerProvider.immediate(new BufferAllocator(256));
                 GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
 
                 /* Align state handling with VAO path to avoid state leaks affecting the first model rendered after. */
                 gameRenderer.getLightmapTextureManager().enable();
                 gameRenderer.getOverlayTexture().setupOverlayColor();
                 /* Ensure block atlas is active when starting the pass */
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
                 try
                 {
@@ -392,19 +395,24 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
                 RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
                 RenderSystem.enableBlend();
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
                 ModelVAORenderer.render(BBSShaders.getPickerModelsProgram(), this.structureVaoPicking, context.stack, tint3D.r, tint3D.g, tint3D.b, tint3D.a, light, context.overlay);
             }
             else
             {
                 /* VAO with shader compatible with packs: use translucent entity program when Iris is active */
-                ShaderProgram shader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld())
-                    ? GameRenderer.getRenderTypeEntityTranslucentCullProgram()
-                    : BBSShaders.getModel();
+                if (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld())
+                {
+                    RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                }
+                else
+                {
+                    RenderSystem.setShader(BBSShaders.getModel());
+                }
+                ShaderProgram shader = RenderSystem.getShader();
 
-                RenderSystem.setShader(() -> shader);
-                RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+                RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
 
@@ -428,7 +436,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Additional pass: biome tinted blocks */
                 try
                 {
-                    VertexConsumerProvider.Immediate tintConsumers = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    VertexConsumerProvider.Immediate tintConsumers = VertexConsumerProvider.immediate(new BufferAllocator(256));
 
                     this.renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
                     tintConsumers.draw();
@@ -439,7 +447,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Additional pass: animated blocks (portal/fluid) with moving block layer */
                 try
                 {
-                    VertexConsumerProvider.Immediate animConsumers = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                    VertexConsumerProvider.Immediate animConsumers = VertexConsumerProvider.immediate(new BufferAllocator(256));
 
                     this.renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
                     animConsumers.draw();
@@ -606,7 +614,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             /* of WorldRenderer. This ensures compatibility */
             /* with shaders (Iris/Sodium) for translucent and special layers. */
             layer = useEntityLayers
-                ? RenderLayers.getEntityBlockLayer(entry.state, false)
+                ? RenderLayers.getEntityBlockLayer(entry.state)
                 : RenderLayers.getBlockLayer(entry.state);
 
             /* If there is global opacity (<1), force translucent layer for all blocks */
@@ -710,7 +718,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     private void renderAnimatedBlocksVanilla(FormRenderingContext context, MatrixStack stack, VertexConsumerProvider consumers, int light, int overlay)
     {
         /* Ensure block atlas is active */
-        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
         RenderInfo info = this.calculateRenderInfo(context, false);
 
@@ -734,7 +742,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             /* Layer selection: in shaders use entity variant so the pack processes the animation */
             shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
             layer = shadersEnabled
-                ? RenderLayers.getEntityBlockLayer(entry.state, true)
+                ? RenderLayers.getEntityBlockLayer(entry.state)
                 : RenderLayer.getTranslucentMovingBlock();
 
             /* If global alpha exists, prefer translucent entity layer in shaders to ensure smooth fade */
@@ -772,7 +780,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         /* Ensure block atlas is active */
-        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
         RenderInfo info = this.calculateRenderInfo(context, false);
 
@@ -796,7 +804,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             /* Layer according to state; in shaders use entity variant for packs */
             shadersEnabledTint = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
             layer = shadersEnabledTint
-                ? RenderLayers.getEntityBlockLayer(entry.state, false)
+                ? RenderLayers.getEntityBlockLayer(entry.state)
                 : RenderLayers.getBlockLayer(entry.state);
 
             /* If there is global opacity (<1), force translucent layer so alpha */
@@ -1051,7 +1059,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(nbtFile.toPath(), NbtSizeTracker.ofUnlimitedBytes());
 
                 this.parseStructure(root);
 
@@ -1066,7 +1074,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             try
             {
-                NbtCompound root = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound root = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
 
                 this.parseStructure(root);
             }
@@ -1273,7 +1281,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         try
         {
-            Identifier id = new Identifier(name);
+            Identifier id = Identifier.of(name);
 
             block = Registries.BLOCK.get(id);
 

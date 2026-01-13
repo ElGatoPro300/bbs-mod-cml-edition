@@ -185,7 +185,7 @@ public class BBSMod implements ModInitializer
         .noCollision()
         .nonOpaque()
         .notSolid()
-        .strength(0F));
+        .strength(0F)
         .luminance((state) -> state.get(ModelBlock.LIGHT_LEVEL)));
     public static final Block CHROMA_RED_BLOCK = createChromaBlock("chroma_red");
     public static final Block CHROMA_GREEN_BLOCK = createChromaBlock("chroma_green");
