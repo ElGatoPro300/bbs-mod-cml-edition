@@ -28,9 +28,9 @@ public class FluidForm extends Form
     public final ValueBoolean smoothShading = new ValueBoolean("smoothShading", true);
 
     /* Full Ocean */
-    public final ValueFloat scaleX = new ValueFloat("scaleX", 10F);
-    public final ValueFloat scaleY = new ValueFloat("scaleY", 1F);
-    public final ValueFloat scaleZ = new ValueFloat("scaleZ", 10F);
+    public final ValueFloat sizeX = new ValueFloat("sizeX", 10F);
+    public final ValueFloat sizeY = new ValueFloat("sizeY", 1F);
+    public final ValueFloat sizeZ = new ValueFloat("sizeZ", 10F);
     public final ValueBoolean fillBlock = new ValueBoolean("fillBlock", false);
     public final ValueFloat waveAmplitude = new ValueFloat("waveAmplitude", 0.5F);
     public final ValueFloat waveFrequency = new ValueFloat("waveFrequency", 1F);
@@ -54,9 +54,9 @@ public class FluidForm extends Form
         this.add(this.subdivisions);
         this.add(this.smoothShading);
 
-        this.add(this.scaleX);
-        this.add(this.scaleY);
-        this.add(this.scaleZ);
+        this.add(this.sizeX);
+        this.add(this.sizeY);
+        this.add(this.sizeZ);
         this.add(this.fillBlock);
         this.add(this.waveAmplitude);
         this.add(this.waveFrequency);
