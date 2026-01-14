@@ -90,6 +90,8 @@ public class BBSSettings
     public static ValueBoolean recordingSwipeDamage;
     public static ValueBoolean recordingOverlays;
     public static ValueInt recordingPoseTransformOverlays;
+    public static ValueInt recordingPoseOverlays;
+    public static ValueBoolean recordingPoseOverlaysMigrated;
     public static ValueBoolean recordingCameraPreview;
 
     public static ValueBoolean renderAllModelBlocks;
@@ -130,6 +132,27 @@ public class BBSSettings
     public static int getDefaultDuration()
     {
         return duration == null ? 30 : duration.get();
+    }
+
+    public static void migrate()
+    {
+        if (recordingPoseOverlaysMigrated == null)
+        {
+            return;
+        }
+
+        if (!recordingPoseOverlaysMigrated.get())
+        {
+            int transformOverlays = recordingPoseTransformOverlays == null ? 0 : recordingPoseTransformOverlays.get();
+            int poseOverlays = recordingPoseOverlays == null ? 0 : recordingPoseOverlays.get();
+
+            if (poseOverlays == 0 && transformOverlays > 0)
+            {
+                recordingPoseOverlays.set(transformOverlays);
+            }
+
+            recordingPoseOverlaysMigrated.set(true);
+        }
     }
 
     public static float getFov()
@@ -241,6 +264,11 @@ public class BBSSettings
         recordingSwipeDamage = builder.getBoolean("swipe_damage", false);
         recordingOverlays = builder.getBoolean("overlays", true);
         recordingPoseTransformOverlays = builder.getInt("pose_transform_overlays", 0, 0, 42);
+        recordingPoseOverlays = builder.getInt("pose_overlays", 0, 0, 42);
+        recordingPoseOverlays.invisible();
+        recordingPoseOverlaysMigrated = builder.getBoolean("pose_overlays_migrated", false);
+        recordingPoseOverlaysMigrated.invisible();
+
         recordingCameraPreview = builder.getBoolean("camera_preview", true);
 
         builder.category("model_blocks");
