@@ -76,9 +76,30 @@ public class Gizmo
 
             if (transform != null)
             {
-                if (this.index == STENCIL_X) transform.enableMode(this.mode.ordinal(), Axis.X);
-                else if (this.index == STENCIL_Y) transform.enableMode(this.mode.ordinal(), Axis.Y);
-                else if (this.index == STENCIL_Z) transform.enableMode(this.mode.ordinal(), Axis.Z);
+                if (this.index == STENCIL_X)
+                {
+                    transform.enableMode(this.mode.ordinal(), Axis.X);
+                }
+                else if (this.index == STENCIL_Y)
+                {
+                    transform.enableMode(this.mode.ordinal(), Axis.Y);
+                }
+                else if (this.index == STENCIL_Z)
+                {
+                    transform.enableMode(this.mode.ordinal(), Axis.Z);
+                }
+                else if (this.index == STENCIL_XY)
+                {
+                    transform.enablePlaneMode(this.mode.ordinal(), Axis.X, Axis.Y);
+                }
+                else if (this.index == STENCIL_XZ)
+                {
+                    transform.enablePlaneMode(this.mode.ordinal(), Axis.X, Axis.Z);
+                }
+                else if (this.index == STENCIL_ZY)
+                {
+                    transform.enablePlaneMode(this.mode.ordinal(), Axis.Z, Axis.Y);
+                }
             }
 
             return true;
@@ -165,6 +186,17 @@ public class Gizmo
             Draw.fillBox(builder, stack, -axisOffset, -axisOffset, 0, axisOffset, axisOffset, axisSize, 0F, 0F, 1F);
             Draw.fillBox(builder, stack, -axisOffset, -axisOffset, -axisOffset, axisOffset, axisOffset, axisOffset, 1F, 1F, 1F);
 
+            if (this.mode == Mode.TRANSLATE)
+            {
+                float planeInner = axisSize * 0.25F;
+                float planeOuter = axisSize * 0.65F;
+                float offset = 0.001F;
+
+                Draw.fillBox(builder, stack, planeInner, -offset, planeInner, planeOuter, offset, planeOuter, 0F, 1F, 0F);
+                Draw.fillBox(builder, stack, planeInner, planeInner, -offset, planeOuter, planeOuter, offset, 0F, 0F, 1F);
+                Draw.fillBox(builder, stack, -offset, planeInner, planeInner, offset, planeOuter, planeOuter, 1F, 0F, 0F);
+            }
+
             if (this.mode == Mode.SCALE)
             {
                 float scaleEnd = axisSize + axisOffset;
@@ -236,13 +268,16 @@ public class Gizmo
                 Draw.fillBox(builder, stack, -axisOffset * 2F, -axisOffset * 2F, axisSize, axisOffset * 2F, axisOffset * 2F, scaleEnd, STENCIL_Z / 255F, 0F, 0F);
             }
 
-            /* float l = axisSize * 0.25F;
-            float o = 0.001F;
-            float rr = axisSize * 0.65F;
+            if (this.mode == Mode.TRANSLATE)
+            {
+                float planeInner = axisSize * 0.25F;
+                float offset = 0.001F;
+                float planeOuter = axisSize * 0.65F;
 
-            Draw.fillBox(builder, stack, l, -o, l, rr, o, rr, STENCIL_XZ / 255F, 0F, 0F);
-            Draw.fillBox(builder, stack, l, l, -o, rr, rr, o, STENCIL_XY / 255F, 0F, 0F);
-            Draw.fillBox(builder, stack, -o, l, l, o, rr, rr, STENCIL_ZY / 255F, 0F, 0F); */
+                Draw.fillBox(builder, stack, planeInner, -offset, planeInner, planeOuter, offset, planeOuter, STENCIL_XZ / 255F, 0F, 0F);
+                Draw.fillBox(builder, stack, planeInner, planeInner, -offset, planeOuter, planeOuter, offset, STENCIL_XY / 255F, 0F, 0F);
+                Draw.fillBox(builder, stack, -offset, planeInner, planeInner, offset, planeOuter, planeOuter, STENCIL_ZY / 255F, 0F, 0F);
+            }
         }
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);

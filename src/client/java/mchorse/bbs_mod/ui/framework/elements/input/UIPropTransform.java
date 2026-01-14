@@ -36,7 +36,9 @@ public class UIPropTransform extends UITransform
     private boolean editing;
     private int mode;
     private Axis axis = Axis.X;
+    private Axis secondaryAxis;
     private int lastX;
+    private int lastY;
     private Transform cache = new Transform();
     private Timer checker = new Timer(30);
 
@@ -212,14 +214,42 @@ public class UIPropTransform extends UITransform
             Axis[] values = Axis.values();
 
             this.axis = values[MathUtils.cycler(this.axis.ordinal() + 1, 0, values.length - 1)];
+            this.secondaryAxis = null;
 
             this.restore(true);
         }
         else
         {
             this.axis = axis == null ? Axis.X : axis;
+            this.secondaryAxis = null;
             this.lastX = context.mouseX;
+            this.lastY = context.mouseY;
         }
+
+        this.editing = true;
+        this.mode = mode;
+
+        this.cache.copy(this.transform);
+
+        if (!this.handler.hasParent())
+        {
+            context.menu.overlay.add(this.handler);
+        }
+    }
+
+    public void enablePlaneMode(int mode, Axis primary, Axis secondary)
+    {
+        if (Gizmo.INSTANCE.setMode(Gizmo.Mode.values()[mode]) && primary == null)
+        {
+            return;
+        }
+
+        UIContext context = this.getContext();
+
+        this.axis = primary == null ? Axis.X : primary;
+        this.secondaryAxis = secondary;
+        this.lastX = context.mouseX;
+        this.lastY = context.mouseY;
 
         this.editing = true;
         this.mode = mode;
@@ -383,9 +413,12 @@ public class UIPropTransform extends UITransform
 
             MinecraftClient mc = MinecraftClient.getInstance();
             int w = mc.getWindow().getWidth();
+            int h = mc.getWindow().getHeight();
 
             double rawX = CURSOR_X[0];
+            double rawY = CURSOR_Y[0];
             double fx = Math.ceil(w / (double) context.menu.width);
+            double fy = Math.ceil(h / (double) context.menu.height);
             int border = 5;
             int borderPadding = border + 1;
 
@@ -403,9 +436,24 @@ public class UIPropTransform extends UITransform
                 this.lastX = (int) (borderPadding / fx);
                 this.checker.mark();
             }
+            else if (rawY <= border)
+            {
+                Window.moveCursor((int) mc.mouse.getX(), h - borderPadding);
+
+                this.lastY = context.menu.height - (int) (borderPadding / fy);
+                this.checker.mark();
+            }
+            else if (rawY >= h - border)
+            {
+                Window.moveCursor((int) mc.mouse.getX(), borderPadding);
+
+                this.lastY = (int) (borderPadding / fy);
+                this.checker.mark();
+            }
             else
             {
                 int dx = context.mouseX - this.lastX;
+                int dy = context.mouseY - this.lastY;
                 Vector3f vector = this.getValue();
                 boolean all = this.mode == 1 && Window.isCtrlPressed();
                 UITrackpad reference = this.mode == 0 ? this.tx : (this.mode == 1 ? this.sx : this.rx);
@@ -426,9 +474,40 @@ public class UIPropTransform extends UITransform
                         vector3f.mul(180F / MathUtils.PI);
                     }
 
-                    if (this.axis == Axis.X || all) vector3f.x += factor * dx;
-                    if (this.axis == Axis.Y || all) vector3f.y += factor * dx;
-                    if (this.axis == Axis.Z || all) vector3f.z += factor * dx;
+                    if (this.mode == 0 && this.secondaryAxis != null)
+                    {
+                        if (this.axis == Axis.X)
+                        {
+                            vector3f.x += factor * dx;
+                        }
+                        else if (this.axis == Axis.Y)
+                        {
+                            vector3f.y += factor * dx;
+                        }
+                        else if (this.axis == Axis.Z)
+                        {
+                            vector3f.z += factor * dx;
+                        }
+
+                        if (this.secondaryAxis == Axis.X)
+                        {
+                            vector3f.x += factor * dy;
+                        }
+                        else if (this.secondaryAxis == Axis.Y)
+                        {
+                            vector3f.y += factor * dy;
+                        }
+                        else if (this.secondaryAxis == Axis.Z)
+                        {
+                            vector3f.z += factor * dy;
+                        }
+                    }
+                    else
+                    {
+                        if (this.axis == Axis.X || all) vector3f.x += factor * dx;
+                        if (this.axis == Axis.Y || all) vector3f.y += factor * dx;
+                        if (this.axis == Axis.Z || all) vector3f.z += factor * dx;
+                    }
 
                     if (this.mode == 0) this.setT(null, vector3f.x, vector3f.y, vector3f.z);
                     if (this.mode == 1) this.setS(null, vector3f.x, vector3f.y, vector3f.z);
@@ -442,6 +521,7 @@ public class UIPropTransform extends UITransform
                 this.setTransform(this.transform);
 
                 this.lastX = context.mouseX;
+                this.lastY = context.mouseY;
             }
         }
 
