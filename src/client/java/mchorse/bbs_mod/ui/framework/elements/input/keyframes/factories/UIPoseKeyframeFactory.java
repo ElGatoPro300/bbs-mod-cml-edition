@@ -295,16 +295,15 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                                 this.anchoredLegend.setVisible(true);
                                 this.anchoredLegend.label = legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant(bone));
 
-                                /* Reacomodar el panel para evitar huecos */
                                 UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);
                                 if (factory != null) { factory.resize(); }
 
-                                /* Renombrar automáticamente la pista usando títulos personalizados del Replay */
                                 mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
                                 if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                                 {
-                                    filmPanel.replayEditor.getReplay().setCustomSheetTitle(sheet.id, bone);
-                                    /* Evitar refresco pesado que cierra el editor; el título se reflejará en render */
+                                    mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                                    replay.setAnchoredBone(sheet.id, bone);
+                                    replay.setCustomSheetTitle(sheet.id, bone);
                                 }
                             }
                         }
@@ -333,15 +332,14 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                     sheet.anchoredBone = null;
                     this.anchoredLegend.setVisible(false);
 
-                    /* Quitar el título personalizado al desanclar y refrescar lista */
                     mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
                     if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                     {
-                        filmPanel.replayEditor.getReplay().setCustomSheetTitle(sheet.id, null);
-                        /* Sin refresco inmediato para no cerrar el panel actual */
+                        mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                        replay.setAnchoredBone(sheet.id, null);
+                        replay.setCustomSheetTitle(sheet.id, null);
                     }
 
-                    /* Reacomodar el panel para que la lista regrese a su sitio */
                     UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);
                     if (factory != null) { factory.resize(); }
                 }

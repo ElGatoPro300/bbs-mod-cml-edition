@@ -421,14 +421,14 @@ public class UIReplaysEditor extends UIElement
                 KeyframeChannel channel = (KeyframeChannel) value;
 
                 String customTitle = this.replay.getCustomSheetTitle(key);
+                String anchoredBone = this.replay.getAnchoredBone(key);
                 UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
                     ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, channel, null)
                     : new UIKeyframeSheet(getColor(key), false, channel, null);
 
-                /* Restaurar estado de anclaje desde título personalizado para canales de pose */
-                if (customTitle != null && !customTitle.isEmpty() && channel.getFactory() == KeyframeFactories.POSE)
+                if (anchoredBone != null && !anchoredBone.isEmpty())
                 {
-                    sheet.anchoredBone = customTitle;
+                    sheet.anchoredBone = anchoredBone;
                 }
 
                 sheets.add(sheet.icon(ICONS.get(key)));
@@ -448,14 +448,14 @@ public class UIReplaysEditor extends UIElement
                 {
                     BaseValueBasic formProperty = FormUtils.getProperty(this.replay.form.get(), key);
                     String customTitle = this.replay.getCustomSheetTitle(key);
+                    String anchoredBone = this.replay.getAnchoredBone(key);
                     UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
                         ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, property, formProperty)
                         : new UIKeyframeSheet(getColor(key), false, property, formProperty);
 
-                    /* Restaurar estado de anclaje desde título personalizado para propiedades de pose */
-                    if (customTitle != null && !customTitle.isEmpty() && property.getFactory() == KeyframeFactories.POSE)
+                    if (anchoredBone != null && !anchoredBone.isEmpty())
                     {
-                        sheet.anchoredBone = customTitle;
+                        sheet.anchoredBone = anchoredBone;
                     }
 
                     sheets.add(sheet.icon(getIcon(key)));

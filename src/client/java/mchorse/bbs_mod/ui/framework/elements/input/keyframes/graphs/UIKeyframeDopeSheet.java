@@ -659,7 +659,26 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             BufferRenderer.drawWithGlobalProgram(builder.end());
 
             FontRenderer font = context.batcher.getFont();
-            String displayTitle = sheet.anchoredBone != null ? sheet.anchoredBone : sheet.title.get();
+            String baseTitle = sheet.title.get();
+            String displayTitle;
+
+            if (sheet.anchoredBone != null)
+            {
+                String anchored = sheet.anchoredBone;
+
+                if (baseTitle.isEmpty() || baseTitle.equals(sheet.id) || baseTitle.equals(anchored))
+                {
+                    displayTitle = anchored;
+                }
+                else
+                {
+                    displayTitle = baseTitle;
+                }
+            }
+            else
+            {
+                displayTitle = baseTitle;
+            }
             int lw = font.getWidth(displayTitle);
 
             context.batcher.gradientHBox(area.ex() - lw - 10, y, area.ex(), y + (int) this.trackHeight, sheet.color, sheet.color | (hover ? Colors.A75 : Colors.A25));

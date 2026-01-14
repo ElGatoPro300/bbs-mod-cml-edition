@@ -46,6 +46,7 @@ public class Replay extends ValueGroup
     public final ValuePoint relativeOffset = new ValuePoint("relativeOffset", new Point(0, 0, 0));
 
     private final Map<String, String> customSheetTitles = new HashMap<>();
+    private final Map<String, String> anchoredBones = new HashMap<>();
     public final ValueBoolean axesPreview = new ValueBoolean("axes_preview", false);
     public final ValueString axesPreviewBone = new ValueString("axes_preview_bone", "");
     public final ValueBoolean isGroup = new ValueBoolean("is_group", false);
@@ -159,6 +160,23 @@ public class Replay extends ValueGroup
         }
     }
 
+    public String getAnchoredBone(String id)
+    {
+        return this.anchoredBones.get(id);
+    }
+
+    public void setAnchoredBone(String id, String bone)
+    {
+        if (bone == null || bone.isBlank())
+        {
+            this.anchoredBones.remove(id);
+        }
+        else
+        {
+            this.anchoredBones.put(id, bone);
+        }
+    }
+
     @Override
     public void copy(BaseValueGroup group)
     {
@@ -168,6 +186,8 @@ public class Replay extends ValueGroup
         {
             this.customSheetTitles.clear();
             this.customSheetTitles.putAll(other.customSheetTitles);
+            this.anchoredBones.clear();
+            this.anchoredBones.putAll(other.anchoredBones);
         }
     }
 
@@ -186,6 +206,18 @@ public class Replay extends ValueGroup
             }
 
             map.put("custom_sheet_titles", titles);
+        }
+
+        if (!this.anchoredBones.isEmpty())
+        {
+            MapType anchored = new MapType();
+
+            for (Map.Entry<String, String> entry : this.anchoredBones.entrySet())
+            {
+                anchored.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
+            }
+
+            map.put("anchored_bones", anchored);
         }
 
         return map;
@@ -209,6 +241,21 @@ public class Replay extends ValueGroup
                     if (value != null && value.isString())
                     {
                         this.customSheetTitles.put(key, value.asString());
+                    }
+                }
+            }
+
+            BaseType anchoredType = map.get("anchored_bones");
+
+            if (anchoredType instanceof MapType anchored)
+            {
+                for (String key : anchored.keys())
+                {
+                    BaseType value = anchored.get(key);
+
+                    if (value != null && value.isString())
+                    {
+                        this.anchoredBones.put(key, value.asString());
                     }
                 }
             }
