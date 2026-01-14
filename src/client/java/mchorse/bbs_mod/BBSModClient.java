@@ -341,22 +341,8 @@ public class BBSModClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        System.out.println("BBSModClient.onInitializeClient() called! Registering SpecialModelTypes.");
-        try {
-            System.out.println("SpecialModelTypes fields: " + Arrays.toString(SpecialModelTypes.class.getFields()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
-        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
-        System.out.println("Registered SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
 
         AssetProvider provider = BBSMod.getProvider();
-        
-        ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
-        {
-            provider.register(new MinecraftSourcePack());
-        });
 
         textures = new TextureManager(provider);
         framebuffers = new FramebufferManager();
@@ -604,18 +590,14 @@ public class BBSModClient implements ClientModInitializer
         });
 
         ClientLifecycleEvents.CLIENT_STOPPING.register((e) -> BBSResources.stopWatchdog());
-        ClientLifecycleEvents.CLIENT_STARTED.register((client) ->
+        ClientLifecycleEvents.CLIENT_STARTED.register((e) ->
         {
             BBSRendering.setupFramebuffer();
-            System.out.println("CLIENT_STARTED check: SpecialModelTypes keys: " + SpecialModelTypes.ID_MAPPER);
-            try {
-                System.out.println("RegistryKeys fields:");
-                for (java.lang.reflect.Field field : RegistryKeys.class.getFields()) {
-                    System.out.println(field.getName());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            provider.register(new MinecraftSourcePack());
+
+            Window window = MinecraftClient.getInstance().getWindow();
+
+            originalFramebufferScale = window.getFramebufferWidth() / window.getWidth();
         });
 
         URLTextureErrorCallback.EVENT.register((url, error) ->
@@ -648,6 +630,9 @@ public class BBSModClient implements ClientModInitializer
 
         /* Block entity renderers */
         BlockEntityRendererFactories.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
+
+        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
+        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();
