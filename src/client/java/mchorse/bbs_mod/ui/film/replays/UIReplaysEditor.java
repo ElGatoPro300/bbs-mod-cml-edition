@@ -44,6 +44,7 @@ import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIKeyframeSheetFilterOverlayPanel;
+import mchorse.bbs_mod.ui.film.replays.overlays.UIRenameSheetOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIAnimationToPoseOverlayPanel;
 import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.Gizmo;
@@ -421,14 +422,17 @@ public class UIReplaysEditor extends UIElement
                 KeyframeChannel channel = (KeyframeChannel) value;
 
                 String customTitle = this.replay.getCustomSheetTitle(key);
+                String anchoredBone = this.replay.getAnchoredBone(key);
+                Integer customColor = this.replay.getSheetColor(key);
+                int baseColor = getColor(key);
+                int sheetColor = customColor != null ? customColor : baseColor;
                 UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
-                    ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, channel, null)
-                    : new UIKeyframeSheet(getColor(key), false, channel, null);
+                    ? new UIKeyframeSheet(key, IKey.constant(customTitle), sheetColor, false, channel, null)
+                    : new UIKeyframeSheet(sheetColor, false, channel, null);
 
-                /* Restaurar estado de anclaje desde título personalizado para canales de pose */
-                if (customTitle != null && !customTitle.isEmpty() && channel.getFactory() == KeyframeFactories.POSE)
+                if (anchoredBone != null && !anchoredBone.isEmpty())
                 {
-                    sheet.anchoredBone = customTitle;
+                    sheet.anchoredBone = anchoredBone;
                 }
 
                 sheets.add(sheet.icon(ICONS.get(key)));
@@ -448,14 +452,17 @@ public class UIReplaysEditor extends UIElement
                 {
                     BaseValueBasic formProperty = FormUtils.getProperty(this.replay.form.get(), key);
                     String customTitle = this.replay.getCustomSheetTitle(key);
+                    String anchoredBone = this.replay.getAnchoredBone(key);
+                    Integer customColor = this.replay.getSheetColor(key);
+                    int baseColor = getColor(key);
+                    int sheetColor = customColor != null ? customColor : baseColor;
                     UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
-                        ? new UIKeyframeSheet(key, IKey.constant(customTitle), getColor(key), false, property, formProperty)
-                        : new UIKeyframeSheet(getColor(key), false, property, formProperty);
+                        ? new UIKeyframeSheet(key, IKey.constant(customTitle), sheetColor, false, property, formProperty)
+                        : new UIKeyframeSheet(sheetColor, false, property, formProperty);
 
-                    /* Restaurar estado de anclaje desde título personalizado para propiedades de pose */
-                    if (customTitle != null && !customTitle.isEmpty() && property.getFactory() == KeyframeFactories.POSE)
+                    if (anchoredBone != null && !anchoredBone.isEmpty())
                     {
-                        sheet.anchoredBone = customTitle;
+                        sheet.anchoredBone = anchoredBone;
                     }
 
                     sheets.add(sheet.icon(getIcon(key)));
@@ -673,12 +680,15 @@ public class UIReplaysEditor extends UIElement
                 {
                     menu.action(Icons.FONT, UIKeys.FILM_REPLAY_RENAME_SHEET, () ->
                     {
-                        UIPromptOverlayPanel panel = new UIPromptOverlayPanel(
+                        UIRenameSheetOverlayPanel panel = new UIRenameSheetOverlayPanel(
                             UIKeys.FILM_REPLAY_RENAME_SHEET_TITLE,
                             UIKeys.FILM_REPLAY_RENAME_SHEET_MESSAGE,
-                            (str) ->
+                            this.replay,
+                            clickedSheet.id,
+                            (str, color) ->
                             {
                                 this.replay.setCustomSheetTitle(clickedSheet.id, str);
+                                this.replay.setSheetColor(clickedSheet.id, color);
                                 this.updateChannelsList();
                             }
                         );
