@@ -44,6 +44,7 @@ public class UIPropTransform extends UITransform
 
     private boolean model;
     private boolean local;
+    private boolean freeRotation;
 
     private UITransformHandler handler;
 
@@ -215,6 +216,7 @@ public class UIPropTransform extends UITransform
 
             this.axis = values[MathUtils.cycler(this.axis.ordinal() + 1, 0, values.length - 1)];
             this.secondaryAxis = null;
+            this.freeRotation = false;
 
             this.restore(true);
         }
@@ -222,6 +224,7 @@ public class UIPropTransform extends UITransform
         {
             this.axis = axis == null ? Axis.X : axis;
             this.secondaryAxis = null;
+            this.freeRotation = false;
             this.lastX = context.mouseX;
             this.lastY = context.mouseY;
         }
@@ -248,8 +251,45 @@ public class UIPropTransform extends UITransform
 
         this.axis = primary == null ? Axis.X : primary;
         this.secondaryAxis = secondary;
+        this.freeRotation = false;
         this.lastX = context.mouseX;
         this.lastY = context.mouseY;
+
+        this.editing = true;
+        this.mode = mode;
+
+        this.cache.copy(this.transform);
+
+        if (!this.handler.hasParent())
+        {
+            context.menu.overlay.add(this.handler);
+        }
+    }
+
+    public void enableFreeRotation(int mode, Axis marker)
+    {
+        if (Gizmo.INSTANCE.setMode(Gizmo.Mode.values()[mode]) && marker == null)
+        {
+            return;
+        }
+
+        UIContext context = this.getContext();
+
+        if (this.editing)
+        {
+            this.freeRotation = true;
+            this.secondaryAxis = null;
+
+            this.restore(true);
+        }
+        else
+        {
+            this.axis = Axis.X;
+            this.secondaryAxis = null;
+            this.lastX = context.mouseX;
+            this.lastY = context.mouseY;
+            this.freeRotation = true;
+        }
 
         this.editing = true;
         this.mode = mode;
@@ -290,6 +330,7 @@ public class UIPropTransform extends UITransform
     private void disable()
     {
         this.editing = false;
+        this.freeRotation = false;
 
         if (this.handler.hasParent())
         {
@@ -474,7 +515,12 @@ public class UIPropTransform extends UITransform
                         vector3f.mul(180F / MathUtils.PI);
                     }
 
-                    if (this.mode == 0 && this.secondaryAxis != null)
+                    if (this.mode == 2 && this.freeRotation)
+                    {
+                        vector3f.x -= factor * dy;
+                        vector3f.y += factor * dx;
+                    }
+                    else if (this.mode == 0 && this.secondaryAxis != null)
                     {
                         if (this.axis == Axis.X)
                         {
@@ -489,24 +535,44 @@ public class UIPropTransform extends UITransform
                             vector3f.z += factor * dx;
                         }
 
+                        float secondaryDelta = factor * dy;
+
                         if (this.secondaryAxis == Axis.X)
                         {
-                            vector3f.x += factor * dy;
+                            vector3f.x += secondaryDelta;
                         }
                         else if (this.secondaryAxis == Axis.Y)
                         {
-                            vector3f.y += factor * dy;
+                            vector3f.y -= secondaryDelta;
                         }
                         else if (this.secondaryAxis == Axis.Z)
                         {
-                            vector3f.z += factor * dy;
+                            vector3f.z -= secondaryDelta;
                         }
                     }
                     else
                     {
-                        if (this.axis == Axis.X || all) vector3f.x += factor * dx;
-                        if (this.axis == Axis.Y || all) vector3f.y += factor * dx;
-                        if (this.axis == Axis.Z || all) vector3f.z += factor * dx;
+                        if (this.mode == 0 && !this.local && this.secondaryAxis == null && !all)
+                        {
+                            if (this.axis == Axis.X)
+                            {
+                                vector3f.x += factor * dx;
+                            }
+                            else if (this.axis == Axis.Y)
+                            {
+                                vector3f.y -= factor * dy;
+                            }
+                            else if (this.axis == Axis.Z)
+                            {
+                                vector3f.z += factor * dx;
+                            }
+                        }
+                        else
+                        {
+                            if (this.axis == Axis.X || all) vector3f.x += factor * dx;
+                            if (this.axis == Axis.Y || all) vector3f.y += factor * dx;
+                            if (this.axis == Axis.Z || all) vector3f.z += factor * dx;
+                        }
                     }
 
                     if (this.mode == 0) this.setT(null, vector3f.x, vector3f.y, vector3f.z);

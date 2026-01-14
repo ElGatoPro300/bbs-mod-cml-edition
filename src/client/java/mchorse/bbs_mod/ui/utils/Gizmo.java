@@ -23,6 +23,7 @@ public class Gizmo
     public final static int STENCIL_XZ = 4;
     public final static int STENCIL_XY = 5;
     public final static int STENCIL_ZY = 6;
+    public final static int STENCIL_FREE = 7;
 
     public final static Gizmo INSTANCE = new Gizmo();
 
@@ -66,7 +67,7 @@ public class Gizmo
             return false;
         }
 
-        if (index >= STENCIL_X && index <= STENCIL_ZY)
+        if (index >= STENCIL_X && index <= STENCIL_FREE)
         {
             this.index = index;
             this.mouseX = mouseX;
@@ -99,6 +100,10 @@ public class Gizmo
                 else if (this.index == STENCIL_ZY)
                 {
                     transform.enablePlaneMode(this.mode.ordinal(), Axis.Z, Axis.Y);
+                }
+                else if (this.index == STENCIL_FREE && this.mode == Mode.ROTATE)
+                {
+                    transform.enableFreeRotation(this.mode.ordinal(), Axis.X);
                 }
             }
 
@@ -251,6 +256,8 @@ public class Gizmo
             Draw.arc3D(builder, stack, Axis.Z, radius, thicknessRing + outlinePad, STENCIL_Z / 255F, 0F, 0F);
             Draw.arc3D(builder, stack, Axis.X, radius, thicknessRing + outlinePad, STENCIL_X / 255F, 0F, 0F);
             Draw.arc3D(builder, stack, Axis.Y, radius, thicknessRing + outlinePad, STENCIL_Y / 255F, 0F, 0F);
+
+            Draw.fillBox(builder, stack, -axisOffset, -axisOffset, -axisOffset, axisOffset, axisOffset, axisOffset, STENCIL_FREE / 255F, 0F, 0F);
         }
         else
         {
