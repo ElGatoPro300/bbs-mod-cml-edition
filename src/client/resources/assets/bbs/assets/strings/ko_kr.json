@@ -504,6 +504,7 @@
     "bbs.ui.film.replay.orbit.third_person_front": "3인칭 (앞)",
     "bbs.ui.film.replay.record": "리플레이 녹화...",
     "bbs.ui.film.replay.rename_sheet": "트랙 이름 변경",
+    "bbs.ui.film.replay.rename_sheet-color-tooltip": "트랙 색상",
     "bbs.ui.film.replay.rename_sheet-message": "이름 입력",
     "bbs.ui.film.replay.rename_sheet-title": "표시 이름",
     "bbs.ui.film.replay.replay": "리플레이",

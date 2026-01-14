@@ -543,6 +543,7 @@
     "bbs.ui.film.replay.record": "ری پلے ریکارڈ کریں...",
     "bbs.ui.film.replay.relative-tooltip": "فعال ہونے پر یہ ری پلے کیمرہ کے نسبتی طور پر رینڈر ہوگا",
     "bbs.ui.film.replay.rename_sheet": "ٹریک کا نام تبدیل کریں",
+    "bbs.ui.film.replay.rename_sheet-color-tooltip": "ٹریک کا رنگ",
     "bbs.ui.film.replay.rename_sheet-message": "نام درج کریں",
     "bbs.ui.film.replay.rename_sheet-title": "ظاہر نام",
     "bbs.ui.film.replay.replay": "ری پلے",

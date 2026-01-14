@@ -514,6 +514,7 @@
     "bbs.ui.film.replay.record": "Kaydet...",
     "bbs.ui.film.replay.relative-tooltip": "Etkinleştirildiğinde bu kayıt kameraya bağıl olarak görüntülenecek",
     "bbs.ui.film.replay.rename_sheet": "İzi Yeniden Adlandır",
+    "bbs.ui.film.replay.rename_sheet-color-tooltip": "İz Rengi",
     "bbs.ui.film.replay.rename_sheet-message": "Bir isim girin",
     "bbs.ui.film.replay.rename_sheet-title": "Görünür İsim",
     "bbs.ui.film.replay.replay": "Kayıt",

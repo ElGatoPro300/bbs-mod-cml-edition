@@ -550,6 +550,7 @@
     "bbs.ui.film.replay.record": "Ghi replay...",
     "bbs.ui.film.replay.relative-tooltip": "Khi bật, replay này sẽ được hiển thị tương đối so với camera",
     "bbs.ui.film.replay.rename_sheet": "Đổi tên bản nhạc",
+    "bbs.ui.film.replay.rename_sheet-color-tooltip": "Màu bản nhạc",
     "bbs.ui.film.replay.rename_sheet-message": "Nhập tên",
     "bbs.ui.film.replay.rename_sheet-title": "Tên hiển thị",
     "bbs.ui.film.replay.replay": "Replay",

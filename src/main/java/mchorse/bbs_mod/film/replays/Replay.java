@@ -47,6 +47,7 @@ public class Replay extends ValueGroup
 
     private final Map<String, String> customSheetTitles = new HashMap<>();
     private final Map<String, String> anchoredBones = new HashMap<>();
+    private final Map<String, Integer> sheetColors = new HashMap<>();
     public final ValueBoolean axesPreview = new ValueBoolean("axes_preview", false);
     public final ValueString axesPreviewBone = new ValueString("axes_preview_bone", "");
     public final ValueBoolean isGroup = new ValueBoolean("is_group", false);
@@ -177,6 +178,23 @@ public class Replay extends ValueGroup
         }
     }
 
+    public Integer getSheetColor(String id)
+    {
+        return this.sheetColors.get(id);
+    }
+
+    public void setSheetColor(String id, Integer color)
+    {
+        if (color == null)
+        {
+            this.sheetColors.remove(id);
+        }
+        else
+        {
+            this.sheetColors.put(id, color);
+        }
+    }
+
     @Override
     public void copy(BaseValueGroup group)
     {
@@ -188,6 +206,8 @@ public class Replay extends ValueGroup
             this.customSheetTitles.putAll(other.customSheetTitles);
             this.anchoredBones.clear();
             this.anchoredBones.putAll(other.anchoredBones);
+            this.sheetColors.clear();
+            this.sheetColors.putAll(other.sheetColors);
         }
     }
 
@@ -218,6 +238,18 @@ public class Replay extends ValueGroup
             }
 
             map.put("anchored_bones", anchored);
+        }
+
+        if (!this.sheetColors.isEmpty())
+        {
+            MapType colors = new MapType();
+
+            for (Map.Entry<String, Integer> entry : this.sheetColors.entrySet())
+            {
+                colors.put(entry.getKey(), new mchorse.bbs_mod.data.types.IntType(entry.getValue()));
+            }
+
+            map.put("sheet_colors", colors);
         }
 
         return map;
@@ -256,6 +288,21 @@ public class Replay extends ValueGroup
                     if (value != null && value.isString())
                     {
                         this.anchoredBones.put(key, value.asString());
+                    }
+                }
+            }
+
+            BaseType colorsType = map.get("sheet_colors");
+
+            if (colorsType instanceof MapType colors)
+            {
+                for (String key : colors.keys())
+                {
+                    BaseType value = colors.get(key);
+
+                    if (value != null && value.isNumeric())
+                    {
+                        this.sheetColors.put(key, value.asNumeric().intValue());
                     }
                 }
             }

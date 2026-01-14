@@ -566,6 +566,7 @@
     "bbs.ui.film.replay.record": "录制回放...",
     "bbs.ui.film.replay.relative-tooltip": "启用，该回放将相对于摄像机渲染",
     "bbs.ui.film.replay.rename_sheet": "重命名轨道",
+    "bbs.ui.film.replay.rename_sheet-color-tooltip": "轨道颜色",
     "bbs.ui.film.replay.rename_sheet-message": "输入轨道名称",
     "bbs.ui.film.replay.rename_sheet-title": "可见名称",
     "bbs.ui.film.replay.replay": "回放",
