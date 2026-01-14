@@ -26,6 +26,7 @@ import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
@@ -107,7 +108,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         if (isAnchored)
         {
             this.poseEditor.anchoredLegend.setVisible(true);
-            this.poseEditor.anchoredLegend.label = mchorse.bbs_mod.l10n.keys.IKey.constant("Hueso anclado: " + sheet.anchoredBone);
+            IKey legendRaw = IKey.constant("%s %s");
+            this.poseEditor.anchoredLegend.label = legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant(sheet.anchoredBone));
             this.poseEditor.selectBone(sheet.anchoredBone);
         }
         else
@@ -259,8 +261,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
 
             ((UIPoseTransforms) this.transform).setKeyframe(this);
 
-            /* Leyenda para indicar hueso anclado */
-            this.anchoredLegend = UI.label(mchorse.bbs_mod.l10n.keys.IKey.constant("Hueso anclado: -"));
+            IKey legendRaw = IKey.constant("%s %s");
+            this.anchoredLegend = UI.label(legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant("-")));
             this.anchoredLegend.h(20);
             this.anchoredLegend.setVisible(false);
 
@@ -289,21 +291,19 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                             if (bone != null)
                             {
                                 sheet.anchoredBone = bone;
-                                /* Refrescar estado inmediato */
                                 this.selectBone(bone);
                                 this.anchoredLegend.setVisible(true);
-                                this.anchoredLegend.label = mchorse.bbs_mod.l10n.keys.IKey.constant("Hueso anclado: " + bone);
+                                this.anchoredLegend.label = legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant(bone));
 
-                                /* Reacomodar el panel para evitar huecos */
                                 UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);
                                 if (factory != null) { factory.resize(); }
 
-                                /* Renombrar automáticamente la pista usando títulos personalizados del Replay */
                                 mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
                                 if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                                 {
-                                    filmPanel.replayEditor.getReplay().setCustomSheetTitle(sheet.id, bone);
-                                    /* Evitar refresco pesado que cierra el editor; el título se reflejará en render */
+                                    mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                                    replay.setAnchoredBone(sheet.id, bone);
+                                    replay.setCustomSheetTitle(sheet.id, bone);
                                 }
                             }
                         }
@@ -332,15 +332,14 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                     sheet.anchoredBone = null;
                     this.anchoredLegend.setVisible(false);
 
-                    /* Quitar el título personalizado al desanclar y refrescar lista */
                     mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
                     if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                     {
-                        filmPanel.replayEditor.getReplay().setCustomSheetTitle(sheet.id, null);
-                        /* Sin refresco inmediato para no cerrar el panel actual */
+                        mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                        replay.setAnchoredBone(sheet.id, null);
+                        replay.setCustomSheetTitle(sheet.id, null);
                     }
 
-                    /* Reacomodar el panel para que la lista regrese a su sitio */
                     UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);
                     if (factory != null) { factory.resize(); }
                 }

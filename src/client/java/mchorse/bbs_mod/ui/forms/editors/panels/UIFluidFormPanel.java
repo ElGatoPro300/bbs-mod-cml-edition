@@ -25,14 +25,15 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
     public UITrackpad physicsSensitivity;
     public UITrackpad subdivisions;
     public UIToggle smoothShading;
+    public UIToggle debug;
     public UIColor color;
     public UITrackpad opacity;
     public UIButton texture;
 
     // Ocean
-    public UITrackpad scaleX;
-    public UITrackpad scaleY;
-    public UITrackpad scaleZ;
+    public UITrackpad sizeX;
+    public UITrackpad sizeY;
+    public UITrackpad sizeZ;
     public UIToggle fillBlock;
     public UITrackpad waveAmplitude;
     public UITrackpad waveFrequency;
@@ -77,6 +78,9 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         this.smoothShading = new UIToggle(UIKeys.FLUID_SMOOTH_SHADING, true, (b) -> this.form.smoothShading.set(b.getValue()));
         this.smoothShading.tooltip(UIKeys.FLUID_SMOOTH_SHADING);
 
+        this.debug = new UIToggle(L10n.lang("bbs.fluid.debug"), false, (b) -> this.form.debug.set(b.getValue()));
+        this.debug.tooltip(L10n.lang("bbs.fluid.debug"));
+
         this.color = new UIColor((c) -> this.form.color.set(Color.rgba(c))).direction(Direction.LEFT).withAlpha();
         
         this.opacity = new UITrackpad((v) -> this.form.opacity.set(v.floatValue()));
@@ -86,14 +90,14 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
             UITexturePicker.open(this.getContext(), this.form.texture.get(), (l) -> this.form.texture.set(l));
         });
 
-        this.scaleX = new UITrackpad((v) -> this.form.scaleX.set(v.floatValue()));
-        this.scaleX.tooltip(UIKeys.FLUID_SCALE_X);
+        this.sizeX = new UITrackpad((v) -> this.form.sizeX.set(v.floatValue()));
+        this.sizeX.tooltip(L10n.lang("bbs.fluid.size_x"));
         
-        this.scaleY = new UITrackpad((v) -> this.form.scaleY.set(v.floatValue()));
-        this.scaleY.tooltip(UIKeys.FLUID_SCALE_Y);
+        this.sizeY = new UITrackpad((v) -> this.form.sizeY.set(v.floatValue()));
+        this.sizeY.tooltip(L10n.lang("bbs.fluid.size_y"));
         
-        this.scaleZ = new UITrackpad((v) -> this.form.scaleZ.set(v.floatValue()));
-        this.scaleZ.tooltip(UIKeys.FLUID_SCALE_Z);
+        this.sizeZ = new UITrackpad((v) -> this.form.sizeZ.set(v.floatValue()));
+        this.sizeZ.tooltip(L10n.lang("bbs.fluid.size_z"));
         
         this.fillBlock = new UIToggle(UIKeys.FLUID_FILL_BLOCK, false, (b) -> this.form.fillBlock.set(b.getValue()));
         
@@ -123,10 +127,11 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         this.options.add(UI.label(categoryCommon).marginTop(8));
         this.options.add(this.texture, this.color);
         this.options.add(UI.row(this.flowSpeed, this.turbulence, this.physicsSensitivity));
-        this.options.add(UI.row(this.opacity, this.subdivisions, this.smoothShading));
+        this.options.add(UI.row(this.opacity, this.subdivisions));
+        this.options.add(UI.row(this.smoothShading, this.debug));
 
         this.options.add(UI.label(categoryOcean).marginTop(8));
-        this.options.add(UI.row(this.scaleX, this.scaleY, this.scaleZ));
+        this.options.add(UI.row(this.sizeX, this.sizeY, this.sizeZ));
         this.options.add(this.fillBlock);
         this.options.add(UI.row(this.waveAmplitude, this.waveFrequency));
 
@@ -172,9 +177,9 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         boolean anyOcean = ocean || procedural;
         boolean isDrop = !anyOcean;
         
-        this.scaleX.setVisible(anyOcean);
-        this.scaleY.setVisible(anyOcean);
-        this.scaleZ.setVisible(anyOcean);
+        this.sizeX.setVisible(anyOcean);
+        this.sizeY.setVisible(anyOcean);
+        this.sizeZ.setVisible(anyOcean);
         this.fillBlock.setVisible(ocean);
         this.waveAmplitude.setVisible(anyOcean);
         this.waveFrequency.setVisible(procedural);
@@ -196,13 +201,15 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         this.turbulence.setValue(form.turbulence.get());
         this.physicsSensitivity.setValue(form.physicsSensitivity.get());
         this.subdivisions.setValue(form.subdivisions.get());
+        
         this.smoothShading.setValue(form.smoothShading.get());
+        this.debug.setValue(form.debug.get());
         this.color.setColor(form.color.get().getARGBColor());
         this.opacity.setValue(form.opacity.get());
         
-        this.scaleX.setValue(form.scaleX.get());
-        this.scaleY.setValue(form.scaleY.get());
-        this.scaleZ.setValue(form.scaleZ.get());
+        this.sizeX.setValue(form.sizeX.get());
+        this.sizeY.setValue(form.sizeY.get());
+        this.sizeZ.setValue(form.sizeZ.get());
         this.fillBlock.setValue(form.fillBlock.get());
         this.waveAmplitude.setValue(form.waveAmplitude.get());
         this.waveFrequency.setValue(form.waveFrequency.get());
