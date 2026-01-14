@@ -285,6 +285,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_RENAME_SHEET = L10n.lang("bbs.ui.film.replay.rename_sheet");
     public static final IKey FILM_REPLAY_RENAME_SHEET_TITLE = L10n.lang("bbs.ui.film.replay.rename_sheet-title");
     public static final IKey FILM_REPLAY_RENAME_SHEET_MESSAGE = L10n.lang("bbs.ui.film.replay.rename_sheet-message");
+    public static final IKey FILM_REPLAY_RENAME_SHEET_COLOR_TOOLTIP = L10n.lang("bbs.ui.film.replay.rename_sheet-color-tooltip");
     public static final IKey FILM_REPLAY_FP = L10n.lang("bbs.ui.film.replay.fp");
     public static final IKey FILM_REPLAY_LABEL = L10n.lang("bbs.ui.film.replay.label");
     public static final IKey FILM_REPLAY_LOOPING = L10n.lang("bbs.ui.film.replay.looping");
@@ -702,6 +703,7 @@ public class UIKeys
     public static final IKey POSE_TRACKS_ANCHOR_UNANCHOR = L10n.lang("bbs.ui.replays.bone_anchoring.unanchor_bone");
     public static final IKey POSE_TRACKS_ANCHOR_SELECT_BONE_TITLE = L10n.lang("bbs.ui.replays.bone_anchoring.select_bone_title");
     public static final IKey POSE_TRACKS_ANCHOR_SELECT_BONE_DESCRIPTION = L10n.lang("bbs.ui.replays.bone_anchoring.select_bone_description");
+    public static final IKey POSE_TRACKS_ANCHOR_LEGEND = L10n.lang("bbs.ui.replays.bone_anchoring.legend");
     public static final IKey PRESETS_OPEN = L10n.lang("bbs.ui.presets.open");
     public static final IKey PRESETS_SAVE = L10n.lang("bbs.ui.presets.save");
     public static final IKey PRESETS_SAVE_DESCRIPTION = L10n.lang("bbs.ui.presets.save-description");
