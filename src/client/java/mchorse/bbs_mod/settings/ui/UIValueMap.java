@@ -18,6 +18,7 @@ import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
 import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
 import mchorse.bbs_mod.ui.framework.elements.input.UIKeybind;
 import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
@@ -25,6 +26,7 @@ import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UILabelOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
 import mchorse.bbs_mod.ui.framework.elements.utils.UIText;
 import mchorse.bbs_mod.ui.utils.Label;
@@ -32,6 +34,9 @@ import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.FFMpegUtils;
 import mchorse.bbs_mod.utils.OS;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.Interpolation;
+import mchorse.bbs_mod.utils.interps.Interpolations;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -77,6 +82,141 @@ public class UIValueMap
 
         register(ValueInt.class, (value, ui) ->
         {
+            if (value == BBSSettings.defaultInterpolation)
+            {
+                List<IKey> labels = value.getLabels();
+                int currentIndex = value.get();
+                IKey label = UIKeys.CAMERA_PANELS_INTERPOLATION;
+
+                if (labels != null && !labels.isEmpty())
+                {
+                    if (currentIndex < 0 || currentIndex >= labels.size())
+                    {
+                        currentIndex = 0;
+                    }
+
+                    label = labels.get(currentIndex);
+                }
+
+                UIButton button = new UIButton(label, (b) ->
+                {
+                    Interpolation interpolation = new Interpolation("default", Interpolations.MAP);
+                    int index = value.get();
+                    int i = 0;
+
+                    for (IInterp interp : Interpolations.MAP.values())
+                    {
+                        if (i == index)
+                        {
+                            interpolation.setInterp(interp);
+                            break;
+                        }
+
+                        i++;
+                    }
+
+                    UIInterpolationContextMenu menu = new UIInterpolationContextMenu(interpolation).callback(() ->
+                    {
+                        IInterp selected = interpolation.getInterp();
+                        int idx = 0;
+
+                        for (IInterp interp : Interpolations.MAP.values())
+                        {
+                            if (interp == selected || interp.equals(selected))
+                            {
+                                value.set(idx);
+
+                                if (labels != null && !labels.isEmpty())
+                                {
+                                    if (idx < 0 || idx >= labels.size())
+                                    {
+                                        idx = 0;
+                                    }
+
+                                    b.label = labels.get(idx);
+                                }
+
+                                break;
+                            }
+
+                            idx++;
+                        }
+                    });
+
+                    ui.getContext().replaceContextMenu(menu);
+                });
+
+                button.w(90);
+
+                return Arrays.asList(UIValueFactory.column(button, value));
+            }
+
+            if (value == BBSSettings.recordingPoseTransformOverlays)
+            {
+                int transformCount = BBSSettings.recordingPoseTransformOverlays.get();
+                int poseCount = BBSSettings.recordingPoseOverlays == null ? 0 : BBSSettings.recordingPoseOverlays.get();
+                IKey label = IKey.constant("T: " + transformCount + "  P: " + poseCount);
+
+                UIButton button = new UIButton(label, (b) ->
+                {
+                    UIOverlayPanel panel = new UIOverlayPanel(UIKeys.OVERLAYS_ADDITIONAL_TITLE)
+                    {
+                        @Override
+                        public void confirm()
+                        {
+                            this.close();
+                        }
+                    };
+
+                    UITrackpad transformTrackpad = new UITrackpad((v) ->
+                    {
+                        int n = v.intValue();
+
+                        if (n < 0) n = 0;
+                        if (n > 42) n = 42;
+
+                        BBSSettings.recordingPoseTransformOverlays.set(n);
+                    });
+
+                    transformTrackpad.limit(0, 42).integer();
+                    transformTrackpad.setValue(BBSSettings.recordingPoseTransformOverlays.get());
+
+                    UITrackpad poseTrackpad = new UITrackpad((v) ->
+                    {
+                        int n = v.intValue();
+
+                        if (n < 0) n = 0;
+                        if (n > 42) n = 42;
+
+                        BBSSettings.recordingPoseOverlays.set(n);
+                    });
+
+                    poseTrackpad.limit(0, 42).integer();
+                    poseTrackpad.setValue(BBSSettings.recordingPoseOverlays == null ? 0 : BBSSettings.recordingPoseOverlays.get());
+
+                    UILabel transformLabel = UI.label(UIKeys.OVERLAYS_ADDITIONAL_TRANSFORM);
+                    UILabel poseLabel = UI.label(UIKeys.OVERLAYS_ADDITIONAL_POSE);
+                    UIButton ok = new UIButton(UIKeys.GENERAL_OK, (btn) ->
+                    {
+                        int t = BBSSettings.recordingPoseTransformOverlays.get();
+                        int p = BBSSettings.recordingPoseOverlays == null ? 0 : BBSSettings.recordingPoseOverlays.get();
+
+                        b.label = IKey.constant("T: " + t + "  P: " + p);
+
+                        panel.close();
+                    });
+
+                    panel.content.column().vertical().stretch().padding(10).height(20);
+                    panel.content.add(transformLabel, transformTrackpad, poseLabel, poseTrackpad, ok);
+
+                    UIOverlay.addOverlay(ui.getContext(), panel, 260, 160);
+                });
+
+                button.w(120);
+
+                return Arrays.asList(UIValueFactory.column(button, value));
+            }
+
             if (value.getSubtype() == ValueInt.Subtype.COLOR || value.getSubtype() == ValueInt.Subtype.COLOR_ALPHA)
             {
                 UIColor color = UIValueFactory.colorUI(value, null);
