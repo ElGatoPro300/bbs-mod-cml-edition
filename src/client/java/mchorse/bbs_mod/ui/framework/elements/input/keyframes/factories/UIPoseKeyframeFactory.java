@@ -26,6 +26,7 @@ import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
@@ -107,7 +108,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         if (isAnchored)
         {
             this.poseEditor.anchoredLegend.setVisible(true);
-            this.poseEditor.anchoredLegend.label = mchorse.bbs_mod.l10n.keys.IKey.constant("Hueso anclado: " + sheet.anchoredBone);
+            IKey legendRaw = IKey.constant("%s %s");
+            this.poseEditor.anchoredLegend.label = legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant(sheet.anchoredBone));
             this.poseEditor.selectBone(sheet.anchoredBone);
         }
         else
@@ -259,8 +261,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
 
             ((UIPoseTransforms) this.transform).setKeyframe(this);
 
-            /* Leyenda para indicar hueso anclado */
-            this.anchoredLegend = UI.label(mchorse.bbs_mod.l10n.keys.IKey.constant("Hueso anclado: -"));
+            IKey legendRaw = IKey.constant("%s %s");
+            this.anchoredLegend = UI.label(legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant("-")));
             this.anchoredLegend.h(20);
             this.anchoredLegend.setVisible(false);
 
@@ -289,10 +291,9 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                             if (bone != null)
                             {
                                 sheet.anchoredBone = bone;
-                                /* Refrescar estado inmediato */
                                 this.selectBone(bone);
                                 this.anchoredLegend.setVisible(true);
-                                this.anchoredLegend.label = mchorse.bbs_mod.l10n.keys.IKey.constant("Hueso anclado: " + bone);
+                                this.anchoredLegend.label = legendRaw.format(UIKeys.POSE_TRACKS_ANCHOR_LEGEND, IKey.constant(bone));
 
                                 /* Reacomodar el panel para evitar huecos */
                                 UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);

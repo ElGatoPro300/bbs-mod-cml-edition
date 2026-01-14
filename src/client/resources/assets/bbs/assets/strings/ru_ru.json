@@ -903,6 +903,7 @@
     "bbs.ui.presets.title": "Пресеты",
     "bbs.ui.remove": "Удалить",
     "bbs.ui.rename": "Переименовать",
+    "bbs.ui.replays.bone_anchoring.legend": "Привязанная кость:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Выбрать кость для привязки",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Выберите кость для привязки",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Выбор кости",

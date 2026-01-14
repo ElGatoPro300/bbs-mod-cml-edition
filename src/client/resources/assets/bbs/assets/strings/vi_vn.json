@@ -902,6 +902,7 @@
     "bbs.ui.presets.title": "Mẫu",
     "bbs.ui.remove": "Xóa",
     "bbs.ui.rename": "Đổi tên",
+    "bbs.ui.replays.bone_anchoring.legend": "Xương được neo:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Chọn xương để neo",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Chọn xương để neo",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Chọn xương",

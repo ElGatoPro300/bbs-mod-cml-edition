@@ -617,6 +617,7 @@
     "bbs.ui.pose.context.save": "Simpan pose",
     "bbs.ui.remove": "Hapus",
     "bbs.ui.rename": "Ganti nama",
+    "bbs.ui.replays.bone_anchoring.legend": "Tulang Dijangkar:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Pilih Tulang untuk Dijangkar",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Pilih tulang untuk dijangkar",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Pilih Tulang",

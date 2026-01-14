@@ -882,6 +882,7 @@
     "bbs.ui.presets.title": "Presety",
     "bbs.ui.remove": "Usuń",
     "bbs.ui.rename": "Zmień nazwę",
+    "bbs.ui.replays.bone_anchoring.legend": "Zakotwiczona kość:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Wybierz kość do zakotwiczenia",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Wybierz kość do zakotwiczenia",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Wybierz kość",

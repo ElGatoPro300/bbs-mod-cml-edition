@@ -842,6 +842,7 @@
     "bbs.ui.presets.title": "Présets",
     "bbs.ui.remove": "Retirer",
     "bbs.ui.rename": "Renommer",
+    "bbs.ui.replays.bone_anchoring.legend": "Os ancré :",
     "bbs.ui.replays.bone_anchoring.select_bone": "Sélectionner l'os à ancrer",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Sélectionnez l'os à ancrer à cette piste",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Sélectionner l'os",

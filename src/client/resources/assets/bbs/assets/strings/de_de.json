@@ -861,6 +861,7 @@
     "bbs.ui.presets.title": "Vorlagen",
     "bbs.ui.remove": "Entfernen",
     "bbs.ui.rename": "Umbenennen",
+    "bbs.ui.replays.bone_anchoring.legend": "Verankerter Knochen:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Knochen zum Ankern wählen",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Wählen Sie den Knochen",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Knochen wählen",

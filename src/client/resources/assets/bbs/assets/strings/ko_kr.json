@@ -823,6 +823,7 @@
     "bbs.ui.presets.title": "프리셋",
     "bbs.ui.remove": "제거",
     "bbs.ui.rename": "이름 변경",
+    "bbs.ui.replays.bone_anchoring.legend": "고정된 뼈:",
     "bbs.ui.replays.bone_anchoring.select_bone": "고정할 뼈 선택",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "고정할 뼈를 선택하세요",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "뼈 선택",

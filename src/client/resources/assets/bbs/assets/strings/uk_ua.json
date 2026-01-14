@@ -898,6 +898,7 @@
     "bbs.ui.presets.title": "Пресети",
     "bbs.ui.remove": "Видалити",
     "bbs.ui.rename": "Перейменувати",
+    "bbs.ui.replays.bone_anchoring.legend": "Прив'язана кістка:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Вибрати кістку для прив'язки",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Виберіть кістку",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Вибір кістки",

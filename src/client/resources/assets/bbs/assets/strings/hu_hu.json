@@ -887,6 +887,7 @@
     "bbs.ui.presets.title": "Előbeállítások",
     "bbs.ui.remove": "Eltávolítás",
     "bbs.ui.rename": "Átnevezés",
+    "bbs.ui.replays.bone_anchoring.legend": "Rögzített csont:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Rögzítendő csont kiválasztása",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Válassza ki a rögzítendő csontot",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Csont kiválasztása",

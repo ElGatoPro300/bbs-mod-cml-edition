@@ -841,6 +841,7 @@
     "bbs.ui.presets.title": "Şablonlar",
     "bbs.ui.remove": "Sil",
     "bbs.ui.rename": "Yeniden adlandır",
+    "bbs.ui.replays.bone_anchoring.legend": "Sabitlenen Kemik:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Sabitlenecek Kemiği Seç",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Kemik seçin",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Kemik Seç",

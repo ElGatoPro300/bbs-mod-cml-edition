@@ -831,6 +831,7 @@
     "bbs.ui.presets.title": "الإعدادات المسبقة",
     "bbs.ui.remove": "إزالة",
     "bbs.ui.rename": "إعادة تسمية",
+    "bbs.ui.replays.bone_anchoring.legend": "العظم المثبت:",
     "bbs.ui.replays.bone_anchoring.select_bone": "اختر عظمة للتثبيت",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "اختر عظمة للتثبيت",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "اختر عظمة",

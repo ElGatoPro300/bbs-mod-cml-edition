@@ -904,6 +904,7 @@
     "bbs.ui.presets.title": "การตั้งค่าล่วงหน้า",
     "bbs.ui.remove": "ลบ",
     "bbs.ui.rename": "เปลี่ยนชื่อ",
+    "bbs.ui.replays.bone_anchoring.legend": "กระดูกที่ยึด:",
     "bbs.ui.replays.bone_anchoring.select_bone": "เลือกกระดูกที่จะยึด",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "เลือกกระดูกที่จะยึด",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "เลือกกระดูก",

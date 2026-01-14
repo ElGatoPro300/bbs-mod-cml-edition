@@ -904,6 +904,7 @@
     "bbs.ui.presets.title": "Predefinições",
     "bbs.ui.remove": "Remover",
     "bbs.ui.rename": "Renomear",
+    "bbs.ui.replays.bone_anchoring.legend": "Osso ancorado:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Selecionar osso para ancorar",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Selecione o osso que deseja ancorar",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Selecionar osso",

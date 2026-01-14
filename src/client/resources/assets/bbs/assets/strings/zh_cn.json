@@ -918,6 +918,7 @@
     "bbs.ui.presets.title": "预设",
     "bbs.ui.remove": "移除",
     "bbs.ui.rename": "重命名",
+    "bbs.ui.replays.bone_anchoring.legend": "锚定骨骼：",
     "bbs.ui.replays.bone_anchoring.select_bone": "选择要锚定的骨骼",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "选择要锚定到此轨道的骨骼",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "选择骨骼",

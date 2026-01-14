@@ -862,6 +862,7 @@
     "bbs.ui.presets.title": "Ajustes preestablecidos",
     "bbs.ui.remove": "Eliminar",
     "bbs.ui.rename": "Renombrar",
+    "bbs.ui.replays.bone_anchoring.legend": "Hueso anclado:",
     "bbs.ui.replays.bone_anchoring.select_bone": "Seleccionar hueso para anclar",
     "bbs.ui.replays.bone_anchoring.select_bone_description": "Selecciona el hueso que quieres anclar a esta pista de poses",
     "bbs.ui.replays.bone_anchoring.select_bone_title": "Seleccionar hueso",
