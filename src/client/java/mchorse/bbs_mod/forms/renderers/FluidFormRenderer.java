@@ -28,6 +28,8 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITickable
@@ -67,6 +69,65 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             : GameRenderer::getRenderTypeEntityTranslucentProgram;
 
         this.renderFluid(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
+        
+        if (this.controller.debugEnabled && !this.controller.lastDebugSamples.isEmpty())
+        {
+            this.renderDebug(context);
+        }
+    }
+
+    private void renderDebug(FormRenderingContext context)
+    {
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
+        RenderSystem.lineWidth(2.0F);
+        
+        BufferBuilder builder = Tessellator.getInstance().getBuffer();
+        builder.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        
+        MatrixStack stack = context.stack;
+        
+        for (FluidController.FluidSample sample : this.controller.lastDebugSamples)
+        {
+            if (sample.localPos == null) continue;
+            
+            stack.push();
+            stack.translate(sample.localPos.x, sample.localPos.y, sample.localPos.z);
+            
+            /* Draw sphere (simplified as 3 circles) */
+            float r = (float) sample.radius;
+            int segments = 12;
+            
+            Matrix4f matrix = stack.peek().getPositionMatrix();
+            Matrix3f normal = stack.peek().getNormalMatrix();
+            
+            for (int i = 0; i < segments; i++)
+            {
+                float a1 = (float) (i * Math.PI * 2 / segments);
+                float a2 = (float) ((i + 1) * Math.PI * 2 / segments);
+                
+                float c1 = (float) Math.cos(a1) * r;
+                float s1 = (float) Math.sin(a1) * r;
+                float c2 = (float) Math.cos(a2) * r;
+                float s2 = (float) Math.sin(a2) * r;
+                
+                /* XY circle */
+                builder.vertex(matrix, c1, s1, 0).color(1f, 0f, 0f, 1f).normal(normal, 0, 0, 1).next();
+                builder.vertex(matrix, c2, s2, 0).color(1f, 0f, 0f, 1f).normal(normal, 0, 0, 1).next();
+                
+                /* XZ circle */
+                builder.vertex(matrix, c1, 0, s1).color(1f, 0f, 0f, 1f).normal(normal, 0, 1, 0).next();
+                builder.vertex(matrix, c2, 0, s2).color(1f, 0f, 0f, 1f).normal(normal, 0, 1, 0).next();
+                
+                /* YZ circle */
+                builder.vertex(matrix, 0, c1, s1).color(1f, 0f, 0f, 1f).normal(normal, 1, 0, 0).next();
+                builder.vertex(matrix, 0, c2, s2).color(1f, 0f, 0f, 1f).normal(normal, 1, 0, 0).next();
+            }
+            
+            stack.pop();
+        }
+        
+        BufferRenderer.drawWithGlobalProgram(builder.end());
+        RenderSystem.lineWidth(1.0F);
     }
 
     private void renderFluid(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
@@ -134,8 +195,17 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
     private void renderProceduralOcean(BufferBuilder builder, MatrixStack matrices, Color color, int overlay, int light)
     {
-        float scaleX = Math.max(this.form.scaleX.get(), 0.001f);
-        float scaleZ = Math.max(this.form.scaleZ.get(), 0.001f);
+        float scaleX = Math.max(this.form.sizeX.get(), 0.001f);
+        float scaleZ = Math.max(this.form.sizeZ.get(), 0.001f);
+        
+        int resX = Math.min(Math.max((int) (scaleX * 16), 16), 512);
+        int resZ = Math.min(Math.max((int) (scaleZ * 16), 16), 512);
+
+        if (this.simulation.getWidth() != resX || this.simulation.getHeight() != resZ)
+        {
+            this.simulation = new FluidSimulation(resX, resZ);
+        }
+
         float amp = this.form.waveAmplitude.get();
         float freq = this.form.waveFrequency.get();
         float speed = this.form.flowSpeed.get();
@@ -278,8 +348,17 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
     private void renderOcean(BufferBuilder builder, MatrixStack matrices, Color color, int overlay, int light)
     {
-        float scaleX = Math.max(this.form.scaleX.get(), 0.001f);
-        float scaleZ = Math.max(this.form.scaleZ.get(), 0.001f);
+        float scaleX = Math.max(this.form.sizeX.get(), 0.001f);
+        float scaleZ = Math.max(this.form.sizeZ.get(), 0.001f);
+
+        int resX = Math.min(Math.max((int) (scaleX * 16), 16), 512);
+        int resZ = Math.min(Math.max((int) (scaleZ * 16), 16), 512);
+
+        if (this.simulation.getWidth() != resX || this.simulation.getHeight() != resZ)
+        {
+            this.simulation = new FluidSimulation(resX, resZ);
+        }
+
         float amp = this.form.waveAmplitude.get();
         float speed = this.form.flowSpeed.get();
         float turbulence = this.form.turbulence.get();
@@ -606,14 +685,24 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     @Override
     public void tick(IEntity entity)
     {
+        this.controller.debugEnabled = this.form.debug.get();
         float transition = 0F;
-        float scaleX = Math.max(this.form.scaleX.get(), 0.001f);
-        float scaleZ = Math.max(this.form.scaleZ.get(), 0.001f);
+        float scaleX = Math.max(this.form.sizeX.get(), 0.001f);
+        float scaleZ = Math.max(this.form.sizeZ.get(), 0.001f);
+
+        List<BaseFilmController> controllers = new ArrayList<>(BBSModClient.getFilms().getControllers());
+
+        if (BBSModClient.getDashboard().getPanels() != null && BBSModClient.getDashboard().getPanels().panel instanceof mchorse.bbs_mod.ui.film.UIFilmPanel panel)
+        {
+            controllers.add(panel.getController().editorController);
+        }
 
         BaseFilmController owner = null;
 
-        for (BaseFilmController controller : BBSModClient.getFilms().getControllers())
+        for (BaseFilmController controller : controllers)
         {
+            if (controller == null) continue;
+
             for (IEntity replayEntity : controller.getEntities().values())
             {
                 if (replayEntity == entity)
@@ -663,7 +752,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             surfaceMatrixWorld.mul(formMatrix);
         }
 
-        this.controller.update(entity, this.simulation, scaleX, scaleZ, this.form.physicsSensitivity.get(), surfaceMatrixWorld);
+        this.controller.update(entity, this.simulation, scaleX, scaleZ, this.form.physicsSensitivity.get(), surfaceMatrixWorld, controllers);
     }
 
 }
