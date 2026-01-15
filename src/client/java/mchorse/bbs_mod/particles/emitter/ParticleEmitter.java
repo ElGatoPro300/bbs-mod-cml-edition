@@ -507,7 +507,7 @@ public class ParticleEmitter
                     }
                 }
 
-                RenderSystem.setShader(program);
+                RenderSystem.setShader(program.get());
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 RenderSystem.disableCull();
