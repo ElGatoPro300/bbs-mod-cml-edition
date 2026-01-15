@@ -501,11 +501,20 @@ public class ParticleEmitter
                     this.setEmitterVariables(transition);
                     this.setParticleVariables(particle, transition);
 
-            RenderSystem.setShader(program);
-            RenderSystem.disableBlend();
-            RenderSystem.disableCull();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            RenderSystem.enableCull();
+                    for (IComponentParticleRender component : renders)
+                    {
+                        component.render(this, format, particle, builder, matrix, overlay, transition);
+                    }
+                }
+
+                RenderSystem.setShader(program);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.disableCull();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
+                RenderSystem.enableCull();
+                RenderSystem.disableBlend();
+            }
         }
 
         for (IComponentParticleRender component : renders)
