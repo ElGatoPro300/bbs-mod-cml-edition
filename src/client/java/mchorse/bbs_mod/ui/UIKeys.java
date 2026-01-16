@@ -79,6 +79,7 @@ public class UIKeys
     public static final IKey CAMERA_PANELS_AUDIO_OFFSET = L10n.lang("bbs.ui.camera.panels.audio.offset");
     public static final IKey CAMERA_PANELS_AUDIO_PICK_AUDIO = L10n.lang("bbs.ui.camera.panels.audio.pick_audio");
     public static final IKey CAMERA_PANELS_AUDIO_VOLUME = L10n.lang("bbs.ui.camera.panels.audio.volume");
+    public static final IKey CAMERA_PANELS_VIDEO_PICK_VIDEO = L10n.lang("bbs.ui.camera.panels.video.pick_video");
     public static final IKey CAMERA_PANELS_VIDEO_OFFSET = L10n.lang("bbs.ui.camera.panels.video.offset");
     public static final IKey CAMERA_PANELS_VIDEO_VOLUME = L10n.lang("bbs.ui.camera.panels.video.volume");
     public static final IKey CAMERA_PANELS_BLOCK = L10n.lang("bbs.ui.camera.panels.block");
@@ -672,6 +673,13 @@ public class UIKeys
     public static final IKey OVERLAYS_SOUNDS_FOLDER_MODE = L10n.lang("bbs.ui.overlays.sounds.folder_mode");
     public static final IKey OVERLAYS_SOUNDS_LIKE_MODE = L10n.lang("bbs.ui.overlays.sounds.like_mode");
     public static final IKey OVERLAYS_SOUNDS_MAIN = L10n.lang("bbs.ui.overlays.sounds.main");
+    public static final IKey OVERLAYS_VIDEOS_ADD_EXTERNAL = L10n.lang("bbs.ui.overlays.videos.add_external");
+    public static final IKey OVERLAYS_VIDEOS_ADD_EXTERNAL_TITLE = L10n.lang("bbs.ui.overlays.videos.add_external.title");
+    public static final IKey OVERLAYS_VIDEOS_ADD_EXTERNAL_MESSAGE = L10n.lang("bbs.ui.overlays.videos.add_external.message");
+    public static final IKey OVERLAYS_VIDEOS_MAIN = L10n.lang("bbs.ui.overlays.videos.main");
+    public static final IKey OVERLAYS_VIDEOS_CLIENT_MODE = L10n.lang("bbs.ui.overlays.videos.client_mode");
+    public static final IKey OVERLAYS_VIDEOS_EXTERNAL_MODE = L10n.lang("bbs.ui.overlays.videos.external_mode");
+    public static final IKey OVERLAYS_VIDEOS_FAVORITE_MODE = L10n.lang("bbs.ui.overlays.videos.favorite_mode");
     public static final IKey OVERLAYS_ADDITIONAL_TITLE = L10n.lang("bbs.ui.overlays.additional.title");
     public static final IKey OVERLAYS_ADDITIONAL_TRANSFORM = L10n.lang("bbs.ui.overlays.additional.transform");
     public static final IKey OVERLAYS_ADDITIONAL_POSE = L10n.lang("bbs.ui.overlays.additional.pose");

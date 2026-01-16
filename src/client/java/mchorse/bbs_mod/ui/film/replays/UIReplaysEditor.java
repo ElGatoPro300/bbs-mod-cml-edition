@@ -811,28 +811,48 @@ public class UIReplaysEditor extends UIElement
 
     public void pickForm(Form form, String bone)
     {
-        String path = FormUtils.getPath(form);
-
         if (this.keyframeEditor == null || bone.isEmpty())
         {
             return;
         }
 
+        String formPath = FormUtils.getPath(form);
+        String propertyPath = null;
         Keyframe selected = this.keyframeEditor.view.getGraph().getSelected();
-        String type = "pose";
 
         if (selected != null)
         {
-            String id = selected.getParent().getId();
-            int index = id.indexOf("pose_overlay");
+            String channelId = selected.getParent().getId();
+            String channelName = StringUtils.fileName(channelId);
 
-            if (index >= 0)
+            if (channelName.startsWith("pose"))
             {
-                type = id.substring(index);
+                propertyPath = channelId;
             }
         }
 
-        this.pickProperty(bone, StringUtils.combinePaths(path, type), false);
+        if (propertyPath == null)
+        {
+            UIKeyframeSheet lastSheet = this.keyframeEditor.view.getGraph().getLastSheet();
+
+            if (lastSheet != null && lastSheet.property != null)
+            {
+                Form lastForm = (Form) lastSheet.property.getParent();
+                String lastFormPath = FormUtils.getPath(lastForm);
+
+                if (lastFormPath.equals(formPath) && lastSheet.property.getId().startsWith("pose") && !lastSheet.channel.isEmpty())
+                {
+                    propertyPath = FormUtils.getPropertyPath(lastSheet.property);
+                }
+            }
+        }
+
+        if (propertyPath == null)
+        {
+            propertyPath = StringUtils.combinePaths(formPath, "pose");
+        }
+
+        this.pickProperty(bone, propertyPath, false);
     }
 
     public void pickFormProperty(Form form, String bone)
