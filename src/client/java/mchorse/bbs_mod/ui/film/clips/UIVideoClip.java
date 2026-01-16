@@ -1,16 +1,24 @@
 package mchorse.bbs_mod.ui.film.clips;
 
+import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.camera.clips.misc.VideoClip;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIVideoOverlayPanel;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class UIVideoClip extends UIClip<VideoClip>
 {
-    public UITextbox video;
+    public UIButton pickVideo;
+    public UIIcon openFolder;
     public UITrackpad offset;
     public UITrackpad volume;
     public UITrackpad x;
@@ -31,8 +39,55 @@ public class UIVideoClip extends UIClip<VideoClip>
     {
         super.registerUI();
 
-        this.video = new UITextbox(1000, (t) -> this.clip.video.set(t));
-        this.video.tooltip(UIKeys.C_CLIP.get("bbs:video"));
+        this.pickVideo = new UIButton(UIKeys.CAMERA_PANELS_VIDEO_PICK_VIDEO, (b) ->
+        {
+            UIVideoOverlayPanel panel = new UIVideoOverlayPanel((value) -> this.clip.video.set(value), this.getContext());
+
+            UIOverlay.addOverlay(this.getContext(), panel.set(this.clip.video.get()));
+        });
+
+        this.openFolder = new UIIcon(Icons.FOLDER, (b) ->
+        {
+            String videoPath = this.clip.video.get();
+
+            if (videoPath != null && !videoPath.isEmpty())
+            {
+                if (videoPath.startsWith("external:"))
+                {
+                    String rawPath = videoPath.substring("external:".length());
+                    java.io.File file = new java.io.File(rawPath);
+
+                    if (!file.isAbsolute())
+                    {
+                        file = new java.io.File(BBSMod.getGameFolder(), rawPath);
+                    }
+
+                    if (file.isDirectory())
+                    {
+                        UIUtils.openFolder(file);
+                        return;
+                    }
+                    else if (file.exists())
+                    {
+                        UIUtils.openFolder(file.getParentFile());
+                        return;
+                    }
+                }
+                else
+                {
+                    Link link = Link.create(videoPath);
+                    java.io.File file = BBSMod.getProvider().getFile(link);
+
+                    if (file != null && file.exists())
+                    {
+                        UIUtils.openFolder(file.getParentFile());
+                        return;
+                    }
+                }
+            }
+
+            UIUtils.openFolder(BBSMod.getAssetsPath("video"));
+        });
 
         this.offset = new UITrackpad((v) -> this.clip.offset.set(v.intValue()));
          this.offset.integer();
@@ -72,7 +127,7 @@ public class UIVideoClip extends UIClip<VideoClip>
     {
         super.registerPanels();
 
-        this.panels.add(UI.column(UIClip.label(UIKeys.C_CLIP.get("bbs:video")), this.video).marginTop(12));
+        this.panels.add(UI.column(UIClip.label(UIKeys.C_CLIP.get("bbs:video")), UI.row(this.pickVideo, this.openFolder)).marginTop(12));
         this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_VIDEO_OFFSET).marginTop(6), this.offset).marginTop(12));
         this.panels.add(UI.column(UIClip.label(UIKeys.CAMERA_PANELS_VIDEO_VOLUME).marginTop(6), this.volume).marginTop(12));
         this.panels.add(UI.row(
@@ -92,7 +147,6 @@ public class UIVideoClip extends UIClip<VideoClip>
     {
         super.fillData();
 
-        this.video.setText(this.clip.video.get());
         this.offset.setValue(this.clip.offset.get());
         this.volume.setValue(this.clip.volume.get());
         this.x.setValue(this.clip.x.get());
