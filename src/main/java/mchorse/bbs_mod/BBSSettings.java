@@ -16,6 +16,8 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSSettings
 {
@@ -34,7 +36,9 @@ public class BBSSettings
     public static ValueFloat axesScale;
     public static ValueBoolean uniformScale;
     public static ValueBoolean clickSound;
+    public static ValueBoolean disablePivotTransform;
     public static ValueBoolean gizmos;
+    public static ValueInt defaultInterpolation;
 
     public static ValueBoolean enableCursorRendering;
     public static ValueBoolean enableMouseButtonRendering;
@@ -86,10 +90,13 @@ public class BBSSettings
     public static ValueBoolean recordingSwipeDamage;
     public static ValueBoolean recordingOverlays;
     public static ValueInt recordingPoseTransformOverlays;
+    public static ValueInt recordingPoseOverlays;
+    public static ValueBoolean recordingPoseOverlaysMigrated;
     public static ValueBoolean recordingCameraPreview;
 
     public static ValueBoolean renderAllModelBlocks;
     public static ValueBoolean clickModelBlocks;
+    public static ValueBoolean modelBlockCategoriesPanelEnabled;
 
     public static ValueString entitySelectorsPropertyWhitelist;
 
@@ -103,6 +110,11 @@ public class BBSSettings
     public static ValueInt audioWaveformHeight;
     public static ValueBoolean audioWaveformFilename;
     public static ValueBoolean audioWaveformTime;
+    /* Pose track bone anchoring */
+    public static ValueBoolean boneAnchoringEnabled;
+    public static ValueBoolean anchorOverrideEnabled;
+    public static ValueBoolean autoKeyframe;
+    public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
     public static ValueString cdnToken;
@@ -120,6 +132,27 @@ public class BBSSettings
     public static int getDefaultDuration()
     {
         return duration == null ? 30 : duration.get();
+    }
+
+    public static void migrate()
+    {
+        if (recordingPoseOverlaysMigrated == null)
+        {
+            return;
+        }
+
+        if (!recordingPoseOverlaysMigrated.get())
+        {
+            int transformOverlays = recordingPoseTransformOverlays == null ? 0 : recordingPoseTransformOverlays.get();
+            int poseOverlays = recordingPoseOverlays == null ? 0 : recordingPoseOverlays.get();
+
+            if (poseOverlays == 0 && transformOverlays > 0)
+            {
+                recordingPoseOverlays.set(transformOverlays);
+            }
+
+            recordingPoseOverlaysMigrated.set(true);
+        }
     }
 
     public static float getFov()
@@ -163,7 +196,9 @@ public class BBSSettings
         axesScale = builder.getFloat("axes_scale", 1F, 0F, 2F);
         uniformScale = builder.getBoolean("uniform_scale", false);
         clickSound = builder.getBoolean("click_sound", false);
+        disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
         gizmos = builder.getBoolean("gizmos", true);
+        defaultInterpolation = builder.getInt("default_interpolation", 0);
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
         disabledSheets.set(defaultFilters);
@@ -229,11 +264,17 @@ public class BBSSettings
         recordingSwipeDamage = builder.getBoolean("swipe_damage", false);
         recordingOverlays = builder.getBoolean("overlays", true);
         recordingPoseTransformOverlays = builder.getInt("pose_transform_overlays", 0, 0, 42);
+        recordingPoseOverlays = builder.getInt("pose_overlays", 0, 0, 42);
+        recordingPoseOverlays.invisible();
+        recordingPoseOverlaysMigrated = builder.getBoolean("pose_overlays_migrated", false);
+        recordingPoseOverlaysMigrated.invisible();
+
         recordingCameraPreview = builder.getBoolean("camera_preview", true);
 
         builder.category("model_blocks");
         renderAllModelBlocks = builder.getBoolean("render_all", true);
         clickModelBlocks = builder.getBoolean("click", true);
+        modelBlockCategoriesPanelEnabled = builder.getBoolean("categories_panel_enabled", false);
 
         builder.category("entity_selectors");
         entitySelectorsPropertyWhitelist = builder.getString("whitelist", "CustomName,Name");
@@ -252,8 +293,17 @@ public class BBSSettings
         audioWaveformFilename = builder.getBoolean("waveform_filename", false);
         audioWaveformTime = builder.getBoolean("waveform_time", false);
 
+
+        /* Pose track selection */
+        builder.category("pose_track_selection");
+        boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", false);
+        anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
+        autoKeyframe = builder.getBoolean("auto_keyframe", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
+
+        builder.category("fluid_simulation");
+        fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
     }
 }

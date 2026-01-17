@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 
 public class UIReplaysEditorUtils
 {
-    public static UIPropTransform getEditableTransform(UIKeyframeEditor editor)
+        public static UIPropTransform getEditableTransform(UIKeyframeEditor editor)
     {
         if (editor == null || editor.editor == null)
         {
