@@ -874,6 +874,11 @@ public class UIReplayList extends UIList<Replay>
     @Override
     public void render(UIContext context)
     {
+        if (this.panel != null && this.panel.getData() != null)
+        {
+            this.buildVisualList();
+        }
+
         super.render(context);
     }
 

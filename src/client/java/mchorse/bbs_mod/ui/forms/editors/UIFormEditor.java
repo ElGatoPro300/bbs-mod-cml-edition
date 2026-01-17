@@ -18,6 +18,7 @@ import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.forms.ParticleForm;
 import mchorse.bbs_mod.forms.forms.StructureForm;
+import mchorse.bbs_mod.forms.forms.LightForm;
 import mchorse.bbs_mod.forms.forms.TrailForm;
 import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
 import mchorse.bbs_mod.forms.states.AnimationState;
@@ -44,6 +45,7 @@ import mchorse.bbs_mod.ui.forms.editors.forms.UIParticleForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIStructureForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UITrailForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIVanillaParticleForm;
+import mchorse.bbs_mod.ui.forms.editors.forms.UILightForm;
 import mchorse.bbs_mod.ui.forms.editors.states.UIAnimationStatesOverlayPanel;
 import mchorse.bbs_mod.ui.forms.editors.states.keyframes.UIAnimationStateEditor;
 import mchorse.bbs_mod.ui.forms.editors.utils.UIPickableFormRenderer;
@@ -134,6 +136,7 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
         register(VanillaParticleForm.class, UIVanillaParticleForm::new);
         register(TrailForm.class, UITrailForm::new);
         register(StructureForm.class, UIStructureForm::new);
+        register(LightForm.class, UILightForm::new);
         register(FramebufferForm.class, UIFramebufferForm::new);
     }
 
