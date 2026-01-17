@@ -3,7 +3,6 @@ package mchorse.bbs_mod.client;
 import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceFactory;
@@ -15,6 +14,7 @@ import java.util.Optional;
 
 public class BBSShaders
 {
+    private static ShaderProgram model;
     private static ShaderProgram multiLink;
     private static ShaderProgram subtitles;
 
@@ -31,6 +31,7 @@ public class BBSShaders
 
     public static void setup()
     {
+        if (model != null) model.close();
         if (subtitles != null) subtitles.close();
         if (subtitles != null) subtitles.close();
 
@@ -44,6 +45,7 @@ public class BBSShaders
         {
             ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
 
+            model = new ShaderProgram(factory, "model", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
             multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
             subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
 
@@ -61,7 +63,7 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        return GameRenderer.getRenderTypeEntityTranslucentCullProgram();
+        return model;
     }
 
     public static ShaderProgram getMultilinkProgram()

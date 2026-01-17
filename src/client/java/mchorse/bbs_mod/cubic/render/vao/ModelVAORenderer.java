@@ -13,18 +13,6 @@ public class ModelVAORenderer
 {
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
-        if (shader == null)
-        {
-            ShaderProgram fallback = GameRenderer.getRenderTypeEntityTranslucentCullProgram();
-
-            if (fallback == null)
-            {
-                return;
-            }
-
-            shader = fallback;
-        }
-
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
@@ -64,12 +52,6 @@ public class ModelVAORenderer
         if (normalUniform != null)
         {
             normalUniform.set(stack.peek().getNormalMatrix());
-        }
-
-        GlUniform viewRot = shader.getUniform("IViewRotMat");
-        if (viewRot != null)
-        {
-            viewRot.set(new Matrix4f().identity());
         }
 
         if (shader.fogStart != null)
