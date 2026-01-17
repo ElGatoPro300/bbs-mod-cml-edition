@@ -42,9 +42,6 @@
         ],
         "client": [
             "mchorse.bbs_mod.BBSModClient"
-        ],
-        "dynamiclights": [
-            "mchorse.bbs_mod.integration.LambDynLightsIntegration"
         ]
     },
     "mixins": [

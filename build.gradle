@@ -59,38 +59,9 @@ dependencies {
 	modCompileOnly "maven.modrinth:distanthorizons:2.1.0-a-1.20.4"
 	modCompileOnly "maven.modrinth:indium:1.0.31+mc1.20.4"
 	modImplementation "maven.modrinth:watermedia:2.1.37"
-	modImplementation "maven.modrinth:lambdynamiclights:2.3.4+1.20.4"
 
 	modImplementation "org.anarres:jcpp:1.4.14"
 	modImplementation "io.github.douira:glsl-transformer:2.0.0-pre13"
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        name 'Gegy'
-        url 'https://maven.gegy.dev'
-    }
-}
-
-dependencies {
-    /* Fabric definitions */
-
-    include modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}")
-}
-
-repositories {
-	mavenLocal()
-	maven {
-		name 'Gegy'
-		url 'https://maven.gegy.dev'
-	}
-}
-
-dependencies {
-	/* Fabric definitions */
-
-	include modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}")
 }
 
 processResources {

@@ -15,7 +15,6 @@ import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.StructureForm;
 import mchorse.bbs_mod.forms.forms.TrailForm;
 import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
-import mchorse.bbs_mod.forms.forms.LightForm;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.UIKeys;
 import net.minecraft.block.Blocks;
@@ -58,7 +57,6 @@ public class ExtraFormSection extends FormSection
         TrailForm trail = new TrailForm();
         FluidForm fluid = new FluidForm();
         StructureForm structure = new StructureForm();
-        LightForm light = new LightForm();
         try
         {
             String preferred = "structures/tree.nbt";
@@ -103,7 +101,6 @@ public class ExtraFormSection extends FormSection
         extra.addForm(trail);
         extra.addForm(fluid);
         extra.addForm(structure);
-        extra.addForm(light);
 
         this.mobsAnimals = new FormCategory(UIKeys.FORMS_CATEGORIES_MOBS_ANIMALS, this.parent.visibility.get("mobs_animals"));
         this.mobsNeutral = new FormCategory(UIKeys.FORMS_CATEGORIES_MOBS_NEUTRAL, this.parent.visibility.get("mobs_neutral"));
