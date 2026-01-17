@@ -63,7 +63,7 @@ dependencies {
 	modImplementation "maven.modrinth:sodium:mc1.21.4-0.6.3-fabric"
 	modCompileOnly "maven.modrinth:iris:1.8.2+1.21.4-fabric"
 	modCompileOnly "maven.modrinth:watermedia:2.1.37"
-	modCompileOnly "maven.modrinth:lambdynamiclights:4.1.0+1.21.1"
+	modCompileOnly "maven.modrinth:lambdynamiclights:4.1.0+1.21.4"
 
 	modImplementation "org.anarres:jcpp:1.4.14"
 	modImplementation "io.github.douira:glsl-transformer:2.0.0-pre13"
