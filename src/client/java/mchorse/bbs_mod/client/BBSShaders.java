@@ -20,6 +20,7 @@ import java.util.Optional;
 
 public class BBSShaders
 {
+    private static ShaderProgram model;
     private static ShaderProgram multiLink;
     private static ShaderProgram subtitles;
 
@@ -36,7 +37,8 @@ public class BBSShaders
 
     public static void setup()
     {
-        if (multiLink != null) multiLink.close();
+        if (model != null) model.close();
+        if (subtitles != null) subtitles.close();
         if (subtitles != null) subtitles.close();
 
         if (pickerPreview != null) pickerPreview.close();
@@ -50,6 +52,7 @@ public class BBSShaders
             ResourceManager manager = MinecraftClient.getInstance().getResourceManager();
             ResourceFactory factory = new ProxyResourceFactory(manager);
 
+            model = loadProgram(manager, factory, "model", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
             multiLink = loadProgram(manager, factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
             subtitles = loadProgram(manager, factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
 
@@ -67,8 +70,7 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-        return RenderSystem.getShader();
+        return model;
     }
 
     public static ShaderProgram getMultilinkProgram()

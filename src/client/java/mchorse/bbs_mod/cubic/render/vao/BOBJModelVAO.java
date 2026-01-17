@@ -217,19 +217,6 @@ public class BOBJModelVAO
 
     public void render(ShaderProgram shader, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
     {
-        if (shader == null)
-        {
-            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-            ShaderProgram fallback = RenderSystem.getShader();
-
-            if (fallback == null)
-            {
-                return;
-            }
-
-            shader = fallback;
-        }
-
         boolean hasShaders = BBSRendering.isIrisShadersEnabled();
 
         GL30.glVertexAttrib4f(Attributes.COLOR, r, g, b, a);
