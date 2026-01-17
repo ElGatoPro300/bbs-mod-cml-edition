@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.blocks.entities;
 
 import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.blocks.ModelBlock;
 import mchorse.bbs_mod.data.DataStorageUtils;
 import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.MapType;
@@ -8,6 +9,7 @@ import mchorse.bbs_mod.events.ModelBlockEntityUpdateCallback;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.StubEntity;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.LightForm;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -26,6 +28,7 @@ public class ModelBlockEntity extends BlockEntity
 
     private float lastYaw = Float.NaN;
     private float currentYaw = Float.NaN;
+    private int lastLightLevel = -1;
 
     public ModelBlockEntity(BlockPos pos, BlockState state)
     {
@@ -139,6 +142,39 @@ public class ModelBlockEntity extends BlockEntity
 
         this.entity.update();
         this.properties.update(this.entity);
+        if (!world.isClient)
+        {
+            int target = 0;
+            Form form = this.properties.getForm();
+
+            if (form instanceof LightForm lightForm && lightForm.enabled.get())
+            {
+                int level = lightForm.level.get();
+
+                if (level < 0)
+                {
+                    level = 0;
+                }
+                else if (level > 15)
+                {
+                    level = 15;
+                }
+
+                target = level;
+            }
+
+            if (target != this.lastLightLevel)
+            {
+                this.lastLightLevel = target;
+                this.properties.setLightLevel(target);
+
+                try
+                {
+                    world.setBlockState(pos, state.with(ModelBlock.LIGHT_LEVEL, target), Block.NOTIFY_LISTENERS);
+                }
+                catch (Exception e) {}
+            }
+        }
     }
 
     @Nullable
