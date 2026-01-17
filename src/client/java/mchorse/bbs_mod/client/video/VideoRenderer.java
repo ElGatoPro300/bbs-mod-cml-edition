@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.clips.Clip;
 import mchorse.bbs_mod.camera.clips.misc.VideoClip;
 import mchorse.bbs_mod.ui.utils.Area;
@@ -125,11 +127,58 @@ public class VideoRenderer
         }
     }
 
+    private static String resolveVideoPath(String path)
+    {
+        if (path == null || path.isEmpty())
+        {
+            return null;
+        }
+
+        if (path.startsWith("external:"))
+        {
+            String raw = path.substring("external:".length()).trim();
+
+            if (raw.isEmpty())
+            {
+                return null;
+            }
+
+            File file = new File(raw);
+
+            if (!file.isAbsolute())
+            {
+                file = new File(BBSMod.getGameFolder(), raw);
+            }
+
+            return file.getAbsolutePath();
+        }
+
+        try
+        {
+            Link link = Link.create(path);
+            File file = BBSMod.getProvider().getFile(link);
+
+            if (file != null && file.exists())
+            {
+                return file.getAbsolutePath();
+            }
+        }
+        catch (Throwable ignored)
+        {}
+
+        return path;
+    }
+
     public static void render(MatrixStack stack, String path, long position, boolean playing, int volume, int x, int y, int w, int h, float opacity, boolean loops)
     {
-        if (path == null || path.isEmpty()) return;
+        String resolved = resolveVideoPath(path);
 
-        PlayerWrapper wrapper = PLAYERS.get(path);
+        if (resolved == null || resolved.isEmpty())
+        {
+            return;
+        }
+
+        PlayerWrapper wrapper = PLAYERS.get(resolved);
         VideoPlayer player;
 
         if (wrapper == null)
@@ -156,11 +205,11 @@ public class VideoRenderer
             player = new VideoPlayer(FACTORY, MinecraftClient.getInstance());
             try
             {
-                player.start(new File(path).toURI());
+                player.start(new File(resolved).toURI());
                 player.setVolume(volume);
                 wrapper = new PlayerWrapper(player);
                 wrapper.lastVolume = volume;
-                PLAYERS.put(path, wrapper);
+                PLAYERS.put(resolved, wrapper);
             }
             catch (Exception e)
             {
@@ -344,14 +393,31 @@ public class VideoRenderer
 
     public static int getVideoWidth(String path)
     {
-        PlayerWrapper wrapper = PLAYERS.get(path);
+        String resolved = resolveVideoPath(path);
+        PlayerWrapper wrapper = resolved == null ? null : PLAYERS.get(resolved);
         return wrapper != null && wrapper.player != null ? wrapper.player.width() : 0;
     }
 
     public static int getVideoHeight(String path)
     {
-        PlayerWrapper wrapper = PLAYERS.get(path);
+        String resolved = resolveVideoPath(path);
+        PlayerWrapper wrapper = resolved == null ? null : PLAYERS.get(resolved);
         return wrapper != null && wrapper.player != null ? wrapper.player.height() : 0;
+    }
+
+    public static void releaseVideo(String path)
+    {
+        String resolved = resolveVideoPath(path);
+
+        if (resolved != null && PLAYERS.containsKey(resolved))
+        {
+            PlayerWrapper wrapper = PLAYERS.remove(resolved);
+
+            if (wrapper != null && wrapper.player != null)
+            {
+                wrapper.player.release();
+            }
+        }
     }
 
     public static void update()
