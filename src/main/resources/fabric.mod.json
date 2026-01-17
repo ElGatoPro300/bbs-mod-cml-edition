@@ -43,7 +43,7 @@
         "client": [
             "mchorse.bbs_mod.BBSModClient"
         ],
-        "lambdynlights:initializer": [
+        "dynamiclights": [
             "mchorse.bbs_mod.integration.LambDynLightsIntegration"
         ]
     },
@@ -57,7 +57,7 @@
     "accessWidener": "bbs.accesswidener",
     "depends": {
         "fabricloader": ">=0.16.14",
-        "minecraft": "~1.21.4",
+        "minecraft": "~1.21.1",
         "java": ">=21",
         "fabric-api": "*"
     }
