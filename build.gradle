@@ -27,11 +27,34 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+}
 
+repositories {
+    mavenLocal()
+    maven {
+        name 'Gegy'
+        url 'https://maven.gegy.dev'
+    }
+}
+
+dependencies {
+    /* Fabric definitions */
+
+    include modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}")
+}
+
+repositories {
+	mavenLocal()
 	maven {
-		name = "Gegy"
-		url = "https://maven.gegy.dev/"
+		name 'Gegy'
+		url 'https://maven.gegy.dev'
 	}
+}
+
+dependencies {
+	/* Fabric definitions */
+
+	include modImplementation("dev.lambdaurora:spruceui:${project.spruceui_version}")
 }
 
 loom {
