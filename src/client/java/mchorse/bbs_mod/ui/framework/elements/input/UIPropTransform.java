@@ -502,19 +502,9 @@ public class UIPropTransform extends UITransform
 
                 if (this.local && this.mode == 0)
                 {
-                    Vector3f local = new Vector3f();
-                    double d1 = this.axis == Axis.Y ? -factor * dy : factor * dx;
+                    Vector3f vector3f = this.calculateLocalVector(factor * dx, this.axis);
 
-                    local.add(this.calculateLocalVector(d1, this.axis));
-
-                    if (this.secondaryAxis != null)
-                    {
-                        double d2 = this.axis == Axis.Y ? factor * dx : -factor * dy;
-
-                        local.add(this.calculateLocalVector(d2, this.secondaryAxis));
-                    }
-
-                    this.setT(null, vector.x + local.x, vector.y + local.y, vector.z + local.z);
+                    this.setT(null, vector.x + vector3f.x, vector.y + vector3f.y, vector.z + vector3f.z);
                 }
                 else
                 {
