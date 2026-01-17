@@ -166,33 +166,36 @@ public abstract class BaseFilmController
 
         if (UIBaseMenu.renderAxes)
         {
-            Form root = FormUtils.getRoot(form);
-            MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
-            MatrixCacheEntry entry = map.get(context.bone);
-
-            Matrix4f matrix = entry.origin();
-
-            if (matrix == null)
+            if (context.bone != null && !context.local)
             {
-                matrix = entry.matrix();
-            }
+                Form root = FormUtils.getRoot(form);
+                MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
+                MatrixCacheEntry entry = map.get(context.bone);
 
-            if (matrix != null)
-            {
-                stack.push();
-                MatrixStackUtils.multiply(stack, matrix);
+                Matrix4f matrix = entry.origin();
 
-                if (context.map == null)
+                if (matrix == null)
                 {
-                    Gizmo.INSTANCE.render(stack);
-                }
-                else
-                {
-                    Gizmo.INSTANCE.renderStencil(stack, context.map);
+                    matrix = entry.matrix();
                 }
 
-                RenderSystem.enableDepthTest();
-                stack.pop();
+                if (matrix != null)
+                {
+                    stack.push();
+                    MatrixStackUtils.multiply(stack, matrix);
+
+                    if (context.map == null)
+                    {
+                        Gizmo.INSTANCE.render(stack);
+                    }
+                    else
+                    {
+                        Gizmo.INSTANCE.renderStencil(stack, context.map);
+                    }
+
+                    RenderSystem.enableDepthTest();
+                    stack.pop();
+                }
             }
             if (context.bone != null) renderAxes(context.bone, context.local, context.map, form, entity, transition, stack);
             if (context.bone2 != null && context.map == null) renderAxes(context.bone2, context.local2, context.map, form, entity, transition, stack);
