@@ -35,13 +35,6 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
-        /* Ensure the shader knows to use texture unit 0 for Sampler0 */
-        GlUniform sampler0 = shader.getUniform("Sampler0");
-        if (sampler0 != null)
-        {
-            sampler0.set(0);
-        }
-
         if (shader.projectionMat != null)
         {
             shader.projectionMat.set(RenderSystem.getProjectionMatrix());
@@ -62,28 +55,6 @@ public class ModelVAORenderer
         {
             normalUniform.set(stack.peek().getNormalMatrix());
         }
-
-        /* TODO: 1.21.4 update - find replacement for RenderSystem.getShaderFogStart()
-        if (shader.fogStart != null)
-        {
-            shader.fogStart.set(RenderSystem.getShaderFogStart());
-        }
-
-        if (shader.fogEnd != null)
-        {
-            shader.fogEnd.set(RenderSystem.getShaderFogEnd());
-        }
-
-        if (shader.fogColor != null)
-        {
-            shader.fogColor.set(RenderSystem.getShaderFogColor());
-        }
-
-        if (shader.fogShape != null)
-        {
-            shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
-        }
-        */
 
         if (shader.colorModulator != null)
         {
