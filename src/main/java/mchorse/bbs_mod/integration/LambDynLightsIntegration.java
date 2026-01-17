@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.integration;
 
 import dev.lambdaurora.lambdynlights.api.DynamicLightHandlers;
+import dev.lambdaurora.lambdynlights.api.DynamicLightsContext;
 import dev.lambdaurora.lambdynlights.api.DynamicLightsInitializer;
 import dev.lambdaurora.lambdynlights.api.item.ItemLightSourceManager;
 import mchorse.bbs_mod.BBSMod;
@@ -15,6 +16,9 @@ import net.minecraft.entity.player.PlayerEntity;
 public class LambDynLightsIntegration implements DynamicLightsInitializer
 {
     @Override
+    public void onInitializeDynamicLights(DynamicLightsContext context)
+    {}
+
     public void onInitializeDynamicLights(ItemLightSourceManager itemLightSourceManager)
     {
         DynamicLightHandlers.registerDynamicLightHandler(BBSMod.ACTOR_ENTITY, (ActorEntity entity) -> getLightLevelFromForm(entity.getForm()));
