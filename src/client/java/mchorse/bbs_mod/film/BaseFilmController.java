@@ -230,7 +230,34 @@ public abstract class BaseFilmController
     {
         Form root = FormUtils.getRoot(form);
         MatrixCache map = FormUtilsClient.getRenderer(root).collectMatrices(entity, transition);
-        Matrix4f matrix = local ? map.get(bone).matrix() : map.get(bone).origin();
+        MatrixCacheEntry entry = map.get(bone);
+
+        if (entry == null)
+        {
+            return;
+        }
+
+        Matrix4f matrix;
+
+        if (local)
+        {
+            Matrix4f localMatrix = entry.matrix();
+            Matrix4f originMatrix = entry.origin();
+
+            if (localMatrix != null && originMatrix != null)
+            {
+                matrix = new Matrix4f(localMatrix);
+                matrix.setTranslation(originMatrix.getTranslation(new org.joml.Vector3f()));
+            }
+            else
+            {
+                matrix = localMatrix != null ? localMatrix : originMatrix;
+            }
+        }
+        else
+        {
+            matrix = entry.origin() != null ? entry.origin() : entry.matrix();
+        }
 
         if (matrix != null)
         {

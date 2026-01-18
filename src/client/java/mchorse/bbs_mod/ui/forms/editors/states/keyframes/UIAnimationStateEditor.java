@@ -324,7 +324,31 @@ public class UIAnimationStateEditor extends UIElement
             return Matrices.EMPTY_4F;
         }
 
-        Matrix4f matrix = forceOrigin ? entry.origin() : (bone.b ? entry.matrix() : entry.origin());
+        Matrix4f matrix;
+
+        if (forceOrigin)
+        {
+            matrix = entry.origin();
+        }
+        else if (bone.b)
+        {
+            Matrix4f localMatrix = entry.matrix();
+            Matrix4f originMatrix = entry.origin();
+
+            if (localMatrix != null && originMatrix != null)
+            {
+                matrix = new Matrix4f(localMatrix);
+                matrix.setTranslation(originMatrix.getTranslation(new org.joml.Vector3f()));
+            }
+            else
+            {
+                matrix = localMatrix != null ? localMatrix : originMatrix;
+            }
+        }
+        else
+        {
+            matrix = entry.origin();
+        }
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
     }
