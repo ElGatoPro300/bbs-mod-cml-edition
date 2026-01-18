@@ -749,6 +749,18 @@ public class UIFilmController extends UIElement
 
         if (mode == CAMERA_MODE_FIRST_PERSON)
         {
+            // Apply view bobbing if enabled
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (mc.options.getBobView().getValue() && controller instanceof MCEntity mcEntity)
+            {
+                net.minecraft.entity.Entity entity = mcEntity.getMcEntity();
+                if (entity instanceof net.minecraft.entity.LivingEntity livingEntity)
+                {
+                    float bobbing = this.applyViewBobbing(livingEntity, transition);
+                    position.y += bobbing;
+                }
+            }
+
             camera.position.set(position);
             camera.rotation.set(rotation.x, rotation.y + MathUtils.PI, 0F);
             camera.fov = BBSSettings.getFov();
@@ -778,6 +790,25 @@ public class UIFilmController extends UIElement
         camera.position.set(position);
         camera.rotation.set(rotation.x * (back ? -1 : 1), rotation.y + (back ? 0 : MathUtils.PI), 0);
         camera.fov = BBSSettings.getFov();
+    }
+
+    /**
+     * Calculate view bobbing based on the entity's movement
+     * This mimics Minecraft's default view bobbing effect
+     */
+    private float applyViewBobbing(net.minecraft.entity.LivingEntity entity, float tickDelta)
+    {
+        float distanceWalked = entity.limbAnimator.getPos(tickDelta);
+        float limbSwing = entity.limbAnimator.getSpeed(tickDelta);
+        
+        // Clamp the limb swing to a reasonable range
+        limbSwing = Math.min(limbSwing, 1.0F);
+        
+        // Calculate bobbing using sine wave based on distance walked
+        float bobbing = distanceWalked - entity.limbAnimator.getPos(1.0F) * (1.0F - tickDelta);
+        float verticalBob = -(Math.abs((float) Math.cos(distanceWalked * (float) Math.PI)) * limbSwing);
+        
+        return verticalBob * 0.5F;
     }
 
     public void insertFrame()
