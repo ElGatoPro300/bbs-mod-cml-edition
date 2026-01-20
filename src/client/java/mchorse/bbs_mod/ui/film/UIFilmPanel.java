@@ -1084,6 +1084,25 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     public void renderPanelBackground(UIContext context)
     {
         super.renderPanelBackground(context);
+
+        Texture texture = BBSRendering.getTexture();
+
+        if (texture != null)
+        {
+            context.batcher.box(0, 0, context.menu.width, context.menu.height, Colors.A100);
+
+            int w = context.menu.width;
+            int h = context.menu.height;
+            Vector2i resize = Vectors.resize(texture.width / (float) texture.height, w, h);
+            Area area = new Area();
+
+            area.setSize(resize.x, resize.y);
+            area.setPos((w - area.w) / 2, (h - area.h) / 2);
+
+            context.batcher.texturedBox(texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, texture.height, texture.width, 0, texture.width, texture.height);
+        }
+
+        this.updateLogic(context);
     }
 
     @Override
