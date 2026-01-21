@@ -103,6 +103,7 @@ public class UIReplaysEditor extends UIElement
     private Film film;
     private Replay replay;
     private Set<String> keys = new LinkedHashSet<>();
+    private final Map<String, Boolean> collapsedModelTracks = new HashMap<>();
 
     static
     {
@@ -603,10 +604,59 @@ public class UIReplaysEditor extends UIElement
             return false;
         });
 
+        List<UIKeyframeSheet> grouped = new ArrayList<>();
+        Set<String> addedGroups = new HashSet<>();
+
+        for (UIKeyframeSheet sheet : sheets)
+        {
+            Form form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
+
+            if (form != null && form.getParent() != null)
+            {
+                String path = FormUtils.getPath(form);
+                String groupKey = this.replay.uuid.get() + ":" + path;
+
+                if (addedGroups.add(groupKey))
+                {
+                    boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
+                    UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
+                        "__group__" + groupKey,
+                        IKey.constant(form.getDisplayName()),
+                        Colors.LIGHTEST_GRAY & Colors.RGB,
+                        groupKey,
+                        expanded,
+                        () ->
+                        {
+                            this.collapsedModelTracks.put(groupKey, expanded);
+                            this.updateChannelsList();
+                        }
+                    );
+
+                    grouped.add(header);
+                }
+
+                if (this.collapsedModelTracks.getOrDefault(groupKey, false))
+                {
+                    continue;
+                }
+            }
+
+            grouped.add(sheet);
+        }
+
+        sheets = grouped;
+
         Object lastForm = null;
 
         for (UIKeyframeSheet sheet : sheets)
         {
+            if (sheet.groupHeader)
+            {
+                sheet.separator = false;
+                lastForm = null;
+                continue;
+            }
+
             Object form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
 
             if (!Objects.equals(lastForm, form))
