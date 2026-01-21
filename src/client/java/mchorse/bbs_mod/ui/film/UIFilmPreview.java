@@ -3,6 +3,7 @@ package mchorse.bbs_mod.ui.film;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.audio.AudioRenderer;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.clips.misc.AudioClip;
@@ -213,9 +214,16 @@ public class UIFilmPreview extends UIElement
 
     public void openReplays()
     {
-        UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
+        if (!this.panel.isDockedLayout())
+        {
+            UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
 
-        overlay.eventPropagataion(EventPropagation.PASS);
+            overlay.eventPropagataion(EventPropagation.PASS);
+        }
+        else
+        {
+            this.panel.toggleReplaysSidebar();
+        }
     }
 
     public void openOnionSkin()

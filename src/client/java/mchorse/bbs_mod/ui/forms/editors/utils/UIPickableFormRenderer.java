@@ -140,7 +140,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
             if (matrix != null)
             {
-                MatrixStackUtils.multiply(stack, MatrixStackUtils.stripScale(matrix));
+                MatrixStackUtils.multiply(stack, matrix);
             }
 
             Gizmo.INSTANCE.renderStencil(context.batcher.getContext().getMatrices(), this.stencilMap);
@@ -162,15 +162,14 @@ public class UIPickableFormRenderer extends UIFormRenderer
 
     private void renderAxes(UIContext context)
     {
-        Matrix4f matrixRaw = this.formEditor.getOrigin(context.getTransition());
-        Matrix4f matrix = matrixRaw != null ? MatrixStackUtils.stripScale(matrixRaw) : null;
+        Matrix4f matrix = this.formEditor.getOrigin(context.getTransition());
         MatrixStack stack = context.render.batcher.getContext().getMatrices();
 
         stack.push();
 
         if (matrix != null)
         {
-            MatrixStackUtils.multiply(stack, MatrixStackUtils.stripScale(matrix));
+            MatrixStackUtils.multiply(stack, matrix);
         }
 
         /* Draw axes */

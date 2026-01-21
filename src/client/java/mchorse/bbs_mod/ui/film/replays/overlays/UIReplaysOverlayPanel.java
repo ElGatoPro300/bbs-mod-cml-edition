@@ -48,6 +48,7 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
     public UIButton pickAxesPreviewBone;
 
     private Consumer<Replay> callback;
+    private boolean docked;
 
     public UIReplaysOverlayPanel(UIFilmPanel filmPanel, Consumer<Replay> callback)
     {
@@ -147,6 +148,32 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
         this.content.add(this.replays, this.replayProperties, this.groupProperties);
     }
 
+    public void setDocked(boolean docked)
+    {
+        this.docked = docked;
+
+        if (docked)
+        {
+            this.title.setVisible(false);
+            this.icons.setVisible(false);
+            this.close.setVisible(false);
+
+            this.title.area.set(0, 0, 0, 0);
+
+            this.content.relative(this).xy(0, 0).w(1F).h(1F);
+        }
+        else
+        {
+            this.title.setVisible(true);
+            this.icons.setVisible(true);
+            this.close.setVisible(true);
+
+            this.title.labelAnchor(0, 0.5F).relative(this).xy(6, 0).w(0.6F).h(20);
+            this.icons.relative(this).x(1F, -20).y(0).w(20).h(1F).column(0).stretch();
+            this.content.relative(this).xy(0, 20).w(1F, -20).h(1F, -20);
+        }
+    }
+
     private void edit(Consumer<Replay> consumer)
     {
         if (consumer != null)
@@ -198,7 +225,10 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
     @Override
     protected void renderBackground(UIContext context)
     {
-        super.renderBackground(context);
+        if (!this.docked)
+        {
+            super.renderBackground(context);
+        }
 
         this.content.area.render(context.batcher, Colors.A100);
 

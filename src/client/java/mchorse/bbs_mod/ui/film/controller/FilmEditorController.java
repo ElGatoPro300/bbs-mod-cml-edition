@@ -69,20 +69,6 @@ public class FilmEditorController extends BaseFilmController
         {
             super.updateEntityAndForm(entity, tick);
         }
-        else
-        {
-            Form form = entity.getForm();
-
-            if (form != null)
-            {
-                FormRenderer renderer = FormUtilsClient.getRenderer(form);
-
-                if (renderer instanceof ITickable tickable)
-                {
-                    tickable.tick(entity);
-                }
-            }
-        }
     }
 
     @Override
@@ -122,18 +108,9 @@ public class FilmEditorController extends BaseFilmController
             {
                 entity.update();
 
-                Form form = entity.getForm();
-
-                if (form != null)
+                if (entity.getForm() != null)
                 {
-                    form.update(entity);
-
-                    FormRenderer renderer = FormUtilsClient.getRenderer(form);
-
-                    if (renderer instanceof ITickable tickable)
-                    {
-                        tickable.tick(entity);
-                    }
+                    entity.getForm().update(entity);
                 }
 
                 diff -= 1;
