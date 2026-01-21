@@ -262,6 +262,15 @@ public class StubEntity implements IEntity
     @Override
     public double getEyeHeight()
     {
+        Form form = this.getForm();
+
+        if (form != null && form.hitbox.get())
+        {
+            float height = form.hitboxHeight.get() * (this.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
+
+            return form.hitboxEyeHeight.get() * height;
+        }
+
         return 1.8F * 0.9F;
     }
 
@@ -407,7 +416,7 @@ public class StubEntity implements IEntity
         if (form != null && form.hitbox.get())
         {
             w = form.hitboxWidth.get();
-            h = form.hitboxHeight.get();
+            h = form.hitboxHeight.get() * (this.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
         }
 
         return new AABB(

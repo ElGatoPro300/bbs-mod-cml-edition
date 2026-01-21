@@ -666,6 +666,57 @@ public abstract class BaseFilmController
                     {
                         Form form = actor.getForm();
                         replay.properties.applyProperties(form, tick + delta);
+
+                        Form replayForm = replay.form.get();
+
+                        if (replayForm != null)
+                        {
+                            if (form == null)
+                            {
+                                form = FormUtils.copy(replayForm);
+                                actor.setForm(form);
+                                actor.calculateDimensions();
+                            }
+                            else
+                            {
+                                boolean changed = false;
+
+                                if (form.hitbox.get() != replayForm.hitbox.get())
+                                {
+                                    form.hitbox.set(replayForm.hitbox.get());
+                                    changed = true;
+                                }
+
+                                if (form.hitboxWidth.get() != replayForm.hitboxWidth.get())
+                                {
+                                    form.hitboxWidth.set(replayForm.hitboxWidth.get());
+                                    changed = true;
+                                }
+
+                                if (form.hitboxHeight.get() != replayForm.hitboxHeight.get())
+                                {
+                                    form.hitboxHeight.set(replayForm.hitboxHeight.get());
+                                    changed = true;
+                                }
+
+                                if (form.hitboxSneakMultiplier.get() != replayForm.hitboxSneakMultiplier.get())
+                                {
+                                    form.hitboxSneakMultiplier.set(replayForm.hitboxSneakMultiplier.get());
+                                    changed = true;
+                                }
+
+                                if (form.hitboxEyeHeight.get() != replayForm.hitboxEyeHeight.get())
+                                {
+                                    form.hitboxEyeHeight.set(replayForm.hitboxEyeHeight.get());
+                                    changed = true;
+                                }
+
+                                if (changed)
+                                {
+                                    actor.calculateDimensions();
+                                }
+                            }
+                        }
                     }
                     else if (anEntity instanceof PlayerEntity player)
                     {

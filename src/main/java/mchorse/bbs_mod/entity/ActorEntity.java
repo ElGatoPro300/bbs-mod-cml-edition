@@ -6,6 +6,8 @@ import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ServerNetwork;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
@@ -42,6 +44,12 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     private Form form;
 
     private Map<EquipmentSlot, ItemStack> equipment = new HashMap<>();
+
+    private boolean lastHitboxEnabled;
+    private float lastHitboxWidth = Float.NaN;
+    private float lastHitboxHeight = Float.NaN;
+    private float lastHitboxSneakMultiplier = Float.NaN;
+    private boolean lastSneaking;
 
     /* Film and replay data for item drops */
     private Film film;
@@ -103,6 +111,8 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
             if (lastForm != null) lastForm.onDemorph(this);
             if (form != null) form.onMorph(this);
         }
+
+        this.calculateDimensions();
     }
 
     @Override
@@ -160,6 +170,8 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
             this.form.update(this.entity);
         }
 
+        this.updateHitboxDimensions();
+
         if (this.getWorld().isClient)
         {
             return;
@@ -192,6 +204,79 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
                 }
             }
         }
+    }
+
+    @Override
+    public void setSneaking(boolean sneaking)
+    {
+        super.setSneaking(sneaking);
+
+        if (this.form != null && this.form.hitbox.get())
+        {
+            this.updateHitboxDimensions();
+        }
+    }
+
+    private void updateHitboxDimensions()
+    {
+        if (this.form == null)
+        {
+            return;
+        }
+
+        boolean enabled = this.form.hitbox.get();
+        boolean sneaking = this.isSneaking();
+        float width = this.form.hitboxWidth.get();
+        float height = this.form.hitboxHeight.get();
+        float sneakMultiplier = this.form.hitboxSneakMultiplier.get();
+
+        if (enabled != this.lastHitboxEnabled
+            || sneaking != this.lastSneaking
+            || width != this.lastHitboxWidth
+            || height != this.lastHitboxHeight
+            || sneakMultiplier != this.lastHitboxSneakMultiplier)
+        {
+            this.lastHitboxEnabled = enabled;
+            this.lastSneaking = sneaking;
+            this.lastHitboxWidth = width;
+            this.lastHitboxHeight = height;
+            this.lastHitboxSneakMultiplier = sneakMultiplier;
+
+            this.calculateDimensions();
+        }
+    }
+
+    @Override
+    public EntityDimensions getDimensions(EntityPose pose)
+    {
+        EntityDimensions dimensions = super.getDimensions(pose);
+        Form currentForm = this.form;
+
+        if (currentForm != null && currentForm.hitbox.get())
+        {
+            float height = currentForm.hitboxHeight.get() * (this.isSneaking() ? currentForm.hitboxSneakMultiplier.get() : 1F);
+
+            return dimensions.fixed
+                ? EntityDimensions.fixed(currentForm.hitboxWidth.get(), height)
+                : EntityDimensions.changing(currentForm.hitboxWidth.get(), height);
+        }
+
+        return dimensions;
+    }
+
+    @Override
+    protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions)
+    {
+        Form currentForm = this.form;
+
+        if (currentForm != null && currentForm.hitbox.get())
+        {
+            float height = currentForm.hitboxHeight.get() * (this.isSneaking() ? currentForm.hitboxSneakMultiplier.get() : 1F);
+
+            return currentForm.hitboxEyeHeight.get() * height;
+        }
+
+        return super.getActiveEyeHeight(pose, dimensions);
     }
 
         @Override
