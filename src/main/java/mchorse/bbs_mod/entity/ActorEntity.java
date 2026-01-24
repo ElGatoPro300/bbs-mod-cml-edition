@@ -25,8 +25,11 @@ import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class ActorEntity extends LivingEntity implements IEntityFormProvider
 {
@@ -55,9 +58,12 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     private Film film;
     private Replay replay;
     private int currentTick;
+    private boolean replayItemsDropped;
     
-    /* Track items picked up during replay playback */
-    private List<ItemStack> pickedUpItems = new java.util.ArrayList<>();
+    /* Runtime inventory for replay actors (initial inventory + picked up items) */
+    private final List<ItemStack> runtimeInventory = new java.util.ArrayList<>();
+    private boolean runtimeInventoryInitialized;
+    private final Set<UUID> pickedUpEntityIds = new HashSet<>();
 
     public ActorEntity(EntityType<? extends LivingEntity> entityType, World world)
     {
@@ -72,6 +78,7 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
         this.film = film;
         this.replay = replay;
         this.currentTick = tick;
+        this.initializeRuntimeInventory();
     }
     
     /**
@@ -80,6 +87,22 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     public void updateTick(int tick)
     {
         this.currentTick = tick;
+    }
+
+    private void initializeRuntimeInventory()
+    {
+        this.runtimeInventory.clear();
+        this.pickedUpEntityIds.clear();
+
+        if (this.replay != null && this.replay.inventory != null)
+        {
+            for (ItemStack stack : this.replay.inventory.getStacks())
+            {
+                this.runtimeInventory.add(stack == null ? ItemStack.EMPTY : stack.copy());
+            }
+        }
+
+        this.runtimeInventoryInitialized = true;
     }
 
     public MCEntity getEntity()
@@ -191,18 +214,72 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
         {
             if (entity instanceof ItemEntity itemEntity)
             {
+                UUID entityId = itemEntity.getUuid();
                 ItemStack itemStack = itemEntity.getStack();
                 int i = itemStack.getCount();
 
-                if (!entity.isRemoved() && !itemEntity.cannotPickup())
+                if (!entity.isRemoved() && !itemEntity.cannotPickup() && !this.pickedUpEntityIds.contains(entityId))
                 {
-                    // Add picked up item to the list for later dropping on death
-                    this.pickedUpItems.add(itemStack.copy());
+                    this.pickedUpEntityIds.add(entityId);
+                    this.addToRuntimeInventory(itemStack.copy());
                     
                     ((ServerWorld) this.getWorld()).getChunkManager().sendToOtherNearbyPlayers(entity, new ItemPickupAnimationS2CPacket(entity.getId(), this.getId(), i));
                     entity.discard();
                 }
             }
+        }
+    }
+
+    private void addToRuntimeInventory(ItemStack stack)
+    {
+        if (stack == null || stack.isEmpty())
+        {
+            return;
+        }
+
+        if (!this.runtimeInventoryInitialized)
+        {
+            this.initializeRuntimeInventory();
+        }
+
+        int remaining = stack.getCount();
+
+        for (int i = 0; i < this.runtimeInventory.size(); i++)
+        {
+            ItemStack existing = this.runtimeInventory.get(i);
+
+            if (existing.isEmpty())
+            {
+                int move = Math.min(remaining, stack.getMaxCount());
+                ItemStack copy = stack.copy();
+                copy.setCount(move);
+                this.runtimeInventory.set(i, copy);
+                remaining -= move;
+
+                if (remaining <= 0)
+                {
+                    return;
+                }
+            }
+            else if (ItemStack.canCombine(existing, stack) && existing.getCount() < existing.getMaxCount())
+            {
+                int space = existing.getMaxCount() - existing.getCount();
+                int move = Math.min(space, remaining);
+                existing.increment(move);
+                remaining -= move;
+
+                if (remaining <= 0)
+                {
+                    return;
+                }
+            }
+        }
+
+        if (remaining > 0)
+        {
+            ItemStack copy = stack.copy();
+            copy.setCount(remaining);
+            this.runtimeInventory.add(copy);
         }
     }
 
@@ -284,9 +361,10 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     {
         super.onDeath(damageSource);
         
-        if (!this.getWorld().isClient() && this.replay != null && this.film != null)
+        if (!this.getWorld().isClient() && !this.replayItemsDropped && this.replay != null && this.film != null)
         {
             this.dropReplayItems();
+            this.replayItemsDropped = true;
         }
     }
     
@@ -296,8 +374,29 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
      */
     private void dropReplayItems()
     {
+        List<ItemStack> inventoryStacks = this.runtimeInventoryInitialized
+            ? this.runtimeInventory
+            : (this.replay.inventory == null ? java.util.Collections.emptyList() : this.replay.inventory.getStacks());
+        boolean hasInventoryData = !inventoryStacks.isEmpty();
+        boolean inventoryHasItems = false;
+
+        if (hasInventoryData)
+        {
+            for (ItemStack stack : inventoryStacks)
+            {
+                if (stack != null && !stack.isEmpty())
+                {
+                    inventoryHasItems = true;
+                    break;
+                }
+            }
+        }
+
+        boolean inventoryLikelyIncludesEquipment = inventoryStacks.size() >= 40;
+        boolean dropEquipment = !hasInventoryData || !inventoryHasItems || !inventoryLikelyIncludesEquipment;
+
         // Drop equipped items from keyframes at current tick
-        if (this.replay.keyframes != null)
+        if (dropEquipment && this.replay.keyframes != null)
         {
             float tick = (float) this.currentTick;
             
@@ -342,23 +441,14 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
         }
         
         // Drop items from replay inventory if available
-        if (this.replay.inventory != null && !this.replay.inventory.getStacks().isEmpty())
+        if (hasInventoryData && inventoryHasItems)
         {
-            for (ItemStack stack : this.replay.inventory.getStacks())
+            for (ItemStack stack : inventoryStacks)
             {
                 if (stack != null && !stack.isEmpty())
                 {
                     this.dropItemStack(stack.copy());
                 }
-            }
-        }
-        
-        // Drop items that were picked up during replay playback
-        for (ItemStack stack : this.pickedUpItems)
-        {
-            if (stack != null && !stack.isEmpty())
-            {
-                this.dropItemStack(stack.copy());
             }
         }
     }
