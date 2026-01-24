@@ -7,7 +7,13 @@ import mchorse.bbs_mod.utils.MathUtils;
 
 public class ValueEditorLayout extends BaseValue
 {
-    private boolean horizontal;
+    public static final int LAYOUT_HORIZONTAL_BOTTOM = 0;
+    public static final int LAYOUT_HORIZONTAL_TOP = 1;
+    public static final int LAYOUT_VERTICAL_LEFT = 2;
+    public static final int LAYOUT_VERTICAL_RIGHT = 3;
+
+    private int layout = LAYOUT_HORIZONTAL_BOTTOM;
+    private boolean layoutLocked;
     private float mainSizeH = 0.66F;
     private float mainSizeV = 0.66F;
     private float editorSizeH = 0.5F;
@@ -22,7 +28,27 @@ public class ValueEditorLayout extends BaseValue
 
     public void setHorizontal(boolean horizontal)
     {
-        BaseValue.edit(this, (v) -> this.horizontal = horizontal);
+        BaseValue.edit(this, (v) -> this.layout = horizontal ? LAYOUT_HORIZONTAL_BOTTOM : LAYOUT_VERTICAL_LEFT);
+    }
+
+    public void setLayout(int layout)
+    {
+        BaseValue.edit(this, (v) -> this.layout = clampLayout(layout));
+    }
+
+    public int getLayout()
+    {
+        return this.layout;
+    }
+
+    public void setLayoutLocked(boolean locked)
+    {
+        BaseValue.edit(this, (v) -> this.layoutLocked = locked);
+    }
+
+    public boolean isLayoutLocked()
+    {
+        return this.layoutLocked;
     }
 
     public void setMainSizeH(float mainSizeH)
@@ -57,7 +83,17 @@ public class ValueEditorLayout extends BaseValue
 
     public boolean isHorizontal()
     {
-        return this.horizontal;
+        return this.layout == LAYOUT_HORIZONTAL_BOTTOM || this.layout == LAYOUT_HORIZONTAL_TOP;
+    }
+
+    public boolean isMainOnTop()
+    {
+        return this.layout == LAYOUT_HORIZONTAL_TOP;
+    }
+
+    public boolean isMainOnLeft()
+    {
+        return this.layout == LAYOUT_VERTICAL_LEFT;
     }
 
     public float getMainSizeH()
@@ -95,7 +131,9 @@ public class ValueEditorLayout extends BaseValue
     {
         MapType data = new MapType();
 
-        data.putBool("horizontal", this.horizontal);
+        data.putInt("layout", this.layout);
+        data.putBool("horizontal", this.isHorizontal());
+        data.putBool("layout_locked", this.layoutLocked);
         data.putFloat("main_size_h", this.mainSizeH);
         data.putFloat("main_size_v", this.mainSizeV);
         data.putFloat("editor_size_h", this.editorSizeH);
@@ -113,7 +151,15 @@ public class ValueEditorLayout extends BaseValue
         {
             MapType map = data.asMap();
 
-            this.horizontal = map.getBool("horizontal");
+            if (map.has("layout"))
+            {
+                this.layout = clampLayout(map.getInt("layout"));
+            }
+            else
+            {
+                this.layout = map.getBool("horizontal") ? LAYOUT_HORIZONTAL_BOTTOM : LAYOUT_VERTICAL_LEFT;
+            }
+            this.layoutLocked = map.getBool("layout_locked", false);
             this.mainSizeH = map.getFloat("main_size_h", 0.66F);
             this.mainSizeV = map.getFloat("main_size_v", 0.66F);
             this.editorSizeH = map.getFloat("editor_size_h", 0.5F);
@@ -121,5 +167,15 @@ public class ValueEditorLayout extends BaseValue
             this.stateEditorSizeH = map.getFloat("state_editor_size_h", 0.7F);
             this.stateEditorSizeV = map.getFloat("state_editor_size_v", 0.25F);
         }
+    }
+
+    private int clampLayout(int layout)
+    {
+        if (layout < LAYOUT_HORIZONTAL_BOTTOM || layout > LAYOUT_VERTICAL_RIGHT)
+        {
+            return LAYOUT_HORIZONTAL_BOTTOM;
+        }
+
+        return layout;
     }
 }

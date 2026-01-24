@@ -319,6 +319,13 @@ public class UIKeys
     public static final IKey FILM_TELEPORT_TITLE = L10n.lang("bbs.ui.film.teleport-title");
     public static final IKey FILM_TITLE = L10n.lang("bbs.ui.film.title");
     public static final IKey FILM_TOGGLE_LAYOUT = L10n.lang("bbs.ui.film.toggle_layout");
+    public static final IKey FILM_LAYOUT_TITLE = L10n.lang("bbs.ui.film.layout.title");
+    public static final IKey FILM_LAYOUT_HORIZONTAL_BOTTOM = L10n.lang("bbs.ui.film.layout.horizontal_bottom");
+    public static final IKey FILM_LAYOUT_HORIZONTAL_TOP = L10n.lang("bbs.ui.film.layout.horizontal_top");
+    public static final IKey FILM_LAYOUT_VERTICAL_LEFT = L10n.lang("bbs.ui.film.layout.vertical_left");
+    public static final IKey FILM_LAYOUT_VERTICAL_RIGHT = L10n.lang("bbs.ui.film.layout.vertical_right");
+    public static final IKey FILM_LAYOUT_LOCK = L10n.lang("bbs.ui.film.layout.lock");
+    public static final IKey FILM_LAYOUT_UNLOCK = L10n.lang("bbs.ui.film.layout.unlock");
     public static final IKey FILM_VIDEO_RECORDING = L10n.lang("bbs.ui.film.video_recording");
     public static final IKey FORMS_CATEGORIES_ADD_CATEGORY_DESCRIPTION = L10n.lang("bbs.ui.forms.categories.add_category-description");
     public static final IKey FORMS_CATEGORIES_ADD_CATEGORY_TITLE = L10n.lang("bbs.ui.forms.categories.add_category-title");
