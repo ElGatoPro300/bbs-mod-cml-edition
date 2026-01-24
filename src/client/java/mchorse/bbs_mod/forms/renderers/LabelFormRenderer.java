@@ -253,7 +253,25 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
         int w = 0;
         int h = renderer.fontHeight - 2;
         String content = applyStyles(StringUtils.processColoredText(this.form.text.get()));
-        List<String> lines = FontRenderer.wrap(renderer, content, this.form.max.get());
+        
+        String fontName = this.form.font.get();
+        TextureFont customFont = null;
+        
+        if (!fontName.isEmpty())
+        {
+            customFont = FontUtils.getFont(fontName);
+        }
+
+        List<String> lines;
+        
+        if (customFont != null)
+        {
+            lines = customFont.wrap(content, this.form.max.get());
+        }
+        else
+        {
+            lines = FontRenderer.wrap(renderer, content, this.form.max.get());
+        }
 
         if (lines.size() <= 1)
         {
@@ -268,11 +286,13 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         for (String line : lines)
         {
-            w = Math.max(renderer.getWidth(line) - 1, w);
+            int lw = customFont != null ? customFont.getWidth(line) : renderer.getWidth(line) - 1;
+            w = Math.max(lw, w);
         }
 
-        int lineHeight = (int) (renderer.fontHeight + this.form.lineHeight.get());
-        int totalHeight = (lines.size() - 1) * lineHeight + renderer.fontHeight - 2;
+        int fh = customFont != null ? customFont.getHeight() : renderer.fontHeight;
+        int lineHeight = (int) (fh + this.form.lineHeight.get());
+        int totalHeight = (lines.size() - 1) * lineHeight + fh - 2;
 
         int x = (int) (-w * this.form.anchorX.get());
         int y = (int) (-totalHeight * this.form.anchorY.get());
@@ -291,7 +311,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         for (String line : lines)
         {
-            int lw = renderer.getWidth(line) - 1;
+            int lw = customFont != null ? customFont.getWidth(line) : renderer.getWidth(line) - 1;
             int lx = x;
             
             if (align == 1) lx = x + (w - lw) / 2;
@@ -301,17 +321,25 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             {
                 context.stack.push();
                 context.stack.translate(0F, 0F, -0.1F);
-                renderer.draw(
-                    line,
-                    lx + this.form.shadowX.get(),
-                    y + this.form.shadowY.get(),
-                    shadowColor.getARGBColor(), false,
-                    context.stack.peek().getPositionMatrix(),
-                    consumers,
-                    TextRenderer.TextLayerType.NORMAL,
-                    0,
-                    light
-                );
+                
+                if (customFont != null)
+                {
+                    customFont.draw(line, lx + this.form.shadowX.get(), y + this.form.shadowY.get(), shadowColor.getARGBColor(), context.stack.peek().getPositionMatrix(), consumers, light);
+                }
+                else
+                {
+                    renderer.draw(
+                        line,
+                        lx + this.form.shadowX.get(),
+                        y + this.form.shadowY.get(),
+                        shadowColor.getARGBColor(), false,
+                        context.stack.peek().getPositionMatrix(),
+                        consumers,
+                        TextRenderer.TextLayerType.NORMAL,
+                        0,
+                        light
+                    );
+                }
                 context.stack.pop();
             }
             
@@ -324,24 +352,42 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
                 
                 context.stack.push();
                 context.stack.translate(0, 0, -0.05F);
-                renderer.draw(line, lx - ow, y, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
-                renderer.draw(line, lx + ow, y, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
-                renderer.draw(line, lx, y - ow, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
-                renderer.draw(line, lx, y + ow, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+                
+                if (customFont != null)
+                {
+                    customFont.draw(line, lx - ow, y, oc, context.stack.peek().getPositionMatrix(), consumers, light);
+                    customFont.draw(line, lx + ow, y, oc, context.stack.peek().getPositionMatrix(), consumers, light);
+                    customFont.draw(line, lx, y - ow, oc, context.stack.peek().getPositionMatrix(), consumers, light);
+                    customFont.draw(line, lx, y + ow, oc, context.stack.peek().getPositionMatrix(), consumers, light);
+                }
+                else
+                {
+                    renderer.draw(line, lx - ow, y, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+                    renderer.draw(line, lx + ow, y, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+                    renderer.draw(line, lx, y - ow, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+                    renderer.draw(line, lx, y + ow, oc, false, context.stack.peek().getPositionMatrix(), consumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+                }
                 context.stack.pop();
             }
 
-            renderer.draw(
-                line,
-                lx,
-                y,
-                color.getARGBColor(), false,
-                context.stack.peek().getPositionMatrix(),
-                consumers,
-                TextRenderer.TextLayerType.NORMAL,
-                0,
-                light
-            );
+            if (customFont != null)
+            {
+                customFont.draw(line, lx, y, color.getARGBColor(), context.stack.peek().getPositionMatrix(), consumers, light);
+            }
+            else
+            {
+                renderer.draw(
+                    line,
+                    lx,
+                    y,
+                    color.getARGBColor(), false,
+                    context.stack.peek().getPositionMatrix(),
+                    consumers,
+                    TextRenderer.TextLayerType.NORMAL,
+                    0,
+                    light
+                );
+            }
 
             y += lineHeight;
         }
