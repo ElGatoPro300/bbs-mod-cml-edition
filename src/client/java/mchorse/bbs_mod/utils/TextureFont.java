@@ -107,12 +107,52 @@ public class TextureFont
     {
         int w = 0;
         float scale = 0.25f;
-        for (char c : text.toCharArray())
+        for (int i = 0; i < text.length(); i++)
         {
+            char c = text.charAt(i);
+            
+            if (c == '\u00A7' && i + 1 < text.length())
+            {
+                i++;
+                continue;
+            }
+
             Glyph g = glyphs.get(c);
             if (g != null) w += g.width * scale;
         }
         return w;
+    }
+
+    public java.util.List<String> wrap(String text, int width)
+    {
+        java.util.List<String> lines = new java.util.ArrayList<>();
+        String[] words = text.split(" ");
+        StringBuilder currentLine = new StringBuilder();
+
+        for (String word : words)
+        {
+            String testLine = currentLine.length() > 0 ? currentLine + " " + word : word;
+            if (this.getWidth(testLine) <= width)
+            {
+                if (currentLine.length() > 0) currentLine.append(" ");
+                currentLine.append(word);
+            }
+            else
+            {
+                if (currentLine.length() > 0)
+                {
+                    lines.add(currentLine.toString());
+                }
+                currentLine = new StringBuilder(word);
+            }
+        }
+        
+        if (currentLine.length() > 0)
+        {
+            lines.add(currentLine.toString());
+        }
+        
+        return lines;
     }
 
     public int getHeight()
