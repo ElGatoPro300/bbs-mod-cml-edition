@@ -17,5 +17,6 @@ public class UIFluidForm extends UIForm<FluidForm>
         this.defaultPanel = this.fluidFormPanel;
 
         this.registerPanel(this.defaultPanel, UIKeys.FORMS_EDITORS_FLUID_TITLE, Icons.MATERIAL);
+        this.registerDefaultPanels();
     }
 }

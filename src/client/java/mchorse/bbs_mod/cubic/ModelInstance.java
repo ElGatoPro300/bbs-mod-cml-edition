@@ -348,7 +348,15 @@ public class ModelInstance implements IModelInstance
 
                 builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
-                BufferRenderer.drawWithGlobalProgram(builder.end());
+
+                try
+                {
+                    BufferRenderer.drawWithGlobalProgram(builder.end());
+                }
+                catch (IllegalStateException e)
+                {
+                    
+                }
             }
         }
         else if (this.model instanceof BOBJModel model)
