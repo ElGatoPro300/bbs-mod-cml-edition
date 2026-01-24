@@ -72,7 +72,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
         VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
         
-        this.renderFluid(format, GameRenderer::getRenderTypeEntityTranslucentProgram,
+        this.renderFluid(format, ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT,
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition()
