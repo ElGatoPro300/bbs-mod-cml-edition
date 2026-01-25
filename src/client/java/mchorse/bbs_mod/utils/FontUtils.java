@@ -1,6 +1,6 @@
 package mchorse.bbs_mod.utils;
 
-import net.minecraft.client.MinecraftClient;
+import mchorse.bbs_mod.BBSMod;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class FontUtils
 {
-    public static final File FONTS_FOLDER = new File(MinecraftClient.getInstance().runDirectory, "config/bbs/fonts");
+    public static final File FONTS_FOLDER = BBSMod.getAssetsPath("fonts");
     private static final Map<String, TextureFont> fonts = new HashMap<>();
 
     public static void createFontsFolder()
