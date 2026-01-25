@@ -2,15 +2,12 @@ package mchorse.bbs_mod.client;
 
 import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Defines;
+import net.minecraft.client.gl.ShaderLoader;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceFactory;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-
-import java.io.IOException;
-import java.util.Optional;
 
 public class BBSShaders
 {
@@ -23,6 +20,16 @@ public class BBSShaders
     private static ShaderProgram pickerBillboardNoShading;
     private static ShaderProgram pickerParticles;
     private static ShaderProgram pickerModels;
+
+    public static ShaderProgramKey modelKey;
+    public static ShaderProgramKey multiLinkKey;
+    public static ShaderProgramKey subtitlesKey;
+
+    public static ShaderProgramKey pickerPreviewKey;
+    public static ShaderProgramKey pickerBillboardKey;
+    public static ShaderProgramKey pickerBillboardNoShadingKey;
+    public static ShaderProgramKey pickerParticlesKey;
+    public static ShaderProgramKey pickerModelsKey;
 
     static
     {
@@ -41,24 +48,28 @@ public class BBSShaders
         if (pickerParticles != null) pickerParticles.close();
         if (pickerModels != null) pickerModels.close();
 
-        try
-        {
-            ResourceFactory factory = new ProxyResourceFactory(MinecraftClient.getInstance().getResourceManager());
+        ShaderLoader loader = MinecraftClient.getInstance().getShaderLoader();
+        Defines defines = Defines.EMPTY;
 
-            model = new ShaderProgram(factory, "model", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-            multiLink = new ShaderProgram(factory, "multilink", VertexFormats.POSITION_TEXTURE_COLOR);
-            subtitles = new ShaderProgram(factory, "subtitles", VertexFormats.POSITION_TEXTURE_COLOR);
+        modelKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/model"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
+        multiLinkKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/multilink"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
+        subtitlesKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/subtitles"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
 
-            pickerPreview = new ShaderProgram(factory, "picker_preview", VertexFormats.POSITION_TEXTURE_COLOR);
-            pickerBillboard = new ShaderProgram(factory, "picker_billboard", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-            pickerBillboardNoShading = new ShaderProgram(factory, "picker_billboard_no_shading", VertexFormats.POSITION_TEXTURE_LIGHT_COLOR);
-            pickerParticles = new ShaderProgram(factory, "picker_particles", VertexFormats.POSITION_COLOR_TEXTURE_LIGHT);
-            pickerModels = new ShaderProgram(factory, "picker_models", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        pickerPreviewKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_preview"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
+        pickerBillboardKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_billboard"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
+        pickerBillboardNoShadingKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_billboard_no_shading"), VertexFormats.POSITION_TEXTURE_LIGHT_COLOR, defines);
+        pickerParticlesKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_particles"), VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, defines);
+        pickerModelsKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_models"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
+
+        model = loader.getOrCreateProgram(modelKey);
+        multiLink = loader.getOrCreateProgram(multiLinkKey);
+        subtitles = loader.getOrCreateProgram(subtitlesKey);
+
+        pickerPreview = loader.getOrCreateProgram(pickerPreviewKey);
+        pickerBillboard = loader.getOrCreateProgram(pickerBillboardKey);
+        pickerBillboardNoShading = loader.getOrCreateProgram(pickerBillboardNoShadingKey);
+        pickerParticles = loader.getOrCreateProgram(pickerParticlesKey);
+        pickerModels = loader.getOrCreateProgram(pickerModelsKey);
     }
 
     public static ShaderProgram getModel()
@@ -101,24 +112,4 @@ public class BBSShaders
         return pickerModels;
     }
 
-    private static class ProxyResourceFactory implements ResourceFactory
-    {
-        private ResourceManager manager;
-
-        public ProxyResourceFactory(ResourceManager manager)
-        {
-            this.manager = manager;
-        }
-
-        @Override
-        public Optional<Resource> getResource(Identifier id)
-        {
-            if (id.getPath().contains("/core/"))
-            {
-                return this.manager.getResource(Identifier.of(BBSMod.MOD_ID, id.getPath()));
-            }
-
-            return this.manager.getResource(id);
-        }
-    }
 }

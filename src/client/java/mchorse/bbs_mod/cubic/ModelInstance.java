@@ -31,9 +31,11 @@ import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -325,29 +327,35 @@ public class ModelInstance implements IModelInstance
         }
     }
 
-    public void render(MatrixStack stack, Supplier<ShaderProgram> program, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys, Link defaultTexture)
+    public void render(MatrixStack stack, ShaderProgramKey shaderKey, Color color, int light, int overlay, StencilMap stencilMap, ShapeKeys keys, Link defaultTexture)
     {
         if (this.model instanceof Model model)
         {
             boolean isVao = this.isVAORendered();
+            ShaderProgram program = MinecraftClient.getInstance().getShaderLoader().getOrCreateProgram(shaderKey);
+
             CubicCubeRenderer renderProcessor = isVao
-                ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys, defaultTexture)
+                ? new CubicVAORenderer(program, this, light, overlay, stencilMap, keys, defaultTexture)
                 : new CubicCubeRenderer(light, overlay, stencilMap, keys);
 
             renderProcessor.setColor(color.r, color.g, color.b, color.a);
 
             if (isVao)
-            {
-                CubicRenderer.processRenderModel(renderProcessor, null, stack, model);
-            }
-            else
-            {
-                RenderSystem.setShader(program);
+                {
+                    if (program != null)
+                    {
+                        CubicRenderer.processRenderModel(renderProcessor, null, stack, model);
+                    }
+                }
+                else
+                {
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
 
-                BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
-                CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
-                BufferRenderer.drawWithGlobalProgram(builder.end());
-            }
+                    CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
+
+                    BufferRenderer.drawWithGlobalProgram(builder.end());
+                }
         }
         else if (this.model instanceof BOBJModel model)
         {
@@ -360,7 +368,12 @@ public class ModelInstance implements IModelInstance
 
                 vao.armature.setupMatrices();
                 vao.updateMesh(stencilMap);
-                vao.render(program.get(), stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
+                ShaderProgram program = MinecraftClient.getInstance().getShaderLoader().getOrCreateProgram(shaderKey);
+
+                if (program != null)
+                {
+                    vao.render(program, stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
+                }
 
                 stack.pop();
             }

@@ -18,21 +18,29 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import mchorse.bbs_mod.ducks.IEntityRenderState;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.MinecraftClient;
+
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin
 {
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
-    public void onRender(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info)
+    /*@Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    public void onRender(PlayerEntityRenderState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo info)
     {
-        if (MorphRenderer.renderPlayer(abstractClientPlayerEntity, f, g, matrixStack, vertexConsumerProvider, i))
+        AbstractClientPlayerEntity abstractClientPlayerEntity = (AbstractClientPlayerEntity) ((IEntityRenderState) state).bbs$getEntity();
+        float tickDelta = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true);
+
+        if (abstractClientPlayerEntity != null && MorphRenderer.renderPlayer(abstractClientPlayerEntity, state.bodyYaw, tickDelta, matrixStack, vertexConsumerProvider, i))
         {
             info.cancel();
         }
-    }
+    }*/
 
     @Inject(method = "getPositionOffset", at = @At("HEAD"), cancellable = true)
-    public void onPositionOffset(AbstractClientPlayerEntity abstractClientPlayerEntity, float f, CallbackInfoReturnable<Vec3d> info)
+    public void onPositionOffset(PlayerEntityRenderState state, CallbackInfoReturnable<Vec3d> info)
     {
+        AbstractClientPlayerEntity abstractClientPlayerEntity = (AbstractClientPlayerEntity) ((IEntityRenderState) state).bbs$getEntity();
         Morph morph = Morph.getMorph(abstractClientPlayerEntity);
 
         if (morph != null && morph.getForm() != null)
@@ -41,9 +49,10 @@ public class PlayerEntityRendererMixin
         }
     }
 
-    @Inject(method = "renderArm", at = @At("HEAD"), cancellable = true)
-    public void onRenderArmBegin(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, ModelPart arm, ModelPart sleeve, CallbackInfo info)
+    @Inject(method = "renderRightArm", at = @At("HEAD"), cancellable = true)
+    public void onRenderRightArm(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, net.minecraft.util.Identifier skin, boolean mainArm, CallbackInfo info)
     {
+        AbstractClientPlayerEntity player = MinecraftClient.getInstance().player;
         Morph morph = Morph.getMorph(player);
 
         if (morph != null)
@@ -53,7 +62,30 @@ public class PlayerEntityRendererMixin
             if (form != null)
             {
                 FormRenderer renderer = FormUtilsClient.getRenderer(form);
-                Hand hand = ((PlayerEntityRenderer) (Object) this).getModel().rightArm == arm ? Hand.MAIN_HAND : Hand.OFF_HAND;
+                Hand hand = player.getMainArm() == net.minecraft.util.Arm.RIGHT ? Hand.MAIN_HAND : Hand.OFF_HAND;
+
+                if (renderer != null && renderer.renderArm(matrices, light, player, hand))
+                {
+                    info.cancel();
+                }
+            }
+        }
+    }
+
+    @Inject(method = "renderLeftArm", at = @At("HEAD"), cancellable = true)
+    public void onRenderLeftArm(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, net.minecraft.util.Identifier skin, boolean mainArm, CallbackInfo info)
+    {
+        AbstractClientPlayerEntity player = MinecraftClient.getInstance().player;
+        Morph morph = Morph.getMorph(player);
+
+        if (morph != null)
+        {
+            Form form = morph.getForm();
+
+            if (form != null)
+            {
+                FormRenderer renderer = FormUtilsClient.getRenderer(form);
+                Hand hand = player.getMainArm() == net.minecraft.util.Arm.LEFT ? Hand.MAIN_HAND : Hand.OFF_HAND;
 
                 if (renderer != null && renderer.renderArm(matrices, light, player, hand))
                 {

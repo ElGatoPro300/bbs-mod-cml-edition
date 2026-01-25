@@ -61,7 +61,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
 import net.minecraft.client.option.GameOptions;
+import com.mojang.blaze3d.systems.ProjectionType;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.HitResult;
@@ -1030,7 +1033,7 @@ public class UIFilmController extends UIElement
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.panel.lastProjection, VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(this.panel.lastProjection, ProjectionType.PERSPECTIVE);
 
         /* Render the stencil */
         MatrixStack worldStack = this.worldRenderContext.matrixStack();
@@ -1048,12 +1051,12 @@ public class UIFilmController extends UIElement
             mvStack.pushMatrix();
             mvStack.identity();
             mvStack.set(BBSRendering.camera);
-            RenderSystem.applyModelViewMatrix();
+            // RenderSystem.applyModelViewMatrix();
 
             this.renderStencil(this.worldRenderContext, this.getContext(), altPressed);
 
             mvStack.popMatrix();
-            RenderSystem.applyModelViewMatrix();
+            // RenderSystem.applyModelViewMatrix();
         }
 
         /* Return back to orthographic projection */
@@ -1075,7 +1078,7 @@ public class UIFilmController extends UIElement
         int h = texture.height;
 
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
-        Supplier<ShaderProgram> getPickerPreviewProgram = BBSShaders::getPickerPreviewProgram;
+        ShaderProgramKey pickerPreviewKey = BBSShaders.pickerPreviewKey;
         GlUniform target = previewProgram.getUniform("Target");
 
         if (target != null)
@@ -1084,7 +1087,7 @@ public class UIFilmController extends UIElement
         }
 
         RenderSystem.enableBlend();
-        context.batcher.texturedBox(getPickerPreviewProgram, texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
+        context.batcher.texturedBox(pickerPreviewKey, texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
 
         if (altPressed)
         {

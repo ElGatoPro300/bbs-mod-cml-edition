@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEntity>
+public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEntity, GunProjectileEntityRenderState>
 {
     public GunProjectileEntityRenderer(EntityRendererFactory.Context ctx)
     {
@@ -26,22 +26,42 @@ public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEnt
     }
 
     @Override
-    public Identifier getTexture(GunProjectileEntity entity)
+    public GunProjectileEntityRenderState createRenderState()
+    {
+        return new GunProjectileEntityRenderState();
+    }
+
+    @Override
+    public void updateRenderState(GunProjectileEntity entity, GunProjectileEntityRenderState state, float tickDelta)
+    {
+        super.updateRenderState(entity, state, tickDelta);
+        state.projectile = entity;
+        state.properties = entity.getProperties();
+        state.yaw = entity.getYaw();
+        state.pitch = entity.getPitch();
+        state.prevYaw = entity.prevYaw;
+        state.prevPitch = entity.prevPitch;
+        state.age = entity.age;
+        state.tickDelta = tickDelta;
+    }
+
+    public Identifier getTexture(GunProjectileEntityRenderState state)
     {
         return Identifier.of("minecraft", "textures/entity/player/wide/steve.png");
     }
 
     @Override
-    public void render(GunProjectileEntity projectile, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
+    public void render(GunProjectileEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
     {
         matrices.push();
 
-        GunProperties properties = projectile.getProperties();
+        GunProperties properties = state.properties;
         int out = properties.lifeSpan - 2;
+        float tickDelta = state.tickDelta;
 
-        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, projectile.prevYaw, projectile.getYaw());
-        float pitch = MathHelper.lerpAngleDegrees(tickDelta, projectile.prevPitch, projectile.getPitch());
-        float scale = Lerps.envelope(projectile.age + tickDelta, 0, properties.fadeIn, out - properties.fadeOut, out);
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, state.prevYaw, state.yaw);
+        float pitch = MathHelper.lerpAngleDegrees(tickDelta, state.prevPitch, state.pitch);
+        float scale = Lerps.envelope(state.age + tickDelta, 0, properties.fadeIn, out - properties.fadeOut, out);
 
         if (properties.yaw) matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(bodyYaw));
         if (properties.pitch) matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-pitch));
@@ -49,13 +69,13 @@ public class GunProjectileEntityRenderer extends EntityRenderer<GunProjectileEnt
         MatrixStackUtils.applyTransform(matrices, properties.projectileTransform);
 
         RenderSystem.enableDepthTest();
-        FormUtilsClient.render(projectile.getForm(), new FormRenderingContext()
-            .set(FormRenderType.ENTITY, projectile.getEntity(), matrices, light, OverlayTexture.DEFAULT_UV, tickDelta)
+        FormUtilsClient.render(state.projectile.getForm(), new FormRenderingContext()
+            .set(FormRenderType.ENTITY, state.projectile.getEntity(), matrices, light, OverlayTexture.DEFAULT_UV, tickDelta)
             .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
         RenderSystem.disableDepthTest();
 
         matrices.pop();
 
-        super.render(projectile, yaw, tickDelta, matrices, vertexConsumers, light);
+        super.render(state, matrices, vertexConsumers, light);
     }
 }

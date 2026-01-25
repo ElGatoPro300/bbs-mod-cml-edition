@@ -1,12 +1,12 @@
 {
     "required": true,
     "package": "mchorse.bbs_mod.mixin.client",
+    "refmap": "bbs.refmap.json",
     "compatibilityLevel": "JAVA_21",
     "client": [
         "CameraMixin",
         "GameRendererMixin",
         "MouseMixin",
-        "EntityRendererDispatcherInvoker",
         "PlayerEntityRendererMixin",
         "RenderTickCounterMixin",
         "IntegratedServerMixin",
@@ -26,6 +26,7 @@
         "iris.EntityVertexMixin",
         "KeyboardInputMixin",
         "EntityRendererMixin",
+        "EntityRenderStateMixin",
         "ClientPlayerEntityAccessor",
         "iris.IrisRenderingPipelineAccessor",
         "iris.CustomUniformsBuilderMixin",
@@ -38,7 +39,6 @@
         "SimpleOptionMixin",
         "BlockEntityRenderDispatcherMixin",
         "WorldMixin",
-        "LivingEntityRendererInvoker",
         "EntityRenderDispatcherMixin",
         "iris.ShadowRendererMixin"
     ],

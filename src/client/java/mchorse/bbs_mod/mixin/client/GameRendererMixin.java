@@ -36,14 +36,14 @@ public class GameRendererMixin
     /**
      * This injection replaces the camera FOV when camera controller takes over
      */
-    @Inject(method = "getFov", at = @At("RETURN"), cancellable = true)
-    public void onGetFov(CallbackInfoReturnable<Double> info)
+    @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F", at = @At("RETURN"), cancellable = true)
+    public void onGetFov(net.minecraft.client.render.Camera camera, float tickDelta, boolean changingWorld, CallbackInfoReturnable<Float> info)
     {
         GunZoom gunZoom = BBSModClient.getGunZoom();
 
         if (gunZoom != null)
         {
-            info.setReturnValue((double) gunZoom.getFOV(info.getReturnValue().floatValue()));
+            info.setReturnValue(gunZoom.getFOV(info.getReturnValue()));
 
             return;
         }
@@ -52,7 +52,7 @@ public class GameRendererMixin
 
         if (controller.getCurrent() != null && !BBSRendering.isIrisShadowPass())
         {
-            info.setReturnValue(controller.getFOV());
+            info.setReturnValue((float) controller.getFOV());
         }
     }
 

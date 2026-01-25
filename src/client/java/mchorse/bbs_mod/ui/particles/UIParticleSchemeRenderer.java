@@ -11,6 +11,7 @@ import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
@@ -73,7 +74,7 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
 
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR, GameRenderer::getPositionTexColorProgram, stack, OverlayTexture.DEFAULT_UV, context.getTransition());
+        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR, ShaderProgramKeys.POSITION_TEX_COLOR, stack, OverlayTexture.DEFAULT_UV, context.getTransition());
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
 
@@ -110,7 +111,7 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
             this.calculate(1, 1, a, b, c, d);
             builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
 
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
             RenderSystem.disableCull();
             BufferRenderer.drawWithGlobalProgram(builder.end());
             RenderSystem.enableCull();

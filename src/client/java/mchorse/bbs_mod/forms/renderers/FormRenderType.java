@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.forms.renderers;
 
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.util.Identifier;
 
 public enum FormRenderType
 {

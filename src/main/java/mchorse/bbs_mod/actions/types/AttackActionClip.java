@@ -12,6 +12,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.server.world.ServerWorld;
 
 public class AttackActionClip extends ActionClip
 {
@@ -52,7 +53,7 @@ public class AttackActionClip extends ActionClip
 
             if (entity != null)
             {
-                entity.damage(player.getWorld().getDamageSources().mobAttack(player), damage);
+                entity.damage((ServerWorld) player.getWorld(), player.getWorld().getDamageSources().mobAttack(player), damage);
             }
         }
     }

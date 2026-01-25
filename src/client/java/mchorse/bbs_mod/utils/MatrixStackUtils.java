@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.utils;
 
+import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
 import mchorse.bbs_mod.utils.joml.Vectors;
@@ -33,17 +34,17 @@ public class MatrixStackUtils
 
         Matrix4fStack mvStack = RenderSystem.getModelViewStack();
         mvStack.identity();
-        RenderSystem.applyModelViewMatrix();
+        // RenderSystem.applyModelViewMatrix();
     }
 
     public static void restoreMatrices()
     {
         /* Return back to orthographic projection */
-        RenderSystem.setProjectionMatrix(oldProjection, VertexSorter.BY_Z);
+        RenderSystem.setProjectionMatrix(oldProjection, ProjectionType.ORTHOGRAPHIC);
 
         Matrix4fStack mvStack = RenderSystem.getModelViewStack();
         mvStack.set(oldMV);
-        RenderSystem.applyModelViewMatrix();
+        // RenderSystem.applyModelViewMatrix();
     }
 
     public static void applyTransform(MatrixStack stack, Transform transform)

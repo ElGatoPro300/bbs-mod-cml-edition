@@ -1,6 +1,7 @@
 {
     "required": true,
     "package": "mchorse.bbs_mod.mixin",
+    "refmap": "bbs.refmap.json",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
         "PlayerEntityMixin",

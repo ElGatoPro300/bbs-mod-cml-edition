@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.render.OverlayTexture;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.MobForm;
@@ -51,7 +52,7 @@ public class MorphRenderer
                 RenderSystem.setupLevelDiffuseLighting(a, b);
 
                 float bodyYaw = Lerps.lerp(player.prevBodyYaw, player.bodyYaw, g);
-                int overlay = LivingEntityRenderer.getOverlay(player, 0F);
+                int overlay = OverlayTexture.DEFAULT_UV; // TODO: OverlayTexture.pack(OverlayTexture.getU(0F), OverlayTexture.getV(player.hurtTime > 0 || player.deathTime > 0));
 
                 matrixStack.push();
                 matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));

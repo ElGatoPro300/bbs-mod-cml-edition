@@ -40,19 +40,16 @@ public class SuperFakePlayer extends ServerPlayerEntity
         this.networkHandler = new SuperFakePlayerNetworkHandler(this);
     }
 
-    @Override
-    protected int getPermissionLevel()
+    public int getPermissionLevel()
     {
         return 2;
     }
 
-    @Override
     public boolean shouldBroadcastConsoleToOps()
     {
         return false;
     }
 
-    @Override
     public boolean shouldReceiveFeedback()
     {
         return false;
@@ -75,7 +72,7 @@ public class SuperFakePlayer extends ServerPlayerEntity
     {}
 
     @Override
-    public boolean isInvulnerableTo(DamageSource damageSource)
+    public boolean isInvulnerableTo(ServerWorld world, DamageSource damageSource)
     {
         return true;
     }

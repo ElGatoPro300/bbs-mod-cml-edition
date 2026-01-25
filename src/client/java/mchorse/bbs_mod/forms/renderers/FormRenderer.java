@@ -18,7 +18,9 @@ import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
@@ -171,20 +173,19 @@ public abstract class FormRenderer <T extends Form>
         transform.pivot.add(overlay.pivot);
     }
 
-    protected Supplier<ShaderProgram> getShader(FormRenderingContext context, Supplier<ShaderProgram> normal, Supplier<ShaderProgram> picking)
+    protected ShaderProgramKey getShader(FormRenderingContext context, ShaderProgramKey normal, ShaderProgramKey picking)
     {
         if (context.isPicking())
         {
-            ShaderProgram program = picking.get();
-
-            if (program == null)
+            if (picking == null)
             {
                 return normal;
             }
 
+            ShaderProgram program = MinecraftClient.getInstance().getShaderLoader().getOrCreateProgram(picking);
             this.setupTarget(context, program);
 
-            return () -> program;
+            return picking;
         }
 
         return normal;

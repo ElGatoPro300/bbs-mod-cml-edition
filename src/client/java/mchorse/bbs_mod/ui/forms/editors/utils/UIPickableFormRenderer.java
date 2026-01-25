@@ -23,6 +23,7 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -225,7 +226,8 @@ public class UIPickableFormRenderer extends UIFormRenderer
         int w = texture.width;
         int h = texture.height;
 
-        ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
+        ShaderProgramKey previewKey = BBSShaders.pickerPreviewKey;
+        ShaderProgram previewProgram = MinecraftClient.getInstance().getShaderLoader().getOrCreateProgram(previewKey);
         GlUniform target = previewProgram.getUniform("Target");
 
         if (target != null)
@@ -234,7 +236,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
         }
 
         RenderSystem.enableBlend();
-        context.batcher.texturedBox(BBSShaders::getPickerPreviewProgram, texture.id, Colors.WHITE, this.area.x, this.area.y, this.area.w, this.area.h, 0, h, w, 0, w, h);
+        context.batcher.texturedBox(previewKey, texture.id, Colors.WHITE, this.area.x, this.area.y, this.area.w, this.area.h, 0, h, w, 0, w, h);
 
         if (pair != null && pair.a != null)
         {

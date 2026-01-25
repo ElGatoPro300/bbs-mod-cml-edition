@@ -19,7 +19,7 @@ public class ModelVAORenderer
         setupUniforms(stack, shader);
 
         shader.bind();
-        modelVAO.render(shader.getFormat(), r, g, b, a, light, overlay);
+        modelVAO.render(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, r, g, b, a, light, overlay);
         shader.unbind();
 
         GL30.glBindVertexArray(currentVAO);
@@ -30,7 +30,12 @@ public class ModelVAORenderer
     {
         for (int i = 0; i < 12; i++)
         {
-            shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
+            GlUniform sampler = shader.getUniform("Sampler" + i);
+
+            if (sampler != null)
+            {
+                sampler.set(i);
+            }
         }
 
         if (shader.projectionMat != null)
@@ -54,6 +59,7 @@ public class ModelVAORenderer
             normalUniform.set(stack.peek().getNormalMatrix());
         }
 
+        /*
         if (shader.fogStart != null)
         {
             shader.fogStart.set(RenderSystem.getShaderFogStart());
@@ -73,6 +79,7 @@ public class ModelVAORenderer
         {
             shader.fogShape.set(RenderSystem.getShaderFogShape().getId());
         }
+        */
 
         if (shader.colorModulator != null)
         {

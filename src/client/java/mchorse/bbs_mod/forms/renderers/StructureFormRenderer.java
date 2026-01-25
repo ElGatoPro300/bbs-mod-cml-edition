@@ -213,7 +213,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 gameRenderer.getOverlayTexture().setupOverlayColor();
 
                 /* Revert to own model shader in vanilla to ensure VAO compatibility */
-                RenderSystem.setShader(() -> shader);
+                RenderSystem.setShader(BBSShaders.modelKey);
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
                 /* Enable blending to support translucent layers (glass, portal, leaves, etc.) */
@@ -324,7 +324,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 gameRenderer.getOverlayTexture().setupOverlayColor();
 
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
+                RenderSystem.setShader(BBSShaders.pickerModelsKey);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
@@ -391,7 +391,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 }
 
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
+                RenderSystem.setShader(BBSShaders.pickerModelsKey);
                 RenderSystem.enableBlend();
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
@@ -400,11 +400,12 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             else
             {
                 /* VAO with shader compatible with packs: use translucent entity program when Iris is active */
-                ShaderProgram shader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld())
-                    ? GameRenderer.getRenderTypeEntityTranslucentCullProgram()
-                    : BBSShaders.getModel();
+                ShaderProgram shader = BBSShaders.getModel();
+                    // (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld())
+                    // ? GameRenderer.getRenderTypeEntityTranslucentProgram()
+                    // : BBSShaders.getModel();
 
-                RenderSystem.setShader(() -> shader);
+                RenderSystem.setShader(BBSShaders.modelKey);
                 RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
@@ -607,7 +608,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             /* of WorldRenderer. This ensures compatibility */
             /* with shaders (Iris/Sodium) for translucent and special layers. */
             layer = useEntityLayers
-                ? RenderLayers.getEntityBlockLayer(entry.state, false)
+                ? RenderLayers.getEntityBlockLayer(entry.state)
                 : RenderLayers.getBlockLayer(entry.state);
 
             /* If there is global opacity (<1), force translucent layer for all blocks */
@@ -619,7 +620,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (globalAlpha < 0.999F)
             {
                 layer = useEntityLayers
-                    ? TexturedRenderLayers.getEntityTranslucentCull()
+                    ? RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
                     : RenderLayer.getTranslucent();
             }
 
@@ -735,7 +736,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             /* Layer selection: in shaders use entity variant so the pack processes the animation */
             shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
             layer = shadersEnabled
-                ? RenderLayers.getEntityBlockLayer(entry.state, true)
+                ? RenderLayers.getEntityBlockLayer(entry.state)
                 : RenderLayer.getTranslucentMovingBlock();
 
             /* If global alpha exists, prefer translucent entity layer in shaders to ensure smooth fade */
@@ -744,7 +745,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (globalAlphaAnim < 0.999F)
             {
                 layer = shadersEnabled
-                    ? TexturedRenderLayers.getEntityTranslucentCull()
+                    ? RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
                     : RenderLayer.getTranslucentMovingBlock();
             }
 
@@ -797,7 +798,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             /* Layer according to state; in shaders use entity variant for packs */
             shadersEnabledTint = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
             layer = shadersEnabledTint
-                ? RenderLayers.getEntityBlockLayer(entry.state, false)
+                ? RenderLayers.getEntityBlockLayer(entry.state)
                 : RenderLayers.getBlockLayer(entry.state);
 
             /* If there is global opacity (<1), force translucent layer so alpha */
@@ -806,7 +807,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
             if (globalAlpha < 0.999F)
             {
-                layer = shadersEnabledTint ? TexturedRenderLayers.getEntityTranslucentCull() : RenderLayer.getTranslucent();
+                layer = shadersEnabledTint ? RenderLayer.getEntityTranslucent(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE) : RenderLayer.getTranslucent();
             }
 
             vc = consumers.getBuffer(layer);

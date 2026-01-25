@@ -15,6 +15,8 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
@@ -54,7 +56,7 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
         stack.peek().getNormalMatrix().scale(1F / Vectors.EMPTY_3F.x, -1F / Vectors.EMPTY_3F.y, 1F / Vectors.EMPTY_3F.z);
 
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        this.renderModel(BBSShaders::getModel,
+        this.renderModel(BBSShaders.modelKey,
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition()
@@ -75,15 +77,15 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
         }
 
         VertexFormat format = shading ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR;
-        Supplier<ShaderProgram> shader = this.getShader(context,
-            shading ? GameRenderer::getRenderTypeEntityTranslucentProgram : GameRenderer::getPositionTexColorProgram,
-            shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
+        ShaderProgramKey shader = this.getShader(context,
+            shading ? ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT : ShaderProgramKeys.POSITION_TEX_COLOR,
+            shading ? BBSShaders.pickerBillboardKey : BBSShaders.pickerBillboardNoShadingKey
         );
 
         this.renderModel(shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
     }
 
-    private void renderModel(Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderModel(ShaderProgramKey shaderKey, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         Link texture = this.form.texture.get();
         ModelVAO data = BBSModClient.getTextures().getExtruder().get(texture);
@@ -118,7 +120,12 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
             gameRenderer.getLightmapTextureManager().enable();
             gameRenderer.getOverlayTexture().setupOverlayColor();
 
-            ModelVAORenderer.render(shader.get(), data, matrices, color.r * formColor.r, color.g * formColor.g, color.b * formColor.b, color.a * formColor.a, light, overlay);
+            ShaderProgram shader = MinecraftClient.getInstance().getShaderLoader().getOrCreateProgram(shaderKey);
+
+            if (shader != null)
+            {
+                ModelVAORenderer.render(shader, data, matrices, color.r * formColor.r, color.g * formColor.g, color.b * formColor.b, color.a * formColor.a, light, overlay);
+            }
 
             RenderSystem.disableBlend();
 

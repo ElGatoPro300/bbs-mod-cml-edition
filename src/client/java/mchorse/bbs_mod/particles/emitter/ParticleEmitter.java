@@ -16,6 +16,8 @@ import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.interps.Lerps;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKey;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -26,6 +28,8 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -460,7 +464,7 @@ public class ParticleEmitter
                     render.renderUI(this.uiParticle, builder, matrix, transition);
                 }
 
-                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+                RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
                 RenderSystem.disableCull();
                 BufferRenderer.drawWithGlobalProgram(builder.end());
                 RenderSystem.enableCull();
@@ -471,7 +475,7 @@ public class ParticleEmitter
     /**
      * Render all the particles in this particle emitter
      */
-    public void render(VertexFormat format, Supplier<ShaderProgram> program, MatrixStack stack, int overlay, float transition)
+    public void render(VertexFormat format, ShaderProgramKey program, MatrixStack stack, int overlay, float transition)
     {
         if (this.scheme == null)
         {

@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
-public class ActorEntityRenderer extends EntityRenderer<ActorEntity>
+public class ActorEntityRenderer extends EntityRenderer<ActorEntity, ActorEntityRenderState>
 {
     public static ArmorRenderer armorRenderer;
 
@@ -33,24 +33,39 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity>
             ctx.getModelManager()
         );
 
-        this.shadowRadius = 0.5F;
+        // this.shadowRadius = 0.5F;
     }
 
     @Override
-    public Identifier getTexture(ActorEntity entity)
+    public ActorEntityRenderState createRenderState() {
+        return new ActorEntityRenderState();
+    }
+
+    @Override
+    public void updateRenderState(ActorEntity entity, ActorEntityRenderState state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        state.actor = entity;
+        state.bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, entity.prevBodyYaw, entity.bodyYaw);
+        state.overlay = LivingEntityRenderer.getOverlay(state, 0F);
+        state.tickDelta = tickDelta;
+    }
+
+    public Identifier getTexture(ActorEntityRenderState state)
     {
-        return Identifier.of("minecraft:textures/entity/player/wide/steve.png");
+        return Identifier.of("minecraft", "textures/entity/player/wide/steve.png");
     }
 
     @Override
-    public void render(ActorEntity livingEntity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
+    public void render(ActorEntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
     {
         matrices.push();
 
-        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, livingEntity.prevBodyYaw, livingEntity.bodyYaw);
-        int overlay = LivingEntityRenderer.getOverlay(livingEntity, 0F);
+        float bodyYaw = state.bodyYaw;
+        int overlay = state.overlay;
+        ActorEntity livingEntity = state.actor;
+        float tickDelta = state.tickDelta;
 
-        this.setupTransforms(livingEntity, matrices, bodyYaw, tickDelta);
+        this.setupTransforms(state, matrices, bodyYaw);
 
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
@@ -62,16 +77,12 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity>
 
         matrices.pop();
 
-        super.render(livingEntity, yaw, tickDelta, matrices, vertexConsumers, light);
+        super.render(state, matrices, vertexConsumers, light);
     }
 
-    protected boolean isVisible(ActorEntity entity)
+    protected void setupTransforms(ActorEntityRenderState state, MatrixStack matrices, float bodyYaw)
     {
-        return !entity.isInvisible();
-    }
-
-    protected void setupTransforms(ActorEntity entity, MatrixStack matrices, float bodyYaw, float tickDelta)
-    {
+        ActorEntity entity = state.actor;
         if (!entity.isInPose(EntityPose.SLEEPING))
         {
             matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));
@@ -79,7 +90,7 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity>
 
         if (entity.deathTime > 0)
         {
-            float deathAngle = (entity.deathTime + tickDelta - 1F) / 20F * 1.6F;
+            float deathAngle = (entity.deathTime + state.tickDelta - 1F) / 20F * 1.6F;
 
             matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Math.min(MathHelper.sqrt(deathAngle), 1F) * 90F));
         }
