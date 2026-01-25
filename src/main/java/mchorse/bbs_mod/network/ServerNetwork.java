@@ -839,7 +839,7 @@ public class ServerNetwork
 
     public static void sendSelectedSlot(ServerPlayerEntity player, int slot)
     {
-        player.getInventory().selectedSlot = slot;
+        player.getInventory().setSelectedSlot(slot);
 
         PacketByteBuf buf = PacketByteBufs.create();
 

@@ -25,6 +25,7 @@ import mchorse.bbs_mod.ui.model_blocks.UIModelBlockPanel;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
+import mchorse.bbs_mod.items.ItemDisplayMode;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
 import net.minecraft.client.MinecraftClient;
@@ -109,14 +110,14 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
     {
         MinecraftClient mc = MinecraftClient.getInstance();
         ModelProperties properties = entity.getProperties();
-        Transform transform = properties.getTransform();
+        Transform transform = properties.getTransform(ItemDisplayMode.NONE);
         BlockPos pos = entity.getPos();
         boolean appliedRuntimeOverlay = false;
 
         matrices.push();
         matrices.translate(0.5F, 0F, 0.5F);
 
-        if (properties.getForm() != null && this.canRender(entity))
+        if (properties.getForm(ItemDisplayMode.NONE) != null && this.canRender(entity))
         {
             matrices.push();
 
@@ -143,7 +144,7 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
             Camera camera = mc.gameRenderer.getCamera();
 
             RenderSystem.enableDepthTest();
-            FormUtilsClient.render(properties.getForm(), new FormRenderingContext()
+            FormUtilsClient.render(properties.getForm(ItemDisplayMode.NONE), new FormRenderingContext()
                 .set(FormRenderType.MODEL_BLOCK, entity.getEntity(), matrices, lightAbove, overlay, tickDelta)
                 .camera(camera));
             RenderSystem.disableDepthTest();
@@ -180,7 +181,7 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
             renderShadow(vertexConsumers, matrices, tickDelta, x, y, z, tx, ty, tz);
         }
 
-        if (appliedRuntimeOverlay && properties.getForm() instanceof ModelForm modelForm)
+        if (appliedRuntimeOverlay && properties.getForm(ItemDisplayMode.NONE) instanceof ModelForm modelForm)
         {
             modelForm.poseOverlay.setRuntimeValue(null);
         }
@@ -188,7 +189,7 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
 
     private Transform applyLookingAnimation(MinecraftClient mc, ModelBlockEntity entity, ModelProperties properties, float tickDelta)
     {
-        Transform transform = properties.getTransform();
+        Transform transform = properties.getTransform(ItemDisplayMode.NONE);
         Camera camera = mc.gameRenderer.getCamera();
         Vec3d position = !mc.options.getPerspective().isFirstPerson() && mc.player != null
             ? mc.player.getCameraPosVec(tickDelta)
@@ -210,7 +211,7 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
         float travel = Math.abs(yawDelta) % (MathUtils.PI * 2F);
 
         Transform finalTransform = transform.copy();
-        Form form = properties.getForm();
+        Form form = properties.getForm(ItemDisplayMode.NONE);
         boolean lookAt = form instanceof MobForm;
         float headHeight = form.hitboxHeight.get() * form.hitboxEyeHeight.get() * finalTransform.scale.y;
         float constraint = 45F;

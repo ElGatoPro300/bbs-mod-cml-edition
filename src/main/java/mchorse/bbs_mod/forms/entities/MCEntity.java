@@ -11,8 +11,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import mchorse.bbs_mod.mixin.EntityAccessor;
+import mchorse.bbs_mod.mixin.LimbAnimatorAccessor;
+import mchorse.bbs_mod.mixin.LivingEntityAccessor;
 
 public class MCEntity implements IEntity
 {
@@ -88,7 +92,7 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof PlayerEntity player)
         {
-            return player.getInventory().selectedSlot;
+            return player.getInventory().getSelectedSlot();
         }
 
         return 0;
@@ -165,7 +169,7 @@ public class MCEntity implements IEntity
     @Override
     public float getFallDistance()
     {
-        return this.mcEntity.fallDistance;
+        return (float) this.mcEntity.fallDistance;
     }
 
     @Override
@@ -203,13 +207,13 @@ public class MCEntity implements IEntity
     @Override
     public double getPrevX()
     {
-        return this.mcEntity.prevX;
+        return ((EntityAccessor) this.mcEntity).getPrevX();
     }
 
     @Override
     public void setPrevX(double x)
     {
-        this.mcEntity.prevX = x;
+        ((EntityAccessor) this.mcEntity).setPrevX(x);
     }
 
     @Override
@@ -221,13 +225,13 @@ public class MCEntity implements IEntity
     @Override
     public double getPrevY()
     {
-        return this.mcEntity.prevY;
+        return ((EntityAccessor) this.mcEntity).getPrevY();
     }
 
     @Override
     public void setPrevY(double y)
     {
-        this.mcEntity.prevY = y;
+        ((EntityAccessor) this.mcEntity).setPrevY(y);
     }
 
     @Override
@@ -239,13 +243,13 @@ public class MCEntity implements IEntity
     @Override
     public double getPrevZ()
     {
-        return this.mcEntity.prevZ;
+        return ((EntityAccessor) this.mcEntity).getPrevZ();
     }
 
     @Override
     public void setPrevZ(double z)
     {
-        this.mcEntity.prevZ = z;
+        ((EntityAccessor) this.mcEntity).setPrevZ(z);
     }
 
     @Override
@@ -281,7 +285,7 @@ public class MCEntity implements IEntity
     @Override
     public float getPrevYaw()
     {
-        return this.mcEntity.prevYaw;
+        return ((EntityAccessor) this.mcEntity).getPrevYaw();
     }
 
     @Override
@@ -293,7 +297,7 @@ public class MCEntity implements IEntity
     @Override
     public void setPrevYaw(float prevYaw)
     {
-        this.mcEntity.prevYaw = prevYaw;
+        ((EntityAccessor) this.mcEntity).setPrevYaw(prevYaw);
     }
 
     @Override
@@ -312,10 +316,10 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            return living.prevHeadYaw;
+            return ((LivingEntityAccessor) living).getPrevHeadYaw();
         }
 
-        return this.mcEntity.prevYaw;
+        return ((EntityAccessor) this.mcEntity).getPrevYaw();
     }
 
     @Override
@@ -329,7 +333,7 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            living.prevHeadYaw = prevHeadYaw;
+            ((LivingEntityAccessor) living).setPrevHeadYaw(prevHeadYaw);
         }
     }
 
@@ -342,7 +346,7 @@ public class MCEntity implements IEntity
     @Override
     public float getPrevPitch()
     {
-        return this.mcEntity.prevPitch;
+        return ((EntityAccessor) this.mcEntity).getPrevPitch();
     }
 
     @Override
@@ -354,7 +358,7 @@ public class MCEntity implements IEntity
     @Override
     public void setPrevPitch(float prevPitch)
     {
-        this.mcEntity.prevPitch = prevPitch;
+        ((EntityAccessor) this.mcEntity).setPrevPitch(prevPitch);
     }
 
     @Override
@@ -362,7 +366,7 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            return living.bodyYaw;
+            return ((LivingEntityAccessor) living).getBodyYaw();
         }
 
         return this.getHeadYaw();
@@ -373,7 +377,7 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            return living.prevBodyYaw;
+            return ((LivingEntityAccessor) living).getPrevBodyYaw();
         }
 
         return this.getPrevHeadYaw();
@@ -396,7 +400,7 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            living.prevBodyYaw = prevBodyYaw;
+            ((LivingEntityAccessor) living).setPrevBodyYaw(prevBodyYaw);
         }
     }
 
@@ -458,7 +462,9 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            return living.limbAnimator.getPos(tickDelta);
+            LimbAnimatorAccessor animator = (LimbAnimatorAccessor) living.limbAnimator;
+
+            return MathHelper.lerp(tickDelta, animator.getPrevPos(), animator.getPos());
         }
 
         return 0F;
@@ -469,7 +475,7 @@ public class MCEntity implements IEntity
     {
         if (this.mcEntity instanceof LivingEntity living)
         {
-            return living.limbAnimator.getSpeed(tickDelta);
+            return living.limbAnimator.getSpeed();
         }
 
         return 0F;

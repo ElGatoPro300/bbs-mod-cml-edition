@@ -27,6 +27,7 @@ import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3f;
+import mchorse.bbs_mod.items.ItemDisplayMode;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -69,13 +70,24 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
         if (item != null)
         {
             ModelProperties properties = item.entity.getProperties();
-            Form form = properties.getForm(mode);
+            ItemDisplayMode displayMode = ItemDisplayMode.NONE;
+
+            for (ItemDisplayMode m : ItemDisplayMode.values())
+            {
+                if (m.asString().equals(mode.asString()))
+                {
+                    displayMode = m;
+                    break;
+                }
+            }
+
+            Form form = properties.getForm(displayMode);
 
             if (form != null)
             {
                 item.expiration = 20;
 
-                Transform transform = properties.getTransform(mode);
+                Transform transform = properties.getTransform(displayMode);
 
                 matrices.push();
                 matrices.translate(0.5F, 0F, 0.5F);

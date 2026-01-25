@@ -14,6 +14,7 @@ import mchorse.bbs_mod.ui.framework.UIScreen;
 import mchorse.bbs_mod.ui.model_blocks.UIModelBlockEditorMenu;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
+import mchorse.bbs_mod.items.ItemDisplayMode;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
@@ -66,9 +67,20 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
 
         if (item != null)
         {
+            ItemDisplayMode displayMode = ItemDisplayMode.NONE;
+
+            for (ItemDisplayMode m : ItemDisplayMode.values())
+            {
+                if (m.asString().equals(mode.asString()))
+                {
+                    displayMode = m;
+                    break;
+                }
+            }
+
             GunProperties properties = item.properties;
-            Form form = properties.getForm(mode);
-            Transform transform = properties.getTransform(mode);
+            Form form = properties.getForm(displayMode);
+            Transform transform = properties.getTransform(displayMode);
             boolean zoom = mode.isFirstPerson() && BBSModClient.getGunZoom() != null && properties.getZoomForm() != null;
 
             if (zoom)
