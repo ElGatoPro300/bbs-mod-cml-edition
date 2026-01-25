@@ -14,7 +14,7 @@ import mchorse.bbs_mod.ui.framework.UIScreen;
 import mchorse.bbs_mod.ui.model_blocks.UIModelBlockEditorMenu;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+// import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.item.ModelTransformationMode;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class GunItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
+public class GunItemRenderer // implements BuiltinItemRendererRegistry.DynamicItemRenderer
 {
     private Map<ItemStack, Item> map = new HashMap<>();
 
@@ -51,7 +51,7 @@ public class GunItemRenderer implements BuiltinItemRendererRegistry.DynamicItemR
         }
     }
 
-    @Override
+    // @Override
     public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
     {
         Item item = this.get(stack);

@@ -75,10 +75,10 @@ public class UIScreen extends Screen implements IFileDropListener
         this.menu.renderInWorld(context);
     }
 
-    @Override
+    // @Override
     public void filesDragged(List<Path> paths)
     {
-        super.filesDragged(paths);
+        // super.filesDragged(paths);
 
         String[] filePaths = new String[paths.size()];
         int i = 0;
@@ -93,13 +93,13 @@ public class UIScreen extends Screen implements IFileDropListener
         this.acceptFilePaths(filePaths);
     }
 
-    @Override
+    // @Override
     public void removed()
     {
         MinecraftClient.getInstance().options.getGuiScale().setValue(this.lastGuiScale);
         MinecraftClient.getInstance().onResolutionChanged();
 
-        super.removed();
+        // super.removed();
 
         this.menu.onClose(null);
 

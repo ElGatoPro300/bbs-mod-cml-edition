@@ -62,7 +62,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+// import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
@@ -605,8 +605,8 @@ public class BBSModClient implements ClientModInitializer
 
         BlockEntityRendererRegistryImpl.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
 
-        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
-        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
+        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
+        // BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();

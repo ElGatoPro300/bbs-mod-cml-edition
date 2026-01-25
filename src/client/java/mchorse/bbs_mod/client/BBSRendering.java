@@ -399,7 +399,7 @@ public class BBSRendering
 
         worldRenderContext.prepare(
             mc.worldRenderer, mc.getRenderTickCounter(), false,
-            mc.gameRenderer.getCamera(), mc.gameRenderer, mc.gameRenderer.getLightmapTextureManager(),
+            mc.gameRenderer.getCamera(), mc.gameRenderer,
             RenderSystem.getProjectionMatrix(), RenderSystem.getModelViewMatrix(), mc.getBufferBuilders().getEntityVertexConsumers(), false, mc.world
         );
 
@@ -416,7 +416,7 @@ public class BBSRendering
 
         worldRenderContext.prepare(
             mc.worldRenderer, mc.getRenderTickCounter(), false,
-            mc.gameRenderer.getCamera(), mc.gameRenderer, mc.gameRenderer.getLightmapTextureManager(),
+            mc.gameRenderer.getCamera(), mc.gameRenderer,
             positionMatrix, projectionMatrix, mc.getBufferBuilders().getEntityVertexConsumers(), false, mc.world
         );
 
