@@ -20,8 +20,8 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.gl.ShaderProgramKeys;
-import net.minecraft.client.render.VertexFormat;
+// import net.minecraft.client.gl.ShaderProgramKeys;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -452,20 +452,18 @@ public class ParticleEmitter
 
             Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            try (BufferAllocator allocator = new BufferAllocator(1536))
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
+
+            for (IComponentParticleRender render : list)
             {
-                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-                for (IComponentParticleRender render : list)
-                {
-                    render.renderUI(this.uiParticle, builder, matrix, transition);
-                }
-
-                RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
-                RenderSystem.disableCull();
-                BufferRenderer.drawWithGlobalProgram(builder.end());
-                RenderSystem.enableCull();
+                render.renderUI(this.uiParticle, builder, matrix, transition);
             }
+
+            RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
+            GlStateManager._disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            GlStateManager._enableCull();
         }
     }
 
@@ -490,31 +488,29 @@ public class ParticleEmitter
         {
             Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            try (BufferAllocator allocator = new BufferAllocator(1536))
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, format);
+
+            this.bindTexture();
+
+            for (Particle particle : this.particles)
             {
-                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, format);
+                this.setEmitterVariables(transition);
+                this.setParticleVariables(particle, transition);
 
-                this.bindTexture();
-
-                for (Particle particle : this.particles)
+                for (IComponentParticleRender component : renders)
                 {
-                    this.setEmitterVariables(transition);
-                    this.setParticleVariables(particle, transition);
-
-                    for (IComponentParticleRender component : renders)
-                    {
-                        component.render(this, format, particle, builder, matrix, overlay, transition);
-                    }
+                    component.render(this, format, particle, builder, matrix, overlay, transition);
                 }
-
-                RenderSystem.setShader(program.get());
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableCull();
-                BufferRenderer.drawWithGlobalProgram(builder.end());
-                RenderSystem.enableCull();
-                RenderSystem.disableBlend();
             }
+
+            RenderSystem.setShader(program.get());
+            GlStateManager._enableBlend();
+            GlStateManager._blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+            GlStateManager._disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            GlStateManager._enableCull();
+            GlStateManager._disableBlend();
         }
 
         for (IComponentParticleRender component : renders)
@@ -548,3 +544,5 @@ public class ParticleEmitter
         this.cZ = camera.getPos().z;
     }
 }
+
+

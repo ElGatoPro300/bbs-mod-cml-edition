@@ -71,13 +71,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.item.model.special.SpecialModelTypes;
@@ -443,8 +443,9 @@ public class BBSModClient implements ClientModInitializer
                     peek.getNormalMatrix().identity();
                     stack.translate(0F, 0F, -d);
 
-                    RenderSystem.enableDepthTest();
-                    BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+                    GlStateManager._enableDepthTest();
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
                     float fov = MinecraftClient.getInstance().options.getFov().getValue();
                     float dd = d * (float) Math.pow(fov / 40F, 2F);
@@ -457,19 +458,24 @@ public class BBSModClient implements ClientModInitializer
                         color.r, color.g, color.b, 1F
                     );
 
-                    RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+                    RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
 
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
                     MatrixStackUtils.applyModelViewMatrix();
 
-                    BufferRenderer.drawWithGlobalProgram(builder.end());
+                    try
+                    {
+                        BufferRenderer.drawWithGlobalProgram(builder.end());
+                    }
+                    catch (Exception e)
+                    {}
 
                     mvStack.popMatrix();
                     MatrixStackUtils.applyModelViewMatrix();
 
-                    RenderSystem.disableDepthTest();
+                    GlStateManager._disableDepthTest();
 
                     stack.pop();
                 }
@@ -575,11 +581,11 @@ public class BBSModClient implements ClientModInitializer
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
         {
-            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(false));
+            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(true));
 
             if (gunZoom != null)
             {
-                gunZoom.update(keyZoom.isPressed(), tickCounter.getLastFrameDuration());
+                gunZoom.update(keyZoom.isPressed(), tickCounter.getTickDelta(true));
 
                 if (gunZoom.canBeRemoved())
                 {
@@ -785,3 +791,5 @@ public class BBSModClient implements ClientModInitializer
         l10n.reload(language, BBSMod.getProvider());
     }
 }
+
+

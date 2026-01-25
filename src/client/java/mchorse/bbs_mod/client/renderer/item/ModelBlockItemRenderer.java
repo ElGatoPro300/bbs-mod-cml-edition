@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.client.renderer.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
@@ -63,13 +64,12 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
     }
 
     @Override
-    public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
+    public void render(ItemStack data, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
     {
-        Item item = this.get(stack);
+        Item item = this.get(data);
 
         if (item != null)
         {
-            ModelProperties properties = item.entity.getProperties();
             ItemDisplayMode displayMode = ItemDisplayMode.NONE;
 
             for (ItemDisplayMode m : ItemDisplayMode.values())
@@ -81,28 +81,25 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
                 }
             }
 
+            ModelProperties properties = item.entity.getProperties();
             Form form = properties.getForm(displayMode);
+            Transform transform = properties.getTransform(displayMode);
 
             if (form != null)
             {
                 item.expiration = 20;
 
-                Transform transform = properties.getTransform(displayMode);
-
                 matrices.push();
                 matrices.translate(0.5F, 0F, 0.5F);
                 MatrixStackUtils.applyTransform(matrices, transform);
 
-                RenderSystem.enableDepthTest();
-                Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
-                Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
-                RenderSystem.setupLevelDiffuseLighting(a, b);
-                int maxLight = 15728880;
+                GlStateManager._enableDepthTest();
+
+                int maxLight = LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
-                    .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true)));
                 DiffuseLighting.disableGuiDepthLighting();
-                RenderSystem.disableDepthTest();
+                GlStateManager._disableDepthTest();
 
                 matrices.pop();
             }

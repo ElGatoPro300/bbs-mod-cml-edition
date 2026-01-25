@@ -58,7 +58,7 @@ public class Texture
 
     public Texture()
     {
-        this.id = TextureUtil.generateTextureId();
+        this.id = GlStateManager._genTexture();
         this.target = GL11.GL_TEXTURE_2D;
 
         this.bind();

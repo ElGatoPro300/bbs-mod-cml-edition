@@ -248,7 +248,7 @@ public class FilmEditorController extends BaseFilmController
         }
 
         return super.getFilmControllerContext(context, replay, entity)
-            .transition(this.getTransition(entity, context.tickCounter().getTickDelta(false)))
+            .transition(this.getTransition(entity, context.tickCounter().getTickDelta()))
             .bone(aBone, local)
             .bone2(aBone2, local2);
     }

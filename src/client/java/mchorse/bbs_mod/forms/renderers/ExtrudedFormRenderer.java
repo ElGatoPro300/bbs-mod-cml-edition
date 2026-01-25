@@ -15,11 +15,11 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -86,7 +86,7 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
                 }
                 : () ->
                 {
-                    RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+                    RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
                     return RenderSystem.getShader();
                 },
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
@@ -139,3 +139,5 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
         }
     }
 }
+
+

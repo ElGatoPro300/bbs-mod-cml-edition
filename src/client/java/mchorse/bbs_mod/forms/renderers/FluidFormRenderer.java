@@ -23,7 +23,7 @@ import mchorse.bbs_mod.simulation.FluidSimulation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
 import org.joml.Matrix3f;
@@ -99,7 +99,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
     private void renderDebug(FormRenderingContext context)
     {
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
         RenderSystem.lineWidth(2.0F);
         
         BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
@@ -247,7 +247,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         
         if (MinecraftClient.getInstance().player != null)
         {
-            time = (MinecraftClient.getInstance().player.age + MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true)) * speed * 0.1f;
+            time = (MinecraftClient.getInstance().player.age + MinecraftClient.getInstance().getRenderTickCounter().getTickDelta()) * speed * 0.1f;
         }
         else
         {
@@ -790,3 +790,4 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     }
 
 }
+

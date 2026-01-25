@@ -17,14 +17,14 @@ import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix3f;
@@ -133,7 +133,7 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
 
         boolean shading = !context.isPicking();
         VertexFormat format = shading ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR;
-        ShaderProgramKey shaderKey = shading ? ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT : ShaderProgramKeys.POSITION_TEX_COLOR;
+        ShaderProgramKey shaderKey = shading ? ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT : net.minecraft.client.render.GameRenderer::getPositionTexColorProgram;
 
         this.renderModel(framebuffer.getMainTexture(), format, shaderKey, context.stack, context.overlay, context.light, context.color, context.getTransition());
     }
@@ -237,3 +237,4 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
         return consumer.vertex(matrix, x, y, 0F).color(color.r, color.g, color.b, color.a).texture(u, v).overlay(overlay).light(light).normal(entry, 0F, 0F, nz);
     }
 }
+

@@ -8,7 +8,7 @@ import net.minecraft.client.gl.Defines;
 import net.minecraft.client.gl.ShaderLoader;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
@@ -67,8 +67,7 @@ public class BBSShaders
 
     public static ShaderProgram getModel()
     {
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-        return RenderSystem.getShader();
+        return net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
@@ -107,3 +106,4 @@ public class BBSShaders
     }
 
 }
+
