@@ -22,8 +22,6 @@ import mchorse.bbs_mod.simulation.FluidController;
 import mchorse.bbs_mod.simulation.FluidSimulation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
 import org.joml.Matrix3f;
@@ -37,7 +35,6 @@ import java.util.function.Supplier;
 public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITickable
 {
     private static final Link WHITE_TEXTURE = Link.bbs("textures/block/white.png");
-    private static final Link FLUID_PREVIEW = Link.assets("textures/fluid.png");
 
     private FluidSimulation simulation;
     private FluidController controller = new FluidController();
@@ -52,23 +49,43 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     @Override
     protected void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
     {
-        Texture texture = context.render.getTextures().getTexture(FLUID_PREVIEW);
+        MatrixStack stack = context.batcher.getContext().getMatrices();
 
-        int w = texture.width;
-        int h = texture.height;
-        int x = (x1 + x2) / 2;
-        int y = (y1 + y2) / 2;
+        stack.push();
+        
+        Matrix4f uiMatrix = ModelFormRenderer.getUIMatrix(context, x1, y1, x2, y2);
+        this.applyTransforms(uiMatrix, context.getTransition());
 
-        context.batcher.fullTexturedBox(texture, x - w / 2, y - h / 2, w, h);
+        /* Apply matrix to stack */
+        MatrixStackUtils.multiply(stack, uiMatrix);
+        stack.translate(0F, 0.5F, 0F); /* Center it a bit */
+        
+        float scale = this.form.uiScale.get();
+        stack.scale(scale, scale, scale);
+
+        /* Shading fix for UI */
+        Vector3f normalScale = new Vector3f();
+        stack.peek().getNormalMatrix().getScale(normalScale);
+        stack.peek().getNormalMatrix().scale(1F / normalScale.x, -1F / normalScale.y, 1F / normalScale.z);
+
+        VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
+        
+        this.renderFluid(format, GameRenderer::getRenderTypeEntityTranslucentProgram,
+            stack,
+            OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
+            context.getTransition()
+        );
+
+        stack.pop();
     }
 
     @Override
     protected void render3D(FormRenderingContext context)
     {
         VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
-        ShaderProgramKey shader = BBSRendering.isIrisShadersEnabled()
-            ? ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT
-            : ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT;
+        Supplier<ShaderProgram> shader = BBSRendering.isIrisShadersEnabled()
+            ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
+            : GameRenderer::getRenderTypeEntityTranslucentProgram;
 
         this.renderFluid(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
         
@@ -80,7 +97,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
     private void renderDebug(FormRenderingContext context)
     {
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
         RenderSystem.lineWidth(2.0F);
         
         BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
@@ -143,7 +160,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         RenderSystem.lineWidth(1.0F);
     }
 
-    private void renderFluid(VertexFormat format, ShaderProgramKey shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderFluid(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         Link t = this.form.texture.get();
         Texture texture = null;
@@ -211,8 +228,8 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float scaleX = Math.max(this.form.sizeX.get(), 0.001f);
         float scaleZ = Math.max(this.form.sizeZ.get(), 0.001f);
         
-        int resX = Math.min(Math.max((int) (scaleX * 16), 16), 512);
-        int resZ = Math.min(Math.max((int) (scaleZ * 16), 16), 512);
+        int resX = Math.min(Math.max((int) (scaleX * 8), 16), 512);
+        int resZ = Math.min(Math.max((int) (scaleZ * 8), 16), 512);
 
         if (this.simulation.getWidth() != resX || this.simulation.getHeight() != resZ)
         {
@@ -364,8 +381,8 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float scaleX = Math.max(this.form.sizeX.get(), 0.001f);
         float scaleZ = Math.max(this.form.sizeZ.get(), 0.001f);
 
-        int resX = Math.min(Math.max((int) (scaleX * 16), 16), 512);
-        int resZ = Math.min(Math.max((int) (scaleZ * 16), 16), 512);
+        int resX = Math.min(Math.max((int) (scaleX * 8), 16), 512);
+        int resZ = Math.min(Math.max((int) (scaleZ * 8), 16), 512);
 
         if (this.simulation.getWidth() != resX || this.simulation.getHeight() != resZ)
         {

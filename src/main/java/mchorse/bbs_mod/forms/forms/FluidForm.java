@@ -7,6 +7,7 @@ import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
 import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
 import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.resources.LinkUtils;
 
 public class FluidForm extends Form
 {
@@ -15,14 +16,14 @@ public class FluidForm extends Form
         FULL_OCEAN, WATER_DROP, PROCEDURAL
     }
 
-    public final ValueEnum<FluidMode> mode = new ValueEnum<>("mode", FluidMode.class, FluidMode.FULL_OCEAN);
+    public final ValueEnum<FluidMode> mode = new ValueEnum<>("mode", FluidMode.class, FluidMode.WATER_DROP);
 
     /* Common */
     public final ValueFloat flowSpeed = new ValueFloat("flowSpeed", 1F);
     public final ValueFloat turbulence = new ValueFloat("turbulence", 0.1F);
     public final ValueColor color = new ValueColor("color", new Color(0.0f, 0.5f, 1.0f, 0.8f));
     public final ValueFloat opacity = new ValueFloat("opacity", 0.8F);
-    public final ValueLink texture = new ValueLink("texture", null);
+    public final ValueLink texture = new ValueLink("texture", LinkUtils.create("minecraft:textures/block/water_still.png"));
     public final ValueFloat physicsSensitivity = new ValueFloat("physicsSensitivity", 1F);
     public final ValueInt subdivisions = new ValueInt("subdivisions", 1, 1, 8);
     public final ValueBoolean smoothShading = new ValueBoolean("smoothShading", true);

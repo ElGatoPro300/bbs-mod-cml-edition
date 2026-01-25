@@ -3,6 +3,7 @@ package mchorse.bbs_mod.ui.film;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.audio.AudioRenderer;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.clips.misc.AudioClip;
@@ -42,7 +43,6 @@ import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.clips.Clip;
 import mchorse.bbs_mod.utils.clips.Clips;
 import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -213,9 +213,16 @@ public class UIFilmPreview extends UIElement
 
     public void openReplays()
     {
-        UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
+        if (!this.panel.isDockedLayout())
+        {
+            UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
 
-        overlay.eventPropagataion(EventPropagation.PASS);
+            overlay.eventPropagataion(EventPropagation.PASS);
+        }
+        else
+        {
+            this.panel.toggleReplaysSidebar();
+        }
     }
 
     public void openOnionSkin()
@@ -405,10 +412,10 @@ public class UIFilmPreview extends UIElement
         stack.rotate(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
         stack.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
         stack.scale(-1F, -1F, -1F);
-        MatrixStackUtils.applyModelViewMatrix();
+        RenderSystem.applyModelViewMatrix();
         RenderSystem.renderCrosshair(10);
 
         stack.popMatrix();
-        MatrixStackUtils.applyModelViewMatrix();
+        RenderSystem.applyModelViewMatrix();
     }
 }

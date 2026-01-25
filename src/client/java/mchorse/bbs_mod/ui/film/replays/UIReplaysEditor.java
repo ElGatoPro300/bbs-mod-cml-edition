@@ -39,6 +39,7 @@ import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeEditor;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.IUIKeyframeGraph;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.UIKeyframeDopeSheet;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
@@ -818,32 +819,73 @@ public class UIReplaysEditor extends UIElement
 
         String formPath = FormUtils.getPath(form);
         String propertyPath = null;
-        Keyframe selected = this.keyframeEditor.view.getGraph().getSelected();
+        IUIKeyframeGraph graph = this.keyframeEditor.view.getGraph();
+        Keyframe selected = graph.getSelected();
 
         if (selected != null)
         {
-            String channelId = selected.getParent().getId();
-            String channelName = StringUtils.fileName(channelId);
+            UIKeyframeSheet sheet = graph.getSheet(selected);
 
-            if (channelName.startsWith("pose"))
+            if (sheet != null && sheet.property != null)
             {
-                propertyPath = channelId;
+                Form sheetForm = (Form) sheet.property.getParent();
+                String sheetFormPath = FormUtils.getPath(sheetForm);
+
+                if (sheetFormPath.equals(formPath) && sheet.property.getId().startsWith("pose"))
+                {
+                    propertyPath = FormUtils.getPropertyPath(sheet.property);
+                }
             }
         }
 
         if (propertyPath == null)
         {
-            UIKeyframeSheet lastSheet = this.keyframeEditor.view.getGraph().getLastSheet();
+            UIKeyframeSheet lastSheet = graph.getLastSheet();
 
             if (lastSheet != null && lastSheet.property != null)
             {
                 Form lastForm = (Form) lastSheet.property.getParent();
                 String lastFormPath = FormUtils.getPath(lastForm);
 
-                if (lastFormPath.equals(formPath) && lastSheet.property.getId().startsWith("pose") && !lastSheet.channel.isEmpty())
+                if (lastFormPath.equals(formPath) && lastSheet.property.getId().startsWith("pose"))
                 {
                     propertyPath = FormUtils.getPropertyPath(lastSheet.property);
                 }
+            }
+        }
+
+        if (propertyPath == null)
+        {
+            String overlayPath = null;
+
+            for (UIKeyframeSheet sheet : graph.getSheets())
+            {
+                BaseValueBasic property = sheet.property;
+
+                if (property != null && property.getId().startsWith("pose_overlay"))
+                {
+                    Form sheetForm = (Form) property.getParent();
+                    String sheetFormPath = FormUtils.getPath(sheetForm);
+
+                    if (sheetFormPath.equals(formPath))
+                    {
+                        if (!sheet.channel.isEmpty())
+                        {
+                            overlayPath = FormUtils.getPropertyPath(property);
+                            break;
+                        }
+
+                        if (overlayPath == null)
+                        {
+                            overlayPath = FormUtils.getPropertyPath(property);
+                        }
+                    }
+                }
+            }
+
+            if (overlayPath != null)
+            {
+                propertyPath = overlayPath;
             }
         }
 
