@@ -289,7 +289,7 @@ public class UICurve extends UIElement
             builder.vertex(matrix, (float) last.x, this.graph.ey(), 0F).color(0.25F, 0.25F, 0.25F, 0.5F);
         }
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
 
         Color color = Colors.COLOR;
         LineBuilder line = new LineBuilder(0.75F);

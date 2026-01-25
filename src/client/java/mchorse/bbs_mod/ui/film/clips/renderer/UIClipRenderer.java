@@ -105,7 +105,7 @@ public class UIClipRenderer <T extends Clip> implements IUIClipRenderer<T>
             this.renderSimpleEnvelope(builder, matrix, envelope, duration, x1, y1, x2, y2);
         }
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
     /**

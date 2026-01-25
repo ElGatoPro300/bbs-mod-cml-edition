@@ -2,7 +2,7 @@ package mchorse.bbs_mod.film;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.Tessellator;
+import net.minecraft.client.render.Tessellator;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.camera.data.Position;
 import mchorse.bbs_mod.camera.utils.TimeUtils;
@@ -95,7 +95,7 @@ public class Recorder extends WorldFilmController
         transformFrustum(vector, matrix, 0F, 0F);
         Draw.fillBoxTo(builder, stack, x, y, z, x + vector.x, y + vector.y, z + vector.z, thickness, 0F, 0.5F, 1F, 1F);
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
 
         GlStateManager._disableDepthTest();
     }

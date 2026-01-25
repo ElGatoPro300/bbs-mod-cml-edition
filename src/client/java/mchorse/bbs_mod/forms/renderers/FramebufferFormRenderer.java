@@ -212,7 +212,7 @@ public class FramebufferFormRenderer extends FormRenderer<FramebufferForm>
         this.fill(format, builder, matrix, quad.p3.x, quad.p3.y, color, uvQuad.p3.x, uvQuad.p3.y, overlay, light, entry, -1F);
 
         RenderSystem.defaultBlendFunc();
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         BufferRenderer.drawWithGlobalProgram(builder.end());
 
         if (format == VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL)

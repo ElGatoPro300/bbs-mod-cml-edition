@@ -219,7 +219,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 RenderSystem.setShaderTexture(0, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
                 /* Enable blending to support translucent layers (glass, portal, leaves, etc.) */
-                RenderSystem.enableBlend();
+                com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
                 RenderSystem.defaultBlendFunc();
 
                 ModelVAORenderer.render(shader, this.structureVao, matrices, tint.r, tint.g, tint.b, tint.a, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV);

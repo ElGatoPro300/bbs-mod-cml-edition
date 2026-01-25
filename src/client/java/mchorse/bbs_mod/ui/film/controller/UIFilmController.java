@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.ui.film.controller;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.VertexSorter;
@@ -48,6 +49,7 @@ import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.StencilFormFramebuffer;
 import mchorse.bbs_mod.ui.utils.UIUtils;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.keys.KeyAction;
 import mchorse.bbs_mod.utils.CollectionUtils;
@@ -1049,7 +1051,7 @@ public class UIFilmController extends UIElement
 
         boolean altPressed = Window.isAltPressed();
 
-        RenderSystem.depthFunc(GL11.GL_LESS);
+        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_LESS);
 
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
@@ -1083,7 +1085,8 @@ public class UIFilmController extends UIElement
         /* Return back to orthographic projection */
         MatrixStackUtils.restoreMatrices();
 
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
+        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_ALWAYS);
 
         this.hoveredEntity = null;
 
@@ -1107,7 +1110,7 @@ public class UIFilmController extends UIElement
             target.set(index);
         }
 
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         context.batcher.texturedBox(getPickerPreviewProgram.get(), texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
 
         if (altPressed)
@@ -1148,7 +1151,7 @@ public class UIFilmController extends UIElement
     {
         this.worldRenderContext = context;
 
-        RenderSystem.enableDepthTest();
+        com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
 
         if (this.editorController != null)
         {
@@ -1191,7 +1194,8 @@ public class UIFilmController extends UIElement
 
         this.lastMouse.set(x, y);
 
-        RenderSystem.disableDepthTest();
+        GlStateManager._disableDepthTest();
+        GlStateManager._depthFunc(GL11.GL_LEQUAL);
     }
 
     public Pair<String, Boolean> getBone()
@@ -1238,7 +1242,7 @@ public class UIFilmController extends UIElement
 
                 BaseFilmController.renderEntity(FilmControllerContext.instance
                     .setup(this.getEntities(), entry.getValue(), replay, renderContext)
-                    .transition(isPlaying ? renderContext.tickCounter().getTickDelta() : 0)
+                    .transition(isPlaying ? ((RenderTickCounterAccessor) renderContext.tickCounter()).getTickDeltaField() : 0)
                     .stencil(this.stencilMap)
                     .relative(replay.relative.get()));
             }
@@ -1250,7 +1254,7 @@ public class UIFilmController extends UIElement
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
-                .transition(isPlaying ? renderContext.tickCounter().getTickDelta() : 0)
+                .transition(isPlaying ? ((RenderTickCounterAccessor) (Object) renderContext.tickCounter()).getTickDelta() : 0)
                 .stencil(this.stencilMap)
                 .relative(replay.relative.get())
                 .bone(bone == null ? null : bone.a, bone != null && bone.b));

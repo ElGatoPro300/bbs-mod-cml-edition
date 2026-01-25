@@ -88,8 +88,8 @@ public class LineBuilder <T>
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
-            RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
-            RenderSystem.enableBlend();
+            RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
+            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
 
             for (LinePoint<T> point : points)
             {

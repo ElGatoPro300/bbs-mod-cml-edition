@@ -203,7 +203,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
 
 
         RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.defaultBlendFunc();
         BufferRenderer.drawWithGlobalProgram(builder.end());
         RenderSystem.enableDepthTest();

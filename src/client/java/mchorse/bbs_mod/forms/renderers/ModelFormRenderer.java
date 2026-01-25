@@ -310,7 +310,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             RenderSystem.disableCull();
         }
 
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;

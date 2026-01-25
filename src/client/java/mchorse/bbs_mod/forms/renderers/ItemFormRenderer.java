@@ -72,7 +72,7 @@ public class ItemFormRenderer extends FormRenderer<ItemForm>
         }
         else
         {
-            CustomVertexConsumerProvider.hijackVertexFormat((l) -> RenderSystem.enableBlend());
+            CustomVertexConsumerProvider.hijackVertexFormat((l) -> com.mojang.blaze3d.opengl.GlStateManager._enableBlend());
         }
 
         Color set = this.form.color.get();

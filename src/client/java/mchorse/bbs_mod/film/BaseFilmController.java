@@ -770,7 +770,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta());
+            filmContext.transition = getTransition(entity, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField());
 
             filmContext.stack.push();
 

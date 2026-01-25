@@ -581,11 +581,11 @@ public class BBSModClient implements ClientModInitializer
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
         {
-            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(true));
+            BBSRendering.renderHud(drawContext, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) tickCounter).getTickDeltaField());
 
             if (gunZoom != null)
             {
-                gunZoom.update(keyZoom.isPressed(), tickCounter.getTickDelta(true));
+                gunZoom.update(keyZoom.isPressed(), ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) tickCounter).getTickDeltaField());
 
                 if (gunZoom.canBeRemoved())
                 {

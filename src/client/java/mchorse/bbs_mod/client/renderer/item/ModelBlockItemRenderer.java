@@ -97,7 +97,7 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
 
                 int maxLight = LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true)));
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) MinecraftClient.getInstance().getRenderTickCounter()).getTickDeltaField()));
                 DiffuseLighting.disableGuiDepthLighting();
                 GlStateManager._disableDepthTest();
 

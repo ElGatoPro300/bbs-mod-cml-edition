@@ -222,7 +222,7 @@ public class Gizmo
         RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
 
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }

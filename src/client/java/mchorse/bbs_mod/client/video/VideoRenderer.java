@@ -367,7 +367,7 @@ public class VideoRenderer
             RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
             RenderSystem.setShaderTexture(0, texture);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
-            RenderSystem.enableBlend();
+            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableDepthTest();
             RenderSystem.depthMask(false);

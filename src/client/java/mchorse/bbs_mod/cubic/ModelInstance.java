@@ -346,15 +346,7 @@ public class ModelInstance implements IModelInstance
 
                 BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
-
-                try
-                {
-                    BufferRenderer.drawWithGlobalProgram(builder.end());
-                }
-                catch (IllegalStateException e)
-                {
-                    
-                }
+                net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
             }
         }
         else if (this.model instanceof BOBJModel model)

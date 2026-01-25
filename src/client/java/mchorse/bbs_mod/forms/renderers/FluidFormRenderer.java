@@ -22,8 +22,6 @@ import mchorse.bbs_mod.simulation.FluidController;
 import mchorse.bbs_mod.simulation.FluidSimulation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKey;
-// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
 import org.joml.Matrix3f;
@@ -85,9 +83,9 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     protected void render3D(FormRenderingContext context)
     {
         VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
-        ShaderProgramKey shader = BBSRendering.isIrisShadersEnabled()
-            ? ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT
-            : ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT;
+        Supplier<ShaderProgram> shader = BBSRendering.isIrisShadersEnabled()
+            ? net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentProgram
+            : net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentProgram;
 
         this.renderFluid(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
         
@@ -158,11 +156,11 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             stack.pop();
         }
         
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
         RenderSystem.lineWidth(1.0F);
     }
 
-    private void renderFluid(VertexFormat format, ShaderProgramKey shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderFluid(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         Link t = this.form.texture.get();
         Texture texture = null;
@@ -181,9 +179,9 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             BBSModClient.getTextures().bindTexture(WHITE_TEXTURE);
         }
 
-        RenderSystem.setShader(shader);
+        RenderSystem.setShader(() -> shader.get());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         RenderSystem.enableDepthTest();

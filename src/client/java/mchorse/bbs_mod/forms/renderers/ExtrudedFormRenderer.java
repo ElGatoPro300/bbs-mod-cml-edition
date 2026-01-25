@@ -124,7 +124,7 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
 
             BBSModClient.getTextures().bindTexture(texture);
 
-            RenderSystem.enableBlend();
+            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
             RenderSystem.defaultBlendFunc();
 
             gameRenderer.getLightmapTextureManager().enable();

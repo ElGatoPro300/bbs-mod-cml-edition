@@ -72,7 +72,7 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
         stack.loadIdentity();
         stack.multiplyPositionMatrix(this.camera.view);
 
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.enableDepthTest();
         this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR, () -> RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram), stack, OverlayTexture.DEFAULT_UV, context.getTransition());
         RenderSystem.disableDepthTest();

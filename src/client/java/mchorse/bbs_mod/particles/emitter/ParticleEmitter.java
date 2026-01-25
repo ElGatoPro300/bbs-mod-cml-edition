@@ -1,6 +1,8 @@
 package mchorse.bbs_mod.particles.emitter;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
+import org.lwjgl.opengl.GL11;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.graphics.texture.Texture;
@@ -504,13 +506,16 @@ public class ParticleEmitter
                 }
             }
 
-            RenderSystem.setShader(program.get());
-            GlStateManager._enableBlend();
-            GlStateManager._blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-            GlStateManager._disableCull();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            GlStateManager._enableCull();
-            GlStateManager._disableBlend();
+            if (program != null)
+            {
+                RenderSystem.setShader(program);
+                com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+                com.mojang.blaze3d.opengl.GlStateManager._blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+                com.mojang.blaze3d.opengl.GlStateManager._disableCull();
+                net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
+                com.mojang.blaze3d.opengl.GlStateManager._enableCull();
+                com.mojang.blaze3d.opengl.GlStateManager._disableBlend();
+            }
         }
 
         for (IComponentParticleRender component : renders)

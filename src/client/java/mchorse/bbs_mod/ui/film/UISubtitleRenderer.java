@@ -153,7 +153,7 @@ public class UISubtitleRenderer
                 textureSize.set((float) texture.width, (float) texture.height);
             }
 
-            RenderSystem.enableBlend();
+            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
             batcher.texturedBox(program, texture.id, Colors.setA(Colors.WHITE, alpha), -fw * subtitle.anchorX, -fh * subtitle.anchorY, texture.width, texture.height, 0, 0, texture.width, texture.height, texture.width, texture.height);

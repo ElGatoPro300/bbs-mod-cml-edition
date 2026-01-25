@@ -299,7 +299,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             color.r, color.g, color.b, color.a
         );
 
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.enableDepthTest();
         RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());

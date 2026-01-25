@@ -395,7 +395,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
             this.setVelocity(this.getVelocity().multiply(-0.1D));
             this.setYaw(this.getYaw() + 180F);
 
-            // this.prevYaw += 180F;
+            ((EntityAccessor)this).setPrevYaw(((EntityAccessor)this).getPrevYaw() + 180F);
         }
     }
 
@@ -406,7 +406,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         this.setVelocity(this.getVelocity().rotateY(MathUtils.toRad(random)).multiply(0.5D));
         this.setYaw(this.getYaw() + random);
 
-        // this.prevYaw += random;
+        ((EntityAccessor)this).setPrevYaw(((EntityAccessor)this).getPrevYaw() + random);
     }
 
     @Override

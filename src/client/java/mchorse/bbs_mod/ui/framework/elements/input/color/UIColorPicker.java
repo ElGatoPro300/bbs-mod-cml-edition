@@ -59,8 +59,8 @@ public class UIColorPicker extends UIElement
         Matrix4f matrix4f = batcher.getContext().getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
-        RenderSystem.enableBlend();
+        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
 
         builder.vertex(matrix4f, x1, y1, 0F).color(color.r, color.g, color.b, 1);
         builder.vertex(matrix4f, x1, y2, 0F).color(color.r, color.g, color.b, 1);
@@ -69,7 +69,7 @@ public class UIColorPicker extends UIElement
         builder.vertex(matrix4f, x1, y2, 0F).color(color.r, color.g, color.b, color.a);
         builder.vertex(matrix4f, x2, y2, 0F).color(color.r, color.g, color.b, color.a);
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
     }
 
     public UIColorPicker(Consumer<Integer> callback)

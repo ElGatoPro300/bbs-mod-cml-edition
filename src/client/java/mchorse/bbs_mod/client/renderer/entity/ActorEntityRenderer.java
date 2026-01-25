@@ -82,7 +82,7 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity, ActorEntity
 
         this.setupTransforms(livingEntity, matrices, bodyYaw, tickDelta);
 
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.enableDepthTest();
         FormUtilsClient.render(livingEntity.getForm(), new FormRenderingContext()
             .set(FormRenderType.ENTITY, livingEntity.getEntity(), matrices, light, overlay, tickDelta)

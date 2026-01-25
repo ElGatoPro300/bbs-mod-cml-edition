@@ -76,7 +76,7 @@ public class BlockFormRenderer extends FormRenderer<BlockForm>
         }
         else
         {
-            CustomVertexConsumerProvider.hijackVertexFormat((l) -> RenderSystem.enableBlend());
+            CustomVertexConsumerProvider.hijackVertexFormat((l) -> com.mojang.blaze3d.opengl.GlStateManager._enableBlend());
         }
 
         Color set = this.form.color.get();

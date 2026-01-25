@@ -712,7 +712,7 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
             }
         }
 
-        RenderSystem.enableBlend();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
         RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }

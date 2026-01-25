@@ -655,7 +655,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 shapeResult.renderKeyframeBackground(context, builder, matrix, mx, my, 2, mc);
             }
 
-            RenderSystem.enableBlend();
+            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
             RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
             BufferRenderer.drawWithGlobalProgram(builder.end());
 
