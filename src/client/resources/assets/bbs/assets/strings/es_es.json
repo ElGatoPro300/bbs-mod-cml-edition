@@ -670,6 +670,8 @@
     "bbs.ui.forms.editors.label.background": "Fondo",
     "bbs.ui.forms.editors.label.effects": "Efectos",
     "bbs.ui.forms.editors.label.font": "Fuente",
+    "bbs.ui.forms.editors.label.open_fonts_folder": "Abrir carpeta de fuentes",
+    "bbs.ui.forms.editors.label.bold": "Negrilla",
     "bbs.ui.forms.editors.label.font.default": "Por defecto",
     "bbs.ui.forms.editors.label.font_style.italic": "Cursiva",
     "bbs.ui.forms.editors.label.font_style.normal": "Normal",

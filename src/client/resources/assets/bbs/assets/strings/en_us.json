@@ -701,6 +701,8 @@
     "bbs.ui.forms.editors.label.background": "Background",
     "bbs.ui.forms.editors.label.effects": "Effects",
     "bbs.ui.forms.editors.label.font": "Font",
+    "bbs.ui.forms.editors.label.open_fonts_folder": "Open fonts folder",
+    "bbs.ui.forms.editors.label.bold": "Bold",
     "bbs.ui.forms.editors.label.font.default": "Default",
     "bbs.ui.forms.editors.label.font_style.italic": "Italic",
     "bbs.ui.forms.editors.label.font_style.normal": "Normal",

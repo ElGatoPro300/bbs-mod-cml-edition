@@ -441,6 +441,8 @@ public class UIKeys
     public static final IKey FORMS_EDITORS_LABEL_TITLE = L10n.lang("bbs.ui.forms.editors.label.title");
     public static final IKey FORMS_EDITORS_LABEL_ADVANCED_TEXT = L10n.lang("bbs.ui.forms.editors.label.advanced_text");
     public static final IKey FORMS_EDITORS_LABEL_FONT = L10n.lang("bbs.ui.forms.editors.label.font");
+    public static final IKey FORMS_EDITORS_LABEL_OPEN_FONTS_FOLDER = L10n.lang("bbs.ui.forms.editors.label.open_fonts_folder");
+    public static final IKey FORMS_EDITORS_LABEL_BOLD = L10n.lang("bbs.ui.forms.editors.label.bold");
     public static final IKey FORMS_EDITORS_LABEL_FONT_DEFAULT = L10n.lang("bbs.ui.forms.editors.label.font.default");
     public static final IKey FORMS_EDITORS_LABEL_FONT_STYLE_NORMAL = L10n.lang("bbs.ui.forms.editors.label.font_style.normal");
     public static final IKey FORMS_EDITORS_LABEL_FONT_STYLE_ITALIC = L10n.lang("bbs.ui.forms.editors.label.font_style.italic");

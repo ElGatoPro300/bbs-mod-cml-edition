@@ -24,5 +24,23 @@
     "key.bbs.zoom": "Zoom (BBS gun)",
     "category.bbs.main": "BBS mod",
 
-    "gamerule.bbsEditing": "BBS mod's editing permission"
+    "gamerule.bbsEditing": "BBS mod's editing permission",
+
+    "bbs.ui.forms.label.advanced_text": "Advanced Text",
+    "bbs.ui.forms.label.font": "Font",
+    "bbs.ui.forms.label.default": "Default",
+    "bbs.ui.forms.label.style.normal": "Normal",
+    "bbs.ui.forms.label.style.italic": "Italic",
+    "bbs.ui.forms.label.style.oblique": "Oblique",
+    "bbs.ui.forms.label.align.left": "Left",
+    "bbs.ui.forms.label.align.center": "Center",
+    "bbs.ui.forms.label.align.right": "Right",
+    "bbs.ui.forms.label.align.justify": "Justify",
+    "bbs.ui.forms.label.opacity": "Opacity",
+    "bbs.ui.forms.label.underline": "Underline",
+    "bbs.ui.forms.label.strikethrough": "Strikethrough",
+    "bbs.ui.forms.label.effects": "Effects",
+    "bbs.ui.forms.label.shadow_blur": "Shadow Blur",
+    "bbs.ui.forms.label.outline": "Outline",
+    "bbs.ui.forms.label.gradient": "Gradient"
 }

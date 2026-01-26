@@ -12,5 +12,23 @@
     "key.bbs.record_replay": "Grabar reproducción actual",
     "key.bbs.record_video": "Grabar vídeo",
     "key.bbs.teleport": "Teletransportarse a la reproducción actual",
-    "category.bbs.main": "BBS mod"
+    "category.bbs.main": "BBS mod",
+
+    "bbs.ui.forms.label.advanced_text": "Texto Avanzado",
+    "bbs.ui.forms.label.font": "Fuente",
+    "bbs.ui.forms.label.default": "Por defecto",
+    "bbs.ui.forms.label.style.normal": "Normal",
+    "bbs.ui.forms.label.style.italic": "Cursiva",
+    "bbs.ui.forms.label.style.oblique": "Oblicua",
+    "bbs.ui.forms.label.align.left": "Izquierda",
+    "bbs.ui.forms.label.align.center": "Centro",
+    "bbs.ui.forms.label.align.right": "Derecha",
+    "bbs.ui.forms.label.align.justify": "Justificado",
+    "bbs.ui.forms.label.opacity": "Opacidad",
+    "bbs.ui.forms.label.underline": "Subrayado",
+    "bbs.ui.forms.label.strikethrough": "Tachado",
+    "bbs.ui.forms.label.effects": "Efectos",
+    "bbs.ui.forms.label.shadow_blur": "Desenfoque Sombra",
+    "bbs.ui.forms.label.outline": "Contorno",
+    "bbs.ui.forms.label.gradient": "Degradado"
 }
