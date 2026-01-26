@@ -104,6 +104,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     /* Icon bar buttons */
     public UIIcon openHistory;
     public UIIcon toggleHorizontal;
+    public UIIcon layoutLock;
     public UIIcon openCameraEditor;
     public UIIcon openReplayEditor;
     public UIIcon openActionEditor;
@@ -252,6 +253,8 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.openHistory.tooltip(UIKeys.FILM_OPEN_HISTORY, Direction.LEFT);
         this.toggleHorizontal = new UIIcon(this::getLayoutIcon, (b) -> this.openLayoutSelector());
         this.toggleHorizontal.tooltip(UIKeys.FILM_TOGGLE_LAYOUT, Direction.LEFT);
+        this.layoutLock = new UIIcon(this::getLayoutLockIcon, (b) -> this.toggleLayoutLock());
+        this.updateLayoutLockTooltip();
         this.openCameraEditor = new UIIcon(Icons.FRUSTUM, (b) -> this.showPanel(this.cameraEditor));
         this.openCameraEditor.tooltip(UIKeys.FILM_OPEN_CAMERA_EDITOR, Direction.LEFT);
         this.openReplayEditor = new UIIcon(Icons.SCENE, (b) -> this.showPanel(this.replayEditor));
@@ -260,7 +263,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.openActionEditor.tooltip(UIKeys.FILM_OPEN_ACTION_EDITOR, Direction.LEFT);
 
         /* Setup elements */
-        this.iconBar.add(this.openHistory, this.toggleHorizontal.marginTop(9), this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
+        this.iconBar.add(this.openHistory, this.toggleHorizontal.marginTop(9), this.layoutLock, this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
 
         this.editor.add(this.main, new UIRenderable(this::renderIcons));
         this.main.add(this.cameraEditor, this.replayEditor, this.actionEditor, this.editArea, this.preview, this.draggableMain);
@@ -652,16 +655,29 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
                 layout.setLayout(ValueEditorLayout.LAYOUT_VERTICAL_RIGHT);
                 this.setupEditorFlex(true);
             });
-
-            if (layout.isLayoutLocked())
-            {
-                menu.action(Icons.UNLOCKED, UIKeys.FILM_LAYOUT_UNLOCK, () -> layout.setLayoutLocked(false));
-            }
-            else
-            {
-                menu.action(Icons.LOCKED, UIKeys.FILM_LAYOUT_LOCK, () -> layout.setLayoutLocked(true));
-            }
         });
+    }
+
+    private void toggleLayoutLock()
+    {
+        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
+
+        layout.setLayoutLocked(!layout.isLayoutLocked());
+        this.updateLayoutLockTooltip();
+    }
+
+    private void updateLayoutLockTooltip()
+    {
+        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
+
+        if (layout.isLayoutLocked())
+        {
+            this.layoutLock.tooltip(UIKeys.FILM_LAYOUT_UNLOCK, Direction.LEFT);
+        }
+        else
+        {
+            this.layoutLock.tooltip(UIKeys.FILM_LAYOUT_LOCK, Direction.LEFT);
+        }
     }
 
     private mchorse.bbs_mod.ui.utils.icons.Icon getLayoutIcon()
@@ -679,6 +695,11 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         }
 
         return Icons.EXCHANGE;
+    }
+
+    private mchorse.bbs_mod.ui.utils.icons.Icon getLayoutLockIcon()
+    {
+        return BBSSettings.editorLayoutSettings.isLayoutLocked() ? Icons.LOCKED : Icons.UNLOCKED;
     }
 
     @Override
@@ -890,6 +911,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.preview.replays.setEnabled(data != null);
         this.openHistory.setEnabled(data != null);
         this.toggleHorizontal.setEnabled(data != null);
+        this.layoutLock.setEnabled(data != null);
         this.openCameraEditor.setEnabled(data != null);
         this.openReplayEditor.setEnabled(data != null);
         this.openActionEditor.setEnabled(data != null);
@@ -1182,7 +1204,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     private void renderDividers(UIContext context)
     {
         Area a1 = this.openHistory.area;
-        Area a2 = this.toggleHorizontal.area;
+        Area a2 = this.layoutLock.area;
 
         context.batcher.box(a1.x + 3, a1.ey() + 4, a1.ex() - 3, a1.ey() + 5, 0x22ffffff);
         context.batcher.box(a2.x + 3, a2.ey() + 4, a2.ex() - 3, a2.ey() + 5, 0x22ffffff);
