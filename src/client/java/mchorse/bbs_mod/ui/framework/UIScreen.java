@@ -196,7 +196,7 @@ public class UIScreen extends Screen implements IFileDropListener
     {
         super.render(context, mouseX, mouseY, delta);
 
-        this.menu.context.setTransition(this.client.getRenderTickCounter().getTickDelta(false));
+        this.menu.context.setTransition(((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) this.client.getRenderTickCounter()).getTickDeltaField());
         this.menu.renderMenu(this.context, mouseX, mouseY);
         this.menu.context.render.executeRunnables();
     }

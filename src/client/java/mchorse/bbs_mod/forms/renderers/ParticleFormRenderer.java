@@ -14,10 +14,10 @@ import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKeys;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.world.World;
@@ -188,20 +188,12 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
                 Supplier<ShaderProgram> shader = billboard
                     ? this.getShader(
                         context,
-                        () ->
-                        {
-                            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-                            return RenderSystem.getShader();
-                        },
+                        () -> null, // net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentProgram,
                         BBSShaders::getPickerBillboardProgram
                     )
                     : this.getShader(
                         context,
-                        () ->
-                        {
-                            RenderSystem.setShader(ShaderProgramKeys.PARTICLE);
-                            return RenderSystem.getShader();
-                        },
+                        () -> null, // net.minecraft.client.render.GameRenderer::getParticleProgram,
                         BBSShaders::getPickerParticlesProgram
                     );
 
@@ -244,3 +236,5 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
         }
     }
 }
+
+

@@ -58,7 +58,7 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity, ActorEntity
         state.entity = entity;
         state.tickDelta = tickDelta;
         state.bodyYaw = entity.bodyYaw;
-        state.prevBodyYaw = entity.prevBodyYaw;
+        state.prevBodyYaw = entity.bodyYaw; // entity.prevBodyYaw
         state.deathTime = (float)entity.deathTime;
         state.isSleeping = entity.isInPose(EntityPose.SLEEPING);
     }
@@ -82,13 +82,13 @@ public class ActorEntityRenderer extends EntityRenderer<ActorEntity, ActorEntity
 
         this.setupTransforms(livingEntity, matrices, bodyYaw, tickDelta);
 
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // RenderSystem.enableDepthTest();
         FormUtilsClient.render(livingEntity.getForm(), new FormRenderingContext()
             .set(FormRenderType.ENTITY, livingEntity.getEntity(), matrices, light, overlay, tickDelta)
             .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
+        // RenderSystem.disableDepthTest();
+        // RenderSystem.disableBlend();
 
         matrices.pop();
 

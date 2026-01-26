@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.film;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
@@ -194,7 +195,7 @@ public abstract class BaseFilmController
                         Gizmo.INSTANCE.renderStencil(stack, context.map);
                     }
 
-                    RenderSystem.enableDepthTest();
+                    GlStateManager._enableDepthTest();
                     stack.pop();
                 }
             }
@@ -224,7 +225,7 @@ public abstract class BaseFilmController
             stack.pop();
         }
 
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
     }
 
     private static void renderAxes(String bone, boolean local, StencilMap stencilMap, Form form, IEntity entity, float transition, MatrixStack stack)
@@ -274,7 +275,7 @@ public abstract class BaseFilmController
                 Gizmo.INSTANCE.renderStencil(stack, stencilMap);
             }
 
-            RenderSystem.enableDepthTest();
+            GlStateManager._enableDepthTest();
             stack.pop();
         }
     }
@@ -434,14 +435,14 @@ public abstract class BaseFilmController
 
         int maxLight = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 
-            RenderSystem.enableBlend();
-            RenderSystem.disableCull();
+            GlStateManager._enableBlend();
+            GlStateManager._disableCull();
 
             CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
 
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
-                RenderSystem.disableDepthTest();
+                GlStateManager._disableDepthTest();
             });
 
             textRenderer.draw(text, h, 0, 0x00FFFFFF, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, background, maxLight);
@@ -451,10 +452,10 @@ public abstract class BaseFilmController
             consumers.draw();
 
             CustomVertexConsumerProvider.clearRunnables();
-            RenderSystem.enableDepthTest();
+            GlStateManager._enableDepthTest();
 
-            RenderSystem.enableCull();
-            RenderSystem.disableBlend();
+            GlStateManager._enableCull();
+            GlStateManager._disableBlend();
 
         matrices.pop();
     }
@@ -719,10 +720,10 @@ public abstract class BaseFilmController
                         player.setHeadYaw(yawHead);
                         player.setPitch(pitch);
                         player.setBodyYaw(yawBody);
-                        player.prevYaw = yawHead;
-                        player.prevHeadYaw = yawHead;
-                        player.prevPitch = pitch;
-                        player.prevBodyYaw = yawBody;
+                        // player.prevYaw = yawHead;
+                        // player.prevHeadYaw = yawHead;
+                        // player.prevPitch = pitch;
+                        // player.prevBodyYaw = yawBody;
                     }
                 }
             }
@@ -746,7 +747,7 @@ public abstract class BaseFilmController
 
     public void render(WorldRenderContext context)
     {
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
 
         for (Map.Entry<Integer, IEntity> entry : this.entities.entrySet())
         {
@@ -769,7 +770,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+            filmContext.transition = getTransition(entity, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField());
 
             filmContext.stack.push();
 

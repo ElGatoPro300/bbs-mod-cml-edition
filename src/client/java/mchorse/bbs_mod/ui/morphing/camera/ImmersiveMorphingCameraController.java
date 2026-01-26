@@ -6,6 +6,7 @@ import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.mixin.LivingEntityAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.joml.Vector3d;
@@ -28,9 +29,9 @@ public class ImmersiveMorphingCameraController implements ICameraController
         UIModelRenderer renderer = this.modelRenderer.get();
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
 
-        float bodyYaw = MathUtils.toRad(Lerps.lerp(player.prevBodyYaw, player.bodyYaw, transition));
+        float bodyYaw = MathUtils.toRad(Lerps.lerp(((LivingEntityAccessor)player).getPrevBodyYaw(), ((LivingEntityAccessor)player).getBodyYaw(), transition));
 
-        camera.position.set(player.prevX, player.prevY, player.prevZ);
+        camera.position.set(player.lastRenderX, player.lastRenderY, player.lastRenderZ);
         camera.position.lerp(new Vector3d(player.getPos().x, player.getPos().y, player.getPos().z), transition);
         camera.rotation.set(0, bodyYaw, 0);
 

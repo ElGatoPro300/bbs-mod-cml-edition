@@ -414,7 +414,7 @@ public class UIFilmPreview extends UIElement
         stack.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
         stack.scale(-1F, -1F, -1F);
         MatrixStackUtils.applyModelViewMatrix();
-        RenderSystem.renderCrosshair(10);
+        // RenderSystem.renderCrosshair(10);
 
         stack.popMatrix();
         MatrixStackUtils.applyModelViewMatrix();

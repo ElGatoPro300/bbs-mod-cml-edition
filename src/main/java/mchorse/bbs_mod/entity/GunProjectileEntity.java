@@ -6,6 +6,7 @@ import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.entities.StubEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.items.GunProperties;
+import mchorse.bbs_mod.mixin.EntityAccessor;
 import mchorse.bbs_mod.network.ServerNetwork;
 import mchorse.bbs_mod.utils.MathUtils;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -194,13 +195,15 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         /* Movement code */
         Vec3d v = this.getVelocity();
 
-        if (this.prevPitch == 0F && this.prevYaw == 0F)
+        EntityAccessor accessor = (EntityAccessor) (Object) this;
+
+        if (accessor.getPrevPitch() == 0F && accessor.getPrevYaw() == 0F)
         {
             this.setYaw(MathUtils.toDeg((float) MathHelper.atan2(v.x, v.z)));
             this.setPitch(MathUtils.toDeg((float) MathHelper.atan2(v.y, v.horizontalLength())));
 
-            this.prevYaw = this.getYaw();
-            this.prevPitch = this.getPitch();
+            accessor.setPrevYaw(this.getYaw());
+            accessor.setPrevPitch(this.getPitch());
         }
 
         BlockPos blockPos = this.getBlockPos();
@@ -261,8 +264,9 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
 
             this.setYaw(MathUtils.toDeg((float) MathHelper.atan2(v.x, v.z)));
             this.setPitch(MathUtils.toDeg((float) MathHelper.atan2(v.y, d)));
-            this.setPitch(updateRotation(this.prevPitch, this.getPitch()));
-            this.setYaw(updateRotation(this.prevYaw, this.getYaw()));
+            
+            this.setPitch(this.updateRotation(accessor.getPrevPitch(), this.getPitch()));
+            this.setYaw(this.updateRotation(accessor.getPrevYaw(), this.getYaw()));
 
             float friction = this.properties.friction;
             float gravity = this.properties.gravity;
@@ -273,7 +277,10 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
                 {
                     float hitbox = 0.25F;
 
+                    /*
+
                     this.getWorld().addParticle(ParticleTypes.BUBBLE, x - v.x * hitbox, y - v.y * hitbox, z - v.z * hitbox, v.x, v.y, v.z);
+                    */
                 }
 
                 friction = 0.6F;
@@ -283,6 +290,21 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
             this.setPosition(x, y, z);
             /* this.checkBlockCollision(); */
         }
+    }
+
+    private float calculateRotation(float prevRot, float newRot)
+    {
+        while (newRot - prevRot < -180.0F)
+        {
+            prevRot -= 360.0F;
+        }
+
+        while (newRot - prevRot >= 180.0F)
+        {
+            prevRot += 360.0F;
+        }
+
+        return MathHelper.lerp(0.2F, prevRot, newRot);
     }
 
     @Override
@@ -373,7 +395,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
             this.setVelocity(this.getVelocity().multiply(-0.1D));
             this.setYaw(this.getYaw() + 180F);
 
-            this.prevYaw += 180F;
+            ((EntityAccessor)this).setPrevYaw(((EntityAccessor)this).getPrevYaw() + 180F);
         }
     }
 
@@ -384,7 +406,7 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
         this.setVelocity(this.getVelocity().rotateY(MathUtils.toRad(random)).multiply(0.5D));
         this.setYaw(this.getYaw() + random);
 
-        this.prevYaw += random;
+        ((EntityAccessor)this).setPrevYaw(((EntityAccessor)this).getPrevYaw() + random);
     }
 
     @Override
@@ -461,7 +483,8 @@ public class GunProjectileEntity extends ProjectileEntity implements IEntityForm
     public void readCustomDataFromNbt(NbtCompound nbt)
     {
         super.readCustomDataFromNbt(nbt);
-        this.despawn = nbt.getBoolean("despawn");
+
+        this.despawn = nbt.getBoolean("despawn").orElse(false);
     }
 
     @Override

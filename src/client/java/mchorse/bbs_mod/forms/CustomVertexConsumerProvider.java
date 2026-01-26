@@ -84,7 +84,7 @@ public class CustomVertexConsumerProvider extends VertexConsumerProvider.Immedia
             /* Force back the depth func because it seems like stuff rendered by a vertex
              * consumer is resetting the depth func to GL_LESS, and since this vertex consumer
              * is designed  */
-            RenderSystem.depthFunc(GL11.GL_ALWAYS);
+            // RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }
 }

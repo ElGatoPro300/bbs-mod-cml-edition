@@ -89,13 +89,11 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
         return distance < (d * 256D) * (d * 256D);
     }
 
-    @Override
     public Iterable<ItemStack> getHandItems()
     {
         return List.of(this.getEquippedStack(EquipmentSlot.MAINHAND), this.getEquippedStack(EquipmentSlot.OFFHAND));
     }
 
-    @Override
     public Iterable<ItemStack> getArmorItems()
     {
         return List.of(this.getEquippedStack(EquipmentSlot.FEET), this.getEquippedStack(EquipmentSlot.LEGS), this.getEquippedStack(EquipmentSlot.CHEST), this.getEquippedStack(EquipmentSlot.HEAD));
@@ -180,7 +178,7 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     {
         super.readCustomDataFromNbt(nbt);
 
-        this.despawn = nbt.getBoolean("despawn");
+        this.despawn = nbt.getBoolean("despawn").orElse(false);
     }
 
     @Override

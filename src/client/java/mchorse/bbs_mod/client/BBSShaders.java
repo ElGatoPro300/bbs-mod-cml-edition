@@ -7,8 +7,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Defines;
 import net.minecraft.client.gl.ShaderLoader;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKey;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
@@ -31,44 +31,43 @@ public class BBSShaders
 
     public static void setup()
     {
-        if (model != null) model.close();
-        if (subtitles != null) subtitles.close();
-        if (subtitles != null) subtitles.close();
+        // if (model != null) model.close();
+        // if (subtitles != null) subtitles.close();
+        // if (subtitles != null) subtitles.close();
 
-        if (pickerPreview != null) pickerPreview.close();
-        if (pickerBillboard != null) pickerBillboard.close();
-        if (pickerBillboardNoShading != null) pickerBillboardNoShading.close();
-        if (pickerParticles != null) pickerParticles.close();
-        if (pickerModels != null) pickerModels.close();
+        // if (pickerPreview != null) pickerPreview.close();
+        // if (pickerBillboard != null) pickerBillboard.close();
+        // if (pickerBillboardNoShading != null) pickerBillboardNoShading.close();
+        // if (pickerParticles != null) pickerParticles.close();
+        // if (pickerModels != null) pickerModels.close();
 
-        ShaderLoader loader = MinecraftClient.getInstance().getShaderLoader();
-        Defines defines = Defines.EMPTY;
+        // ShaderLoader loader = MinecraftClient.getInstance().getShaderLoader();
+        // Defines defines = Defines.EMPTY;
 
-        ShaderProgramKey modelKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/model"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
-        ShaderProgramKey multiLinkKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/multilink"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
-        ShaderProgramKey subtitlesKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/subtitles"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
+        // ShaderProgramKey modelKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/model"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
+        // ShaderProgramKey multiLinkKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/multilink"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
+        // ShaderProgramKey subtitlesKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/subtitles"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
 
-        ShaderProgramKey pickerPreviewKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_preview"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
-        ShaderProgramKey pickerBillboardKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_billboard"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
-        ShaderProgramKey pickerBillboardNoShadingKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_billboard_no_shading"), VertexFormats.POSITION_TEXTURE_LIGHT_COLOR, defines);
-        ShaderProgramKey pickerParticlesKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_particles"), VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, defines);
-        ShaderProgramKey pickerModelsKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_models"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
+        // ShaderProgramKey pickerPreviewKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_preview"), VertexFormats.POSITION_TEXTURE_COLOR, defines);
+        // ShaderProgramKey pickerBillboardKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_billboard"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
+        // ShaderProgramKey pickerBillboardNoShadingKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_billboard_no_shading"), VertexFormats.POSITION_TEXTURE_LIGHT_COLOR, defines);
+        // ShaderProgramKey pickerParticlesKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_particles"), VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, defines);
+        // ShaderProgramKey pickerModelsKey = new ShaderProgramKey(Identifier.of(BBSMod.MOD_ID, "core/picker_models"), VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, defines);
 
-        model = loader.getOrCreateProgram(modelKey);
-        multiLink = loader.getOrCreateProgram(multiLinkKey);
-        subtitles = loader.getOrCreateProgram(subtitlesKey);
+        // model = loader.getOrCreateProgram(modelKey);
+        // multiLink = loader.getOrCreateProgram(multiLinkKey);
+        // subtitles = loader.getOrCreateProgram(subtitlesKey);
 
-        pickerPreview = loader.getOrCreateProgram(pickerPreviewKey);
-        pickerBillboard = loader.getOrCreateProgram(pickerBillboardKey);
-        pickerBillboardNoShading = loader.getOrCreateProgram(pickerBillboardNoShadingKey);
-        pickerParticles = loader.getOrCreateProgram(pickerParticlesKey);
-        pickerModels = loader.getOrCreateProgram(pickerModelsKey);
+        // pickerPreview = loader.getOrCreateProgram(pickerPreviewKey);
+        // pickerBillboard = loader.getOrCreateProgram(pickerBillboardKey);
+        // pickerBillboardNoShading = loader.getOrCreateProgram(pickerBillboardNoShadingKey);
+        // pickerParticles = loader.getOrCreateProgram(pickerParticlesKey);
+        // pickerModels = loader.getOrCreateProgram(pickerModelsKey);
     }
 
     public static ShaderProgram getModel()
     {
-        RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-        return RenderSystem.getShader();
+        return null; // net.minecraft.client.render.GameRenderer.getRenderTypeEntityTranslucentProgram();
     }
 
     public static ShaderProgram getMultilinkProgram()
@@ -107,3 +106,4 @@ public class BBSShaders
     }
 
 }
+
