@@ -84,6 +84,8 @@
     "bbs.config.editor.horizontal_clip_editor-comment": "Determina si los elementos del editor de clips se organizarán vertical u horizontalmente",
     "bbs.config.editor.horizontal_flight": "Vuelo horizontal",
     "bbs.config.editor.horizontal_flight-comment": "Cuando está habilitado, la inclinación de la cámara no afectará el movimiento, haciendo que el movimiento WASD sea cardinal (plano XZ)",
+    "bbs.config.editor.flight_free_look": "Vuelo libre",
+    "bbs.config.editor.flight_free_look-comment": "Cuando está habilitado, puedes mirar en modo vuelo sin mantener presionado el mouse",
     "bbs.config.editor.jump": "Salto",
     "bbs.config.editor.jump-comment": "Con cuántos ticks las combinaciones de teclas de salto mueven el cursor de la línea de tiempo (combinaciones de teclas de flecha hacia arriba y hacia abajo)",
     "bbs.config.editor.loop": "Reproducción en bucle",

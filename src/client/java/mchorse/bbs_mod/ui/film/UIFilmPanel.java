@@ -44,6 +44,7 @@ import mchorse.bbs_mod.ui.film.replays.UIReplaysEditor;
 import mchorse.bbs_mod.ui.film.utils.UIFilmUndoHandler;
 import mchorse.bbs_mod.ui.film.utils.undo.UIUndoHistoryOverlay;
 import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.IUIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageOverlayPanel;
@@ -1370,6 +1371,16 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         /* Animate flight mode */
         if (this.dashboard.orbitUI.canControl())
         {
+            if (BBSSettings.editorFlightFreeLook.get())
+            {
+                boolean anyPressed = Window.isMouseButtonPressed(0) || Window.isMouseButtonPressed(1) || Window.isMouseButtonPressed(2);
+
+                if (!anyPressed && !this.dashboard.orbitUI.orbit.isDragging() && context.mouseX >= 0 && context.mouseY >= 0)
+                {
+                    this.dashboard.orbitUI.orbit.start(0, context.mouseX, context.mouseY);
+                }
+            }
+
             this.dashboard.orbit.apply(this.position);
 
             Position current = new Position(this.getCamera());
@@ -1404,6 +1415,24 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
                 this.notifyServer(ActionState.RESTART);
             }
         }
+    }
+
+    @Override
+    protected IUIElement childrenMouseScrolled(UIContext context)
+    {
+        if (this.dashboard.orbitUI.canControl() && context.mouseWheel != 0D)
+        {
+            int step = (int) Math.copySign(1, context.mouseWheel);
+
+            this.dashboard.orbitUI.orbit.scroll(step);
+
+            /* Consume scroll so other sections won't react */
+            context.mouseWheel = 0D;
+
+            return this;
+        }
+
+        return super.childrenMouseScrolled(context);
     }
 
     /**
