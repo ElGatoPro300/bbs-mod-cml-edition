@@ -6,6 +6,8 @@ import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ServerNetwork;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
@@ -56,6 +58,12 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     private final List<ItemStack> runtimeInventory = new java.util.ArrayList<>();
     private boolean runtimeInventoryInitialized;
     private final Set<UUID> pickedUpEntityIds = new HashSet<>();
+
+    private boolean lastHitboxEnabled;
+    private boolean lastSneaking;
+    private float lastHitboxWidth;
+    private float lastHitboxHeight;
+    private float lastHitboxSneakMultiplier;
 
     public ActorEntity(EntityType<? extends LivingEntity> entityType, World world)
     {
