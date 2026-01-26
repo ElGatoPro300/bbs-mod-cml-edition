@@ -480,7 +480,6 @@ public class BBSMod implements ModInitializer
             .register(Link.bbs("swipe"), SwipeActionClip.class, new ClipFactoryData(Icons.LIMB, Colors.ORANGE));
 
         setupConfig(Icons.PROCESSOR, "bbs", new File(settingsFolder, "bbs.json"), BBSSettings::register);
-        BBSSettings.migrate();
 
         events.post(new RegisterSettingsEvent());
 
