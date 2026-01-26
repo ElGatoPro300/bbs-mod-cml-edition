@@ -19,8 +19,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.equipment.ArmorMaterial;
+// import net.minecraft.item.ArmorItem;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
@@ -50,10 +50,11 @@ public class ArmorRenderer
         ItemStack itemStack = entity.getEquipmentStack(armorSlot);
         Item item = itemStack.getItem();
 
-        if (item instanceof ArmorItem armorItem)
-        {
+        // if (item instanceof net.minecraft.item.equipment.ArmorItem armorItem)
+        // {
             // TODO: 1.21.4 update - find replacement for ArmorItem.getEquipmentSlot()
             // if (armorItem.getType().getEquipmentSlot() == armorSlot)
+            /*
             {
                 boolean innerModel = this.usesInnerModel(armorSlot);
                 BipedEntityModel bipedModel = this.getModel(armorSlot);
@@ -61,7 +62,7 @@ public class ArmorRenderer
 
                 bipedModel.setVisible(true);
 
-                part.pivotX = part.pivotY = part.pivotZ = 0F;
+                // part.setPivot(0F, 0F, 0F);
                 part.pitch = part.yaw = part.roll = 0F;
                 part.xScale = part.yScale = part.zScale = 1F;
 
@@ -92,7 +93,8 @@ public class ArmorRenderer
                     this.renderGlint(part, matrices, vertexConsumers, light);
                 }
             }
-        }
+            */
+        // }
     }
 
     private ModelPart getPart(BipedEntityModel bipedModel, ArmorType type)
@@ -122,7 +124,7 @@ public class ArmorRenderer
         return bipedModel.head;
     }
 
-    private void renderArmorParts(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, ArmorItem item, boolean secondTextureLayer, float red, float green, float blue, String overlay)
+    private void renderArmorParts(ModelPart part, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, Item item, boolean secondTextureLayer, float red, float green, float blue, String overlay)
     {
         VertexConsumer base = vertexConsumers.getBuffer(RenderLayer.getArmorCutoutNoCull(this.getArmorTexture(item, secondTextureLayer, overlay)));
         VertexConsumer vertexConsumer = new RecolorVertexConsumer(base, new Color(red, green, blue, 1F));
@@ -153,7 +155,7 @@ public class ArmorRenderer
         return slot == EquipmentSlot.LEGS;
     }
 
-    private Identifier getArmorTexture(ArmorItem item, boolean secondLayer, String overlay)
+    private Identifier getArmorTexture(Item item, boolean secondLayer, String overlay)
     {
         String materialName = "leather"; // item.getMaterial().getKey().map(k -> k.getValue().getPath()).orElse("unknown");
         String id = "textures/models/armor/" + materialName + "_layer_" + (secondLayer ? 2 : 1) + (overlay == null ? "" : "_" + overlay) + ".png";

@@ -14,7 +14,7 @@ import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.BufferAllocator;
 // import net.minecraft.client.gl.ShaderProgramKeys;
@@ -94,14 +94,14 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         MatrixStackUtils.scaleStack(context.stack, scale, -scale, scale);
 
-        RenderSystem.disableCull();
+        // RenderSystem.disableCull();
 
         if (context.isPicking())
         {
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                // RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
             });
 
             light = 0;
@@ -118,8 +118,8 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         CustomVertexConsumerProvider.clearRunnables();
 
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
+        // RenderSystem.enableDepthTest();
+        // RenderSystem.enableCull();
 
         context.stack.pop();
     }
@@ -169,7 +169,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             light
         );
 
-        RenderSystem.enableDepthTest();
+        // RenderSystem.enableDepthTest();
 
         consumers.draw();
 
@@ -268,7 +268,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         consumers.draw();
 
-        RenderSystem.enableDepthTest();
+        // RenderSystem.enableDepthTest();
 
         this.renderShadow(context, x, y, w, h);
     }
@@ -299,10 +299,10 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             color.r, color.g, color.b, color.a
         );
 
-        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // RenderSystem.enableDepthTest();
+        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
         context.stack.pop();
     }
 }

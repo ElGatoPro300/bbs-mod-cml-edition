@@ -24,9 +24,9 @@ import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 // import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
-
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.BufferAllocator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -713,8 +713,8 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
         }
 
         com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGui);
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
     @Override

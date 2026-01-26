@@ -188,12 +188,12 @@ public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements 
                 Supplier<ShaderProgram> shader = billboard
                     ? this.getShader(
                         context,
-                        net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentProgram,
+                        () -> null, // net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentProgram,
                         BBSShaders::getPickerBillboardProgram
                     )
                     : this.getShader(
                         context,
-                        net.minecraft.client.render.GameRenderer::getParticleProgram,
+                        () -> null, // net.minecraft.client.render.GameRenderer::getParticleProgram,
                         BBSShaders::getPickerParticlesProgram
                     );
 

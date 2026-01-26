@@ -22,8 +22,8 @@ public class Framebuffer extends net.minecraft.client.gl.Framebuffer
 
     public Framebuffer()
     {
-        super(1, 1, true);
-        this.id = this.framebufferObject;
+        super("BBSMod Framebuffer", true);
+        this.id = GL30.glGenFramebuffers();
     }
 
     public Framebuffer enableAdvancedClearing()

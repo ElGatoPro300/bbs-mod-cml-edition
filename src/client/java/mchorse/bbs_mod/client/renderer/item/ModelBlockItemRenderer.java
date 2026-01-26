@@ -24,7 +24,7 @@ import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3f;
@@ -64,7 +64,7 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
     }
 
     @Override
-    public void render(ItemStack data, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
+    public void render(ItemStack data, net.minecraft.item.ItemDisplayContext mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
     {
         Item item = this.get(data);
 
@@ -72,6 +72,7 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
         {
             ItemDisplayMode displayMode = ItemDisplayMode.NONE;
 
+            /*
             for (ItemDisplayMode m : ItemDisplayMode.values())
             {
                 if (m.asString().equals(mode.asString()))
@@ -80,6 +81,7 @@ public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
                     break;
                 }
             }
+            */
 
             ModelProperties properties = item.entity.getProperties();
             Form form = properties.getForm(displayMode);

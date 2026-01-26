@@ -287,17 +287,17 @@ public class BBSRendering
 
             reassignFramebuffer(framebuffer);
 
-            framebuffer.beginWrite(true);
+            // framebuffer.beginWrite(true);
         }
         else
         {
             reassignFramebuffer(clientFramebuffer);
 
-            mc.getFramebuffer().beginWrite(true);
+            // mc.getFramebuffer().beginWrite(true);
 
             if (width != 0)
             {
-                framebuffer.draw(window.getFramebufferWidth(), window.getFramebufferHeight());
+                // framebuffer.draw(window.getFramebufferWidth(), window.getFramebufferHeight());
             }
         }
     }
@@ -312,13 +312,13 @@ public class BBSRendering
     public static void onWorldRenderBegin()
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        BBSModClient.getFilms().startRenderFrame(mc.getRenderTickCounter().getTickDelta());
+        BBSModClient.getFilms().startRenderFrame(((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) (Object) mc.getRenderTickCounter()).getTickDeltaField());
 
         UIBaseMenu menu = UIScreen.getCurrentMenu();
 
         if (menu != null)
         {
-            menu.startRenderFrame(mc.getRenderTickCounter().getTickDelta());
+            menu.startRenderFrame(((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) (Object) mc.getRenderTickCounter()).getTickDeltaField());
         }
 
         renderingWorld = true;

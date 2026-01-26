@@ -51,6 +51,7 @@ public class MatrixStackUtils
 
     public static void applyModelViewMatrix()
     {
+        /*
         ShaderProgram program = RenderSystem.getShader();
 
         if (program != null)
@@ -62,6 +63,7 @@ public class MatrixStackUtils
                 uniform.set(RenderSystem.getModelViewStack());
             }
         }
+        */
     }
 
     public static void applyTransform(MatrixStack stack, Transform transform)

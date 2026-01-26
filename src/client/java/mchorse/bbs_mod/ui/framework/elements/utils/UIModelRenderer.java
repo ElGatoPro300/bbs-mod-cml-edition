@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.ui.framework.elements.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.VertexSorter;
 import com.mojang.blaze3d.systems.ProjectionType;
 import mchorse.bbs_mod.BBSModClient;
@@ -208,7 +209,7 @@ public abstract class UIModelRenderer extends UIElement
      */
     private void renderModel(UIContext context)
     {
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        // RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
         this.setupPosition();
         this.setupViewport(context);
@@ -218,7 +219,7 @@ public abstract class UIModelRenderer extends UIElement
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.camera.projection, ProjectionType.ORTHOGRAPHIC);
+        RenderSystem.setProjectionMatrix(this.camera.projection, ProjectionType.PERSPECTIVE);
 
         /* Rendering begins... */
         stack.push();
@@ -245,11 +246,11 @@ public abstract class UIModelRenderer extends UIElement
         /* Return back to orthographic projection */
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        RenderSystem.viewport(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
+        GlStateManager._viewport(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
         MatrixStackUtils.restoreMatrices();
         context.resetMatrix();
 
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        GlStateManager._depthFunc(GL11.GL_ALWAYS);
 
         this.processInputs(context);
     }
@@ -331,7 +332,7 @@ public abstract class UIModelRenderer extends UIElement
         int vw = (int) (this.area.w * rx);
         int vh = (int) (this.area.h * ry);
 
-        RenderSystem.viewport((int) (vx * size), (int) (vy * size), (int) (vw * size), (int) (vh * size));
+        GlStateManager._viewport((int) (vx * size), (int) (vy * size), (int) (vw * size), (int) (vh * size));
         this.camera.updatePerspectiveProjection(vw, vh);
         this.camera.updateView();
     }
@@ -347,6 +348,7 @@ public abstract class UIModelRenderer extends UIElement
      */
     protected void renderGrid(UIContext context)
     {
+        /*
         Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
@@ -389,6 +391,7 @@ public abstract class UIModelRenderer extends UIElement
         {
             e.printStackTrace();
         }
+        */
     }
 }
 

@@ -150,7 +150,7 @@ public class UIPickableFormRenderer extends UIFormRenderer
             this.stencil.pickGUI(context, this.area);
             this.stencil.unbind(this.stencilMap);
 
-            MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
+            // MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
 
             GlStateManager._enableScissorTest();
         }
@@ -175,9 +175,9 @@ public class UIPickableFormRenderer extends UIFormRenderer
         /* Draw axes */
         if (UIBaseMenu.renderAxes)
         {
-            RenderSystem.disableDepthTest();
+            // RenderSystem.disableDepthTest();
             Gizmo.INSTANCE.render(stack);
-            RenderSystem.enableDepthTest();
+            // RenderSystem.enableDepthTest();
         }
 
         stack.pop();

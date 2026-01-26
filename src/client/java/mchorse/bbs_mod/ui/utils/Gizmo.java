@@ -8,7 +8,7 @@ import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.Axis;
 // import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -219,12 +219,12 @@ public class Gizmo
             Draw.fillBox(builder, stack, -o, l, l, o, rr, rr, 0F, 1F, 1F); */
         }
 
-        RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
+        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_ALWAYS);
 
-        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
+        // net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
 
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_LEQUAL);
     }
 
     public void renderStencil(MatrixStack stack, StencilMap map)
@@ -284,10 +284,10 @@ public class Gizmo
             }
         }
 
-        RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
-        RenderSystem.disableDepthTest();
+        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer.getPositionColorProgram());
+        com.mojang.blaze3d.opengl.GlStateManager._disableDepthTest();
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
     public static enum Mode

@@ -1,7 +1,7 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJLoader;
 import mchorse.bbs_mod.client.BBSRendering;
@@ -228,11 +228,11 @@ public class BOBJModelVAO
 
         ModelVAORenderer.setupUniforms(stack, shader);
 
-        shader.bind();
+        // shader.bind();
 
-        int textureID = RenderSystem.getShaderTexture(0);
-        GlStateManager._activeTexture(GL30.GL_TEXTURE0);
-        GlStateManager._bindTexture(textureID);
+        // int textureID = RenderSystem.getShaderTexture(0);
+        // RenderSystem.activeTexture(GL30.GL_TEXTURE0);
+        // RenderSystem.bindTexture(textureID);
 
         GL30.glBindVertexArray(this.vao);
 

@@ -40,6 +40,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockEntity>
 {
@@ -63,9 +64,9 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
         entity.lastRenderX = x;
         entity.lastRenderY = y;
         entity.lastRenderZ = z;
-        entity.prevX = x;
-        entity.prevY = y;
-        entity.prevZ = z;
+        // entity.prevX = x;
+        // entity.prevY = y;
+        // entity.prevZ = z;
 
         double distance = MinecraftClient.getInstance().getEntityRenderDispatcher().getSquaredDistanceToCamera(x, y, z);
 
@@ -105,8 +106,14 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
         return blockEntity.getProperties().isGlobal();
     }
 
-    @Override
+    // @Override
     public void render(ModelBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
+    {
+        this.render(entity, tickDelta, matrices, vertexConsumers, light, overlay, MinecraftClient.getInstance().gameRenderer.getCamera().getPos());
+    }
+
+    @Override
+    public void render(ModelBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Vec3d cameraPos)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
         ModelProperties properties = entity.getProperties();
@@ -143,11 +150,13 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
             int lightAbove = WorldRenderer.getLightmapCoordinates(entity.getWorld(), pos.add((int) transform.translate.x, (int) transform.translate.y, (int) transform.translate.z));
             Camera camera = mc.gameRenderer.getCamera();
 
-            RenderSystem.enableDepthTest();
+            // RenderSystem.enableDepthTest();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
             FormUtilsClient.render(properties.getForm(ItemDisplayMode.NONE), new FormRenderingContext()
                 .set(FormRenderType.MODEL_BLOCK, entity.getEntity(), matrices, lightAbove, overlay, tickDelta)
                 .camera(camera));
-            RenderSystem.disableDepthTest();
+            // RenderSystem.disableDepthTest();
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
 
             if (this.canRenderAxes(entity) && UIBaseMenu.renderAxes)
             {
@@ -160,14 +169,15 @@ public class ModelBlockEntityRenderer implements BlockEntityRenderer<ModelBlockE
             matrices.pop();
         }
 
-        RenderSystem.disableDepthTest();
-
         if (mc.getDebugHud().shouldShowDebugHud())
         {
             Draw.renderBox(matrices, -0.5D, 0, -0.5D, 1, 1, 1, 0, 0.5F, 1F, 0.5F);
         }
 
         matrices.pop();
+
+        // RenderSystem.disableDepthTest();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         if (properties.isShadow())
         {

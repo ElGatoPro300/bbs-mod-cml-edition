@@ -54,13 +54,13 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
         stack.peek().getNormalMatrix().getScale(Vectors.EMPTY_3F);
         stack.peek().getNormalMatrix().scale(1F / Vectors.EMPTY_3F.x, -1F / Vectors.EMPTY_3F.y, 1F / Vectors.EMPTY_3F.z);
 
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        // RenderSystem.depthFunc(GL11.GL_LEQUAL);
         this.renderModel(BBSShaders::getModel,
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition()
         );
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        // RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
         stack.pop();
     }
@@ -81,13 +81,13 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
             shading
                 ? () ->
                 {
-                    RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-                    return RenderSystem.getShader();
+                    // RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                    return null; // RenderSystem.getShader();
                 }
                 : () ->
                 {
-                    RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
-                    return RenderSystem.getShader();
+                    // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
+                    return null; // RenderSystem.getShader();
                 },
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
         );
@@ -124,15 +124,15 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
 
             BBSModClient.getTextures().bindTexture(texture);
 
-            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-            RenderSystem.defaultBlendFunc();
+            // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+            // RenderSystem.defaultBlendFunc();
 
             gameRenderer.getLightmapTextureManager().enable();
             gameRenderer.getOverlayTexture().setupOverlayColor();
 
             ModelVAORenderer.render(shader.get(), data, matrices, color.r * formColor.r, color.g * formColor.g, color.b * formColor.b, color.a * formColor.a, light, overlay);
 
-            RenderSystem.disableBlend();
+            // RenderSystem.disableBlend();
 
             gameRenderer.getLightmapTextureManager().disable();
             gameRenderer.getOverlayTexture().teardownOverlayColor();

@@ -86,10 +86,11 @@ public class LineBuilder <T>
         for (List<LinePoint<T>> points : build)
         {
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+            /*
+            BufferBuilder builder = tessellator.begin(VertexFormat.Mode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
             RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+            // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
 
             for (LinePoint<T> point : points)
             {
@@ -98,12 +99,13 @@ public class LineBuilder <T>
 
             try
             {
-                BufferRenderer.drawWithGlobalProgram(builder.end());
+                // BufferRenderer.drawWithGlobalProgram(builder.end());
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
+            */
         }
     }
 }

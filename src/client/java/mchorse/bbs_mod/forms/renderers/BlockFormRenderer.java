@@ -69,7 +69,7 @@ public class BlockFormRenderer extends FormRenderer<BlockForm>
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                // RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
             });
 
             light = 0;
@@ -93,6 +93,6 @@ public class BlockFormRenderer extends FormRenderer<BlockForm>
 
         context.stack.pop();
 
-        RenderSystem.enableDepthTest();
+        // RenderSystem.enableDepthTest();
     }
 }

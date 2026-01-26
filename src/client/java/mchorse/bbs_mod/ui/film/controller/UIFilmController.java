@@ -1254,7 +1254,7 @@ public class UIFilmController extends UIElement
 
             BaseFilmController.renderEntity(FilmControllerContext.instance
                 .setup(this.getEntities(), entity, replay, renderContext)
-                .transition(isPlaying ? ((RenderTickCounterAccessor) (Object) renderContext.tickCounter()).getTickDelta() : 0)
+                .transition(isPlaying ? ((RenderTickCounterAccessor) (Object) renderContext.tickCounter()).getTickDeltaField() : 0)
                 .stencil(this.stencilMap)
                 .relative(replay.relative.get())
                 .bone(bone == null ? null : bone.a, bone != null && bone.b));
@@ -1266,7 +1266,7 @@ public class UIFilmController extends UIElement
         this.stencil.pick(x, y);
         this.stencil.unbind(this.stencilMap);
 
-        MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
+        // MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
     }
 
     private void ensureStencilFramebuffer()

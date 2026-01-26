@@ -24,7 +24,7 @@ import net.minecraft.client.MinecraftClient;
 // import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -78,7 +78,7 @@ public class Recorder extends WorldFilmController
 
         BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
+        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
 
         transformFrustum(vector, matrix, 1F, 1F);
         Draw.fillBoxTo(builder, stack, x, y, z, x + vector.x, y + vector.y, z + vector.z, thickness, 1F, 1F, 1F, 1F);
@@ -95,7 +95,9 @@ public class Recorder extends WorldFilmController
         transformFrustum(vector, matrix, 0F, 0F);
         Draw.fillBoxTo(builder, stack, x, y, z, x + vector.x, y + vector.y, z + vector.z, thickness, 0F, 0.5F, 1F, 1F);
 
-        net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
+        // RenderSystem.defaultBlendFunc();
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
 
         GlStateManager._disableDepthTest();
     }

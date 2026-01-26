@@ -720,10 +720,10 @@ public abstract class BaseFilmController
                         player.setHeadYaw(yawHead);
                         player.setPitch(pitch);
                         player.setBodyYaw(yawBody);
-                        player.prevYaw = yawHead;
-                        player.prevHeadYaw = yawHead;
-                        player.prevPitch = pitch;
-                        player.prevBodyYaw = yawBody;
+                        // player.prevYaw = yawHead;
+                        // player.prevHeadYaw = yawHead;
+                        // player.prevPitch = pitch;
+                        // player.prevBodyYaw = yawBody;
                     }
                 }
             }

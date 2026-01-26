@@ -18,7 +18,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 // import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -65,8 +65,8 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
 
         this.renderModel(format, () ->
             {
-                RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-                return RenderSystem.getShader();
+                // RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                return null; // MinecraftClient.getInstance().gameRenderer.getRenderTypeEntityTranslucentProgram();
             },
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
@@ -90,8 +90,8 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         Supplier<ShaderProgram> shader = this.getShader(
             context,
             shading
-                ? net.minecraft.client.render.GameRenderer::getRenderTypeEntityTranslucentProgram
-                : net.minecraft.client.render.GameRenderer::getPositionTexColorProgram,
+                ? () -> null // MinecraftClient.getInstance().gameRenderer.getRenderTypeEntityTranslucentProgram()
+                : () -> null, // MinecraftClient.getInstance().gameRenderer.getRenderTypeEntityTranslucentProgram(),
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
         );
 
@@ -209,7 +209,7 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         ShaderProgram program = shader.get();
         if (program != null)
         {
-            RenderSystem.setShader(program);
+            // RenderSystem.setShader(program);
         }
 
         texture.bind();
@@ -233,9 +233,9 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
         this.fill(format, builder, matrix, quad.p4.x, quad.p4.y, color, uvQuad.p4.x, uvQuad.p4.y, overlay, light, entry, -1F);
         this.fill(format, builder, matrix, quad.p3.x, quad.p3.y, color, uvQuad.p3.x, uvQuad.p3.y, overlay, light, entry, -1F);
 
-        RenderSystem.defaultBlendFunc();
+        // RenderSystem.defaultBlendFunc();
         com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
 
         texture.setFilterMipmap(false, false);
         if (format == VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL)

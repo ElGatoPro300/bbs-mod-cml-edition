@@ -75,7 +75,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -443,22 +443,22 @@ public class BBSModClient implements ClientModInitializer
                     peek.getNormalMatrix().identity();
                     stack.translate(0F, 0F, -d);
 
-                    GlStateManager._enableDepthTest();
-                    Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+                    // GlStateManager._enableDepthTest();
+                    // Tessellator tessellator = Tessellator.getInstance();
+                    // BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
                     float fov = MinecraftClient.getInstance().options.getFov().getValue();
                     float dd = d * (float) Math.pow(fov / 40F, 2F);
 
-                    Draw.fillQuad(builder, stack,
-                        -dd, -dd, 0,
-                        dd, -dd, 0,
-                        dd, dd, 0,
-                        -dd, dd, 0,
-                        color.r, color.g, color.b, 1F
-                    );
+                    // Draw.fillQuad(builder, stack,
+                    //    -dd, -dd, 0,
+                    //    dd, -dd, 0,
+                    //    dd, dd, 0,
+                    //    -dd, dd, 0,
+                    //    color.r, color.g, color.b, 1F
+                    // );
 
-                    RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
+                    // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
 
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
@@ -467,7 +467,7 @@ public class BBSModClient implements ClientModInitializer
 
                     try
                     {
-                        BufferRenderer.drawWithGlobalProgram(builder.end());
+                        // BufferRenderer.drawWithGlobalProgram(builder.end());
                     }
                     catch (Exception e)
                     {}
@@ -475,7 +475,7 @@ public class BBSModClient implements ClientModInitializer
                     mvStack.popMatrix();
                     MatrixStackUtils.applyModelViewMatrix();
 
-                    GlStateManager._disableDepthTest();
+                    // GlStateManager._disableDepthTest();
 
                     stack.pop();
                 }

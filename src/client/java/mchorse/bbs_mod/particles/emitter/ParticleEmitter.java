@@ -19,7 +19,7 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.interps.Lerps;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 // import net.minecraft.client.gl.ShaderProgramKeys;
@@ -462,9 +462,9 @@ public class ParticleEmitter
                 render.renderUI(this.uiParticle, builder, matrix, transition);
             }
 
-            RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
+            // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
             GlStateManager._disableCull();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
+            // BufferRenderer.drawWithGlobalProgram(builder.end());
             GlStateManager._enableCull();
         }
     }
@@ -508,11 +508,11 @@ public class ParticleEmitter
 
             if (program != null)
             {
-                RenderSystem.setShader(program);
+                // RenderSystem.setShader(program);
                 com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
                 com.mojang.blaze3d.opengl.GlStateManager._blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
                 com.mojang.blaze3d.opengl.GlStateManager._disableCull();
-                net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
+                // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
                 com.mojang.blaze3d.opengl.GlStateManager._enableCull();
                 com.mojang.blaze3d.opengl.GlStateManager._disableBlend();
             }

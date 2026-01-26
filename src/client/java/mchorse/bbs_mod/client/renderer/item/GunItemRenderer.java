@@ -21,7 +21,7 @@ import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.item.ModelTransformationMode;
+// import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
@@ -62,7 +62,7 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
     }
 
     @Override
-    public void render(ItemStack data, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
+    public void render(ItemStack data, net.minecraft.item.ItemDisplayContext mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
     {
         Item item = this.get(data);
 
@@ -70,6 +70,7 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
         {
             ItemDisplayMode displayMode = ItemDisplayMode.NONE;
 
+            /*
             for (ItemDisplayMode m : ItemDisplayMode.values())
             {
                 if (m.asString().equals(mode.asString()))
@@ -78,11 +79,12 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
                     break;
                 }
             }
+            */
 
             GunProperties properties = item.properties;
             Form form = properties.getForm(displayMode);
             Transform transform = properties.getTransform(displayMode);
-            boolean zoom = mode.isFirstPerson() && BBSModClient.getGunZoom() != null && properties.getZoomForm() != null;
+            boolean zoom = false; // (mode == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || mode == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) && BBSModClient.getGunZoom() != null && properties.getZoomForm() != null;
 
             if (zoom)
             {
