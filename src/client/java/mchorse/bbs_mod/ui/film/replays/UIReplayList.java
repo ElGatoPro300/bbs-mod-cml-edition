@@ -100,6 +100,11 @@ public class UIReplayList extends UIList<Replay>
     private static double LAST_PROCESS_SCATTER_AREA_Z = 10D;
     private static double LAST_PROCESS_SCATTER_SEED = 0D;
     private static double LAST_PROCESS_SCATTER_MIN_SEPARATION = 1D;
+    private static int LAST_OFFSET_SECTION = 0;
+    private static double LAST_OFFSET_STEP = 1D;
+    private static double LAST_OFFSET_RANDOM_SEED = 0D;
+    private static double LAST_OFFSET_RANDOM_MIN = -1D;
+    private static double LAST_OFFSET_RANDOM_MAX = 1D;
 
     public UIFilmPanel panel;
     public UIReplaysOverlayPanel overlay;
@@ -876,6 +881,93 @@ public class UIReplayList extends UIList<Replay>
             {
                 MathBuilder builder = new MathBuilder();
                 int min = Integer.MAX_VALUE;
+        UIIcon sectionExpression = new UIIcon(Icons.CODE, (b) -> {});
+        UIIcon sectionStagger = new UIIcon(Icons.TIME, (b) -> {});
+        UIIcon sectionAlternating = new UIIcon(Icons.EXCHANGE, (b) -> {});
+        UIIcon sectionRandom = new UIIcon(Icons.REFRESH, (b) -> {});
+        UITrackpad staggerStep = new UITrackpad((v) -> LAST_OFFSET_STEP = v.doubleValue());
+        UITrackpad randomSeed = new UITrackpad((v) -> LAST_OFFSET_RANDOM_SEED = v.doubleValue());
+        UITrackpad randomMin = new UITrackpad((v) -> LAST_OFFSET_RANDOM_MIN = v.doubleValue());
+        UITrackpad randomMax = new UITrackpad((v) -> LAST_OFFSET_RANDOM_MAX = v.doubleValue());
+        UIElement staggerControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_STEP),
+            staggerStep
+        );
+        UIElement randomControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SEED),
+            randomSeed,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_RANDOM_MIN).marginTop(6),
+            randomMin,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_RANDOM_MAX).marginTop(6),
+            randomMax
+        );
+        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_TITLE,
+                UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION, (b) -> {
+                    if (b) {
+                        if (LAST_OFFSET_SECTION == 1) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            double step = staggerStep.getValue();
+                            int count = indices.size();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+                                float tickv = (float) (order * step);
+
+                                BaseValue.edit(replay, (r) -> r.shift(tickv));
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_OFFSET_SECTION == 2) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            double step = staggerStep.getValue();
+                            int count = indices.size();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+                                float tickv = (float) ((order % 2 == 0 ? 1D : -1D) * step);
+
+                                BaseValue.edit(replay, (r) -> r.shift(tickv));
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_OFFSET_SECTION == 3) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            double seed = randomSeed.getValue();
+                            double min = randomMin.getValue();
+                            double max = randomMax.getValue();
+                            double start = Math.min(min, max);
+                            double end = Math.max(min, max);
+                            java.util.Random random = new java.util.Random((long) Math.round(seed));
+                            int count = indices.size();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+                                float tickv = (float) (start + (end - start) * random.nextDouble());
+
+                                BaseValue.edit(replay, (r) -> r.shift(tickv));
+                            }
+
+                            return;
+                        }
+
+                        MathBuilder builder = new MathBuilder();
+                        int min = Integer.MAX_VALUE;
 
                 builder.register("i");
                 builder.register("o");
@@ -912,10 +1004,95 @@ public class UIReplayList extends UIList<Replay>
         tick.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_EXPRESSION_TOOLTIP);
         tick.relative(panel.confirm).y(-1F, -5).w(1F).h(20);
 
-        panel.confirm.w(1F, -10);
-        panel.content.add(tick);
+        sectionExpression.active(LAST_OFFSET_SECTION == 0).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_EXPRESSION);
+        sectionStagger.active(LAST_OFFSET_SECTION == 1).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_STAGGER);
+        sectionAlternating.active(LAST_OFFSET_SECTION == 2).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_ALTERNATING);
+        sectionRandom.active(LAST_OFFSET_SECTION == 3).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_RANDOM);
 
-        UIOverlay.addOverlay(this.getContext(), panel);
+        sectionExpression.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 0;
+            sectionExpression.active(true);
+            sectionStagger.active(false);
+            sectionAlternating.active(false);
+            sectionRandom.active(false);
+            staggerControls.setVisible(false);
+            randomControls.setVisible(false);
+            tick.setVisible(true);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_EXPRESSION);
+        };
+
+        sectionStagger.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 1;
+            sectionExpression.active(false);
+            sectionStagger.active(true);
+            sectionAlternating.active(false);
+            sectionRandom.active(false);
+            staggerControls.setVisible(true);
+            randomControls.setVisible(false);
+            tick.setVisible(false);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_STAGGER);
+        };
+
+        sectionAlternating.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 2;
+            sectionExpression.active(false);
+            sectionStagger.active(false);
+            sectionAlternating.active(true);
+            sectionRandom.active(false);
+            staggerControls.setVisible(true);
+            randomControls.setVisible(false);
+            tick.setVisible(false);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_ALTERNATING);
+        };
+
+        sectionRandom.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 3;
+            sectionExpression.active(false);
+            sectionStagger.active(false);
+            sectionAlternating.active(false);
+            sectionRandom.active(true);
+            staggerControls.setVisible(false);
+            randomControls.setVisible(true);
+            tick.setVisible(false);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_RANDOM);
+        };
+
+        staggerStep.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_STEP);
+        randomSeed.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_RANDOM_SEED);
+        randomMin.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_RANDOM_MIN);
+        randomMax.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_RANDOM_MAX);
+        staggerControls.relative(panel.confirm).x(6).y(-1F, -58).w(1F, -12).h(44);
+        staggerControls.setVisible(LAST_OFFSET_SECTION == 1 || LAST_OFFSET_SECTION == 2);
+        randomControls.relative(panel.content).x(6).y(70).w(1F, -12).h(1F, -130);
+        randomControls.setVisible(LAST_OFFSET_SECTION == 3);
+        tick.setVisible(LAST_OFFSET_SECTION == 0);
+
+        if (LAST_OFFSET_SECTION == 1)
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_STAGGER);
+        }
+        else if (LAST_OFFSET_SECTION == 2)
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_ALTERNATING);
+        }
+        else if (LAST_OFFSET_SECTION == 3)
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_RANDOM);
+        }
+        else
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_EXPRESSION);
+        }
+
+        panel.confirm.w(1F, -10);
+        panel.content.add(staggerControls, randomControls, tick);
+        panel.icons.add(sectionExpression, sectionStagger, sectionAlternating, sectionRandom);
+
+        UIOverlay.addOverlay(this.getContext(), panel, 240, 240);
     }
 
     private void copyReplay()
