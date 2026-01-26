@@ -697,9 +697,6 @@ public class UIKeys
     public static final IKey OVERLAYS_VIDEOS_CLIENT_MODE = L10n.lang("bbs.ui.overlays.videos.client_mode");
     public static final IKey OVERLAYS_VIDEOS_EXTERNAL_MODE = L10n.lang("bbs.ui.overlays.videos.external_mode");
     public static final IKey OVERLAYS_VIDEOS_FAVORITE_MODE = L10n.lang("bbs.ui.overlays.videos.favorite_mode");
-    public static final IKey OVERLAYS_ADDITIONAL_TITLE = L10n.lang("bbs.ui.overlays.additional.title");
-    public static final IKey OVERLAYS_ADDITIONAL_TRANSFORM = L10n.lang("bbs.ui.overlays.additional.transform");
-    public static final IKey OVERLAYS_ADDITIONAL_POSE = L10n.lang("bbs.ui.overlays.additional.pose");
     public static final IKey PANELS_CONTEXT_COPY = L10n.lang("bbs.ui.panels.context.copy");
     public static final IKey PANELS_CONTEXT_OPEN = L10n.lang("bbs.ui.panels.context.open");
     public static final IKey PANELS_CONTEXT_PASTE = L10n.lang("bbs.ui.panels.context.paste");
