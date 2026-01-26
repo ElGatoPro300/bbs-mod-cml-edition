@@ -110,6 +110,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     /* Icon bar buttons */
     public UIIcon openHistory;
     public UIIcon toggleHorizontal;
+    public UIIcon layoutLock;
     public UIIcon openCameraEditor;
     public UIIcon openReplayEditor;
     public UIIcon openActionEditor;
@@ -307,6 +308,8 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.openHistory.tooltip(UIKeys.FILM_OPEN_HISTORY, Direction.LEFT);
         this.toggleHorizontal = new UIIcon(this::getLayoutIcon, (b) -> this.openLayoutSelector());
         this.toggleHorizontal.tooltip(UIKeys.FILM_TOGGLE_LAYOUT, Direction.LEFT);
+        this.layoutLock = new UIIcon(this::getLayoutLockIcon, (b) -> this.toggleLayoutLock());
+        this.updateLayoutLockTooltip();
         this.openCameraEditor = new UIIcon(Icons.FRUSTUM, (b) -> this.showPanel(this.cameraEditor));
         this.openCameraEditor.tooltip(UIKeys.FILM_OPEN_CAMERA_EDITOR, Direction.LEFT);
         this.openReplayEditor = new UIIcon(Icons.SCENE, (b) -> this.showPanel(this.replayEditor));
@@ -315,7 +318,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.openActionEditor.tooltip(UIKeys.FILM_OPEN_ACTION_EDITOR, Direction.LEFT);
 
         /* Setup elements */
-        this.iconBar.add(this.openHistory, this.toggleHorizontal.marginTop(9), this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
+        this.iconBar.add(this.openHistory, this.toggleHorizontal.marginTop(9), this.layoutLock, this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
 
         this.draggableReplaysSidebar.setVisible(false);
         this.editor.add(this.main, new UIRenderable(this::renderIcons), this.draggableReplaysSidebar);
@@ -851,6 +854,94 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         }
     }
 
+    private void openLayoutSelector()
+    {
+        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
+        UIContext context = this.getContext();
+
+        context.replaceContextMenu((menu) ->
+        {
+            menu.custom(new mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu()
+            {
+                @Override
+                public void setMouse(UIContext context)
+                {
+                    int w = 100;
+
+                    for (mchorse.bbs_mod.ui.utils.context.ContextAction action : this.actions.getList())
+                    {
+                        w = Math.max(action.getWidth(context.batcher.getFont()), w);
+                    }
+
+                    int x = UIFilmPanel.this.toggleHorizontal.area.x;
+                    int y = UIFilmPanel.this.toggleHorizontal.area.ey();
+
+                    this.set(x, y, w, 0).h(this.actions.scroll.scrollSize).maxH(context.menu.height - 10).bounds(context.menu.overlay, 5);
+                }
+            });
+
+            menu.action(Icons.EXCHANGE, UIKeys.FILM_LAYOUT_HORIZONTAL_BOTTOM, () ->
+            {
+                layout.setLayout(ValueEditorLayout.LAYOUT_HORIZONTAL_BOTTOM);
+                this.setupEditorFlex(true);
+            });
+            menu.action(Icons.CONVERT, UIKeys.FILM_LAYOUT_VERTICAL_LEFT, () ->
+            {
+                layout.setLayout(ValueEditorLayout.LAYOUT_VERTICAL_LEFT);
+                this.setupEditorFlex(true);
+            });
+            menu.action(Icons.ARROW_RIGHT, UIKeys.FILM_LAYOUT_VERTICAL_RIGHT, () ->
+            {
+                layout.setLayout(ValueEditorLayout.LAYOUT_VERTICAL_RIGHT);
+                this.setupEditorFlex(true);
+            });
+        });
+    }
+
+    private void toggleLayoutLock()
+    {
+        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
+
+        layout.setLayoutLocked(!layout.isLayoutLocked());
+        this.updateLayoutLockTooltip();
+    }
+
+    private void updateLayoutLockTooltip()
+    {
+        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
+
+        if (layout.isLayoutLocked())
+        {
+            this.layoutLock.tooltip(UIKeys.FILM_LAYOUT_UNLOCK, Direction.LEFT);
+        }
+        else
+        {
+            this.layoutLock.tooltip(UIKeys.FILM_LAYOUT_LOCK, Direction.LEFT);
+        }
+    }
+
+    private icons.Icon getLayoutIcon()
+    {
+        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
+
+        if (layout.getLayout() == ValueEditorLayout.LAYOUT_VERTICAL_RIGHT)
+        {
+            return Icons.ARROW_RIGHT;
+        }
+
+        if (layout.getLayout() == ValueEditorLayout.LAYOUT_VERTICAL_LEFT)
+        {
+            return Icons.CONVERT;
+        }
+
+        return Icons.EXCHANGE;
+    }
+
+    private icons.Icon getLayoutLockIcon()
+    {
+        return BBSSettings.editorLayoutSettings.isLayoutLocked() ? Icons.LOCKED : Icons.UNLOCKED;
+    }
+
     @Override
     public void open()
     {
@@ -1060,6 +1151,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.preview.replays.setEnabled(data != null);
         this.openHistory.setEnabled(data != null);
         this.toggleHorizontal.setEnabled(data != null);
+        this.layoutLock.setEnabled(data != null);
         this.openCameraEditor.setEnabled(data != null);
         this.openReplayEditor.setEnabled(data != null);
         this.openActionEditor.setEnabled(data != null);
@@ -1332,7 +1424,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     private void renderDividers(UIContext context)
     {
         Area a1 = this.openHistory.area;
-        Area a2 = this.toggleHorizontal.area;
+        Area a2 = this.layoutLock.area;
 
         context.batcher.box(a1.x + 3, a1.ey() + 4, a1.ex() - 3, a1.ey() + 5, 0x22ffffff);
         context.batcher.box(a2.x + 3, a2.ey() + 4, a2.ex() - 3, a2.ey() + 5, 0x22ffffff);
