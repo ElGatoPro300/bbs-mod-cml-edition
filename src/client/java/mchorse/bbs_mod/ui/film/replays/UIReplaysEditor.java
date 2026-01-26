@@ -856,36 +856,43 @@ public class UIReplaysEditor extends UIElement
 
         if (propertyPath == null)
         {
-            String overlayPath = null;
+            String activeOverlayPath = null;
+            String posePath = null;
 
             for (UIKeyframeSheet sheet : graph.getSheets())
             {
                 BaseValueBasic property = sheet.property;
 
-                if (property != null && property.getId().startsWith("pose_overlay"))
+                if (property != null)
                 {
                     Form sheetForm = (Form) property.getParent();
                     String sheetFormPath = FormUtils.getPath(sheetForm);
 
                     if (sheetFormPath.equals(formPath))
                     {
-                        if (!sheet.channel.isEmpty())
+                        if (property.getId().equals("pose"))
                         {
-                            overlayPath = FormUtils.getPropertyPath(property);
-                            break;
+                            posePath = FormUtils.getPropertyPath(property);
                         }
-
-                        if (overlayPath == null)
+                        else if (property.getId().startsWith("pose_overlay"))
                         {
-                            overlayPath = FormUtils.getPropertyPath(property);
+                            if (!sheet.channel.isEmpty())
+                            {
+                                activeOverlayPath = FormUtils.getPropertyPath(property);
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            if (overlayPath != null)
+            if (activeOverlayPath != null)
             {
-                propertyPath = overlayPath;
+                propertyPath = activeOverlayPath;
+            }
+            else if (posePath != null)
+            {
+                propertyPath = posePath;
             }
         }
 
