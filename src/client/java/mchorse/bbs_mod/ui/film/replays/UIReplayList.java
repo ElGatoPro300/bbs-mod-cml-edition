@@ -666,19 +666,33 @@ public class UIReplayList extends UIList<Replay>
         ArrayList<ModelBlockEntity> modelBlocks = new ArrayList<>(BBSRendering.capturedModelBlocks);
         UISearchList<String> search = new UISearchList<>(new UIStringList(null));
         UIList<String> list = search.list;
-        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_TITLE, UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_DESCRIPTION, (b) ->
-        {
-            if (b)
-            {
-                int index = list.getIndex();
-                ModelBlockEntity modelBlock = CollectionUtils.getSafe(modelBlocks, index);
 
-                if (modelBlock != null)
-                {
-                    this.fromModelBlock(modelBlock);
-                }
-            }
-        });
+        list.multi();
+
+        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_TITLE,
+                UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_DESCRIPTION, (b) -> {
+                    if (b) {
+                        List<String> selected = list.getCurrent();
+
+                        if (selected.isEmpty()) {
+                            int index = list.getIndex();
+                            ModelBlockEntity modelBlock = CollectionUtils.getSafe(modelBlocks, index);
+
+                            if (modelBlock != null) {
+                                this.fromModelBlock(modelBlock);
+                            }
+                        } else {
+                            for (String name : selected) {
+                                int index = list.getList().indexOf(name);
+                                ModelBlockEntity modelBlock = CollectionUtils.getSafe(modelBlocks, index);
+
+                                if (modelBlock != null) {
+                                    this.fromModelBlock(modelBlock);
+                                }
+                            }
+                        }
+                    }
+                });
 
         modelBlocks.sort(Comparator.comparing(ModelBlockEntity::getName));
 
