@@ -86,7 +86,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
             else if (v - 1 < this.availableFonts.size()) this.form.font.set(this.availableFonts.get(v - 1));
         });
         
-        this.font.addLabel(IKey.raw("Default"));
+        this.font.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_DEFAULT);
         for (String fontName : this.availableFonts)
         {
             this.font.addLabel(IKey.raw(fontName));
@@ -99,15 +99,15 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.fontWeight.limit(100, 900, true).increment(100);
         
         this.fontStyle = new UICirculate((b) -> this.form.fontStyle.set(b.getValue()));
-        this.fontStyle.addLabel(IKey.raw("Normal"));
-        this.fontStyle.addLabel(IKey.raw("Italic"));
-        this.fontStyle.addLabel(IKey.raw("Oblique"));
+        this.fontStyle.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_STYLE_NORMAL);
+        this.fontStyle.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_STYLE_ITALIC);
+        this.fontStyle.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_STYLE_OBLIQUE);
         
         this.textAlign = new UICirculate((b) -> this.form.textAlign.set(b.getValue()));
-        this.textAlign.addLabel(IKey.raw("Left"));
-        this.textAlign.addLabel(IKey.raw("Center"));
-        this.textAlign.addLabel(IKey.raw("Right"));
-        this.textAlign.addLabel(IKey.raw("Justify"));
+        this.textAlign.addLabel(UIKeys.FORMS_EDITORS_LABEL_TEXT_ALIGN_LEFT);
+        this.textAlign.addLabel(UIKeys.FORMS_EDITORS_LABEL_TEXT_ALIGN_CENTER);
+        this.textAlign.addLabel(UIKeys.FORMS_EDITORS_LABEL_TEXT_ALIGN_RIGHT);
+        this.textAlign.addLabel(UIKeys.FORMS_EDITORS_LABEL_TEXT_ALIGN_JUSTIFY);
 
         this.letterSpacing = new UITrackpad((v) -> this.form.letterSpacing.set(v.floatValue()));
         this.letterSpacing.limit(-10F, 50F).values(0.1F);
@@ -118,18 +118,18 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.opacity = new UITrackpad((v) -> this.form.opacity.set(v.floatValue()));
         this.opacity.limit(0F, 1F).values(0.05F);
 
-        this.underline = new UIToggle(IKey.raw("Underline"), (b) -> this.form.underline.set(b.getValue()));
-        this.strikethrough = new UIToggle(IKey.raw("Strikethrough"), (b) -> this.form.strikethrough.set(b.getValue()));
+        this.underline = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_UNDERLINE, (b) -> this.form.underline.set(b.getValue()));
+        this.strikethrough = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_STRIKETHROUGH, (b) -> this.form.strikethrough.set(b.getValue()));
         
         this.shadowBlur = new UITrackpad((v) -> this.form.shadowBlur.set(v.floatValue()));
         this.shadowBlur.limit(0F, 20F).values(0.1F);
         
-        this.outline = new UIToggle(IKey.raw("Outline"), (b) -> this.form.outline.set(b.getValue()));
+        this.outline = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_OUTLINE, (b) -> this.form.outline.set(b.getValue()));
         this.outlineColor = new UIColor((c) -> this.form.outlineColor.set(Color.rgba(c))).withAlpha();
         this.outlineWidth = new UITrackpad((v) -> this.form.outlineWidth.set(v.floatValue()));
         this.outlineWidth.limit(0F, 10F).values(0.1F);
         
-        this.gradient = new UIToggle(IKey.raw("Gradient"), (b) -> this.form.gradient.set(b.getValue()));
+        this.gradient = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_GRADIENT, (b) -> this.form.gradient.set(b.getValue()));
         this.gradientEndColor = new UIColor((c) -> this.form.gradientEndColor.set(Color.rgba(c))).withAlpha();
 
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_LABEL), this.text, this.billboard, this.color, this.max);
@@ -140,16 +140,16 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_BACKGROUND).marginTop(8), this.background, this.offset);
 
         /* Advanced Layout */
-        this.options.add(UI.label(IKey.raw("Advanced Text")).marginTop(12));
-        this.options.add(UI.label(IKey.raw("Font")), this.font);
+        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_ADVANCED_TEXT).marginTop(12));
+        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_FONT), this.font);
         this.options.add(UI.row(this.fontSize, this.fontWeight));
         this.options.add(UI.row(this.fontStyle, this.textAlign));
         this.options.add(UI.row(this.letterSpacing, this.lineHeight));
-        this.options.add(UI.label(IKey.raw("Opacity")), this.opacity);
+        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_OPACITY), this.opacity);
         this.options.add(UI.row(this.underline, this.strikethrough));
         
-        this.options.add(UI.label(IKey.raw("Effects")).marginTop(8));
-        this.options.add(UI.label(IKey.raw("Shadow Blur")), this.shadowBlur);
+        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_EFFECTS).marginTop(8));
+        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_SHADOW_BLUR), this.shadowBlur);
         this.options.add(this.outline, this.outlineColor, this.outlineWidth);
         this.options.add(this.gradient, this.gradientEndColor);
     }

@@ -285,6 +285,9 @@ public class BBSSettings
         builder.category("shader_curves");
         shaderCurvesEnabled = builder.getBoolean("enabled", true);
 
+        builder.category("fluid_simulation");
+        fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
+
         builder.category("audio");
         audioWaveformVisible = builder.getBoolean("waveform_visible", true);
         audioWaveformDensity = builder.getInt("waveform_density", 20, 10, 100);
@@ -302,8 +305,5 @@ public class BBSSettings
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
-
-        builder.category("fluid_simulation");
-        fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
     }
 }
