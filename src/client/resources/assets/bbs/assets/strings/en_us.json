@@ -101,6 +101,8 @@
     "bbs.config.editor.horizontal_clip_editor-comment": "Determines whether clip editor's elements will be organized vertically or horizontally",
     "bbs.config.editor.horizontal_flight": "Horizontal flight",
     "bbs.config.editor.horizontal_flight-comment": "When enabled, the pitch of the camera won't affect the movement making the WASD movement cardinal (XZ plane)",
+    "bbs.config.editor.flight_free_look": "Flight free look",
+    "bbs.config.editor.flight_free_look-comment": "When enabled, you can look around in flight mode without holding mouse buttons",
     "bbs.config.editor.jump": "Jump",
     "bbs.config.editor.jump-comment": "By how many ticks do jump keybinds move the timeline's cursor (up and down arrow keybinds)",
     "bbs.config.editor.loop": "Loop playback",

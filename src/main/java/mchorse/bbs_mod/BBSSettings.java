@@ -80,6 +80,7 @@ public class BBSSettings
     public static ValueBoolean editorSeconds;
     public static ValueInt editorPeriodicSave;
     public static ValueBoolean editorHorizontalFlight;
+    public static ValueBoolean editorFlightFreeLook;
     public static ValueEditorLayout editorLayoutSettings;
     public static ValueOnionSkin editorOnionSkin;
     public static ValueBoolean editorSnapToMarkers;
@@ -252,6 +253,7 @@ public class BBSSettings
         editorSeconds = builder.getBoolean("seconds", false);
         editorPeriodicSave = builder.getInt("periodic_save", 60, 0, 3600);
         editorHorizontalFlight = builder.getBoolean("horizontal_flight", false);
+        editorFlightFreeLook = builder.getBoolean("flight_free_look", false);
         builder.register(editorLayoutSettings = new ValueEditorLayout("layout"));
         builder.register(editorOnionSkin = new ValueOnionSkin("onion_skin"));
         editorSnapToMarkers = builder.getBoolean("snap_to_markers", false);
