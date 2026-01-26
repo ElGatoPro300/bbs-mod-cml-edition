@@ -71,13 +71,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
-// import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.item.model.special.SpecialModelTypes;
@@ -443,39 +443,33 @@ public class BBSModClient implements ClientModInitializer
                     peek.getNormalMatrix().identity();
                     stack.translate(0F, 0F, -d);
 
-                    // GlStateManager._enableDepthTest();
-                    // Tessellator tessellator = Tessellator.getInstance();
-                    // BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+                    RenderSystem.enableDepthTest();
+                    BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
                     float fov = MinecraftClient.getInstance().options.getFov().getValue();
                     float dd = d * (float) Math.pow(fov / 40F, 2F);
 
-                    // Draw.fillQuad(builder, stack,
-                    //    -dd, -dd, 0,
-                    //    dd, -dd, 0,
-                    //    dd, dd, 0,
-                    //    -dd, dd, 0,
-                    //    color.r, color.g, color.b, 1F
-                    // );
+                    Draw.fillQuad(builder, stack,
+                        -dd, -dd, 0,
+                        dd, -dd, 0,
+                        dd, dd, 0,
+                        -dd, dd, 0,
+                        color.r, color.g, color.b, 1F
+                    );
 
-                    // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
+                    RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
 
                     Matrix4fStack mvStack = RenderSystem.getModelViewStack();
                     mvStack.pushMatrix();
                     mvStack.identity();
                     MatrixStackUtils.applyModelViewMatrix();
 
-                    try
-                    {
-                        // BufferRenderer.drawWithGlobalProgram(builder.end());
-                    }
-                    catch (Exception e)
-                    {}
+                    BufferRenderer.drawWithGlobalProgram(builder.end());
 
                     mvStack.popMatrix();
                     MatrixStackUtils.applyModelViewMatrix();
 
-                    // GlStateManager._disableDepthTest();
+                    RenderSystem.disableDepthTest();
 
                     stack.pop();
                 }
@@ -581,11 +575,11 @@ public class BBSModClient implements ClientModInitializer
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
         {
-            BBSRendering.renderHud(drawContext, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) tickCounter).getTickDeltaField());
+            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(false));
 
             if (gunZoom != null)
             {
-                gunZoom.update(keyZoom.isPressed(), ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) tickCounter).getTickDeltaField());
+                gunZoom.update(keyZoom.isPressed(), tickCounter.getLastFrameDuration());
 
                 if (gunZoom.canBeRemoved())
                 {
@@ -791,5 +785,3 @@ public class BBSModClient implements ClientModInitializer
         l10n.reload(language, BBSMod.getProvider());
     }
 }
-
-

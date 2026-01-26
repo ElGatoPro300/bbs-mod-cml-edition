@@ -27,7 +27,6 @@ import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
@@ -187,7 +186,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
 
         try
         {
-            compound = NbtCompoundArgumentType.nbtCompound().parse(new StringReader(nbt));
+            compound = (new StringNbtReader(new StringReader(nbt))).parseCompound();
         }
         catch (Exception e)
         {}
@@ -260,7 +259,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
 
             stack.pop();
 
-            // RenderSystem.depthFunc(GL11.GL_ALWAYS);
+            RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }
 
@@ -283,7 +282,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
                     {
                         this.bindTexture();
                         this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                        // RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                        RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
 
                         first.bool = true;
                     }
@@ -331,7 +330,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
 
             context.stack.pop();
 
-            // RenderSystem.enableDepthTest();
+            RenderSystem.enableDepthTest();
         }
     }
 
@@ -344,13 +343,13 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
         {
             this.entity.tick();
 
-            // this.entity.prevPitch = this.prevPitch;
-            // this.entity.prevYaw = 0F;
+            this.entity.prevPitch = this.prevPitch;
+            this.entity.prevYaw = 0F;
 
             if (this.entity instanceof LivingEntity livingEntity)
             {
-                // livingEntity.prevHeadYaw = this.prevYawHead;
-                // livingEntity.prevBodyYaw = 0F;
+                livingEntity.prevHeadYaw = this.prevYawHead;
+                livingEntity.prevBodyYaw = 0F;
 
                 /* Limb swing is so ugly */
                 if (livingEntity.limbAnimator instanceof LimbAnimatorAccessor a && entity.getLimbAnimator() instanceof LimbAnimatorAccessor b)

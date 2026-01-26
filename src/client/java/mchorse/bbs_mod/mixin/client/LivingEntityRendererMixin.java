@@ -76,7 +76,6 @@ public abstract class LivingEntityRendererMixin
                     {
                         Transform transform = new Transform();
 
-                        /*
                         transform.translate.x = value.pivotX;
                         transform.translate.y = value.pivotY;
                         transform.translate.z = value.pivotZ;
@@ -96,7 +95,6 @@ public abstract class LivingEntityRendererMixin
                         value.xScale += poseTransform.scale.x - 1F;
                         value.yScale += poseTransform.scale.y - 1F;
                         value.zScale += poseTransform.scale.z - 1F;
-                        */
 
                         MobFormRenderer.getCache().put(value, transform);
                     }
@@ -113,7 +111,6 @@ public abstract class LivingEntityRendererMixin
             Transform transform = entry.getValue();
             ModelPart value = entry.getKey();
 
-            /*
             value.pivotX = transform.translate.x;
             value.pivotY = transform.translate.y;
             value.pivotZ = transform.translate.z;
@@ -123,7 +120,6 @@ public abstract class LivingEntityRendererMixin
             value.xScale = transform.scale.x;
             value.yScale = transform.scale.y;
             value.zScale = transform.scale.z;
-            */
         }
 
         MobFormRenderer.getCache().clear();

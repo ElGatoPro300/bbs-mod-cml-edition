@@ -390,7 +390,7 @@ public class ClientNetwork
 
         client.execute(() ->
         {
-            // client.player.getInventory().selectedSlot = slot;
+            client.player.getInventory().selectedSlot = slot;
         });
     }
 

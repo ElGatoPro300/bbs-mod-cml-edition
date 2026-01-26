@@ -2,11 +2,11 @@ package mchorse.bbs_mod.graphics.line;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
-// import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.BufferAllocator;
 import org.joml.Matrix4f;
@@ -85,29 +85,17 @@ public class LineBuilder <T>
 
         for (List<LinePoint<T>> points : build)
         {
-            Tessellator tessellator = Tessellator.getInstance();
-            /*
-            BufferBuilder builder = tessellator.begin(VertexFormat.Mode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+            BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
-            RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-            // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+            RenderSystem.enableBlend();
 
             for (LinePoint<T> point : points)
             {
                 renderer.render(builder, matrix, point);
             }
 
-            try
-            {
-                // BufferRenderer.drawWithGlobalProgram(builder.end());
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            */
+            BufferRenderer.drawWithGlobalProgram(builder.end());
         }
     }
 }
-
-

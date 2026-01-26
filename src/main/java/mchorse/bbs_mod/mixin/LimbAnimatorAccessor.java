@@ -24,16 +24,4 @@ public interface LimbAnimatorAccessor
 
     @Accessor
     public void setPos(float v);
-
-    @Accessor("pos") // Ensure it maps to 'pos' if the name is different, but usually it matches
-    public float getPosVal(); 
-    // Wait, getPos() conflicts with getPosVal() if I name it differently?
-    // Accessor method name usually matches field name: getPos -> pos.
-    // If I want prevPos, I need getPrevPos.
-    
-    @Accessor
-    public float getPrevPos();
-
-    @Accessor
-    public void setPrevPos(float v);
 }

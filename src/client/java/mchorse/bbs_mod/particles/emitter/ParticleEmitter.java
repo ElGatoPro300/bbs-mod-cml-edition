@@ -1,8 +1,6 @@
 package mchorse.bbs_mod.particles.emitter;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import org.lwjgl.opengl.GL11;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.graphics.texture.Texture;
@@ -19,11 +17,11 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.interps.Lerps;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
-// import net.minecraft.client.gl.ShaderProgramKeys;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -454,18 +452,20 @@ public class ParticleEmitter
 
             Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
-
-            for (IComponentParticleRender render : list)
+            try (BufferAllocator allocator = new BufferAllocator(1536))
             {
-                render.renderUI(this.uiParticle, builder, matrix, transition);
-            }
+                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-            // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
-            GlStateManager._disableCull();
-            // BufferRenderer.drawWithGlobalProgram(builder.end());
-            GlStateManager._enableCull();
+                for (IComponentParticleRender render : list)
+                {
+                    render.renderUI(this.uiParticle, builder, matrix, transition);
+                }
+
+                RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+                RenderSystem.disableCull();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
+                RenderSystem.enableCull();
+            }
         }
     }
 
@@ -490,31 +490,30 @@ public class ParticleEmitter
         {
             Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, format);
-
-            this.bindTexture();
-
-            for (Particle particle : this.particles)
+            try (BufferAllocator allocator = new BufferAllocator(1536))
             {
-                this.setEmitterVariables(transition);
-                this.setParticleVariables(particle, transition);
+                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, format);
 
-                for (IComponentParticleRender component : renders)
+                this.bindTexture();
+
+                for (Particle particle : this.particles)
                 {
-                    component.render(this, format, particle, builder, matrix, overlay, transition);
-                }
-            }
+                    this.setEmitterVariables(transition);
+                    this.setParticleVariables(particle, transition);
 
-            if (program != null)
-            {
-                // RenderSystem.setShader(program);
-                com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-                com.mojang.blaze3d.opengl.GlStateManager._blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-                com.mojang.blaze3d.opengl.GlStateManager._disableCull();
-                // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
-                com.mojang.blaze3d.opengl.GlStateManager._enableCull();
-                com.mojang.blaze3d.opengl.GlStateManager._disableBlend();
+                    for (IComponentParticleRender component : renders)
+                    {
+                        component.render(this, format, particle, builder, matrix, overlay, transition);
+                    }
+                }
+
+                RenderSystem.setShader(program.get());
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.disableCull();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
+                RenderSystem.enableCull();
+                RenderSystem.disableBlend();
             }
         }
 
@@ -549,5 +548,3 @@ public class ParticleEmitter
         this.cZ = camera.getPos().z;
     }
 }
-
-

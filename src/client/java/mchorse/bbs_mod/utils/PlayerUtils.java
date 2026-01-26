@@ -8,7 +8,6 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.GameMode;
 
 public class PlayerUtils
 {
@@ -73,12 +72,6 @@ public class PlayerUtils
         public boolean isCreative()
         {
             return false;
-        }
-
-        @Override
-        public GameMode getGameMode()
-        {
-            return GameMode.SURVIVAL;
         }
     }
 }

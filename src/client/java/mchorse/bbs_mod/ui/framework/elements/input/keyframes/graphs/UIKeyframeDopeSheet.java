@@ -24,12 +24,12 @@ import mchorse.bbs_mod.utils.Pair;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeShape;
-// import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.BufferAllocator;
 import org.joml.Matrix4f;
@@ -655,9 +655,9 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 shapeResult.renderKeyframeBackground(context, builder, matrix, mx, my, 2, mc);
             }
 
-            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-            // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-            // BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableBlend();
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+            BufferRenderer.drawWithGlobalProgram(builder.end());
 
             FontRenderer font = context.batcher.getFont();
             String baseTitle = sheet.title.get();
@@ -726,5 +726,3 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
         this.dopeSheet.setScroll(extra.getDouble("scroll"));
     }
 }
-
-

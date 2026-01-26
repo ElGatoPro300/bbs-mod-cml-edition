@@ -32,10 +32,9 @@ import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.util.BufferAllocator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -343,11 +342,19 @@ public class ModelInstance implements IModelInstance
             }
             else
             {
-                // RenderSystem.setShader(program.get());
+                RenderSystem.setShader(program.get());
 
                 BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
-                // net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
+
+                try
+                {
+                    BufferRenderer.drawWithGlobalProgram(builder.end());
+                }
+                catch (IllegalStateException e)
+                {
+                    
+                }
             }
         }
         else if (this.model instanceof BOBJModel model)
@@ -368,4 +375,3 @@ public class ModelInstance implements IModelInstance
         }
     }
 }
-

@@ -69,14 +69,14 @@ public class BlockFormRenderer extends FormRenderer<BlockForm>
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                // RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
             });
 
             light = 0;
         }
         else
         {
-            CustomVertexConsumerProvider.hijackVertexFormat((l) -> com.mojang.blaze3d.opengl.GlStateManager._enableBlend());
+            CustomVertexConsumerProvider.hijackVertexFormat((l) -> RenderSystem.enableBlend());
         }
 
         Color set = this.form.color.get();
@@ -93,6 +93,6 @@ public class BlockFormRenderer extends FormRenderer<BlockForm>
 
         context.stack.pop();
 
-        // RenderSystem.enableDepthTest();
+        RenderSystem.enableDepthTest();
     }
 }

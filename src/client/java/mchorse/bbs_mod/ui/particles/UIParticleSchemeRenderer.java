@@ -9,13 +9,13 @@ import mchorse.bbs_mod.ui.framework.UIBaseMenu;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
 import net.minecraft.client.MinecraftClient;
-// import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.BufferAllocator;
@@ -72,11 +72,11 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
         stack.loadIdentity();
         stack.multiplyPositionMatrix(this.camera.view);
 
-        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-        com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
-        // this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR, () -> RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram), stack, OverlayTexture.DEFAULT_UV, context.getTransition());
-        com.mojang.blaze3d.opengl.GlStateManager._disableDepthTest();
-        com.mojang.blaze3d.opengl.GlStateManager._disableBlend();
+        RenderSystem.enableBlend();
+        RenderSystem.enableDepthTest();
+        this.emitter.render(VertexFormats.POSITION_TEXTURE_COLOR, () -> RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR), stack, OverlayTexture.DEFAULT_UV, context.getTransition());
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
 
         stack.pop();
 
@@ -111,10 +111,10 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
             this.calculate(1, 1, a, b, c, d);
             builder.vertex(matrix, this.vector.x, this.vector.y, this.vector.z).color(0, 1, 0, alpha);
 
-            // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGui);
-            com.mojang.blaze3d.opengl.GlStateManager._disableCull();
-            // BufferRenderer.drawWithGlobalProgram(builder.end());
-            com.mojang.blaze3d.opengl.GlStateManager._enableCull();
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
         }
     }
 
@@ -153,4 +153,3 @@ public class UIParticleSchemeRenderer extends UIModelRenderer
         }
     }
 }
-

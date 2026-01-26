@@ -1,7 +1,6 @@
 package mchorse.bbs_mod.client.renderer.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
 import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.forms.FormUtilsClient;
@@ -15,13 +14,12 @@ import mchorse.bbs_mod.ui.framework.UIScreen;
 import mchorse.bbs_mod.ui.model_blocks.UIModelBlockEditorMenu;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.pose.Transform;
-import mchorse.bbs_mod.items.ItemDisplayMode;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
-// import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
@@ -62,29 +60,16 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
     }
 
     @Override
-    public void render(ItemStack data, net.minecraft.item.ItemDisplayContext mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
+    public void render(ItemStack data, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
     {
         Item item = this.get(data);
 
         if (item != null)
         {
-            ItemDisplayMode displayMode = ItemDisplayMode.NONE;
-
-            /*
-            for (ItemDisplayMode m : ItemDisplayMode.values())
-            {
-                if (m.asString().equals(mode.asString()))
-                {
-                    displayMode = m;
-                    break;
-                }
-            }
-            */
-
             GunProperties properties = item.properties;
-            Form form = properties.getForm(displayMode);
-            Transform transform = properties.getTransform(displayMode);
-            boolean zoom = false; // (mode == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || mode == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) && BBSModClient.getGunZoom() != null && properties.getZoomForm() != null;
+            Form form = properties.getForm(mode);
+            Transform transform = properties.getTransform(mode);
+            boolean zoom = mode.isFirstPerson() && BBSModClient.getGunZoom() != null && properties.getZoomForm() != null;
 
             if (zoom)
             {
@@ -107,17 +92,17 @@ public class GunItemRenderer implements SpecialModelRenderer<ItemStack>
                 matrices.translate(0.5F, 0F, 0.5F);
                 MatrixStackUtils.applyTransform(matrices, transform);
 
-                GlStateManager._enableDepthTest();
+                RenderSystem.enableDepthTest();
 
                 Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
                 Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
                 RenderSystem.setupLevelDiffuseLighting(a, b);
                 int maxLight = LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE;
                 FormUtilsClient.render(form, new FormRenderingContext()
-                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) MinecraftClient.getInstance().getRenderTickCounter()).getTickDeltaField())
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, maxLight, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
                 DiffuseLighting.disableGuiDepthLighting();
-                GlStateManager._disableDepthTest();
+                RenderSystem.disableDepthTest();
 
                 matrices.pop();
             }

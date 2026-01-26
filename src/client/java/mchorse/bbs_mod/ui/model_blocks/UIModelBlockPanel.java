@@ -53,7 +53,6 @@ import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import com.mojang.blaze3d.opengl.GlStateManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -468,7 +467,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.mouseDirection.set(direction);
         this.hovered = this.getClosestObject(new Vector3d(pos.x, pos.y, pos.z), this.mouseDirection);
 
-        GlStateManager._enableDepthTest();
+        RenderSystem.enableDepthTest();
 
         for (ModelBlockEntity entity : this.modelBlocks.getList())
         {
@@ -496,7 +495,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             }
         }
 
-        GlStateManager._disableDepthTest();
+        RenderSystem.disableDepthTest();
     }
 
     private ModelBlockEntity getClosestObject(Vector3d finalPosition, Vector3f mouseDirection)

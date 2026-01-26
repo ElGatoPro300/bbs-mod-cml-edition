@@ -72,7 +72,7 @@ public class WorldFilmController extends BaseFilmController
         }
 
         this.context.clipData.clear();
-        this.context.setup(tick, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField());
+        this.context.setup(tick, context.tickCounter().getTickDelta(false));
 
         for (Clip clip : clips)
         {

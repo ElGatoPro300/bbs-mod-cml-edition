@@ -1,7 +1,6 @@
 package mchorse.bbs_mod.film;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.audio.AudioRenderer;
@@ -272,7 +271,7 @@ public class Films
 
     public void render(WorldRenderContext context)
     {
-        GlStateManager._enableDepthTest();
+        RenderSystem.enableDepthTest();
 
         for (BaseFilmController controller : this.controllers)
         {
@@ -284,7 +283,7 @@ public class Films
             this.recorder.render(context);
         }
 
-        GlStateManager._disableDepthTest();
+        RenderSystem.disableDepthTest();
     }
 
     public void renderHud(Batcher2D batcher2D, float tickDelta)

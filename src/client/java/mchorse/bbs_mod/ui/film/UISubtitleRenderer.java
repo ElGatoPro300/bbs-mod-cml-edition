@@ -1,6 +1,6 @@
 package mchorse.bbs_mod.ui.film;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.VertexSorter;
@@ -73,8 +73,8 @@ public class UISubtitleRenderer
         Matrix4f ortho = new Matrix4f().ortho(0, width, height, 0, -100, 100);
         FontRenderer font = Batcher2D.getDefaultTextRenderer();
 
-        // RenderSystem.depthFunc(GL11.GL_ALWAYS);
-        // RenderSystem.disableCull();
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        RenderSystem.disableCull();
 
         for (Subtitle subtitle : subtitles)
         {
@@ -131,7 +131,7 @@ public class UISubtitleRenderer
             }
 
             /* Render the texture */
-            // fb.beginWrite(true);
+            fb.beginWrite(true);
 
             RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
 
@@ -153,8 +153,8 @@ public class UISubtitleRenderer
                 textureSize.set((float) texture.width, (float) texture.height);
             }
 
-            // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
-            // RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
 
             batcher.texturedBox(program, texture.id, Colors.setA(Colors.WHITE, alpha), -fw * subtitle.anchorX, -fh * subtitle.anchorY, texture.width, texture.height, 0, 0, texture.width, texture.height, texture.width, texture.height);
 
@@ -162,6 +162,6 @@ public class UISubtitleRenderer
         }
 
         RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
-        // RenderSystem.enableCull();
+        RenderSystem.enableCull();
     }
 }

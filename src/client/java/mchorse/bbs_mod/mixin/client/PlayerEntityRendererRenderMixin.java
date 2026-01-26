@@ -32,7 +32,7 @@ public class PlayerEntityRendererRenderMixin
 
                 if (entity instanceof AbstractClientPlayerEntity abstractClientPlayerEntity)
                 {
-                    if (MorphRenderer.renderPlayer(abstractClientPlayerEntity, 0 /* playerState.yawDegrees */, 0 /* MinecraftClient.getInstance().getRenderTickCounter().getTickDelta() */, matrixStack, vertexConsumerProvider, i))
+                    if (MorphRenderer.renderPlayer(abstractClientPlayerEntity, playerState.yawDegrees, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true), matrixStack, vertexConsumerProvider, i))
                     {
                         info.cancel();
                     }

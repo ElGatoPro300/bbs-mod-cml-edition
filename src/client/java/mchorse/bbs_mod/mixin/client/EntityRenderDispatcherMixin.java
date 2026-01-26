@@ -46,7 +46,7 @@ public class EntityRenderDispatcherMixin
             int v = OverlayTexture.getV(livingEntity.hurtTime > 0 || livingEntity.deathTime > 0);
             int o = u | (v << 16);
 
-            float yaw = 0; // livingState.yawDegrees;
+            float yaw = livingState.yawDegrees;
 
             if (MorphRenderer.renderLivingEntity(livingEntity, yaw, tickDelta, matrices, vcp, light, o))
             {
