@@ -1019,6 +1019,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Сетка",
     "bbs.ui.scene.replays.context.process.section.line": "Линия",
     "bbs.ui.scene.replays.context.process.section.scatter": "Разброс",
+    "bbs.ui.scene.replays.context.random_skins": "Применить случайные скины...",
     "bbs.ui.scene.replays.context.remove": "Удалить запись",
     "bbs.ui.search": "Поиск...",
     "bbs.ui.selectors.context.add": "Добавить селектор сущности",

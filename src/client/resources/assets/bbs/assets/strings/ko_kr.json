@@ -939,6 +939,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "그리드",
     "bbs.ui.scene.replays.context.process.section.line": "선형",
     "bbs.ui.scene.replays.context.process.section.scatter": "무작위 분산",
+    "bbs.ui.scene.replays.context.random_skins": "무작위 스킨 적용...",
     "bbs.ui.scene.replays.context.remove": "리플레이 제거",
     "bbs.ui.search": "검색...",
     "bbs.ui.selectors.context.add": "엔티티 선택기 추가",

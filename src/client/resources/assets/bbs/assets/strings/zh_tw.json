@@ -1034,6 +1034,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "網格",
     "bbs.ui.scene.replays.context.process.section.line": "直線",
     "bbs.ui.scene.replays.context.process.section.scatter": "隨機散布",
+    "bbs.ui.scene.replays.context.random_skins": "套用隨機皮膚...",
     "bbs.ui.scene.replays.context.remove": "移除回放",
     "bbs.ui.search": "搜索...",
     "bbs.ui.selectors.context.add": "添加實體選擇器",

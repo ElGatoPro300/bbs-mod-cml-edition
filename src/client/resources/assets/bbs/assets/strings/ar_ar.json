@@ -947,6 +947,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "شبكة",
     "bbs.ui.scene.replays.context.process.section.line": "خط",
     "bbs.ui.scene.replays.context.process.section.scatter": "بعثرة عشوائية",
+    "bbs.ui.scene.replays.context.random_skins": "تطبيق مظاهر عشوائية...",
     "bbs.ui.scene.replays.context.remove": "إزالة إعادة التشغيل (عمليات إعادة التشغيل)",
     "bbs.ui.search": "بحث...",
     "bbs.ui.selectors.context.add": "إضافة محدد كيان",

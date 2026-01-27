@@ -958,6 +958,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Grille",
     "bbs.ui.scene.replays.context.process.section.line": "Ligne",
     "bbs.ui.scene.replays.context.process.section.scatter": "Dispersion aléatoire",
+    "bbs.ui.scene.replays.context.random_skins": "Appliquer des skins aléatoires...",
     "bbs.ui.scene.replays.context.remove": "Retirer un replay",
     "bbs.ui.search": "Rechercher...",
     "bbs.ui.selectors.context.add": "Ajouter un selecteur d'entitée",

@@ -998,6 +998,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Siatka",
     "bbs.ui.scene.replays.context.process.section.line": "Linia",
     "bbs.ui.scene.replays.context.process.section.scatter": "Losowy rozrzut",
+    "bbs.ui.scene.replays.context.random_skins": "Zastosuj losowe skórki...",
     "bbs.ui.scene.replays.context.remove": "Usuń powtórkę",
     "bbs.ui.search": "Szukaj...",
     "bbs.ui.selectors.context.add": "Dodaj selektor istoty ",

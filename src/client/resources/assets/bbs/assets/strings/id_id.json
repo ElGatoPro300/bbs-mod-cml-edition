@@ -719,6 +719,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Grid",
     "bbs.ui.scene.replays.context.process.section.line": "Garis",
     "bbs.ui.scene.replays.context.process.section.scatter": "Sebaran Acak",
+    "bbs.ui.scene.replays.context.random_skins": "Terapkan Skin Acak...",
     "bbs.ui.scene.replays.context.remove": "Hapus replay",
     "bbs.ui.search": "Cari...",
     "bbs.ui.selectors.context.add": "Tambahkan pemilih entitas",

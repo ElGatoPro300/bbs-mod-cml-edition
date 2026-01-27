@@ -1018,6 +1018,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Lưới",
     "bbs.ui.scene.replays.context.process.section.line": "Đường",
     "bbs.ui.scene.replays.context.process.section.scatter": "Phân tán ngẫu nhiên",
+    "bbs.ui.scene.replays.context.random_skins": "Áp dụng skin ngẫu nhiên...",
     "bbs.ui.scene.replays.context.remove": "Xóa replay",
     "bbs.ui.search": "Tìm kiếm...",
     "bbs.ui.selectors.context.add": "Thêm một thực thể ",

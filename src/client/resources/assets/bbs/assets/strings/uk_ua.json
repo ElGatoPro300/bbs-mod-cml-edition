@@ -1014,6 +1014,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Сітка",
     "bbs.ui.scene.replays.context.process.section.line": "Лінія",
     "bbs.ui.scene.replays.context.process.section.scatter": "Випадковий розкид",
+    "bbs.ui.scene.replays.context.random_skins": "Застосувати випадкові скіни...",
     "bbs.ui.scene.replays.context.remove": "Видалити запис",
     "bbs.ui.search": "Шукати...",
     "bbs.ui.selectors.context.add": "Додати селектор сутності",

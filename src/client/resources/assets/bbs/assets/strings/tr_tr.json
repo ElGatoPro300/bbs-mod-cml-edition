@@ -957,6 +957,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Izgara",
     "bbs.ui.scene.replays.context.process.section.line": "Çizgi",
     "bbs.ui.scene.replays.context.process.section.scatter": "Rastgele Dağılım",
+    "bbs.ui.scene.replays.context.random_skins": "Rastgele Skin Uygula...",
     "bbs.ui.scene.replays.context.remove": "Kaydı sil",
     "bbs.ui.search": "Ara...",
     "bbs.ui.selectors.context.add": "Entity seçicisi ekle",

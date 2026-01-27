@@ -1003,6 +1003,7 @@
     "bbs.ui.scene.replays.context.process.section.grid": "Rács",
     "bbs.ui.scene.replays.context.process.section.line": "Vonal",
     "bbs.ui.scene.replays.context.process.section.scatter": "Véletlen szórás",
+    "bbs.ui.scene.replays.context.random_skins": "Véletlenszerű skinek alkalmazása...",
     "bbs.ui.scene.replays.context.remove": "Újrajátszás eltávolítása",
     "bbs.ui.search": "Keresés...",
     "bbs.ui.selectors.context.add": "Entitásválasztó hozzáadása",
