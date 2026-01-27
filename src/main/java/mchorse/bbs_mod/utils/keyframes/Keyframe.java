@@ -29,6 +29,7 @@ public class Keyframe <T> extends BaseValue
      */
     private float duration;
     private final Interpolation interp = new Interpolation("interp", Interpolations.MAP);
+    private boolean enabled = true;
 
     private final IKeyframeFactory<T> factory;
 
@@ -80,6 +81,18 @@ public class Keyframe <T> extends BaseValue
     {
         this.preNotify();
         this.duration = Math.max(0, duration);
+        this.postNotify();
+    }
+
+    public boolean isEnabled()
+    {
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.preNotify();
+        this.enabled = enabled;
         this.postNotify();
     }
 
@@ -144,6 +157,7 @@ public class Keyframe <T> extends BaseValue
         this.interp.copy(keyframe.interp);
         this.shape = keyframe.shape;
         this.color = keyframe.color;
+        this.enabled = keyframe.enabled;
     }
 
     @Override
@@ -163,7 +177,8 @@ public class Keyframe <T> extends BaseValue
                 && this.rx == kf.rx
                 && this.ry == kf.ry
                 && this.duration == kf.duration
-                && Objects.equals(this.interp, kf.interp);
+                && Objects.equals(this.interp, kf.interp)
+                && this.enabled == kf.enabled;
         }
 
         return false;
@@ -185,6 +200,7 @@ public class Keyframe <T> extends BaseValue
         if (this.ry != 0F) data.putFloat("ry", this.ry);
         if (this.color != null) data.putInt("color", this.color.getRGBColor());
         if (this.shape != KeyframeShape.SQUARE) data.putString("shape", this.shape.toString().toUpperCase());
+        if (!this.enabled) data.putBool("enabled", this.enabled);
 
         return data;
     }
@@ -212,6 +228,7 @@ public class Keyframe <T> extends BaseValue
         if (map.has("ry")) this.ry = map.getFloat("ry");
         if (map.has("shape")) this.shape = KeyframeShape.fromString(map.getString("shape"));
         if (map.has("color")) this.color = Color.rgb(map.getInt("color"));
+        if (map.has("enabled")) this.enabled = map.getBool("enabled");
     }
 
     public void copyOverExtra(Keyframe<T> a)

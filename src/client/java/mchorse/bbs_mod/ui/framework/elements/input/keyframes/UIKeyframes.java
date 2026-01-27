@@ -134,6 +134,21 @@ public class UIKeyframes extends UIElement
 
             if (hasSelected)
             {
+                Keyframe main = this.currentGraph.getSelected();
+
+                menu.action(main.isEnabled() ? Icons.DISABLED : Icons.ENABLED, UIKeys.CAMERA_PANELS_ENABLED, () ->
+                {
+                    boolean newState = !main.isEnabled();
+
+                    for (UIKeyframeSheet sheet : this.currentGraph.getSheets())
+                    {
+                        for (Keyframe kf : sheet.selection.getSelected())
+                        {
+                            kf.setEnabled(newState);
+                        }
+                    }
+                });
+
                 menu.action(Icons.CONVERT, UIKeys.KEYFRAMES_CONTEXT_SPREAD, this::spreadKeyframes);
                 menu.action(Icons.OUTLINE_SPHERE, UIKeys.KEYFRAMES_CONTEXT_ROUND, () ->
                 {
