@@ -144,7 +144,7 @@ public class ModelBlockEntity extends BlockEntity
         this.properties.update(this.entity);
         if (!world.isClient)
         {
-            int target = 0;
+            int target = this.properties.getLightLevel();
             Form form = this.properties.getForm();
 
             if (form instanceof LightForm lightForm && lightForm.enabled.get())

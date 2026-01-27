@@ -236,5 +236,6 @@ public class Keyframe <T> extends BaseValue
         this.getInterpolation().copy(a.getInterpolation());
         this.setShape(a.getShape());
         this.setColor(a.getColor());
+        this.setEnabled(a.isEnabled());
     }
 }

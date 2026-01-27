@@ -110,6 +110,8 @@ public abstract class UIKeyframeFactory <T> extends UIElement
 
         this.enabled = new UIIcon(Icons.ENABLED, (b) ->
         {
+            this.editor.cacheKeyframes();
+
             boolean enabled = !this.keyframe.isEnabled();
 
             this.keyframe.setEnabled(enabled);
@@ -125,6 +127,8 @@ public abstract class UIKeyframeFactory <T> extends UIElement
                     }
                 }
             }
+
+            this.editor.submitKeyframes();
         });
         this.enabled.tooltip(UIKeys.CAMERA_PANELS_ENABLED);
 
