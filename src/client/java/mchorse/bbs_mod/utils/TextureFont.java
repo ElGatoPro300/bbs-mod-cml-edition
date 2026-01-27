@@ -203,6 +203,11 @@ public class TextureFont
 
     public void draw(String text, float x, float y, int color, int color2, float letterSpacing, float spaceWidth, Matrix4f matrix, VertexConsumerProvider consumers, int light)
     {
+        this.draw(text, x, y, color, color2, letterSpacing, spaceWidth, matrix, consumers, light, 0.5F);
+    }
+
+    public void draw(String text, float x, float y, int color, int color2, float letterSpacing, float spaceWidth, Matrix4f matrix, VertexConsumerProvider consumers, int light, float gradientOffset)
+    {
         if (this.textureId == null) return;
 
         VertexConsumer consumer = consumers.getBuffer(RenderLayer.getText(this.textureId));
@@ -273,10 +278,36 @@ public class TextureFont
             float gh = glyph.height * scale;
             
             /* Draw quad */
-            drawVertex(consumer, matrix, cx, y + gh, 0, glyph.u, glyph.v + glyph.vh, cr2, cg2, cb2, a2, light);
-            drawVertex(consumer, matrix, cx + gw, y + gh, 0, glyph.u + glyph.uw, glyph.v + glyph.vh, cr2, cg2, cb2, a2, light);
-            drawVertex(consumer, matrix, cx + gw, y, 0, glyph.u + glyph.uw, glyph.v, cr1, cg1, cb1, a1, light);
-            drawVertex(consumer, matrix, cx, y, 0, glyph.u, glyph.v, cr1, cg1, cb1, a1, light);
+            if (Math.abs(gradientOffset - 0.5F) < 0.01F)
+            {
+                drawVertex(consumer, matrix, cx, y + gh, 0, glyph.u, glyph.v + glyph.vh, cr2, cg2, cb2, a2, light);
+                drawVertex(consumer, matrix, cx + gw, y + gh, 0, glyph.u + glyph.uw, glyph.v + glyph.vh, cr2, cg2, cb2, a2, light);
+                drawVertex(consumer, matrix, cx + gw, y, 0, glyph.u + glyph.uw, glyph.v, cr1, cg1, cb1, a1, light);
+                drawVertex(consumer, matrix, cx, y, 0, glyph.u, glyph.v, cr1, cg1, cb1, a1, light);
+            }
+            else
+            {
+                float offset = Math.max(0.01F, Math.min(0.99F, gradientOffset));
+                float mr = (cr1 + cr2) / 2F;
+                float mg = (cg1 + cg2) / 2F;
+                float mb = (cb1 + cb2) / 2F;
+                float ma = (a1 + a2) / 2F;
+
+                float splitY = y + gh * offset;
+                float splitV = glyph.v + glyph.vh * offset;
+
+                /* Top Quad */
+                drawVertex(consumer, matrix, cx, splitY, 0, glyph.u, splitV, mr, mg, mb, ma, light);
+                drawVertex(consumer, matrix, cx + gw, splitY, 0, glyph.u + glyph.uw, splitV, mr, mg, mb, ma, light);
+                drawVertex(consumer, matrix, cx + gw, y, 0, glyph.u + glyph.uw, glyph.v, cr1, cg1, cb1, a1, light);
+                drawVertex(consumer, matrix, cx, y, 0, glyph.u, glyph.v, cr1, cg1, cb1, a1, light);
+
+                /* Bottom Quad */
+                drawVertex(consumer, matrix, cx, y + gh, 0, glyph.u, glyph.v + glyph.vh, cr2, cg2, cb2, a2, light);
+                drawVertex(consumer, matrix, cx + gw, y + gh, 0, glyph.u + glyph.uw, glyph.v + glyph.vh, cr2, cg2, cb2, a2, light);
+                drawVertex(consumer, matrix, cx + gw, splitY, 0, glyph.u + glyph.uw, splitV, mr, mg, mb, ma, light);
+                drawVertex(consumer, matrix, cx, splitY, 0, glyph.u, splitV, mr, mg, mb, ma, light);
+            }
             
             cx += gw + letterSpacing;
             if (c == ' ') cx += spaceWidth;

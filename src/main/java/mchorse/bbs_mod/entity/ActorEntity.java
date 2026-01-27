@@ -65,6 +65,12 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     private boolean runtimeInventoryInitialized;
     private final Set<UUID> pickedUpEntityIds = new HashSet<>();
 
+    private boolean lastHitboxEnabled;
+    private boolean lastSneaking;
+    private float lastHitboxWidth;
+    private float lastHitboxHeight;
+    private float lastHitboxSneakMultiplier;
+
     public ActorEntity(EntityType<? extends LivingEntity> entityType, World world)
     {
         super(entityType, world);

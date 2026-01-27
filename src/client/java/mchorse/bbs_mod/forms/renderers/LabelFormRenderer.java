@@ -137,6 +137,63 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
         return prefix.toString() + content;
     }
 
+    private void renderTextShadow(FormRenderingContext context, CustomVertexConsumerProvider consumers, TextRenderer renderer, TextureFont customFont, String content, float x, float y, float letterSpacing, int light, Color shadowColor)
+    {
+        if (shadowColor.a <= 0)
+        {
+            return;
+        }
+
+        context.stack.push();
+        context.stack.translate(0F, 0F, -0.05F);
+
+        float sx = this.form.shadowX.get();
+        float sy = this.form.shadowY.get();
+        float blur = this.form.shadowBlur.get();
+
+        if (blur > 0)
+        {
+            int originalColor = shadowColor.getARGBColor();
+            int alpha = (originalColor >> 24) & 0xFF;
+            int rgb = originalColor & 0x00FFFFFF;
+            int blurAlpha = Math.max(1, alpha / 4);
+            int blurColor = (blurAlpha << 24) | rgb;
+
+            this.drawSimpleText(context, consumers, renderer, customFont, content, x + sx - blur, y + sy, letterSpacing, light, blurColor);
+            this.drawSimpleText(context, consumers, renderer, customFont, content, x + sx + blur, y + sy, letterSpacing, light, blurColor);
+            this.drawSimpleText(context, consumers, renderer, customFont, content, x + sx, y + sy - blur, letterSpacing, light, blurColor);
+            this.drawSimpleText(context, consumers, renderer, customFont, content, x + sx, y + sy + blur, letterSpacing, light, blurColor);
+        }
+        else
+        {
+            this.drawSimpleText(context, consumers, renderer, customFont, content, x + sx, y + sy, letterSpacing, light, shadowColor.getARGBColor());
+        }
+
+        context.stack.pop();
+    }
+
+    private void drawSimpleText(FormRenderingContext context, CustomVertexConsumerProvider consumers, TextRenderer renderer, TextureFont customFont, String content, float x, float y, float letterSpacing, int light, int color)
+    {
+        if (customFont != null)
+        {
+            customFont.draw(content, x, y, color, color, letterSpacing, 0F, context.stack.peek().getPositionMatrix(), consumers, light);
+        }
+        else
+        {
+            renderer.draw(
+                content,
+                x,
+                y,
+                color, false,
+                context.stack.peek().getPositionMatrix(),
+                consumers,
+                TextRenderer.TextLayerType.NORMAL,
+                0,
+                light
+            );
+        }
+    }
+
     private void renderString(FormRenderingContext context, CustomVertexConsumerProvider consumers, TextRenderer renderer, int light)
     {
         String content = applyStyles(StringUtils.processColoredText(this.form.text.get()));
@@ -169,34 +226,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
         color.mul(context.color);
         shadowColor.mul(context.color);
 
-        if (shadowColor.a > 0)
-        {
-            context.stack.push();
-            context.stack.translate(0F, 0F, -0.05F);
-            /* Apply blur/offset */
-            float sx = this.form.shadowX.get();
-            float sy = this.form.shadowY.get();
-            
-            if (customFont != null)
-            {
-                customFont.draw(content, x + sx, y + sy, shadowColor.getARGBColor(), shadowColor.getARGBColor(), letterSpacing, 0F, context.stack.peek().getPositionMatrix(), consumers, light);
-            }
-            else
-            {
-                renderer.draw(
-                    content,
-                    x + sx,
-                    y + sy,
-                    shadowColor.getARGBColor(), false,
-                    context.stack.peek().getPositionMatrix(),
-                    consumers,
-                    TextRenderer.TextLayerType.NORMAL,
-                    0,
-                    light
-                );
-            }
-            context.stack.pop();
-        }
+        this.renderTextShadow(context, consumers, renderer, customFont, content, x, y, letterSpacing, light, shadowColor);
 
         if (this.form.outline.get())
         {
@@ -240,7 +270,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
                 c2 = gradientColor.getARGBColor();
             }
 
-            customFont.draw(content, x, y, c1, c2, letterSpacing, 0F, context.stack.peek().getPositionMatrix(), consumers, light);
+            customFont.draw(content, x, y, c1, c2, letterSpacing, 0F, context.stack.peek().getPositionMatrix(), consumers, light, this.form.gradientOffset.get());
         }
         else
         {
@@ -339,31 +369,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             if (align == 1) lx = x + (w - lw) / 2;
             else if (align == 2) lx = x + (w - lw);
 
-            if (shadowColor.a > 0)
-            {
-                context.stack.push();
-                context.stack.translate(0F, 0F, -0.05F);
-                
-                if (customFont != null)
-                {
-                    customFont.draw(line, lx + this.form.shadowX.get(), y + this.form.shadowY.get(), shadowColor.getARGBColor(), shadowColor.getARGBColor(), letterSpacing, 0F, context.stack.peek().getPositionMatrix(), consumers, light);
-                }
-                else
-                {
-                    renderer.draw(
-                        line,
-                        lx + this.form.shadowX.get(),
-                        y + this.form.shadowY.get(),
-                        shadowColor.getARGBColor(), false,
-                        context.stack.peek().getPositionMatrix(),
-                        consumers,
-                        TextRenderer.TextLayerType.NORMAL,
-                        0,
-                        light
-                    );
-                }
-                context.stack.pop();
-            }
+            this.renderTextShadow(context, consumers, renderer, customFont, line, lx, y, letterSpacing, light, shadowColor);
             
             if (this.form.outline.get())
             {

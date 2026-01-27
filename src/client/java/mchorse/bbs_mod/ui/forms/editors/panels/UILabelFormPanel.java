@@ -62,6 +62,8 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
     public UITrackpad outlineWidth;
     public UIToggle gradient;
     public UIColor gradientEndColor;
+    public UITrackpad gradientOffset;
+    public UIButton resetGradient;
 
     public UILabelFormPanel(UIForm editor)
     {
@@ -162,6 +164,20 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         
         this.gradient = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_GRADIENT, (b) -> this.form.gradient.set(b.getValue()));
         this.gradientEndColor = new UIColor((c) -> this.form.gradientEndColor.set(Color.rgba(c))).withAlpha();
+        this.gradientOffset = new UITrackpad((v) -> this.form.gradientOffset.set(v.floatValue()));
+        this.gradientOffset.limit(0F, 1F).values(0.01F);
+        this.gradientOffset.tooltip(IKey.raw("Gradient Offset"));
+
+        this.resetGradient = new UIButton(IKey.raw("Reset Gradient"), (b) ->
+        {
+            this.form.gradient.set(false);
+            this.form.gradientEndColor.set(Color.white());
+            this.form.gradientOffset.set(0.5F);
+
+            this.gradient.setValue(false);
+            this.gradientEndColor.setColor(Colors.WHITE);
+            this.gradientOffset.setValue(0.5F);
+        });
 
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_LABEL), this.text, this.billboard, this.color, this.max);
 
@@ -182,7 +198,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_EFFECTS).marginTop(8));
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_SHADOW_BLUR), this.shadowBlur);
         this.options.add(this.outline, this.outlineColor, this.outlineWidth);
-        this.options.add(this.gradient, this.gradientEndColor);
+        this.options.add(this.gradient, this.gradientEndColor, this.gradientOffset, this.resetGradient);
     }
 
     @Override
@@ -225,6 +241,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.outlineWidth.setValue(form.outlineWidth.get());
         this.gradient.setValue(form.gradient.get());
         this.gradientEndColor.setColor(form.gradientEndColor.get().getARGBColor());
+        this.gradientOffset.setValue(form.gradientOffset.get());
     }
 
     @Override
