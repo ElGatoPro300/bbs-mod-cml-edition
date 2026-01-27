@@ -325,6 +325,7 @@ public class UIKeys
     public static final IKey FILM_LAYOUT_VERTICAL = L10n.lang("bbs.ui.film.layout.vertical");
     public static final IKey FILM_LAYOUT_DOCKED = L10n.lang("bbs.ui.film.layout.docked");
     public static final IKey FILM_LAYOUT_LOCK = L10n.lang("bbs.ui.film.layout.lock");
+    public static final IKey FILM_LAYOUT_UNLOCK = L10n.lang("bbs.ui.film.layout.unlock");
     public static final IKey FILM_LAYOUT_MAIN_TOP = L10n.lang("bbs.ui.film.layout.main_top");
     public static final IKey FILM_LAYOUT_MAIN_BOTTOM = L10n.lang("bbs.ui.film.layout.main_bottom");
     public static final IKey FILM_LAYOUT_MAIN_LEFT = L10n.lang("bbs.ui.film.layout.main_left");

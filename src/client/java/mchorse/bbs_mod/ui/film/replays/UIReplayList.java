@@ -424,12 +424,6 @@ public class UIReplayList extends UIList<Replay>
     {
         UITextbox expression = new UITextbox((t) -> LAST_PROCESS = t);
         UIStringList properties = new UIStringList(null);
-        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_TITLE, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_DESCRIPTION, (b) ->
-        {
-            if (b)
-            {
-                MathBuilder builder = new MathBuilder();
-                int min = Integer.MAX_VALUE;
         UIIcon sectionExpression = new UIIcon(Icons.CODE, (b) -> {});
         UIIcon sectionGrid = new UIIcon(Icons.MAZE, (b) -> {});
         UIIcon sectionCircle = new UIIcon(Icons.CIRCLE, (b) -> {});
@@ -848,8 +842,6 @@ public class UIReplayList extends UIList<Replay>
         UIOverlay.addOverlay(this.getContext(), panel, 240, 300);
     }
 
-    private void offsetTimeReplays()
-    {
     private void applyOffset(Replay replay, String property, double offset)
     {
         BaseValue value = replay.keyframes.get(property);
@@ -875,12 +867,6 @@ public class UIReplayList extends UIList<Replay>
 
     private void offsetTimeReplays() {
         UITextbox tick = new UITextbox((t) -> LAST_OFFSET = t);
-        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_TITLE, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION, (b) ->
-        {
-            if (b)
-            {
-                MathBuilder builder = new MathBuilder();
-                int min = Integer.MAX_VALUE;
         UIIcon sectionExpression = new UIIcon(Icons.CODE, (b) -> {});
         UIIcon sectionStagger = new UIIcon(Icons.TIME, (b) -> {});
         UIIcon sectionAlternating = new UIIcon(Icons.EXCHANGE, (b) -> {});

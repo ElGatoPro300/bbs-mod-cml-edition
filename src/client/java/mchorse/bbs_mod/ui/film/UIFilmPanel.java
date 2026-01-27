@@ -855,49 +855,6 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         }
     }
 
-    private void openLayoutSelector()
-    {
-        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
-        UIContext context = this.getContext();
-
-        context.replaceContextMenu((menu) ->
-        {
-            menu.custom(new mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu()
-            {
-                @Override
-                public void setMouse(UIContext context)
-                {
-                    int w = 100;
-
-                    for (mchorse.bbs_mod.ui.utils.context.ContextAction action : this.actions.getList())
-                    {
-                        w = Math.max(action.getWidth(context.batcher.getFont()), w);
-                    }
-
-                    int x = UIFilmPanel.this.toggleHorizontal.area.x;
-                    int y = UIFilmPanel.this.toggleHorizontal.area.ey();
-
-                    this.set(x, y, w, 0).h(this.actions.scroll.scrollSize).maxH(context.menu.height - 10).bounds(context.menu.overlay, 5);
-                }
-            });
-
-            menu.action(Icons.EXCHANGE, UIKeys.FILM_LAYOUT_HORIZONTAL_BOTTOM, () ->
-            {
-                layout.setLayout(ValueEditorLayout.LAYOUT_HORIZONTAL_BOTTOM);
-                this.setupEditorFlex(true);
-            });
-            menu.action(Icons.CONVERT, UIKeys.FILM_LAYOUT_VERTICAL_LEFT, () ->
-            {
-                layout.setLayout(ValueEditorLayout.LAYOUT_VERTICAL_LEFT);
-                this.setupEditorFlex(true);
-            });
-            menu.action(Icons.ARROW_RIGHT, UIKeys.FILM_LAYOUT_VERTICAL_RIGHT, () ->
-            {
-                layout.setLayout(ValueEditorLayout.LAYOUT_VERTICAL_RIGHT);
-                this.setupEditorFlex(true);
-            });
-        });
-    }
 
     private void toggleLayoutLock()
     {
@@ -921,24 +878,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         }
     }
 
-    private icons.Icon getLayoutIcon()
-    {
-        ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
-
-        if (layout.getLayout() == ValueEditorLayout.LAYOUT_VERTICAL_RIGHT)
-        {
-            return Icons.ARROW_RIGHT;
-        }
-
-        if (layout.getLayout() == ValueEditorLayout.LAYOUT_VERTICAL_LEFT)
-        {
-            return Icons.CONVERT;
-        }
-
-        return Icons.EXCHANGE;
-    }
-
-    private icons.Icon getLayoutLockIcon()
+    private Icon getLayoutLockIcon()
     {
         return BBSSettings.editorLayoutSettings.isLayoutLocked() ? Icons.LOCKED : Icons.UNLOCKED;
     }

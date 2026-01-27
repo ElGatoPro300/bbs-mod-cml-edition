@@ -6,6 +6,8 @@ import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ServerNetwork;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
@@ -45,6 +47,12 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
     private Form form;
 
     private Map<EquipmentSlot, ItemStack> equipment = new HashMap<>();
+
+    private boolean lastHitboxEnabled;
+    private float lastHitboxWidth = Float.NaN;
+    private float lastHitboxHeight = Float.NaN;
+    private float lastHitboxSneakMultiplier = Float.NaN;
+    private boolean lastSneaking;
 
     /* Film and replay data for item drops */
     private Film film;
