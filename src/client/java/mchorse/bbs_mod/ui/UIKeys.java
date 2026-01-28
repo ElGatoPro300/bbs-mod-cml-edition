@@ -192,7 +192,6 @@ public class UIKeys
     public static final IKey CAMERA_TOOLTIPS_RECORD = L10n.lang("bbs.ui.camera.tooltips.record");
     public static final IKey CDN_DOWNLOADING_TITLE = L10n.lang("bbs.ui.cdn.downloading-title");
     public static final IKey CDN_STATUS_DELETED = L10n.lang("bbs.ui.cdn.status.deleted");
-
     public static final IKey CDN_STATUS_DOWNLOADED = L10n.lang("bbs.ui.cdn.status.downloaded");
     public static final IKey CDN_STATUS_FAILED_DOWNLOADING = L10n.lang("bbs.ui.cdn.status.failed_downloading");
     public static final IKey CDN_STATUS_FAILED_FETCH = L10n.lang("bbs.ui.cdn.status.failed_fetch");
@@ -503,7 +502,6 @@ public class UIKeys
     public static final IKey FORMS_EDITOR_MODEL_MODELS = L10n.lang("bbs.ui.forms.editor.model.models");
     public static final IKey FORMS_EDITOR_MODEL_PICK_MODEL = L10n.lang("bbs.ui.forms.editor.model.pick_model");
     public static final IKey FORMS_EDITOR_MODEL_PICK_TEXTURE = L10n.lang("bbs.ui.forms.editor.model.pick_texture");
-    public static final IKey FORMS_EDITOR_MODEL_OPEN_IN = L10n.lang("bbs.ui.forms.editor.model.open_in");
     public static final IKey FORMS_EDITOR_PICK_FORM = L10n.lang("bbs.ui.forms.editor.pick_form");
     public static final IKey FORMS_EDITOR_SLIM = L10n.lang("bbs.ui.forms.editor.slim");
     public static final IKey FORMS_EDITOR_SLIM_TOOLTIP = L10n.lang("bbs.ui.forms.editor.slim-tooltip");
@@ -703,30 +701,8 @@ public class UIKeys
     public static final IKey MODEL_BLOCKS_TRANSFORM_INVENTORY = L10n.lang("bbs.ui.model_blocks.transform.inventory");
     public static final IKey MODEL_BLOCKS_TRANSFORM_THIRD_PERSON = L10n.lang("bbs.ui.model_blocks.transform.third_person");
     public static final IKey MODEL_BLOCKS_LIGHT_LEVEL = L10n.lang("bbs.ui.model_blocks.light_level");
-    public static final IKey MODELS_ANCHOR_GROUP = L10n.lang("bbs.ui.models.anchor_group");
-    public static final IKey MODELS_ANCHOR_GROUP_TOOLTIP = L10n.lang("bbs.ui.models.anchor_group_tooltip");
-    public static final IKey MODELS_ARMOR = L10n.lang("bbs.ui.models.armor");
-    public static final IKey MODELS_CULLING = L10n.lang("bbs.ui.models.culling");
-    public static final IKey MODELS_CULLING_TOOLTIP = L10n.lang("bbs.ui.models.culling_tooltip");
-    public static final IKey MODELS_GENERAL = L10n.lang("bbs.ui.models.general");
-    public static final IKey MODELS_PARTS = L10n.lang("bbs.ui.models.parts");
-    public static final IKey MODELS_ITEMS = L10n.lang("bbs.ui.models.items");
-    public static final IKey MODELS_ITEMS_ADD = L10n.lang("bbs.ui.models.items.add");
-    public static final IKey MODELS_ITEMS_ADD_DESC = L10n.lang("bbs.ui.models.items.add_desc");
-    public static final IKey MODELS_ITEMS_MAIN = L10n.lang("bbs.ui.models.items.main");
-    public static final IKey MODELS_ITEMS_OFF = L10n.lang("bbs.ui.models.items.off");
-    public static final IKey MODELS_POSE_GROUP = L10n.lang("bbs.ui.models.pose_group");
-    public static final IKey MODELS_POSE_GROUP_TOOLTIP = L10n.lang("bbs.ui.models.pose_group_tooltip");
-    public static final IKey MODELS_PROCEDURAL = L10n.lang("bbs.ui.models.procedural");
-    public static final IKey MODELS_PROCEDURAL_TOOLTIP = L10n.lang("bbs.ui.models.procedural_tooltip");
-    public static final IKey MODELS_SNEAKING_CONTEXT = L10n.lang("bbs.ui.models.sneaking_pose.context");
-    public static final IKey MODELS_SNEAKING_DESC = L10n.lang("bbs.ui.models.sneaking_pose.desc");
-    public static final IKey MODELS_SNEAKING_TITLE = L10n.lang("bbs.ui.models.sneaking_pose");
-    public static final IKey MODELS_TITLE = L10n.lang("bbs.ui.models.title");
-    public static final IKey MODELS_UI_SCALE = L10n.lang("bbs.ui.models.ui_scale");
     public static final IKey MORPHING_DEMORPH = L10n.lang("bbs.ui.morphing.demorph");
     public static final IKey MORPHING_FROM_MOB = L10n.lang("bbs.ui.morphing.from_mob");
-
     public static final IKey MORPHING_TITLE = L10n.lang("bbs.ui.morphing.title");
     public static final IKey OVERLAYS_SOUNDS_ADD_MODE = L10n.lang("bbs.ui.overlays.sounds.add_mode");
     public static final IKey OVERLAYS_SOUNDS_FOLDER_MODE = L10n.lang("bbs.ui.overlays.sounds.folder_mode");

@@ -27,7 +27,6 @@ import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
@@ -54,7 +53,6 @@ public class ModelInstance implements IModelInstance
     public IModel model;
     public Animations animations;
     public Link texture;
-    public int color = Colors.WHITE;
 
     /* Model's additional properties */
     public String poseGroup;
@@ -68,7 +66,6 @@ public class ModelInstance implements IModelInstance
     public Vector3f scale = new Vector3f(1F);
     public float uiScale = 1F;
     public Pose sneakingPose = new Pose();
-    public Pose parts = new Pose();
 
     public List<ArmorSlot> itemsMain = new ArrayList<>();
     public List<ArmorSlot> itemsOff = new ArrayList<>();
@@ -141,14 +138,13 @@ public class ModelInstance implements IModelInstance
         {
             this.texture = LinkUtils.create(config.get("texture"));
         }
-        if (config.has("color")) this.color = config.getInt("color");
         if (config.has("items_main"))
         {
             ListType list = config.get("items_main").asList();
 
             for (BaseType type : list)
             {
-                ArmorSlot slot = new ArmorSlot(String.valueOf(this.itemsMain.size()));
+                ArmorSlot slot = new ArmorSlot();
 
                 slot.fromData(type);
                 this.itemsMain.add(slot);
@@ -160,7 +156,7 @@ public class ModelInstance implements IModelInstance
 
             for (BaseType type : list)
             {
-                ArmorSlot slot = new ArmorSlot(String.valueOf(this.itemsOff.size()));
+                ArmorSlot slot = new ArmorSlot();
 
                 slot.fromData(type);
                 this.itemsOff.add(slot);
@@ -172,11 +168,6 @@ public class ModelInstance implements IModelInstance
         {
             this.sneakingPose = new Pose();
             this.sneakingPose.fromData(config.getMap("sneaking_pose"));
-        }
-        if (config.has("parts", BaseType.TYPE_MAP))
-        {
-            this.parts = new Pose();
-            this.parts.fromData(config.getMap("parts"));
         }
         if (config.has("anchor")) this.anchorGroup = config.getString("anchor");
         if (config.has("flipped_parts"))
@@ -202,7 +193,7 @@ public class ModelInstance implements IModelInstance
                 try
                 {
                     ArmorType type = ArmorType.valueOf(key.toUpperCase());
-                    ArmorSlot slot = new ArmorSlot(key);
+                    ArmorSlot slot = new ArmorSlot();
 
                     slot.fromData(map.getMap(key));
                     this.armorSlots.put(type, slot);
@@ -213,12 +204,12 @@ public class ModelInstance implements IModelInstance
         }
         if (config.has("fp_main"))
         {
-            this.fpMain = new ArmorSlot("fp_main");
+            this.fpMain = new ArmorSlot();
             this.fpMain.fromData(config.get("fp_main"));
         }
         if (config.has("fp_offhand"))
         {
-            this.fpOffhand = new ArmorSlot("fp_offhand");
+            this.fpOffhand = new ArmorSlot();
             this.fpOffhand.fromData(config.get("fp_offhand"));
         }
 
@@ -231,80 +222,6 @@ public class ModelInstance implements IModelInstance
         }
     }
 
-    public MapType toConfig()
-    {
-        MapType config = new MapType();
-
-        if (this.procedural) config.putBool("procedural", true);
-        if (!this.culling) config.putBool("culling", false);
-        if (this.onCpu) config.putBool("on_cpu", true);
-        if (!this.poseGroup.equals(this.id)) config.putString("pose_group", this.poseGroup);
-        if (!this.anchorGroup.isEmpty()) config.putString("anchor", this.anchorGroup);
-
-        if (this.texture != null) config.put("texture", LinkUtils.toData(this.texture));
-        if (this.color != Colors.WHITE) config.putInt("color", this.color);
-
-        if (!this.itemsMain.isEmpty())
-        {
-            ListType list = new ListType();
-
-            for (ArmorSlot slot : this.itemsMain)
-            {
-                list.add(slot.toData());
-            }
-
-            config.put("items_main", list);
-        }
-
-        if (!this.itemsOff.isEmpty())
-        {
-            ListType list = new ListType();
-
-            for (ArmorSlot slot : this.itemsOff)
-            {
-                list.add(slot.toData());
-            }
-
-            config.put("items_off", list);
-        }
-
-        if (this.uiScale != 1F) config.putFloat("ui_scale", this.uiScale);
-        if (this.scale.x != 1F || this.scale.y != 1F || this.scale.z != 1F)
-        {
-            config.put("scale", DataStorageUtils.vector3fToData(this.scale));
-        }
-
-        if (this.sneakingPose != null && !this.sneakingPose.transforms.isEmpty())
-        {
-            config.put("sneaking_pose", this.sneakingPose.toData());
-        }
-
-        if (!this.flippedParts.isEmpty())
-        {
-            MapType map = new MapType();
-
-            for (Map.Entry<String, String> entry : this.flippedParts.entrySet())
-            {
-                map.putString(entry.getKey(), entry.getValue());
-            }
-
-            config.put("flipped_parts", map);
-        }
-
-        if (!this.armorSlots.isEmpty())
-        {
-            MapType map = new MapType();
-
-            for (Map.Entry<ArmorType, ArmorSlot> entry : this.armorSlots.entrySet())
-            {
-                map.put(entry.getKey().name().toLowerCase(), entry.getValue().toData());
-            }
-
-            config.put("armor_slots", map);
-        }
-
-        return config;
-    }
     public ModelInstance copy()
     {
         ModelInstance copy = new ModelInstance(this.id, this.model.copy(), this.animations, this.texture);
@@ -442,9 +359,7 @@ public class ModelInstance implements IModelInstance
                 ? new CubicVAORenderer(program.get(), this, light, overlay, stencilMap, keys, defaultTexture)
                 : new CubicCubeRenderer(light, overlay, stencilMap, keys);
 
-            Color c = new Color().set(this.color);
-
-            renderProcessor.setColor(color.r * c.r, color.g * c.g, color.b * c.b, color.a * c.a);
+            renderProcessor.setColor(color.r, color.g, color.b, color.a);
 
             if (isVao)
             {
