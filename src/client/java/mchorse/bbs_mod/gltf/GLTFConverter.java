@@ -304,7 +304,8 @@ public class GLTFConverter
              bone.invBoneMat.set(bone.boneMat).invert();
         }
 
-        convertAnimations(gltf, new BOBJData(vertices, textures, normals, meshes, actions, armatures), nodeToBone);
+        BOBJData data = new BOBJData(vertices, textures, normals, meshes, actions, armatures);
+        convertAnimations(gltf, data, nodeToBone);
 
         System.out.println("GLTFConverter: Finished conversion.");
         System.out.println("  Vertices: " + vertices.size());
@@ -322,18 +323,22 @@ public class GLTFConverter
             System.out.println(String.format("  Size: [%.4f, %.4f, %.4f]", maxX - minX, maxY - minY, maxZ - minZ));
         }
         
-        return new BOBJData(vertices, textures, normals, meshes, actions, armatures);
+        return data;
     }
     
     private static void convertAnimations(GLTF gltf, BOBJData data, Map<Integer, BOBJBone> nodeToBone)
     {
         if (gltf.animations == null) return;
 
+        System.out.println("GLTFConverter: Converting " + gltf.animations.size() + " animations...");
+
         for (GLTF.GLTFAnimation anim : gltf.animations)
         {
             String name = anim.name == null || anim.name.isEmpty() ? "animation_" + data.actions.size() : anim.name;
             BOBJAction action = new BOBJAction(name);
             data.actions.put(name, action);
+            
+            System.out.println("  Processing animation: " + name);
 
             for (GLTF.GLTFChannel channel : anim.channels)
             {
@@ -377,9 +382,10 @@ public class GLTFConverter
                         Vector3f euler = new Vector3f();
                         q.getEulerAnglesXYZ(euler);
                         
-                        eulerValues[i * 3] = euler.x;
-                        eulerValues[i * 3 + 1] = euler.y;
-                        eulerValues[i * 3 + 2] = euler.z;
+                        // Convert to Degrees
+                        eulerValues[i * 3] = (float) Math.toDegrees(euler.x);
+                        eulerValues[i * 3 + 1] = (float) Math.toDegrees(euler.y);
+                        eulerValues[i * 3 + 2] = (float) Math.toDegrees(euler.z);
                     }
                     
                     addChannel(group, "rotation", 0, times, eulerValues, 3, sampler.interpolation);
