@@ -305,30 +305,6 @@ public class ModelInstance implements IModelInstance
 
         return config;
     }
-    public ModelInstance copy()
-    {
-        ModelInstance copy = new ModelInstance(this.id, this.model.copy(), this.animations, this.texture);
-
-        copy.poseGroup = this.poseGroup;
-        copy.procedural = this.procedural;
-        copy.culling = this.culling;
-        copy.onCpu = this.onCpu;
-        copy.anchorGroup = this.anchorGroup;
-        copy.view = this.view;
-
-        copy.scale.set(this.scale);
-        copy.uiScale = this.uiScale;
-        copy.sneakingPose = this.sneakingPose.copy();
-
-        for (ArmorSlot slot : this.itemsMain) copy.itemsMain.add(slot.copy());
-        for (ArmorSlot slot : this.itemsOff) copy.itemsOff.add(slot.copy());
-        copy.flippedParts.putAll(this.flippedParts);
-
-        if (this.fpMain != null) copy.fpMain = this.fpMain.copy();
-        if (this.fpOffhand != null) copy.fpOffhand = this.fpOffhand.copy();
-
-        return copy;
-    }
 
     public void setup()
     {

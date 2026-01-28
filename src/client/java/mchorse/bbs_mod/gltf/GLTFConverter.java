@@ -395,65 +395,43 @@ public class GLTFConverter
                     addChannel(group, "scale", 2, times, deltaValues, 3, sampler.interpolation);
                 }
                 else if (path.equals("rotation"))
+                {
+                    // Calculate Delta Rotation (inv(Rest) * Value) and convert to Euler ZYX (Radians)
+                    Quaternionf restRot = new Quaternionf();
+                    if (node.rotation != null) restRot.set(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
+                    Quaternionf invRestRot = new Quaternionf(restRot).conjugate();
+
+                    float[] eulerValues = new float[times.length * 3];
+                    for (int i = 0; i < times.length; i++)
                     {
-                        // Calculate Delta Rotation (inv(Rest) * Value) and convert to Euler ZYX (Radians)
-                        Quaternionf restRot = new Quaternionf();
-                        if (node.rotation != null) restRot.set(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
-                        Quaternionf invRestRot = new Quaternionf(restRot).conjugate();
-
-                        float[] eulerValues = new float[times.length * 3];
-                        Vector3f lastEuler = null;
-
-                        for (int i = 0; i < times.length; i++)
-                        {
-                            float x = values[i * 4];
-                            float y = values[i * 4 + 1];
-                            float z = values[i * 4 + 2];
-                            float w = values[i * 4 + 3];
-                            
-                            Quaternionf qAnim = new Quaternionf(x, y, z, w);
-                            
-                            // Delta = inv(Rest) * Anim
-                            Quaternionf qDelta = new Quaternionf(invRestRot).mul(qAnim);
-                            
-                            // Convert to Euler ZYX (for BOBJ: RotZ * RotY * RotX)
-                            Vector3f euler = getEulerZYX(qDelta);
-
-                            // Ensure continuity
-                            if (lastEuler != null)
-                            {
-                                euler.x = adjustAngle(euler.x, lastEuler.x);
-                                euler.y = adjustAngle(euler.y, lastEuler.y);
-                                euler.z = adjustAngle(euler.z, lastEuler.z);
-                            }
-                            lastEuler = new Vector3f(euler);
-                            
-                            // Store in Radians
-                            eulerValues[i * 3] = euler.x;
-                            eulerValues[i * 3 + 1] = euler.y;
-                            eulerValues[i * 3 + 2] = euler.z;
-                        }
+                        float x = values[i * 4];
+                        float y = values[i * 4 + 1];
+                        float z = values[i * 4 + 2];
+                        float w = values[i * 4 + 3];
                         
-                        addChannel(group, "rotation", 0, times, eulerValues, 3, sampler.interpolation);
-                        addChannel(group, "rotation", 1, times, eulerValues, 3, sampler.interpolation);
-                        addChannel(group, "rotation", 2, times, eulerValues, 3, sampler.interpolation);
+                        Quaternionf qAnim = new Quaternionf(x, y, z, w);
+                        
+                        // Delta = inv(Rest) * Anim
+                        Quaternionf qDelta = new Quaternionf(invRestRot).mul(qAnim);
+                        
+                        // Convert to Euler ZYX (for BOBJ: RotZ * RotY * RotX)
+                        Vector3f euler = getEulerZYX(qDelta);
+                        
+                        // Store in Radians
+                        eulerValues[i * 3] = euler.x;
+                        eulerValues[i * 3 + 1] = euler.y;
+                        eulerValues[i * 3 + 2] = euler.z;
                     }
+                    
+                    addChannel(group, "rotation", 0, times, eulerValues, 3, sampler.interpolation);
+                    addChannel(group, "rotation", 1, times, eulerValues, 3, sampler.interpolation);
+                    addChannel(group, "rotation", 2, times, eulerValues, 3, sampler.interpolation);
                 }
             }
         }
+    }
 
-        private static float adjustAngle(float angle, float lastAngle)
-        {
-            float diff = angle - lastAngle;
-            if (Math.abs(diff) > Math.PI)
-            {
-                float turns = Math.round(diff / (2 * Math.PI));
-                angle -= turns * 2 * (float) Math.PI;
-            }
-            return angle;
-        }
-
-        private static Vector3f getEulerZYX(Quaternionf q)
+    private static Vector3f getEulerZYX(Quaternionf q)
     {
         // Extract Euler angles for sequence Z-Y-X (RotZ * RotY * RotX)
         // Corresponds to standard Yaw-Pitch-Roll extraction
