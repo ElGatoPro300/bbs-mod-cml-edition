@@ -43,6 +43,5 @@ replay_*.log
 
 # wiki
 bbs-mod-wiki.wiki/
-
-# python
-update_langs.py
+Blockbench_full/
+.trae/

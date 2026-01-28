@@ -231,6 +231,7 @@ public class Icons
 
     public static final Icon CHECKBOARD = register(new Icon(ATLAS, "checkboard", 0, 240));
     public static final Icon DISABLED = register(new Icon(ATLAS, "disabled", 16, 240));
+    public static final Icon ENABLED = register(new Icon(ATLAS, "enabled", 96, 96));
     public static final Icon CURSOR = register(new Icon(ATLAS, "cursor", 32, 240));
 
     public static final Icon MOUSE_BODY = new Icon(ATLAS, "mouse_body", 241, 237, 14, 18);

@@ -50,6 +50,7 @@ public class LabelForm extends Form
     /* Gradient */
     public final ValueBoolean gradient = new ValueBoolean("gradient", false);
     public final ValueColor gradientEndColor = new ValueColor("gradientEndColor", Color.white());
+    public final ValueFloat gradientOffset = new ValueFloat("gradientOffset", 0.5F);
 
     public LabelForm()
     {
@@ -84,6 +85,7 @@ public class LabelForm extends Form
         this.add(this.outlineWidth);
         this.add(this.gradient);
         this.add(this.gradientEndColor);
+        this.add(this.gradientOffset);
     }
 
     @Override

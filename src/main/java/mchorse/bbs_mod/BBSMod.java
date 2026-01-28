@@ -180,7 +180,6 @@ public class BBSMod implements ModInitializer
     public static final Block MODEL_BLOCK = new ModelBlock(FabricBlockSettings.create()
         .noBlockBreakParticles()
         .dropsNothing()
-        .noCollision()
         .nonOpaque()
         .notSolid()
         .strength(0F)

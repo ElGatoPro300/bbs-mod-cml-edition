@@ -40,15 +40,16 @@ public class KeyframeSegment <T>
         this.b = b;
 
         KeyframeChannel<T> channel = (KeyframeChannel<T>) a.getParent();
-        int index = channel.getKeyframes().indexOf(a);
+        int indexA = channel.getKeyframes().indexOf(a);
+        int indexB = channel.getKeyframes().indexOf(b);
 
-        if (index >= 0)
+        if (indexA >= 0 && indexB >= 0)
         {
-            Keyframe<T> preA = channel.get(index - 1);
-            Keyframe<T> postB = channel.get(index + 2);
+            int prevIndex = channel.getPreviousEnabledIndex(indexA - 1);
+            int nextIndex = channel.getNextEnabledIndex(indexB + 1);
 
-            this.preA = preA == null ? a : preA;
-            this.postB = postB == null ? b : postB;
+            this.preA = prevIndex == -1 ? a : channel.get(prevIndex);
+            this.postB = nextIndex == -1 ? b : channel.get(nextIndex);
         }
         else
         {
