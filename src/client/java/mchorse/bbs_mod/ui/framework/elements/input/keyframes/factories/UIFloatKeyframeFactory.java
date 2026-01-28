@@ -32,7 +32,14 @@ public class UIFloatKeyframeFactory extends UIKeyframeFactory<Float>
     {
         super.update();
 
-        this.value.setValue(this.keyframe.getValue());
-        this.handles.update();
+        if (this.value != null)
+        {
+            this.value.setValue(this.keyframe.getValue());
+        }
+
+        if (this.handles != null)
+        {
+            this.handles.update();
+        }
     }
 }

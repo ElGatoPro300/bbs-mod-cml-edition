@@ -3,6 +3,7 @@ package mchorse.bbs_mod.mixin;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.morphing.IMorphProvider;
 import mchorse.bbs_mod.morphing.Morph;
+import mchorse.bbs_mod.entity.IEntityFormProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +33,52 @@ public class EntityMixin
 
                     info.setReturnValue(form.hitboxEyeHeight.get() * height);
                 }
+            }
+        }
+    }
+
+    @Inject(method = "isCollidable", at = @At("HEAD"), cancellable = true)
+    public void onIsCollidable(CallbackInfoReturnable<Boolean> info)
+    {
+        if ((Object) this instanceof IMorphProvider provider)
+        {
+            Form form = provider.getMorph().getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                info.setReturnValue(true);
+            }
+        }
+        else if ((Object) this instanceof IEntityFormProvider provider)
+        {
+            Form form = provider.getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                info.setReturnValue(true);
+            }
+        }
+    }
+
+    @Inject(method = "isPushable", at = @At("HEAD"), cancellable = true)
+    public void onIsPushable(CallbackInfoReturnable<Boolean> info)
+    {
+        if ((Object) this instanceof IMorphProvider provider)
+        {
+            Form form = provider.getMorph().getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                info.setReturnValue(false);
+            }
+        }
+        else if ((Object) this instanceof IEntityFormProvider provider)
+        {
+            Form form = provider.getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                info.setReturnValue(false);
             }
         }
     }

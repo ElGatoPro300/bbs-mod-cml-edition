@@ -334,6 +334,36 @@ public class UIFilmPreview extends UIElement
             context.batcher.box(area.x, area.y + area.h - area.h / 3 - 1, area.x + area.w, area.y + area.h - area.h / 3, guidesColor);
         }
 
+        /* Render safe margins (action safe 90%, title safe 80%) */
+        if (BBSSettings.editorSafeMargins.get())
+        {
+            int guidesColor = BBSSettings.editorSafeMarginsColor.get();
+
+            int actionMarginX = Math.round(area.w * 0.05F);
+            int actionMarginY = Math.round(area.h * 0.05F);
+            int actionLeft = area.x + actionMarginX;
+            int actionRight = area.x + area.w - actionMarginX;
+            int actionTop = area.y + actionMarginY;
+            int actionBottom = area.y + area.h - actionMarginY;
+
+            context.batcher.box(actionLeft, actionTop, actionLeft + 1, actionBottom, guidesColor);
+            context.batcher.box(actionRight - 1, actionTop, actionRight, actionBottom, guidesColor);
+            context.batcher.box(actionLeft, actionTop, actionRight, actionTop + 1, guidesColor);
+            context.batcher.box(actionLeft, actionBottom - 1, actionRight, actionBottom, guidesColor);
+
+            int titleMarginX = Math.round(area.w * 0.10F);
+            int titleMarginY = Math.round(area.h * 0.10F);
+            int titleLeft = area.x + titleMarginX;
+            int titleRight = area.x + area.w - titleMarginX;
+            int titleTop = area.y + titleMarginY;
+            int titleBottom = area.y + area.h - titleMarginY;
+
+            context.batcher.box(titleLeft, titleTop, titleLeft + 1, titleBottom, guidesColor);
+            context.batcher.box(titleRight - 1, titleTop, titleRight, titleBottom, guidesColor);
+            context.batcher.box(titleLeft, titleTop, titleRight, titleTop + 1, guidesColor);
+            context.batcher.box(titleLeft, titleBottom - 1, titleRight, titleBottom, guidesColor);
+        }
+
         VideoRenderer.update();
 
         if (BBSSettings.editorCenterLines.get())

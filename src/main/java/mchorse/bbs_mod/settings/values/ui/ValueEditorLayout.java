@@ -8,6 +8,9 @@ import mchorse.bbs_mod.utils.MathUtils;
 public class ValueEditorLayout extends BaseValue
 {
     private boolean horizontal;
+    private boolean layoutLocked;
+    private boolean mainOnTop;
+    private boolean mainOnLeft;
     private float mainSizeH = 0.66F;
     private float mainSizeV = 0.66F;
     private float editorSizeH = 0.5F;
@@ -26,6 +29,21 @@ public class ValueEditorLayout extends BaseValue
     public void setHorizontal(boolean horizontal)
     {
         BaseValue.edit(this, (v) -> this.horizontal = horizontal);
+    }
+
+    public void setLayoutLocked(boolean layoutLocked)
+    {
+        BaseValue.edit(this, (v) -> this.layoutLocked = layoutLocked);
+    }
+
+    public void setMainOnTop(boolean mainOnTop)
+    {
+        BaseValue.edit(this, (v) -> this.mainOnTop = mainOnTop);
+    }
+
+    public void setMainOnLeft(boolean mainOnLeft)
+    {
+        BaseValue.edit(this, (v) -> this.mainOnLeft = mainOnLeft);
     }
 
     public void setMainSizeH(float mainSizeH)
@@ -76,6 +94,21 @@ public class ValueEditorLayout extends BaseValue
     public boolean isHorizontal()
     {
         return this.horizontal;
+    }
+
+    public boolean isLayoutLocked()
+    {
+        return this.layoutLocked;
+    }
+
+    public boolean isMainOnTop()
+    {
+        return this.mainOnTop;
+    }
+
+    public boolean isMainOnLeft()
+    {
+        return this.mainOnLeft;
     }
 
     public float getMainSizeH()
@@ -129,6 +162,9 @@ public class ValueEditorLayout extends BaseValue
         MapType data = new MapType();
 
         data.putBool("horizontal", this.horizontal);
+        data.putBool("layout_locked", this.layoutLocked);
+        data.putBool("main_on_top", this.mainOnTop);
+        data.putBool("main_on_left", this.mainOnLeft);
         data.putFloat("main_size_h", this.mainSizeH);
         data.putFloat("main_size_v", this.mainSizeV);
         data.putFloat("editor_size_h", this.editorSizeH);
@@ -150,6 +186,9 @@ public class ValueEditorLayout extends BaseValue
             MapType map = data.asMap();
 
             this.horizontal = map.getBool("horizontal");
+            this.layoutLocked = map.getBool("layout_locked");
+            this.mainOnTop = map.getBool("main_on_top");
+            this.mainOnLeft = map.getBool("main_on_left");
             this.mainSizeH = map.getFloat("main_size_h", 0.66F);
             this.mainSizeV = map.getFloat("main_size_v", 0.66F);
             this.editorSizeH = map.getFloat("editor_size_h", 0.5F);

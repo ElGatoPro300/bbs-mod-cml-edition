@@ -183,7 +183,6 @@ public class BBSMod implements ModInitializer
         .registryKey(RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MOD_ID, "model")))
         .noBlockBreakParticles()
         .dropsNothing()
-        .noCollision()
         .nonOpaque()
         .notSolid()
         .strength(0F)

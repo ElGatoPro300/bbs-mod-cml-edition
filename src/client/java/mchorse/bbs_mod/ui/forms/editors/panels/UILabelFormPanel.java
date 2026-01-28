@@ -12,8 +12,17 @@ import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
 import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.FontUtils;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.BBSMod;
 
+import java.io.File;
 import java.util.List;
 
 public class UILabelFormPanel extends UIFormPanel<LabelForm>
@@ -35,9 +44,10 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
 
     /* Advanced */
     public UICirculate font;
+    public UIIcon openFontsFolder;
     private List<String> availableFonts;
     public UITrackpad fontSize;
-    public UITrackpad fontWeight;
+    public UIToggle bold;
     public UICirculate fontStyle;
     public UITrackpad letterSpacing;
     public UITrackpad lineHeight;
@@ -52,6 +62,8 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
     public UITrackpad outlineWidth;
     public UIToggle gradient;
     public UIColor gradientEndColor;
+    public UITrackpad gradientOffset;
+    public UIButton resetGradient;
 
     public UILabelFormPanel(UIForm editor)
     {
@@ -92,16 +104,37 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
             this.font.addLabel(IKey.raw(fontName));
         }
 
+        this.openFontsFolder = new UIIcon(Icons.FOLDER, (b) -> {
+            File fontsFolder = new File(BBSMod.getAssetsFolder(), "fonts");
+            fontsFolder.mkdirs();
+            UIUtils.openFolder(fontsFolder);
+        })
+        {
+            @Override
+            protected void renderSkin(UIContext context)
+            {
+                int color = Colors.A100 + BBSSettings.primaryColor.get();
+
+                if (this.hover)
+                {
+                    color = Colors.mulRGB(color, 0.85F);
+                }
+
+                this.area.render(context.batcher, color);
+
+                super.renderSkin(context);
+            }
+        };
+        this.openFontsFolder.tooltip(UIKeys.FORMS_EDITORS_LABEL_OPEN_FONTS_FOLDER);
+
         this.fontSize = new UITrackpad((v) -> this.form.fontSize.set(v.floatValue()));
         this.fontSize.limit(0.1F, 100F).values(0.1F, 0.1F, 2F);
         
-        this.fontWeight = new UITrackpad((v) -> this.form.fontWeight.set(v.intValue()));
-        this.fontWeight.limit(100, 900, true).increment(100);
+        this.bold = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_BOLD, (b) -> this.form.fontWeight.set(b.getValue() ? 700 : 400));
         
         this.fontStyle = new UICirculate((b) -> this.form.fontStyle.set(b.getValue()));
         this.fontStyle.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_STYLE_NORMAL);
         this.fontStyle.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_STYLE_ITALIC);
-        this.fontStyle.addLabel(UIKeys.FORMS_EDITORS_LABEL_FONT_STYLE_OBLIQUE);
         
         this.textAlign = new UICirculate((b) -> this.form.textAlign.set(b.getValue()));
         this.textAlign.addLabel(UIKeys.FORMS_EDITORS_LABEL_TEXT_ALIGN_LEFT);
@@ -131,6 +164,20 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         
         this.gradient = new UIToggle(UIKeys.FORMS_EDITORS_LABEL_GRADIENT, (b) -> this.form.gradient.set(b.getValue()));
         this.gradientEndColor = new UIColor((c) -> this.form.gradientEndColor.set(Color.rgba(c))).withAlpha();
+        this.gradientOffset = new UITrackpad((v) -> this.form.gradientOffset.set(v.floatValue()));
+        this.gradientOffset.limit(0F, 1F).values(0.01F);
+        this.gradientOffset.tooltip(IKey.raw("Gradient Offset"));
+
+        this.resetGradient = new UIButton(IKey.raw("Reset Gradient"), (b) ->
+        {
+            this.form.gradient.set(false);
+            this.form.gradientEndColor.set(Color.white());
+            this.form.gradientOffset.set(0.5F);
+
+            this.gradient.setValue(false);
+            this.gradientEndColor.setColor(Colors.WHITE);
+            this.gradientOffset.setValue(0.5F);
+        });
 
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_LABEL), this.text, this.billboard, this.color, this.max);
 
@@ -141,8 +188,8 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
 
         /* Advanced Layout */
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_ADVANCED_TEXT).marginTop(12));
-        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_FONT), this.font);
-        this.options.add(UI.row(this.fontSize, this.fontWeight));
+        this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_FONT), this.font, this.openFontsFolder);
+        this.options.add(UI.row(this.fontSize, this.bold));
         this.options.add(UI.row(this.fontStyle, this.textAlign));
         this.options.add(UI.row(this.letterSpacing, this.lineHeight));
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_OPACITY), this.opacity);
@@ -151,7 +198,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_EFFECTS).marginTop(8));
         this.options.add(UI.label(UIKeys.FORMS_EDITORS_LABEL_SHADOW_BLUR), this.shadowBlur);
         this.options.add(this.outline, this.outlineColor, this.outlineWidth);
-        this.options.add(this.gradient, this.gradientEndColor);
+        this.options.add(this.gradient, this.gradientEndColor, this.gradientOffset, this.resetGradient);
     }
 
     @Override
@@ -180,7 +227,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.font.setValue(fontIndex == -1 ? 0 : fontIndex + 1);
 
         this.fontSize.setValue(form.fontSize.get());
-        this.fontWeight.setValue(form.fontWeight.get());
+        this.bold.setValue(form.fontWeight.get() >= 700);
         this.fontStyle.setValue(form.fontStyle.get());
         this.textAlign.setValue(form.textAlign.get());
         this.letterSpacing.setValue(form.letterSpacing.get());
@@ -194,6 +241,7 @@ public class UILabelFormPanel extends UIFormPanel<LabelForm>
         this.outlineWidth.setValue(form.outlineWidth.get());
         this.gradient.setValue(form.gradient.get());
         this.gradientEndColor.setColor(form.gradientEndColor.get().getARGBColor());
+        this.gradientOffset.setValue(form.gradientOffset.get());
     }
 
     @Override
