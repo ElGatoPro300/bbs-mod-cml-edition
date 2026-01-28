@@ -23,12 +23,14 @@ public class EntityRenderDispatcherMixin
         method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/render/entity/EntityRenderer;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"
+            target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V"
         )
     )
     private void wrapRender(
-        EntityRenderer renderer, EntityRenderState state,
+        EntityRenderDispatcher dispatcher,
+        EntityRenderState state, double x, double y, double z,
         MatrixStack matrices, VertexConsumerProvider vcp, int light,
+        EntityRenderer renderer,
         Operation<Void> original,
         @Local(argsOnly = true) Entity entity,
         @Local(argsOnly = true) float tickDelta
@@ -54,6 +56,6 @@ public class EntityRenderDispatcherMixin
             }
         }
 
-        original.call(renderer, state, matrices, vcp, light);
+        original.call(dispatcher, state, x, y, z, matrices, vcp, light, renderer);
     }
 }

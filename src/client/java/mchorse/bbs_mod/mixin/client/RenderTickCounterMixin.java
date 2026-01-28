@@ -14,24 +14,45 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RenderTickCounter.Dynamic.class)
 public class RenderTickCounterMixin
 {
-    @Shadow
-    public float tickDelta;
+    // @Shadow
+    // public float tickDelta;
 
-    @Shadow
-    public float lastFrameDuration;
+    // @Shadow
+    // public float lastFrameDuration;
 
-    @Shadow
-    private long prevTimeMillis;
+    // @Shadow
+    // private long prevTimeMillis;
 
     private int heldFrames;
 
     @Inject(method = "beginRenderTick", at = @At("HEAD"), cancellable = true)
     public void onBeginRenderTick(long timeMillis, boolean tick, CallbackInfoReturnable<Integer> info)
     {
+        // Temporary debugging to find correct fields
+        try
+        {
+            Object that = (Object) this;
+            System.out.println("DEBUG: Inspecting RenderTickCounter$Dynamic fields");
+            for (java.lang.reflect.Field f : that.getClass().getFields())
+            {
+                System.out.println("Field: " + f.getName() + " Type: " + f.getType().getName());
+            }
+            for (java.lang.reflect.Field f : that.getClass().getDeclaredFields())
+            {
+                System.out.println("DeclaredField: " + f.getName() + " Type: " + f.getType().getName());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         VideoRecorder videoRecorder = BBSModClient.getVideoRecorder();
 
         if (videoRecorder.isRecording())
         {
+            /* 
+            // Commented out to avoid crash due to missing fields
             if (videoRecorder.getCounter() == 0)
             {
                 this.tickDelta = 0;
@@ -65,6 +86,7 @@ public class RenderTickCounterMixin
             {
                 this.heldFrames = 0;
             }
+            */
         }
         else
         {
