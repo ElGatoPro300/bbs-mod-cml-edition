@@ -50,4 +50,12 @@ public class ArmorSlot extends ValueGroup
             }
         }
     }
+
+    public ArmorSlot copy()
+    {
+        ArmorSlot slot = new ArmorSlot();
+        slot.group = this.group;
+        slot.transform.copy(this.transform);
+        return slot;
+    }
 }
