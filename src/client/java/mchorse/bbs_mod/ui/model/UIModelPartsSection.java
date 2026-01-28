@@ -46,103 +46,7 @@ public class UIModelPartsSection extends UIModelSection
             }
         });
 
-        this.openModel = new UIButton(UIKeys.FORMS_EDITOR_MODEL_OPEN_IN, (b) ->
-        {
-            if (this.config == null)
-            {
-                return;
-            }
-
-            String modelId = this.config.getId();
-            Link modelLink = Link.assets("models/" + modelId);
-            File folder = BBSMod.getProvider().getFile(modelLink);
-
-            if ((folder == null || !folder.exists()) && BBSMod.class.getClassLoader() != null)
-            {
-                URL url = BBSMod.class.getClassLoader().getResource("assets/bbs/assets/models/" + modelId);
-
-                if (url != null)
-                {
-                    try
-                    {
-                        File f = Paths.get(url.toURI()).toFile();
-
-                        if (f.exists() && f.isDirectory())
-                        {
-                            folder = f;
-                        }
-                    }
-                    catch (Exception e)
-                    {}
-                }
-            }
-
-            if (folder != null && folder.isDirectory())
-            {
-                File target = null;
-                File[] files = folder.listFiles();
-
-                if (files != null)
-                {
-                    for (File f : files)
-                    {
-                        if (f.getName().endsWith(".bbmodel"))
-                        {
-                            target = f;
-                            break;
-                        }
-                    }
-
-                    if (target == null)
-                    {
-                        for (File f : files)
-                        {
-                            if (f.getName().endsWith(".geo.json"))
-                            {
-                                target = f;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (target == null)
-                    {
-                        for (File f : files)
-                        {
-                            if (f.getName().equals("model.json"))
-                            {
-                                target = f;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (target == null)
-                    {
-                        for (File f : files)
-                        {
-                            if (f.getName().endsWith(".json") && !f.getName().equals("config.json"))
-                            {
-                                target = f;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (target != null)
-                {
-                    try
-                    {
-                        Desktop.getDesktop().open(target);
-                    }
-                    catch (Throwable e)
-                    {
-                        UIUtils.openFolder(target);
-                    }
-                }
-            }
-        });
+        this.openModel = new UIButton(UIKeys.FORMS_EDITOR_MODEL_OPEN_IN, this::openModel);
 
         this.color = new UIColor((c) ->
         {
@@ -215,5 +119,92 @@ public class UIModelPartsSection extends UIModelSection
                 this.poseEditor.setDefaultTextureSupplier(() -> model.texture);
             }
         }
+    }
+
+    private void openModel(UIButton b)
+    {
+        if (this.config == null)
+        {
+            return;
+        }
+
+        String modelId = this.config.getId();
+        File folder = BBSMod.getProvider().getFile(Link.assets("models/" + modelId));
+
+        if ((folder == null || !folder.exists()) && BBSMod.class.getClassLoader() != null)
+        {
+            URL url = BBSMod.class.getClassLoader().getResource("assets/bbs/assets/models/" + modelId);
+
+            if (url != null)
+            {
+                try
+                {
+                    folder = Paths.get(url.toURI()).toFile();
+                }
+                catch (Exception e)
+                {}
+            }
+        }
+
+        if (folder != null && folder.isDirectory())
+        {
+            File target = this.findModelFile(folder);
+
+            if (target != null)
+            {
+                try
+                {
+                    Desktop.getDesktop().open(target);
+                }
+                catch (Throwable e)
+                {
+                    UIUtils.openFolder(target);
+                }
+            }
+        }
+    }
+
+    private File findModelFile(File folder)
+    {
+        File[] files = folder.listFiles();
+
+        if (files == null)
+        {
+            return null;
+        }
+
+        for (File f : files)
+        {
+            if (f.getName().endsWith(".bbmodel"))
+            {
+                return f;
+            }
+        }
+
+        for (File f : files)
+        {
+            if (f.getName().endsWith(".geo.json"))
+            {
+                return f;
+            }
+        }
+
+        for (File f : files)
+        {
+            if (f.getName().equals("model.json"))
+            {
+                return f;
+            }
+        }
+
+        for (File f : files)
+        {
+            if (f.getName().endsWith(".json") && !f.getName().equals("config.json"))
+            {
+                return f;
+            }
+        }
+
+        return null;
     }
 }
