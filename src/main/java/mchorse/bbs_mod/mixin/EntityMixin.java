@@ -35,6 +35,18 @@ public class EntityMixin
                 }
             }
         }
+        else if (this instanceof IEntityFormProvider provider)
+        {
+            Form form = provider.getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                Entity entity = (Entity) (Object) this;
+                float height = form.hitboxHeight.get() * (entity.isSneaking() ? form.hitboxSneakMultiplier.get() : 1F);
+
+                info.setReturnValue(form.hitboxEyeHeight.get() * height);
+            }
+        }
     }
 
     @Inject(method = "isCollidable", at = @At("HEAD"), cancellable = true)
