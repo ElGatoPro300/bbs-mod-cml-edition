@@ -8,6 +8,7 @@ import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
 import mchorse.bbs_mod.BBSModClient;
@@ -23,7 +24,8 @@ import java.util.List;
 
 public class UIModelArmorSection extends UIModelSection
 {
-    public UIStringList types;
+    public UISearchList<String> types;
+    public UIStringList typesList;
     public UIButton pickBone;
 
     private ArmorType type;
@@ -34,26 +36,29 @@ public class UIModelArmorSection extends UIModelSection
 
         this.pickBone = new UIButton(IKey.constant("<none>"), (b) -> this.openLimbMenu());
 
-        this.types = new UIStringList((l) -> this.fillData());
-        this.types.background = 0x88000000;
+        this.typesList = new UIStringList((l) -> this.fillData());
+        this.typesList.background = 0x88000000;
+        
+        this.types = new UISearchList<>(this.typesList);
+        this.types.label(UIKeys.GENERAL_SEARCH);
 
         for (ArmorType type : ArmorType.values())
         {
-            this.types.add(type.name().toLowerCase());
+            this.typesList.add(type.name().toLowerCase());
         }
 
-        this.types.sort();
-        this.types.setIndex(0);
+        this.typesList.sort();
+        this.typesList.setIndex(0);
 
         this.fields.add(this.pickBone);
-        this.types.h(5 * 16);
+        this.types.h(5 * 16 + 20);
 
         UIPoseEditor poseEditor = this.editor.getPoseEditor();
 
         if (poseEditor != null)
         {
             UILabel label = UI.label(UIKeys.MODELS_ARMOR).background(() -> Colors.A50 | BBSSettings.primaryColor.get());
-            label.marginTop(12);
+            label.marginTop(6);
 
             poseEditor.extra.add(label, this.types);
         }
@@ -129,12 +134,12 @@ public class UIModelArmorSection extends UIModelSection
 
     private void fillData()
     {
-        if (this.types == null)
+        if (this.typesList == null)
         {
             return;
         }
 
-        String selected = this.types.getIndex() >= 0 ? this.types.getList().get(this.types.getIndex()) : null;
+        String selected = this.typesList.getIndex() >= 0 ? this.typesList.getList().get(this.typesList.getIndex()) : null;
 
         if (selected == null)
         {
@@ -201,7 +206,7 @@ public class UIModelArmorSection extends UIModelSection
     @Override
     public void deselect()
     {
-        this.types.deselect();
+        this.typesList.deselect();
     }
 
     @Override
