@@ -345,6 +345,8 @@ public class GLTFConverter
                 if (channel.target.node < 0) continue;
                 BOBJBone bone = nodeToBone.get(channel.target.node);
                 if (bone == null) continue;
+                
+                GLTF.GLTFNode node = gltf.nodes.get(channel.target.node);
 
                 BOBJGroup group = action.groups.computeIfAbsent(bone.name, k -> new BOBJGroup(k));
                 
@@ -358,18 +360,47 @@ public class GLTFConverter
                 
                 if (path.equals("translation"))
                 {
-                    addChannel(group, "location", 0, times, values, 3, sampler.interpolation);
-                    addChannel(group, "location", 1, times, values, 3, sampler.interpolation);
-                    addChannel(group, "location", 2, times, values, 3, sampler.interpolation);
+                    // Calculate Delta Translation (Value - Rest)
+                    Vector3f restPos = new Vector3f();
+                    if (node.translation != null) restPos.set(node.translation[0], node.translation[1], node.translation[2]);
+                    
+                    float[] deltaValues = new float[values.length];
+                    for (int i = 0; i < times.length; i++)
+                    {
+                        deltaValues[i * 3] = values[i * 3] - restPos.x;
+                        deltaValues[i * 3 + 1] = values[i * 3 + 1] - restPos.y;
+                        deltaValues[i * 3 + 2] = values[i * 3 + 2] - restPos.z;
+                    }
+
+                    addChannel(group, "location", 0, times, deltaValues, 3, sampler.interpolation);
+                    addChannel(group, "location", 1, times, deltaValues, 3, sampler.interpolation);
+                    addChannel(group, "location", 2, times, deltaValues, 3, sampler.interpolation);
                 }
                 else if (path.equals("scale"))
                 {
-                    addChannel(group, "scale", 0, times, values, 3, sampler.interpolation);
-                    addChannel(group, "scale", 1, times, values, 3, sampler.interpolation);
-                    addChannel(group, "scale", 2, times, values, 3, sampler.interpolation);
+                    // Calculate Delta Scale (Value / Rest)
+                    Vector3f restScale = new Vector3f(1, 1, 1);
+                    if (node.scale != null) restScale.set(node.scale[0], node.scale[1], node.scale[2]);
+
+                    float[] deltaValues = new float[values.length];
+                    for (int i = 0; i < times.length; i++)
+                    {
+                        deltaValues[i * 3] = restScale.x != 0 ? values[i * 3] / restScale.x : 1;
+                        deltaValues[i * 3 + 1] = restScale.y != 0 ? values[i * 3 + 1] / restScale.y : 1;
+                        deltaValues[i * 3 + 2] = restScale.z != 0 ? values[i * 3 + 2] / restScale.z : 1;
+                    }
+
+                    addChannel(group, "scale", 0, times, deltaValues, 3, sampler.interpolation);
+                    addChannel(group, "scale", 1, times, deltaValues, 3, sampler.interpolation);
+                    addChannel(group, "scale", 2, times, deltaValues, 3, sampler.interpolation);
                 }
                 else if (path.equals("rotation"))
                 {
+                    // Calculate Delta Rotation (inv(Rest) * Value) and convert to Euler ZYX (Radians)
+                    Quaternionf restRot = new Quaternionf();
+                    if (node.rotation != null) restRot.set(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
+                    Quaternionf invRestRot = new Quaternionf(restRot).conjugate();
+
                     float[] eulerValues = new float[times.length * 3];
                     for (int i = 0; i < times.length; i++)
                     {
@@ -378,14 +409,18 @@ public class GLTFConverter
                         float z = values[i * 4 + 2];
                         float w = values[i * 4 + 3];
                         
-                        Quaternionf q = new Quaternionf(x, y, z, w);
-                        Vector3f euler = new Vector3f();
-                        q.getEulerAnglesXYZ(euler);
+                        Quaternionf qAnim = new Quaternionf(x, y, z, w);
                         
-                        // Convert to Degrees
-                        eulerValues[i * 3] = (float) Math.toDegrees(euler.x);
-                        eulerValues[i * 3 + 1] = (float) Math.toDegrees(euler.y);
-                        eulerValues[i * 3 + 2] = (float) Math.toDegrees(euler.z);
+                        // Delta = inv(Rest) * Anim
+                        Quaternionf qDelta = new Quaternionf(invRestRot).mul(qAnim);
+                        
+                        // Convert to Euler ZYX (for BOBJ: RotZ * RotY * RotX)
+                        Vector3f euler = getEulerZYX(qDelta);
+                        
+                        // Store in Radians
+                        eulerValues[i * 3] = euler.x;
+                        eulerValues[i * 3 + 1] = euler.y;
+                        eulerValues[i * 3 + 2] = euler.z;
                     }
                     
                     addChannel(group, "rotation", 0, times, eulerValues, 3, sampler.interpolation);
@@ -394,6 +429,34 @@ public class GLTFConverter
                 }
             }
         }
+    }
+
+    private static Vector3f getEulerZYX(Quaternionf q)
+    {
+        // Extract Euler angles for sequence Z-Y-X (RotZ * RotY * RotX)
+        // Corresponds to standard Yaw-Pitch-Roll extraction
+        // Reference: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+        
+        Vector3f euler = new Vector3f();
+        
+        // roll (x-axis rotation)
+        float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+        float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+        euler.x = (float) Math.atan2(sinr_cosp, cosr_cosp);
+
+        // pitch (y-axis rotation)
+        float sinp = 2 * (q.w * q.y - q.z * q.x);
+        if (Math.abs(sinp) >= 1)
+            euler.y = (float) Math.copySign(Math.PI / 2, sinp); // use 90 degrees if out of range
+        else
+            euler.y = (float) Math.asin(sinp);
+
+        // yaw (z-axis rotation)
+        float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+        float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+        euler.z = (float) Math.atan2(siny_cosp, cosy_cosp);
+        
+        return euler;
     }
 
     private static void addChannel(BOBJGroup group, String path, int index, float[] times, float[] values, int stride, String interpolation)
