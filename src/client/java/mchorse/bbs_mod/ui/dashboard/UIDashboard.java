@@ -152,6 +152,12 @@ public class UIDashboard extends UIBaseMenu
     public void copyCurrentEntityCamera()
     {
         Entity cameraEntity = MinecraftClient.getInstance().getCameraEntity();
+
+        if (cameraEntity == null)
+        {
+            return;
+        }
+
         Vec3d eyePos = cameraEntity.getEyePos();
         Camera camera = new Camera();
 
