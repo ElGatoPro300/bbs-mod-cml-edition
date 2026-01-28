@@ -168,6 +168,13 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         Pose pose = this.form.pose.get().copy();
         Pose overlay = this.form.poseOverlay.get();
 
+        ModelInstance model = this.getModel();
+
+        if (model != null)
+        {
+            this.applyPose(pose, model.parts);
+        }
+
         this.applyPose(pose, overlay);
 
         for (ValuePose newPose : this.form.additionalOverlays)
@@ -187,6 +194,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             if (value.fix != 0)
             {
+                poseTransform.fix = value.fix;
                 poseTransform.translate.lerp(value.translate, value.fix);
                 poseTransform.scale.lerp(value.scale, value.fix);
                 poseTransform.rotate.lerp(value.rotate, value.fix);
@@ -206,6 +214,11 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             {
                 poseTransform.color.lerp(value.color, value.fix);
                 poseTransform.lighting = Lerps.lerp(poseTransform.lighting, value.lighting, value.fix);
+            }
+            else
+            {
+                poseTransform.color.mul(value.color);
+                poseTransform.lighting += value.lighting;
             }
 
             if (value.texture != null)
@@ -369,7 +382,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     private void renderArmor(IEntity target, MatrixStack stack, ArmorType type, ArmorSlot armorSlot, Color color, int overlay, int light)
     {
-        Matrix4f matrix = this.bones.get(armorSlot.group).matrix();
+        Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
 
         if (matrix != null)
         {
@@ -405,7 +418,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
         for (ArmorSlot armorSlot : items)
         {
-            Matrix4f matrix = this.bones.get(armorSlot.group).matrix();
+            Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
 
             if (matrix != null)
             {
