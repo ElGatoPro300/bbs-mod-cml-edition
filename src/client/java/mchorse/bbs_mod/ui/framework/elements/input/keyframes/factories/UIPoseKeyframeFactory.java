@@ -76,6 +76,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 {
                     this.poseEditor.selectBone(sheet.anchoredBone);
                 }
+
+                this.poseEditor.refreshCurrentBone();
             }
         }
         else if (FormUtils.getForm(sheet.property) instanceof MobForm mobForm)
@@ -92,6 +94,18 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         }
 
         this.scroll.add(this.poseEditor);
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
+
+        if (this.poseEditor != null)
+        {
+            this.poseEditor.setPose(this.keyframe.getValue(), this.poseEditor.getPoseGroupKey());
+            this.poseEditor.refreshCurrentBone();
+        }
     }
 
     @Override
