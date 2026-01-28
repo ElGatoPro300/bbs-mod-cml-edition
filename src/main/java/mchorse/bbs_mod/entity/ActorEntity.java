@@ -134,6 +134,38 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
             if (lastForm != null) lastForm.onDemorph(this);
             if (form != null) form.onMorph(this);
         }
+        
+        this.updateHitboxDimensions();
+    }
+
+    @Override
+    public boolean isCollidable()
+    {
+        return this.form != null && this.form.hitbox.get();
+    }
+
+    @Override
+    public boolean isPushable()
+    {
+        return this.form == null || !this.form.hitbox.get();
+    }
+
+    @Override
+    public void pushAwayFrom(Entity entity)
+    {
+        if (this.form == null || !this.form.hitbox.get())
+        {
+            super.pushAwayFrom(entity);
+        }
+    }
+
+    @Override
+    public void pushAway(Entity entity)
+    {
+        if (this.form == null || !this.form.hitbox.get())
+        {
+            super.pushAway(entity);
+        }
     }
 
     @Override
@@ -185,6 +217,7 @@ public class ActorEntity extends LivingEntity implements IEntityFormProvider
         super.tick();
 
         this.tickHandSwing();
+        this.updateHitboxDimensions();
 
         if (this.form != null)
         {

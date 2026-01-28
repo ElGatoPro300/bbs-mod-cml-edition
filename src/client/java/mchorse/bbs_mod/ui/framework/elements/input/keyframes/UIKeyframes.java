@@ -138,6 +138,8 @@ public class UIKeyframes extends UIElement
 
                 menu.action(main.isEnabled() ? Icons.DISABLED : Icons.ENABLED, UIKeys.CAMERA_PANELS_ENABLED, () ->
                 {
+                    this.cacheKeyframes();
+
                     boolean newState = !main.isEnabled();
 
                     for (UIKeyframeSheet sheet : this.currentGraph.getSheets())
@@ -147,6 +149,8 @@ public class UIKeyframes extends UIElement
                             kf.setEnabled(newState);
                         }
                     }
+
+                    this.submitKeyframes();
                 });
 
                 menu.action(Icons.CONVERT, UIKeys.KEYFRAMES_CONTEXT_SPREAD, this::spreadKeyframes);
