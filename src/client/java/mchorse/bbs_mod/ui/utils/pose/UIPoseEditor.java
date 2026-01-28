@@ -47,6 +47,7 @@ public class UIPoseEditor extends UIElement
     private static String lastLimb = "";
 
     public UISearchList<String> groups;
+    public UIElement extra;
     public UIStringList groupsList;
     public UIStringList categories;
     public UITrackpad fix;
@@ -54,6 +55,7 @@ public class UIPoseEditor extends UIElement
     public UIColor color;
     public UIToggle lighting;
     public UIPropTransform transform;
+    public Runnable onChange;
 
     private String group = "";
     private Pose pose;
@@ -66,6 +68,9 @@ public class UIPoseEditor extends UIElement
 
     public UIPoseEditor()
     {
+        this.extra = new UIElement();
+        this.extra.column().vertical().stretch();
+
         this.groupsList = new UIStringList((l) -> this.pickBone(l.get(0)));
         this.groups = new UISearchList<>(this.groupsList);
         this.groups.label(UIKeys.GENERAL_SEARCH);
@@ -74,7 +79,7 @@ public class UIPoseEditor extends UIElement
         this.groups.list.scroll.cancelScrolling();
         this.groups.list.context(() ->
         {
-            UIDataContextMenu menu = new UIDataContextMenu(PoseManager.INSTANCE, this.group, () -> this.pose.toData(), this::pastePose);
+            UIDataContextMenu menu = new UIDataContextMenu(PoseManager.INSTANCE, this.group, () -> this.pose != null ? this.pose.toData() : new MapType(), this::pastePose);
             UIIcon flip = new UIIcon(Icons.CONVERT, (b) -> this.flipPose());
 
             flip.tooltip(UIKeys.POSE_CONTEXT_FLIP_POSE);
@@ -213,6 +218,8 @@ public class UIPoseEditor extends UIElement
             {
                 this.setFix(poseTransform, v.floatValue());
             }
+
+            if (this.onChange != null) this.onChange.run();
         });
         this.fix.limit(0D, 1D).increment(1D).values(0.1, 0.05D, 0.2D);
         this.fix.tooltip(UIKeys.POSE_CONTEXT_FIX_TOOLTIP);
@@ -254,6 +261,8 @@ public class UIPoseEditor extends UIElement
                 {
                     this.setTexture(pt, l);
                 }
+
+                if (this.onChange != null) this.onChange.run();
             });
         });
         this.pickTexture.context((menu) ->
@@ -277,6 +286,7 @@ public class UIPoseEditor extends UIElement
                 if (t != null)
                 {
                     this.setTexture(t, null);
+                    if (this.onChange != null) this.onChange.run();
                 }
             });
         });
@@ -291,6 +301,8 @@ public class UIPoseEditor extends UIElement
             {
                 this.setColor(poseTransform, c);
             }
+
+            if (this.onChange != null) this.onChange.run();
         });
         this.color.withAlpha();
         this.color.context((menu) ->
@@ -315,6 +327,8 @@ public class UIPoseEditor extends UIElement
             {
                 this.setLighting(poseTransform, b.getValue());
             }
+
+            if (this.onChange != null) this.onChange.run();
         });
         this.lighting.h(20);
         this.lighting.context((menu) ->
@@ -330,16 +344,23 @@ public class UIPoseEditor extends UIElement
         });
         this.transform = this.createTransformEditor();
         this.transform.setModel();
+        this.transform.callbacks(null, () ->
+        {
+            if (this.onChange != null)
+            {
+                this.onChange.run();
+            }
+        });
 
         this.column().vertical().stretch();
         boolean categoriesEnabled = BBSSettings.modelBlockCategoriesPanelEnabled != null && BBSSettings.modelBlockCategoriesPanelEnabled.get();
         if (categoriesEnabled)
         {
-            this.add(UI.row(this.groups, this.categories), UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
+            this.add(UI.row(this.groups, this.categories), this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
         }
         else
         {
-            this.add(this.groups, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
+            this.add(this.groups, this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
         }
     }
 
@@ -356,7 +377,7 @@ public class UIPoseEditor extends UIElement
 
     private void applyChildren(Consumer<PoseTransform> consumer)
     {
-        if (this.model == null)
+        if (this.model == null || this.pose == null || !(this.transform.getTransform() instanceof PoseTransform))
         {
             return;
         }
@@ -382,6 +403,11 @@ public class UIPoseEditor extends UIElement
 
     protected void pastePose(MapType data)
     {
+        if (this.pose == null)
+        {
+            return;
+        }
+
         String current = this.groups.list.getCurrentFirst();
 
         this.pose.fromData(data);
@@ -499,6 +525,12 @@ public class UIPoseEditor extends UIElement
         @Override
         public void setT(Axis axis, double x, double y, double z)
         {
+            if (!(this.getTransform() instanceof PoseTransform) || this.editor.pose == null || CollectionUtils.getKey(this.editor.pose.transforms, (PoseTransform) this.getTransform()) == null)
+            {
+                super.setT(axis, x, y, z);
+                return;
+            }
+
             this.preCallback();
             Transform transform = this.getTransform();
             float dx = (float) (x - transform.translate.x);
@@ -521,6 +553,12 @@ public class UIPoseEditor extends UIElement
         @Override
         public void setS(Axis axis, double x, double y, double z)
         {
+            if (!(this.getTransform() instanceof PoseTransform) || this.editor.pose == null || CollectionUtils.getKey(this.editor.pose.transforms, (PoseTransform) this.getTransform()) == null)
+            {
+                super.setS(axis, x, y, z);
+                return;
+            }
+
             this.preCallback();
             Transform transform = this.getTransform();
             float dx = (float) (x - transform.scale.x);
@@ -543,6 +581,12 @@ public class UIPoseEditor extends UIElement
         @Override
         public void setR(Axis axis, double x, double y, double z)
         {
+            if (!(this.getTransform() instanceof PoseTransform) || this.editor.pose == null || CollectionUtils.getKey(this.editor.pose.transforms, (PoseTransform) this.getTransform()) == null)
+            {
+                super.setR(axis, x, y, z);
+                return;
+            }
+
             this.preCallback();
             Transform transform = this.getTransform();
             float dx = MathUtils.toRad((float) x) - transform.rotate.x;
@@ -565,6 +609,12 @@ public class UIPoseEditor extends UIElement
         @Override
         public void setR2(Axis axis, double x, double y, double z)
         {
+            if (!(this.getTransform() instanceof PoseTransform) || this.editor.pose == null || CollectionUtils.getKey(this.editor.pose.transforms, (PoseTransform) this.getTransform()) == null)
+            {
+                super.setR2(axis, x, y, z);
+                return;
+            }
+
             this.preCallback();
             Transform transform = this.getTransform();
             float dx = MathUtils.toRad((float) x) - transform.rotate2.x;
@@ -587,6 +637,12 @@ public class UIPoseEditor extends UIElement
         @Override
         public void setP(Axis axis, double x, double y, double z)
         {
+            if (!(this.getTransform() instanceof PoseTransform) || this.editor.pose == null || CollectionUtils.getKey(this.editor.pose.transforms, (PoseTransform) this.getTransform()) == null)
+            {
+                super.setP(axis, x, y, z);
+                return;
+            }
+
             this.preCallback();
             Transform transform = this.getTransform();
             float dx = (float) x - transform.pivot.x;
@@ -607,11 +663,56 @@ public class UIPoseEditor extends UIElement
         }
     }
 
+    public void setGlobalTexture(UIElement element)
+    {
+        this.prepend(element);
+        this.resize();
+    }
+
+    public void setTransform(Transform transform)
+    {
+        this.transform.setTransform(transform);
+
+        boolean isPoseTransform = transform instanceof PoseTransform;
+
+        this.fix.setVisible(true);
+        this.color.setVisible(true);
+        this.lighting.setVisible(true);
+        this.pickTexture.setVisible(true);
+
+        this.fix.setEnabled(isPoseTransform);
+        this.color.setEnabled(isPoseTransform);
+        this.lighting.setEnabled(isPoseTransform);
+        this.pickTexture.setEnabled(isPoseTransform);
+
+        if (!isPoseTransform || this.pose == null || CollectionUtils.getKey(this.pose.transforms, (PoseTransform) transform) == null)
+        {
+             this.groups.list.setIndex(-1);
+        }
+    }
+
+    public Consumer<String> pickCallback;
+
     protected void pickBone(String bone)
     {
+        if (this.pickCallback != null)
+        {
+            this.pickCallback.accept(bone);
+        }
+
         lastLimb = bone;
 
-        PoseTransform poseTransform = this.pose.get(bone);
+        this.fix.setVisible(true);
+        this.color.setVisible(true);
+        this.lighting.setVisible(true);
+        this.pickTexture.setVisible(true);
+
+        this.fix.setEnabled(true);
+        this.color.setEnabled(true);
+        this.lighting.setEnabled(true);
+        this.pickTexture.setEnabled(true);
+
+        PoseTransform poseTransform = this.pose != null ? this.pose.get(bone) : null;
 
         if (poseTransform != null)
         {
@@ -670,7 +771,7 @@ public class UIPoseEditor extends UIElement
     {
         boolean categoriesEnabled = BBSSettings.modelBlockCategoriesPanelEnabled != null && BBSSettings.modelBlockCategoriesPanelEnabled.get();
         String selectedCategory = categoriesEnabled ? this.categories.getCurrentFirst() : null;
-        if (this.model == null || selectedCategory == null || selectedCategory.isEmpty())
+        if (this.model == null || this.pose == null || selectedCategory == null || selectedCategory.isEmpty())
         {
             return;
         }
