@@ -266,6 +266,12 @@ public class UIDashboard extends UIBaseMenu
         this.setPanel(this.getPanel(UISupportersPanel.class));
     }
 
+    @Override
+    public boolean canHideHUD()
+    {
+        return this.panels.panel == null || this.panels.panel.canHideHUD();
+    }
+
     public <T> T getPanel(Class<T> clazz)
     {
         return this.panels.getPanel(clazz);

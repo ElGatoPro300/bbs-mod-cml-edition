@@ -46,7 +46,6 @@ public class ArmorSlot extends ValueGroup
             if (map.has("transform"))
             {
                 this.transform.fromData(map.getMap("transform"));
-                this.transform.toRad();
             }
         }
     }

@@ -736,7 +736,12 @@ public class UIKeys
     public static final IKey MODELS_ITEMS_ADD = L10n.lang("bbs.ui.models.items.add");
     public static final IKey MODELS_ITEMS_ADD_DESC = L10n.lang("bbs.ui.models.items.add_desc");
     public static final IKey MODELS_ITEMS_MAIN = L10n.lang("bbs.ui.models.items.main");
+    public static final IKey MODELS_ITEMS_FP_MAIN = L10n.lang("bbs.ui.models.items.fp_main");
     public static final IKey MODELS_ITEMS_OFF = L10n.lang("bbs.ui.models.items.off");
+    public static final IKey MODELS_ITEMS_FP_OFF = L10n.lang("bbs.ui.models.items.fp_off");
+    public static final IKey MODELS_HANDS = L10n.lang("bbs.ui.models.hands");
+    public static final IKey MODELS_HANDS_EDIT = L10n.lang("bbs.ui.models.hands.edit");
+    public static final IKey MODELS_HANDS_TITLE = L10n.lang("bbs.ui.models.hands.title");
     public static final IKey MODELS_POSE_GROUP = L10n.lang("bbs.ui.models.pose_group");
     public static final IKey MODELS_POSE_GROUP_TOOLTIP = L10n.lang("bbs.ui.models.pose_group_tooltip");
     public static final IKey MODELS_PROCEDURAL = L10n.lang("bbs.ui.models.procedural");

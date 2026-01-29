@@ -104,6 +104,7 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
 
         this.addSection(new UIModelArmorSection(this));
         this.addSection(new UIModelItemsSection(this));
+        this.addSection(new UIModelHandsSection(this));
         this.addSection(new UIModelSneakingSection(this));
         
         /* Register Panels */

@@ -303,6 +303,9 @@ public class ModelInstance implements IModelInstance
             config.put("armor_slots", map);
         }
 
+        if (this.fpMain != null) config.put("fp_main", this.fpMain.toData());
+        if (this.fpOffhand != null) config.put("fp_offhand", this.fpOffhand.toData());
+
         return config;
     }
     public ModelInstance copy()
