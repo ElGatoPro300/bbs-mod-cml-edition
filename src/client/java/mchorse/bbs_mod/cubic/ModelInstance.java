@@ -327,6 +327,11 @@ public class ModelInstance implements IModelInstance
         if (this.fpMain != null) copy.fpMain = this.fpMain.copy();
         if (this.fpOffhand != null) copy.fpOffhand = this.fpOffhand.copy();
 
+        for (Map.Entry<ArmorType, ArmorSlot> entry : this.armorSlots.entrySet())
+        {
+            copy.armorSlots.put(entry.getKey(), entry.getValue().copy());
+        }
+
         return copy;
     }
 
