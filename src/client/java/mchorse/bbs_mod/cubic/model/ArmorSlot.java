@@ -34,4 +34,12 @@ public class ArmorSlot implements IDataSerializable
             this.group = map.getString("group");
         }
     }
+
+    public ArmorSlot copy()
+    {
+        ArmorSlot slot = new ArmorSlot();
+        slot.group = this.group;
+        slot.transform.copy(this.transform);
+        return slot;
+    }
 }
