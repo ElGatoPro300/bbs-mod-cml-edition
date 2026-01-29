@@ -35,10 +35,10 @@ public class BOBJModelVAO
     private int[] tmpLight;
     private float[] tmpTangents;
 
-    public BOBJModelVAO(BOBJLoader.CompiledData data)
+    public BOBJModelVAO(BOBJLoader.CompiledData data, BOBJArmature armature)
     {
         this.data = data;
-        this.armature = this.data.mesh.armature;
+        this.armature = armature;
 
         this.initBuffers();
     }
