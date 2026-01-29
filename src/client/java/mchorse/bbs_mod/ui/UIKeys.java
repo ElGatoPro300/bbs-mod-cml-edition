@@ -207,6 +207,7 @@ public class UIKeys
     public static final IKey CONFIG_TITLE = L10n.lang("bbs.ui.config.title");
     public static final IKey CONTEXT_MENU_KEY = L10n.lang("bbs.ui.context.key");
     public static final IKey CONTEXT_MENU_KEY_CATEGORY = L10n.lang("bbs.ui.context.key_category");
+    public static final IKey COMING_SOON = L10n.lang("bbs.ui.coming_soon");
     public static final IKey DASHBOARD_CATEGORY = L10n.lang("bbs.ui.dashboard.category");
     public static final IKey DASHBOARD_CONTEXT_TOGGLE_VISIBILITY = L10n.lang("bbs.ui.dashboard.context.toggle_visibility");
     public static final IKey DASHBOARD_OPTIFINE_EW_DESCRIPTION = L10n.lang("bbs.ui.dashboard.optifine_ew-description");
@@ -723,6 +724,9 @@ public class UIKeys
     public static final IKey MODELS_SNEAKING_DESC = L10n.lang("bbs.ui.models.sneaking_pose.desc");
     public static final IKey MODELS_SNEAKING_TITLE = L10n.lang("bbs.ui.models.sneaking_pose");
     public static final IKey MODELS_TITLE = L10n.lang("bbs.ui.models.title");
+    public static final IKey MODELS_SETTINGS = L10n.lang("bbs.ui.models.settings");
+    public static final IKey MODELS_IK_EDITOR = L10n.lang("bbs.ui.models.ik_editor");
+    public static final IKey MODELS_DYNAMIC_BONES = L10n.lang("bbs.ui.models.dynamic_bones");
     public static final IKey MODELS_UI_SCALE = L10n.lang("bbs.ui.models.ui_scale");
     public static final IKey MORPHING_DEMORPH = L10n.lang("bbs.ui.morphing.demorph");
     public static final IKey MORPHING_FROM_MOB = L10n.lang("bbs.ui.morphing.from_mob");
