@@ -58,7 +58,7 @@ public class UIModelArmorSection extends UIModelSection
         if (poseEditor != null)
         {
             UILabel label = UI.label(UIKeys.MODELS_ARMOR).background(() -> Colors.A50 | BBSSettings.primaryColor.get());
-            label.marginTop(6);
+            label.marginTop(2);
 
             poseEditor.extra.add(label, this.types);
         }

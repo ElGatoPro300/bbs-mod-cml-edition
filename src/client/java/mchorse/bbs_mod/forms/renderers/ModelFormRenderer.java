@@ -485,7 +485,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
                 while (g != null)
                 {
-                    if (g.id.equals(slot.group))
+                    if (g.id.equals(slot.group.get()))
                     {
                         visible = true;
 
