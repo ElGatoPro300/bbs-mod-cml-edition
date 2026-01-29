@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.cubic.model.loaders;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.bobj.BOBJAction;
@@ -122,14 +123,25 @@ public class GLTFModelLoader implements IModelLoader
                         Pixels pixels = Pixels.fromPNGStream(new ByteArrayInputStream(imageData));
                         if (pixels != null)
                         {
-                            Texture texture = Texture.textureFromPixels(pixels, GL11.GL_NEAREST);
                             Link embeddedLink = new Link(gltfLink.source, gltfLink.path + "/embedded_texture.png");
                             
-                            // Register to TextureManager manually
-                            BBSModClient.getTextures().textures.put(embeddedLink, texture);
-                            textureLink = embeddedLink;
+                            RenderSystem.recordRenderCall(() -> 
+                            {
+                                try
+                                {
+                                    Texture texture = Texture.textureFromPixels(pixels, GL11.GL_NEAREST);
+                                    
+                                    // Register to TextureManager manually
+                                    BBSModClient.getTextures().textures.put(embeddedLink, texture);
+                                    System.out.println("GLTFModelLoader: Loaded embedded texture for " + id);
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            });
                             
-                            System.out.println("GLTFModelLoader: Loaded embedded texture for " + id);
+                            textureLink = embeddedLink;
                         }
                     }
                     catch (Exception e)
