@@ -93,6 +93,9 @@ public class BOBJModelVAO
         GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, this.texCoordBuffer);
         GL30.glBufferData(GL30.GL_ARRAY_BUFFER, this.data.texData, GL30.GL_STATIC_DRAW);
         GL30.glVertexAttribPointer(Attributes.MID_TEXTURE_UV, 2, GL30.GL_FLOAT, false, 0, 0);
+
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
+        GL30.glBindVertexArray(0);
     }
 
     /**
@@ -210,6 +213,8 @@ public class BOBJModelVAO
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, this.lightBuffer);
             GL15.glBufferData(GL15.GL_ARRAY_BUFFER, this.tmpLight, GL15.GL_DYNAMIC_DRAW);
         }
+
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
     }
 
     protected void processData(float[] newVertices, float[] newNormals)
