@@ -136,6 +136,15 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         return this.animator;
     }
 
+    public void invalidateCachedModel()
+    {
+        if (this.cachedModel != null)
+        {
+            this.cachedModel.delete();
+            this.cachedModel = null;
+        }
+    }
+
     public ModelInstance getModel()
     {
         String modelId = this.form.model.get();

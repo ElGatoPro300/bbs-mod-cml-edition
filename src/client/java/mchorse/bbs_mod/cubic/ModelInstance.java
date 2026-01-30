@@ -322,6 +322,8 @@ public class ModelInstance implements IModelInstance
         copy.scale.set(this.scale);
         copy.uiScale = this.uiScale;
         copy.sneakingPose = this.sneakingPose.copy();
+        copy.parts = this.parts.copy();
+        copy.color = this.color;
 
         for (ArmorSlot slot : this.itemsMain) copy.itemsMain.add(slot.copy());
         for (ArmorSlot slot : this.itemsOff) copy.itemsOff.add(slot.copy());

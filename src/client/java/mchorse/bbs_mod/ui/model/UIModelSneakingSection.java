@@ -43,6 +43,9 @@ public class UIModelSneakingSection extends UIModelSection
                     this.editor.dirty();
                 });
 
+                menu.remove(menu.row);
+                menu.entries.relative(menu).y(5).h(1F, -10);
+
                 this.getContext().setContextMenu(menu);
             });
 

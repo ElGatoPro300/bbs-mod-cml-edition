@@ -35,6 +35,9 @@ public abstract class UIModelSection extends UIElement
     public void deselect()
     {}
 
+    public void onBoneSelected(String bone)
+    {}
+
     public void setConfig(ModelConfig config)
     {
         this.config = config;

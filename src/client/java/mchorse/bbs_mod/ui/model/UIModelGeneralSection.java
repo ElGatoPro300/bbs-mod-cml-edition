@@ -10,6 +10,8 @@ import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.utils.UI;
 import org.joml.Vector3f;
 
+import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
+
 public class UIModelGeneralSection extends UIModelSection
 {
     public UIToggle procedural;
@@ -53,6 +55,13 @@ public class UIModelGeneralSection extends UIModelSection
             {
                 this.config.poseGroup.set(str);
                 this.editor.dirty();
+
+                UIPoseEditor poseEditor = this.editor.getPoseEditor();
+
+                if (poseEditor != null)
+                {
+                    poseEditor.setPose(this.config.parts.get(), str.isEmpty() ? this.config.getId() : str);
+                }
             }
         });
         this.poseGroup.tooltip(UIKeys.MODELS_POSE_GROUP_TOOLTIP);

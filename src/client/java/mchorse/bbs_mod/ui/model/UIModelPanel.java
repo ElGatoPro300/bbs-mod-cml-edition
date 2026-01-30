@@ -3,15 +3,24 @@ package mchorse.bbs_mod.ui.model;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.cubic.model.ModelConfig;
 import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.FormRenderer;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.ContentType;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanels;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDataDashboardPanel;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.IUIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIRenderable;
 import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.ScrollDirection;
 import mchorse.bbs_mod.ui.utils.UI;
@@ -20,6 +29,7 @@ import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
 import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.colors.Colors;
+import net.minecraft.client.MinecraftClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +39,6 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
     public UIModelEditorRenderer renderer;
     
     public UIElement mainView;
-    public UIScrollView sidebar;
     public List<UIElement> panels = new ArrayList<>();
     
     public UIElement modelSettingsPanel;
@@ -47,36 +56,11 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
         
         this.prepend(this.renderer);
 
-        /* Sidebar setup - Left side */
-        this.sidebar = new UIScrollView(ScrollDirection.VERTICAL);
-        this.sidebar.scroll.cancelScrolling().noScrollbar();
-        this.sidebar.scroll.scrollSpeed = 5;
-        this.sidebar.relative(this.editor).w(20).h(1F).column(0).stretch().scroll();
-        
-        this.sidebar.preRender((context) ->
-        {
-            /* Render background matching UIForm style */
-            context.batcher.box(this.sidebar.area.x, this.sidebar.area.y, this.sidebar.area.ex(), this.sidebar.area.ey(), Colors.A50);
-
-            /* Active button background */
-            for (int i = 0, c = this.panels.size(); i < c; i++)
-            {
-                if (this.mainView.getChildren().contains(this.panels.get(i)))
-                {
-                    UIElement child = (UIElement) this.sidebar.getChildren().get(i);
-                    if (child instanceof UIIcon) 
-                    {
-                         Area area = ((UIIcon) child).area;
-                         area.render(context.batcher, Colors.A75 | BBSSettings.primaryColor.get());
-                    }
-                }
-            }
-        });
-
         this.mainView = new UIElement();
-        this.mainView.relative(this.editor).x(20).w(1F, -20).h(1F);
+        this.mainView.relative(this.editor).w(1F).h(1F);
 
-        this.editor.add(this.mainView, this.sidebar);
+        this.editor.add(this.mainView);
+        this.iconBar.prepend(new UIRenderable(this::renderIcons));
 
         /* Model Settings Panel */
         this.modelSettingsPanel = new UIElement();
@@ -108,13 +92,45 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
         this.addSection(new UIModelSneakingSection(this));
         
         /* Register Panels */
+        UIElement spacer = new UIElement();
+        spacer.relative(this.iconBar).w(1F).h(10);
+        this.iconBar.add(spacer);
+
         this.registerPanel(this.modelSettingsPanel, UIKeys.MODELS_SETTINGS, Icons.POSE);
         this.registerPanel(this.createUnavailablePanel(), UIKeys.MODELS_IK_EDITOR, Icons.LIMB);
-        this.registerPanel(this.createUnavailablePanel(), UIKeys.MODELS_DYNAMIC_BONES, Icons.SHAPES);
+        this.registerPanel(this.createUnavailablePanel(), UIKeys.MODELS_DYNAMIC_BONES, Icons.CURVES);
 
         this.setPanel(this.modelSettingsPanel);
         
         this.fill(null);
+    }
+    
+    private void renderIcons(UIContext context)
+    {
+        for (int i = 0, c = this.panels.size(); i < c; i++)
+        {
+            if (this.mainView.getChildren().contains(this.panels.get(i)))
+            {
+                int index = this.iconBar.getChildren().size() - this.panels.size() + i;
+
+                if (index >= 0 && index < this.iconBar.getChildren().size())
+                {
+                    IUIElement child = this.iconBar.getChildren().get(index);
+
+                    if (child instanceof UIIcon)
+                    {
+                        UIDashboardPanels.renderHighlightHorizontal(context.batcher, ((UIIcon) child).area);
+                    }
+                }
+            }
+        }
+
+        if (this.saveIcon != null)
+        {
+            Area a = this.saveIcon.area;
+
+            context.batcher.box(a.x + 3, a.ey() + 4, a.ex() - 3, a.ey() + 5, 0x22ffffff);
+        }
     }
     
     private UIElement createUnavailablePanel()
@@ -155,11 +171,11 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
 
         if (tooltip != null)
         {
-            button.tooltip(tooltip, Direction.RIGHT);
+            button.tooltip(tooltip, Direction.LEFT);
         }
 
         this.panels.add(panel);
-        this.sidebar.add(button);
+        this.iconBar.add(button);
 
         return button;
     }
@@ -178,6 +194,34 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
         this.rightView.resize();
     }
     
+    @Override
+    public void forceSave()
+    {
+        super.forceSave();
+
+        if (this.data == null)
+        {
+            return;
+        }
+
+        Morph morph = Morph.getMorph(MinecraftClient.getInstance().player);
+
+        if (morph != null)
+        {
+            Form form = morph.getForm();
+
+            if (form instanceof ModelForm && ((ModelForm) form).model.get().equals(this.data.getId()))
+            {
+                FormRenderer renderer = FormUtilsClient.getRenderer(form);
+
+                if (renderer instanceof ModelFormRenderer)
+                {
+                    ((ModelFormRenderer) renderer).invalidateCachedModel();
+                }
+            }
+        }
+    }
+
     public UIPoseEditor getPoseEditor()
     {
         for (UIModelSection section : this.sections)
@@ -244,6 +288,16 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
             this.sectionsView.resize();
             this.rightView.resize();
         }
+    }
+
+    @Override
+    public void render(UIContext context)
+    {
+        int color = BBSSettings.primaryColor.get();
+
+        this.area.render(context.batcher, Colors.mulRGB(color | Colors.A100, 0.1F));
+
+        super.render(context);
     }
 
     @Override

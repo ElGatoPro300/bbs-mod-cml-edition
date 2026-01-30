@@ -146,6 +146,11 @@ public class UIModelEditorRenderer extends UIModelRenderer
         this.selectedBone = bone;
     }
 
+    public String getSelectedBone()
+    {
+        return this.selectedBone;
+    }
+
     @Override
     protected void renderUserModel(UIContext context)
     {

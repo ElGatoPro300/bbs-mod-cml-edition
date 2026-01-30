@@ -69,14 +69,13 @@ public class UIModelPartsSection extends UIModelSection
                 {
                     section.deselect();
                 }
+
+                section.onBoneSelected(bone);
             }
         };
         this.poseEditor.prepend(this.color);
         this.poseEditor.prepend(this.texture);
         this.poseEditor.prepend(this.openModel);
-
-        UILabel partsLabel = UI.label(UIKeys.MODELS_PARTS).background(() -> Colors.A50 | BBSSettings.primaryColor.get());
-        this.poseEditor.prepend(partsLabel);
     }
     
     @Override
@@ -109,7 +108,10 @@ public class UIModelPartsSection extends UIModelSection
         if (config != null)
         {
             this.color.setColor(config.color.get());
-            this.poseEditor.setPose(config.parts.get(), config.getId());
+
+            String group = config.poseGroup.get();
+
+            this.poseEditor.setPose(config.parts.get(), group.isEmpty() ? config.getId() : group);
             
             ModelInstance model = BBSModClient.getModels().getModel(config.getId());
             

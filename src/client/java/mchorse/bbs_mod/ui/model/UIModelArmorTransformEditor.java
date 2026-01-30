@@ -2,59 +2,85 @@ package mchorse.bbs_mod.ui.model;
 
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.cubic.model.ArmorSlot;
-import mchorse.bbs_mod.cubic.model.ModelConfig;
 import mchorse.bbs_mod.cubic.ModelInstance;
+import mchorse.bbs_mod.cubic.model.ArmorSlot;
+import mchorse.bbs_mod.cubic.model.ArmorType;
+import mchorse.bbs_mod.cubic.model.ModelConfig;
+import mchorse.bbs_mod.camera.OrbitDistanceCamera;
+import mchorse.bbs_mod.camera.controller.OrbitCameraController;
 import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.renderers.FormRenderer;
-import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.FormRenderer;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
 import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanel;
+import mchorse.bbs_mod.ui.dashboard.utils.UIOrbitCamera;
 import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
-import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.Perspective;
 import org.lwjgl.glfw.GLFW;
 
-public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
+public class UIModelArmorTransformEditor extends UIDashboardPanel
 {
     public UIModelPanel parent;
     public ModelConfig config;
 
     public UIPropTransform transform;
-    public UILabel handsLabel;
-    public UISearchList<String> handsSearch;
-    public UIStringList hands;
+    public UILabel armorLabel;
+    public UISearchList<String> armorSearch;
+    public UIStringList armorList;
     public UIIcon back;
+
+    /* Camera */
+    public UIOrbitCamera uiOrbitCamera;
+    public OrbitCameraController orbitCameraController;
 
     private Perspective lastPerspective;
     private Form lastForm;
     private boolean changed;
     private ModelInstance cachedModel;
 
-    public UIModelFirstPersonTransformEditor(UIModelPanel parent, ModelConfig config)
+    public UIModelArmorTransformEditor(UIModelPanel parent, ModelConfig config)
     {
         super(parent.dashboard);
 
         this.parent = parent;
         this.config = config;
 
-        this.handsLabel = UI.label(UIKeys.MODELS_HANDS).background(() -> Colors.A50 | BBSSettings.primaryColor.get());
-        this.hands = new UIStringList((l) ->
+        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        OrbitDistanceCamera orbit = new OrbitDistanceCamera();
+
+        orbit.distance.setX(30);
+        orbit.setFovRoll(false);
+        this.uiOrbitCamera = new UIOrbitCamera();
+        this.uiOrbitCamera.setControl(true);
+        this.uiOrbitCamera.orbit = orbit;
+
+        this.orbitCameraController = new OrbitCameraController(this.uiOrbitCamera.orbit);
+        this.orbitCameraController.camera.position.set(player.getPos().x, player.getPos().y + 1D, player.getPos().z);
+        this.orbitCameraController.camera.rotation.set(0, MathUtils.toRad(player.bodyYaw), 0);
+
+        this.armorLabel = UI.label(UIKeys.MODELS_ARMOR).background(() -> Colors.A50 | BBSSettings.primaryColor.get());
+        this.armorList = new UIStringList((l) ->
         {
-            int index = this.hands.getCurrentIndices().isEmpty() ? 0 : this.hands.getCurrentIndices().get(0);
-            this.setSlot(index == 0 ? this.config.fpMain : this.config.fpOffhand);
+            int index = this.armorList.getCurrentIndices().isEmpty() ? 0 : this.armorList.getCurrentIndices().get(0);
+            
+            if (index >= 0 && index < ArmorType.values().length)
+            {
+                this.setSlot(this.config.armorSlots.get(ArmorType.values()[index]));
+            }
         })
         {
             @Override
@@ -63,18 +89,21 @@ public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
                 return false;
             }
         };
-        this.hands.background = 0x88000000;
-        this.hands.add(UIKeys.MODELS_ITEMS_FP_MAIN.get());
-        this.hands.add(UIKeys.MODELS_ITEMS_FP_OFF.get());
-        this.hands.setIndex(0);
+        this.armorList.background = 0x88000000;
+        
+        for (ArmorType type : ArmorType.values())
+        {
+            this.armorList.add(type.name().toLowerCase());
+        }
+        
+        this.armorList.setIndex(0);
 
-        this.handsSearch = new UISearchList<>(this.hands);
-        this.handsSearch.label(UIKeys.GENERAL_SEARCH);
+        this.armorSearch = new UISearchList<>(this.armorList);
+        this.armorSearch.label(UIKeys.GENERAL_SEARCH);
 
         this.transform = new UIPropTransform();
         this.transform.callbacks(null, () ->
         {
-            this.parent.dirty();
             this.syncModel();
         });
         this.transform.relative(this).x(1F, -200).y(0.5F, 10).w(190).h(70);
@@ -86,12 +115,12 @@ public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
         });
         this.back.relative(this).x(1F, -26).y(6);
 
-        this.handsSearch.relative(this.transform).x(0.5F).y(0F, -5).w(1F).h(80).anchor(0.5F, 1F);
-        this.handsLabel.relative(this.handsSearch).y(-12).w(1F).h(12);
+        this.armorSearch.relative(this.transform).x(0.5F).y(0F, -5).w(1F).h(80).anchor(0.5F, 1F);
+        this.armorLabel.relative(this.armorSearch).y(-12).w(1F).h(12);
 
-        this.add(this.transform, this.handsSearch, this.handsLabel, this.back);
-        
-        this.setSlot(this.config.fpMain);
+        this.add(this.uiOrbitCamera, this.transform, this.armorSearch, this.armorLabel, this.back);
+
+        this.setSlot(this.config.armorSlots.get(ArmorType.values()[0]));
     }
 
     private void setSlot(ArmorSlot slot)
@@ -119,13 +148,15 @@ public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
     {
         if (this.cachedModel != null)
         {
-            if (this.cachedModel.fpMain != null)
+            for (ArmorType type : ArmorType.values())
             {
-                this.cachedModel.fpMain.transform.copy(this.config.fpMain.transform);
-            }
-            if (this.cachedModel.fpOffhand != null)
-            {
-                this.cachedModel.fpOffhand.transform.copy(this.config.fpOffhand.transform);
+                ArmorSlot slot = this.cachedModel.armorSlots.get(type);
+                ArmorSlot configSlot = this.config.armorSlots.get(type);
+
+                if (slot != null && configSlot != null)
+                {
+                    slot.transform.copy(configSlot.transform);
+                }
             }
         }
     }
@@ -140,6 +171,12 @@ public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
     public boolean canHideHUD()
     {
         return false;
+    }
+
+    @Override
+    public UIDashboardPanel getMainPanel()
+    {
+        return this.parent;
     }
 
     @Override
@@ -172,12 +209,18 @@ public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
         super.appear();
 
         MinecraftClient mc = MinecraftClient.getInstance();
+        ClientPlayerEntity player = mc.player;
 
         this.lastPerspective = mc.options.getPerspective();
-        mc.options.setPerspective(Perspective.FIRST_PERSON);
+        mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
         mc.options.hudHidden = false;
 
         BBSModClient.getCameraController().remove(this.dashboard.camera);
+        BBSModClient.getCameraController().add(this.orbitCameraController);
+
+        this.orbitCameraController.camera.position.set(player.getPos().x, player.getPos().y + 1D, player.getPos().z);
+        this.orbitCameraController.camera.rotation.set(0, MathUtils.toRad(player.bodyYaw), 0);
+        ((OrbitDistanceCamera) this.uiOrbitCamera.orbit).distance.setX(14);
 
         Morph morph = Morph.getMorph(mc.player);
 
@@ -204,42 +247,23 @@ public class UIModelFirstPersonTransformEditor extends UIDashboardPanel
         this.restore();
 
         MinecraftClient.getInstance().options.hudHidden = true;
+
+        BBSModClient.getCameraController().remove(this.orbitCameraController);
         BBSModClient.getCameraController().add(this.dashboard.camera);
-    }
-
-    @Override
-    public void close()
-    {
-        super.close();
-
-        this.restore();
-    }
-
-    @Override
-    public UIDashboardPanel getMainPanel()
-    {
-        return this.parent;
     }
 
     private void restore()
     {
-        MinecraftClient mc = MinecraftClient.getInstance();
-
-        if (this.lastPerspective != null)
+        if (this.changed)
         {
-            mc.options.setPerspective(this.lastPerspective);
-            this.lastPerspective = null;
+            Morph morph = Morph.getMorph(MinecraftClient.getInstance().player);
+
+            if (morph != null)
+            {
+                morph.setForm(this.lastForm);
+            }
         }
 
-        Morph morph = Morph.getMorph(mc.player);
-
-        if (morph != null && this.changed)
-        {
-            morph.setForm(this.lastForm);
-            this.lastForm = null;
-            this.changed = false;
-        }
-
-        this.cachedModel = null;
+        MinecraftClient.getInstance().options.setPerspective(this.lastPerspective);
     }
 }

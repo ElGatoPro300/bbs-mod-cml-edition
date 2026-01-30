@@ -228,11 +228,13 @@ public class UIPoseEditor extends UIElement
             menu.action(Icons.DOWNLOAD, UIKeys.POSE_CONTEXT_APPLY, () ->
             {
                 this.applyChildren((p) -> this.setFix(p, (float) this.fix.getValue()));
+                if (this.onChange != null) this.onChange.run();
             });
 
             menu.action(Icons.DOWNLOAD, IKey.constant("Aplicar a categoría"), () ->
             {
                 this.applyCategory((p) -> this.setFix(p, (float) this.fix.getValue()));
+                if (this.onChange != null) this.onChange.run();
             });
         });
         /* Botón para elegir textura de hueso (etiqueta fija ES/EN) */
@@ -272,12 +274,14 @@ public class UIPoseEditor extends UIElement
                 PoseTransform t = (PoseTransform) this.transform.getTransform();
                 Link chosen = t != null ? t.texture : null;
                 this.applyChildren((p) -> this.setTexture(p, chosen));
+                if (this.onChange != null) this.onChange.run();
             });
             menu.action(Icons.DOWNLOAD, IKey.constant("Aplicar a categoría"), () ->
             {
                 PoseTransform t = (PoseTransform) this.transform.getTransform();
                 Link chosen = t != null ? t.texture : null;
                 this.applyCategory((p) -> this.setTexture(p, chosen));
+                if (this.onChange != null) this.onChange.run();
             });
 
             menu.action(Icons.CLOSE, UIKeys.GENERAL_NONE, () ->
@@ -310,10 +314,12 @@ public class UIPoseEditor extends UIElement
             menu.action(Icons.DOWNLOAD, UIKeys.POSE_CONTEXT_APPLY, () ->
             {
                 this.applyChildren((p) -> this.setColor(p, this.color.picker.color.getARGBColor()));
+                if (this.onChange != null) this.onChange.run();
             });
             menu.action(Icons.DOWNLOAD, IKey.constant("Aplicar a categoría"), () ->
             {
                 this.applyCategory((p) -> this.setColor(p, this.color.picker.color.getARGBColor()));
+                if (this.onChange != null) this.onChange.run();
             });
         });
         this.lighting = new UIToggle(UIKeys.FORMS_EDITORS_GENERAL_LIGHTING, (b) ->
@@ -336,10 +342,12 @@ public class UIPoseEditor extends UIElement
             menu.action(Icons.DOWNLOAD, UIKeys.POSE_CONTEXT_APPLY, () ->
             {
                 this.applyChildren((p) -> this.setLighting(p, this.lighting.getValue()));
+                if (this.onChange != null) this.onChange.run();
             });
             menu.action(Icons.DOWNLOAD, IKey.constant("Aplicar a categoría"), () ->
             {
                 this.applyCategory((p) -> this.setLighting(p, this.lighting.getValue()));
+                if (this.onChange != null) this.onChange.run();
             });
         });
         this.transform = this.createTransformEditor();
@@ -412,6 +420,11 @@ public class UIPoseEditor extends UIElement
 
         this.pose.fromData(data);
         this.pickBone(current);
+        
+        if (this.onChange != null)
+        {
+            this.onChange.run();
+        }
     }
 
     protected void flipPose()
@@ -420,6 +433,11 @@ public class UIPoseEditor extends UIElement
 
         this.pose.flip(this.flippedParts);
         this.pickBone(current);
+        
+        if (this.onChange != null)
+        {
+            this.onChange.run();
+        }
     }
 
     public void setPose(Pose pose, String group)
