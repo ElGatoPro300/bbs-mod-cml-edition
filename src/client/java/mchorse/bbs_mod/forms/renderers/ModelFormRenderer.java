@@ -559,7 +559,10 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             context.stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
 
-            BBSModClient.getTextures().bindTexture(texture);
+            if (texture != null)
+            {
+                BBSModClient.getTextures().bindTexture(texture);
+            }
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
                 ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
