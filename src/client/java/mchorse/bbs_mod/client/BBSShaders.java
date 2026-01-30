@@ -12,8 +12,15 @@ import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class BBSShaders
 {
+    public static final List<Runnable> LOADERS = new ArrayList<>();
+
     private static ShaderProgram model;
     private static ShaderProgram multiLink;
     private static ShaderProgram subtitles;
@@ -63,6 +70,11 @@ public class BBSShaders
         pickerBillboardNoShading = loader.getOrCreateProgram(pickerBillboardNoShadingKey);
         pickerParticles = loader.getOrCreateProgram(pickerParticlesKey);
         pickerModels = loader.getOrCreateProgram(pickerModelsKey);
+
+        for (Runnable runnable : LOADERS)
+        {
+            runnable.run();
+        }
     }
 
     public static ShaderProgram getModel()
