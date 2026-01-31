@@ -95,9 +95,14 @@ public class GameRendererMixin
         BBSRendering.onWorldRenderEnd();
     }
 
-    @Inject(at = @At("RETURN"), method = "render")
-    private void onRenderEnd(RenderTickCounter tickCounter, boolean tick, CallbackInfo info)
+    @Inject(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;hudHidden:Z", opcode = Opcodes.GETFIELD, ordinal = 0))
+    private void onBeforeHudRendering(RenderTickCounter tickCounter, boolean tick, CallbackInfo info)
     {
-        BBSRendering.onRenderBeforeScreen();
+        ICameraController current = BBSModClient.getCameraController().getCurrent();
+
+        if (MinecraftClient.getInstance().options.hudHidden && current == null)
+        {
+            BBSRendering.onRenderBeforeScreen();
+        }
     }
 }

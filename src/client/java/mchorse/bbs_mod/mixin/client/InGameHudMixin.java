@@ -22,11 +22,13 @@ public class InGameHudMixin
 
         if (current instanceof PlayCameraController)
         {
+            BBSRendering.onRenderBeforeScreen();
+
             info.cancel();
         }
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
+    @Inject(method = "render", at = @At("TAIL"))
     public void onRenderEnd(DrawContext drawContext, RenderTickCounter tickCounter, CallbackInfo info)
     {
         BBSRendering.onRenderBeforeScreen();
