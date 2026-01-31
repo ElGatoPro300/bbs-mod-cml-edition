@@ -84,10 +84,15 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             modelMatrix.m10(0).m11(1).m12(0);
             modelMatrix.m20(0).m21(0).m22(1);
 
-            modelMatrix.mul(context.camera.view);
+            if (!context.modelRenderer)
+            {
+                modelMatrix.mul(context.camera.view);
+            }
+
             modelMatrix.scale(scale);
 
             context.stack.peek().getNormalMatrix().identity();
+            context.stack.peek().getNormalMatrix().scale(1F / scale.x, 1F / scale.y, 1F / scale.z);
         }
 
         TextRenderer renderer = MinecraftClient.getInstance().textRenderer;

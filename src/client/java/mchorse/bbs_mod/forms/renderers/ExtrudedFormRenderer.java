@@ -59,7 +59,9 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition(),
-            null
+            null,
+            true,
+            false
         );
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
@@ -82,10 +84,10 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
         );
 
-        this.renderModel(shader, context.stack, context.overlay, context.light, context.color, context.getTransition(), context.camera);
+        this.renderModel(shader, context.stack, context.overlay, context.light, context.color, context.getTransition(), context.camera, false, context.modelRenderer);
     }
 
-    private void renderModel(Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition, Camera camera)
+    private void renderModel(Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition, Camera camera, boolean invertY, boolean modelRenderer)
     {
         Link texture = this.form.texture.get();
         ModelVAO data = BBSModClient.getTextures().getExtruder().get(texture);
@@ -99,11 +101,16 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
 
                 modelMatrix.getScale(scale);
 
+                if (invertY)
+                {
+                    scale.y = -scale.y;
+                }
+
                 modelMatrix.m00(1).m01(0).m02(0);
                 modelMatrix.m10(0).m11(1).m12(0);
                 modelMatrix.m20(0).m21(0).m22(1);
 
-                if (camera != null)
+                if (camera != null && !modelRenderer)
                 {
                     modelMatrix.mul(camera.view);
                 }
@@ -111,6 +118,7 @@ public class ExtrudedFormRenderer extends FormRenderer<ExtrudedForm>
                 modelMatrix.scale(scale);
 
                 matrices.peek().getNormalMatrix().identity();
+                matrices.peek().getNormalMatrix().scale(1F / scale.x, 1F / scale.y, 1F / scale.z);
             }
 
             Color color = Colors.COLOR.set(overlayColor, true);
