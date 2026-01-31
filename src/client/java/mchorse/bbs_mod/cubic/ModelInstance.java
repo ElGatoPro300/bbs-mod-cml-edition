@@ -368,7 +368,7 @@ public class ModelInstance implements IModelInstance
             }
             else
             {
-                RenderSystem.setShader(program);
+                RenderSystem.setShader(program.get());
 
                 BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
