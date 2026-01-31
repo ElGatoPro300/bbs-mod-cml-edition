@@ -458,7 +458,7 @@ public class ParticleEmitter
                 render.renderUI(this.uiParticle, builder, matrix, transition);
             }
 
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
             RenderSystem.disableCull();
             BufferRenderer.drawWithGlobalProgram(builder.end());
             RenderSystem.enableCull();
@@ -499,8 +499,8 @@ public class ParticleEmitter
                     component.render(this, format, particle, builder, matrix, overlay, transition);
                 }
             }
-
-            RenderSystem.setShader(program);
+            
+            RenderSystem.setShader(program.get());
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableCull();
