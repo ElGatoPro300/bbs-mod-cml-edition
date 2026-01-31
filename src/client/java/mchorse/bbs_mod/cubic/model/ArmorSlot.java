@@ -22,8 +22,10 @@ public class ArmorSlot extends ValueGroup
     public BaseType toData()
     {
         MapType data = (MapType) super.toData();
+        Transform transform = this.transform.copy();
 
-        data.put("transform", this.transform.toData());
+        transform.toDeg();
+        data.put("transform", transform.toData());
 
         return data;
     }
