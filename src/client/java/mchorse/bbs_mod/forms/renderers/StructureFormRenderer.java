@@ -178,9 +178,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         {
             /* BufferBuilder mode: better lighting, worse performance */
             boolean shaders = this.isShadersActive();
-            VertexConsumerProvider consumers = shaders
-                ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                : VertexConsumerProvider.immediate(new BufferAllocator(256));
+            VertexConsumerProvider consumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
             try
             {
@@ -245,9 +243,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 try
                 {
                     boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
-                    VertexConsumerProvider consumersTint = shadersEnabled
-                        ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                        : VertexConsumerProvider.immediate(new BufferAllocator(256));
+                    VertexConsumerProvider consumersTint = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
                     FormRenderingContext tintContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
 
@@ -265,9 +261,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 try
                 {
                     boolean shadersEnabled = BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld();
-                    VertexConsumerProvider consumersAnim = shadersEnabled
-                        ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                        : VertexConsumerProvider.immediate(new BufferAllocator(256));
+                    VertexConsumerProvider consumersAnim = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
                     FormRenderingContext animContext = new FormRenderingContext()
                         .set(FormRenderType.PREVIEW, null, matrices, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
 
@@ -344,9 +338,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* BufferBuilder mode: use vanilla/culling pipeline with better lighting */
                 int light = context.light;
                 boolean shaders = this.isShadersActive();
-                VertexConsumerProvider consumers = shaders
-                    ? MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers()
-                    : VertexConsumerProvider.immediate(new BufferAllocator(256));
+                VertexConsumerProvider consumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
                 GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
 
                 /* Align state handling with VAO path to avoid state leaks affecting the first model rendered after. */
@@ -440,7 +432,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Additional pass: biome tinted blocks */
                 try
                 {
-                    VertexConsumerProvider.Immediate tintConsumers = VertexConsumerProvider.immediate(new BufferAllocator(256));
+                    VertexConsumerProvider.Immediate tintConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
                     this.renderBiomeTintedBlocksVanilla(context, context.stack, tintConsumers, light, context.overlay);
                     tintConsumers.draw();
@@ -451,7 +443,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 /* Additional pass: animated blocks (portal/fluid) with moving block layer */
                 try
                 {
-                    VertexConsumerProvider.Immediate animConsumers = VertexConsumerProvider.immediate(new BufferAllocator(256));
+                    VertexConsumerProvider.Immediate animConsumers = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
                     this.renderAnimatedBlocksVanilla(context, context.stack, animConsumers, light, context.overlay);
                     animConsumers.draw();
