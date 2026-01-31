@@ -124,7 +124,7 @@ public class Batcher2D
     public void line(float x1, float y1, float x2, float y2, float thickness, int color)
     {
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         float dx = x2 - x1;
         float dy = y2 - y1;
@@ -182,7 +182,7 @@ public class Batcher2D
         bottom += offset;
 
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         
 
@@ -236,7 +236,7 @@ public class Batcher2D
     public void dropCircleShadow(int x, int y, int radius, int segments, int opaque, int shadow)
     {
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
 
         
         builder.vertex(matrix4f, x, y, 0F).color(opaque);
@@ -263,7 +263,7 @@ public class Batcher2D
 
         Matrix4f matrix4f = this.context.getMatrices().peek().getPositionMatrix();
 
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
 
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
@@ -282,7 +282,7 @@ public class Batcher2D
         BufferRenderer.drawWithGlobalProgram(builder.end());
 
         /* Draw outer shadow */
-        BufferBuilder builder2 = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder2 = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
         for (int i = 0; i < segments; i ++)
         {
@@ -457,18 +457,34 @@ public class Batcher2D
 
     public void texturedArea(Texture texture, int color, float x, float y, float w, float h, float u, float v, float tileW, float tileH, int tw, int th)
     {
-        int countX = (int) (((w - 1) / tileW) + 1);
-        int countY = (int) (((h - 1) / tileH) + 1);
+        if (w <= 0 || h <= 0 || tileW <= 0 || tileH <= 0)
+        {
+            return;
+        }
+
+        int countX = (int) Math.ceil(w / tileW);
+        int countY = (int) Math.ceil(h / tileH);
+        
+        if (countX <= 0) countX = 1;
+        if (countY <= 0) countY = 1;
+        
+        long c = (long) countX * countY;
+        
+        if (c <= 0 || c > 10000) // Safety limit to prevent freeze/crash
+        {
+             return;
+        }
+
         float fillerX = w - (countX - 1) * tileW;
         float fillerY = h - (countY - 1) * tileH;
 
         Matrix4f matrix = this.context.getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.setShaderTexture(0, texture.id);
 
-        for (int i = 0, c = countX * countY; i < c; i ++)
+        for (int i = 0; i < c; i ++)
         {
             float ix = i % countX;
             float iy = i / countX;

@@ -17,6 +17,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -346,7 +347,7 @@ public abstract class UIModelRenderer extends UIElement
     protected void renderGrid(UIContext context)
     {
         Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 

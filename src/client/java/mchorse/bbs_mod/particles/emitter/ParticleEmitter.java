@@ -450,21 +450,17 @@ public class ParticleEmitter
             this.setParticleVariables(this.uiParticle, transition);
 
             Matrix4f matrix = stack.peek().getPositionMatrix();
+            BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
 
-            try (BufferAllocator allocator = new BufferAllocator(1536))
+            for (IComponentParticleRender render : list)
             {
-                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-                for (IComponentParticleRender render : list)
-                {
-                    render.renderUI(this.uiParticle, builder, matrix, transition);
-                }
-
-                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-                RenderSystem.disableCull();
-                BufferRenderer.drawWithGlobalProgram(builder.end());
-                RenderSystem.enableCull();
+                render.renderUI(this.uiParticle, builder, matrix, transition);
             }
+
+            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
         }
     }
 
@@ -488,32 +484,28 @@ public class ParticleEmitter
         if (!this.particles.isEmpty())
         {
             Matrix4f matrix = stack.peek().getPositionMatrix();
+            BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, format);
 
-            try (BufferAllocator allocator = new BufferAllocator(1536))
+            this.bindTexture();
+
+            for (Particle particle : this.particles)
             {
-                BufferBuilder builder = new BufferBuilder(allocator, VertexFormat.DrawMode.TRIANGLES, format);
+                this.setEmitterVariables(transition);
+                this.setParticleVariables(particle, transition);
 
-                this.bindTexture();
-
-                for (Particle particle : this.particles)
+                for (IComponentParticleRender component : renders)
                 {
-                    this.setEmitterVariables(transition);
-                    this.setParticleVariables(particle, transition);
-
-                    for (IComponentParticleRender component : renders)
-                    {
-                        component.render(this, format, particle, builder, matrix, overlay, transition);
-                    }
+                    component.render(this, format, particle, builder, matrix, overlay, transition);
                 }
-
-                RenderSystem.setShader(program);
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableCull();
-                BufferRenderer.drawWithGlobalProgram(builder.end());
-                RenderSystem.enableCull();
-                RenderSystem.disableBlend();
             }
+
+            RenderSystem.setShader(program);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
+            RenderSystem.disableBlend();
         }
 
         for (IComponentParticleRender component : renders)
