@@ -1,6 +1,6 @@
 package mchorse.bbs_mod.ui.film.replays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
 import mchorse.bbs_mod.camera.Camera;
@@ -14,15 +14,19 @@ import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.film.Film;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.film.replays.Replays;
+import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.AnchorForm;
 import mchorse.bbs_mod.forms.forms.BodyPart;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.MobForm;
+import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.math.IExpression;
 import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.settings.values.IValueListener;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.core.ValueForm;
@@ -32,14 +36,19 @@ import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.forms.UIFormPalette;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIFolderPickerOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UINumberOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.CollectionUtils;
@@ -53,21 +62,21 @@ import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.io.File;
+import java.nio.file.Path;
 
 /**
  * This GUI is responsible for drawing replays available in the 
@@ -78,6 +87,24 @@ public class UIReplayList extends UIList<Replay>
     private static String LAST_PROCESS = "v";
     private static String LAST_OFFSET = "0";
     private static List<String> LAST_PROCESS_PROPERTIES = Arrays.asList("x");
+    private static int LAST_PROCESS_SECTION = 0;
+    private static int LAST_PROCESS_GRID_COLUMNS = 4;
+    private static double LAST_PROCESS_GRID_SPACING_X = 2D;
+    private static double LAST_PROCESS_GRID_SPACING_Z = 2D;
+    private static double LAST_PROCESS_CIRCLE_RADIUS = 3D;
+    private static int LAST_PROCESS_CIRCLE_COUNT = 8;
+    private static double LAST_PROCESS_CIRCLE_START_ANGLE = 0D;
+    private static double LAST_PROCESS_LINE_DIRECTION = 0D;
+    private static double LAST_PROCESS_LINE_SPACING = 2D;
+    private static double LAST_PROCESS_SCATTER_AREA_X = 10D;
+    private static double LAST_PROCESS_SCATTER_AREA_Z = 10D;
+    private static double LAST_PROCESS_SCATTER_SEED = 0D;
+    private static double LAST_PROCESS_SCATTER_MIN_SEPARATION = 1D;
+    private static int LAST_OFFSET_SECTION = 0;
+    private static double LAST_OFFSET_STEP = 1D;
+    private static double LAST_OFFSET_RANDOM_SEED = 0D;
+    private static double LAST_OFFSET_RANDOM_MIN = -1D;
+    private static double LAST_OFFSET_RANDOM_MAX = 1D;
 
     public UIFilmPanel panel;
     public UIReplaysOverlayPanel overlay;
@@ -128,6 +155,7 @@ public class UIReplayList extends UIList<Replay>
                 {
                     menu.action(Icons.ALL_DIRECTIONS, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS, this::processReplays);
                     menu.action(Icons.TIME, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME, this::offsetTimeReplays);
+                    menu.action(Icons.BLOCK, UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS, this::applyRandomSkins);
                 }
                 
                 menu.action(Icons.FOLDER, UIKeys.SCENE_REPLAYS_CONTEXT_ADD_GROUP, this::addGroup);
@@ -396,12 +424,225 @@ public class UIReplayList extends UIList<Replay>
     {
         UITextbox expression = new UITextbox((t) -> LAST_PROCESS = t);
         UIStringList properties = new UIStringList(null);
-        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_TITLE, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_DESCRIPTION, (b) ->
-        {
-            if (b)
-            {
-                MathBuilder builder = new MathBuilder();
-                int min = Integer.MAX_VALUE;
+        UIIcon sectionExpression = new UIIcon(Icons.CODE, (b) -> {});
+        UIIcon sectionGrid = new UIIcon(Icons.MAZE, (b) -> {});
+        UIIcon sectionCircle = new UIIcon(Icons.CIRCLE, (b) -> {});
+        UIIcon sectionLine = new UIIcon(Icons.LINE, (b) -> {});
+        UIIcon sectionScatter = new UIIcon(Icons.PARTICLE, (b) -> {});
+        UITrackpad gridColumns = new UITrackpad((v) -> LAST_PROCESS_GRID_COLUMNS = Math.max(1, v.intValue()));
+        UITrackpad gridSpacingX = new UITrackpad((v) -> LAST_PROCESS_GRID_SPACING_X = v.doubleValue());
+        UITrackpad gridSpacingZ = new UITrackpad((v) -> LAST_PROCESS_GRID_SPACING_Z = v.doubleValue());
+        UITrackpad circleRadius = new UITrackpad((v) -> LAST_PROCESS_CIRCLE_RADIUS = v.doubleValue());
+        UITrackpad circleCount = new UITrackpad((v) -> LAST_PROCESS_CIRCLE_COUNT = Math.max(1, v.intValue()));
+        UITrackpad circleStartAngle = new UITrackpad((v) -> LAST_PROCESS_CIRCLE_START_ANGLE = v.doubleValue());
+        UITrackpad lineDirection = new UITrackpad((v) -> LAST_PROCESS_LINE_DIRECTION = v.doubleValue());
+        UITrackpad lineSpacing = new UITrackpad((v) -> LAST_PROCESS_LINE_SPACING = v.doubleValue());
+        UITrackpad scatterAreaX = new UITrackpad((v) -> LAST_PROCESS_SCATTER_AREA_X = v.doubleValue());
+        UITrackpad scatterAreaZ = new UITrackpad((v) -> LAST_PROCESS_SCATTER_AREA_Z = v.doubleValue());
+        UITrackpad scatterSeed = new UITrackpad((v) -> LAST_PROCESS_SCATTER_SEED = v.doubleValue());
+        UITrackpad scatterMinSeparation = new UITrackpad((v) -> LAST_PROCESS_SCATTER_MIN_SEPARATION = v.doubleValue());
+        UIElement gridControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_GRID_COLUMNS),
+            gridColumns,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_GRID_SPACING_X).marginTop(6),
+            gridSpacingX,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_GRID_SPACING_Z).marginTop(6),
+            gridSpacingZ
+        );
+        UIElement circleControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_CIRCLE_RADIUS),
+            circleRadius,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_CIRCLE_COUNT).marginTop(6),
+            circleCount,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_CIRCLE_START_ANGLE).marginTop(6),
+            circleStartAngle
+        );
+        UIElement lineControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_LINE_DIRECTION),
+            lineDirection,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_LINE_SPACING).marginTop(6),
+            lineSpacing
+        );
+        UIElement scatterControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SCATTER_AREA_X),
+            scatterAreaX,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SCATTER_AREA_Z).marginTop(6),
+            scatterAreaZ,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SCATTER_SEED).marginTop(6),
+            scatterSeed,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SCATTER_MIN_SEPARATION).marginTop(6),
+            scatterMinSeparation
+        );
+        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_TITLE,
+                UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_DESCRIPTION, (b) -> {
+                    if (b) {
+                        if (LAST_PROCESS_SECTION == 1) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            int count = indices.size();
+
+                            if (count == 0) {
+                                return;
+                            }
+
+                            int columns = Math.max(1, (int) gridColumns.getValue());
+                            int rows = (int) Math.ceil(count / (double) columns);
+                            double spacingX = gridSpacingX.getValue();
+                            double spacingZ = gridSpacingZ.getValue();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+
+                                int col = order % columns;
+                                int row = order / columns;
+
+                                double xOffset = (col - (columns - 1) / 2D) * spacingX;
+                                double zOffset = (row - (rows - 1) / 2D) * spacingZ;
+
+                                this.applyOffset(replay, "x", xOffset);
+                                this.applyOffset(replay, "z", zOffset);
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_PROCESS_SECTION == 2) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            int count = indices.size();
+
+                            if (count == 0) {
+                                return;
+                            }
+
+                            int divisor = Math.max(1, (int) circleCount.getValue());
+                            double radius = circleRadius.getValue();
+                            double startAngle = circleStartAngle.getValue();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+
+                                double angle = Math.toRadians(startAngle + (order * 360D / divisor));
+                                double xOffset = Math.cos(angle) * radius;
+                                double zOffset = Math.sin(angle) * radius;
+
+                                this.applyOffset(replay, "x", xOffset);
+                                this.applyOffset(replay, "z", zOffset);
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_PROCESS_SECTION == 3) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            int count = indices.size();
+
+                            if (count == 0) {
+                                return;
+                            }
+
+                            double direction = lineDirection.getValue();
+                            double spacing = lineSpacing.getValue();
+                            double angle = Math.toRadians(direction);
+                            double stepX = Math.cos(angle) * spacing;
+                            double stepZ = Math.sin(angle) * spacing;
+                            double center = (count - 1) / 2D;
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+
+                                double offset = order - center;
+                                double xOffset = stepX * offset;
+                                double zOffset = stepZ * offset;
+
+                                this.applyOffset(replay, "x", xOffset);
+                                this.applyOffset(replay, "z", zOffset);
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_PROCESS_SECTION == 4) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            int count = indices.size();
+
+                            if (count == 0) {
+                                return;
+                            }
+
+                            double areaX = scatterAreaX.getValue();
+                            double areaZ = scatterAreaZ.getValue();
+                            double minSep = scatterMinSeparation.getValue();
+                            double minSepSq = minSep * minSep;
+                            long seed = (long) Math.round(scatterSeed.getValue());
+
+                            java.util.Random random = new java.util.Random(seed);
+                            List<double[]> placed = new ArrayList<>();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+
+                                double xOffset = 0D;
+                                double zOffset = 0D;
+                                boolean accepted = false;
+
+                                for (int attempt = 0; attempt < 200; attempt++) {
+                                    double candidateX = (random.nextDouble() - 0.5D) * areaX;
+                                    double candidateZ = (random.nextDouble() - 0.5D) * areaZ;
+
+                                    boolean ok = true;
+
+                                    if (minSep > 0D) {
+                                        for (double[] point : placed) {
+                                            double dx = candidateX - point[0];
+                                            double dz = candidateZ - point[1];
+
+                                            if (dx * dx + dz * dz < minSepSq) {
+                                                ok = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (ok) {
+                                        xOffset = candidateX;
+                                        zOffset = candidateZ;
+                                        accepted = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!accepted) {
+                                    xOffset = (random.nextDouble() - 0.5D) * areaX;
+                                    zOffset = (random.nextDouble() - 0.5D) * areaZ;
+                                }
+
+                                placed.add(new double[] { xOffset, zOffset });
+
+                                this.applyOffset(replay, "x", xOffset);
+                                this.applyOffset(replay, "z", zOffset);
+                            }
+
+                            return;
+                        }
+
+
+                        MathBuilder builder = new MathBuilder();
+                        int min = Integer.MAX_VALUE;
 
                 builder.register("i");
                 builder.register("o");
@@ -477,21 +718,242 @@ public class UIReplayList extends UIList<Replay>
         expression.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_EXPRESSION_TOOLTIP);
         expression.relative(panel.confirm).y(-1F, -5).w(1F).h(20);
 
+        sectionExpression.active(LAST_PROCESS_SECTION == 0).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SECTION_EXPRESSION);
+        sectionGrid.active(LAST_PROCESS_SECTION == 1).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SECTION_GRID);
+        sectionCircle.active(LAST_PROCESS_SECTION == 2).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SECTION_CIRCLE);
+        sectionLine.active(LAST_PROCESS_SECTION == 3).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SECTION_LINE);
+        sectionScatter.active(LAST_PROCESS_SECTION == 4).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SECTION_SCATTER);
+
+        sectionExpression.callback = (b) ->
+        {
+            LAST_PROCESS_SECTION = 0;
+            sectionExpression.active(true);
+            sectionGrid.active(false);
+            sectionCircle.active(false);
+            sectionLine.active(false);
+            sectionScatter.active(false);
+            gridControls.setVisible(false);
+            circleControls.setVisible(false);
+            lineControls.setVisible(false);
+            scatterControls.setVisible(false);
+            expression.setVisible(true);
+            properties.setVisible(true);
+        };
+
+        sectionGrid.callback = (b) ->
+        {
+            LAST_PROCESS_SECTION = 1;
+            sectionExpression.active(false);
+            sectionGrid.active(true);
+            sectionCircle.active(false);
+            sectionLine.active(false);
+            sectionScatter.active(false);
+            gridControls.setVisible(true);
+            circleControls.setVisible(false);
+            lineControls.setVisible(false);
+            scatterControls.setVisible(false);
+            expression.setVisible(false);
+            properties.setVisible(false);
+        };
+
+        sectionCircle.callback = (b) ->
+        {
+            LAST_PROCESS_SECTION = 2;
+            sectionExpression.active(false);
+            sectionGrid.active(false);
+            sectionCircle.active(true);
+            sectionLine.active(false);
+            sectionScatter.active(false);
+            gridControls.setVisible(false);
+            circleControls.setVisible(true);
+            lineControls.setVisible(false);
+            scatterControls.setVisible(false);
+            expression.setVisible(false);
+            properties.setVisible(false);
+        };
+
+        sectionLine.callback = (b) ->
+        {
+            LAST_PROCESS_SECTION = 3;
+            sectionExpression.active(false);
+            sectionGrid.active(false);
+            sectionCircle.active(false);
+            sectionLine.active(true);
+            sectionScatter.active(false);
+            gridControls.setVisible(false);
+            circleControls.setVisible(false);
+            lineControls.setVisible(true);
+            scatterControls.setVisible(false);
+            expression.setVisible(false);
+            properties.setVisible(false);
+        };
+
+        sectionScatter.callback = (b) ->
+        {
+            LAST_PROCESS_SECTION = 4;
+            sectionExpression.active(false);
+            sectionGrid.active(false);
+            sectionCircle.active(false);
+            sectionLine.active(false);
+            sectionScatter.active(true);
+            gridControls.setVisible(false);
+            circleControls.setVisible(false);
+            lineControls.setVisible(false);
+            scatterControls.setVisible(true);
+            expression.setVisible(false);
+            properties.setVisible(false);
+        };
+
+        gridColumns.limit(1).integer().values(1, 1, 5).setValue(LAST_PROCESS_GRID_COLUMNS);
+        gridSpacingX.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_GRID_SPACING_X);
+        gridSpacingZ.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_GRID_SPACING_Z);
+
+        circleRadius.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_CIRCLE_RADIUS);
+        circleCount.limit(1).integer().values(1, 1, 5).setValue(LAST_PROCESS_CIRCLE_COUNT);
+        circleStartAngle.values(1D, 0.1D, 10D).setValue(LAST_PROCESS_CIRCLE_START_ANGLE);
+
+        lineDirection.values(1D, 0.1D, 10D).setValue(LAST_PROCESS_LINE_DIRECTION);
+        lineSpacing.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_LINE_SPACING);
+
+        scatterAreaX.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_SCATTER_AREA_X);
+        scatterAreaZ.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_SCATTER_AREA_Z);
+        scatterSeed.values(1D, 0.1D, 10D).setValue(LAST_PROCESS_SCATTER_SEED);
+        scatterMinSeparation.values(0.1D, 0.01D, 1D).setValue(LAST_PROCESS_SCATTER_MIN_SEPARATION);
+
+        gridControls.relative(panel.content).x(6).y(70).w(1F, -12).h(1F, -110);
+        gridControls.setVisible(LAST_PROCESS_SECTION == 1);
+
+        circleControls.relative(panel.content).x(6).y(70).w(1F, -12).h(1F, -110);
+        circleControls.setVisible(LAST_PROCESS_SECTION == 2);
+
+        lineControls.relative(panel.content).x(6).y(70).w(1F, -12).h(1F, -110);
+        lineControls.setVisible(LAST_PROCESS_SECTION == 3);
+
+        scatterControls.relative(panel.content).x(6).y(70).w(1F, -12).h(1F, -110);
+        scatterControls.setVisible(LAST_PROCESS_SECTION == 4);
+
+        expression.setVisible(LAST_PROCESS_SECTION == 0);
+        properties.setVisible(LAST_PROCESS_SECTION == 0);
+
         panel.confirm.w(1F, -10);
-        panel.content.add(expression, properties);
+        panel.content.add(gridControls, circleControls, lineControls, scatterControls, expression, properties);
+        panel.icons.add(sectionExpression, sectionGrid, sectionCircle, sectionLine, sectionScatter);
 
         UIOverlay.addOverlay(this.getContext(), panel, 240, 300);
     }
 
-    private void offsetTimeReplays()
+    private void applyOffset(Replay replay, String property, double offset)
     {
-        UITextbox tick = new UITextbox((t) -> LAST_OFFSET = t);
-        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_TITLE, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION, (b) ->
+        BaseValue value = replay.keyframes.get(property);
+
+        if (!(value instanceof KeyframeChannel<?> channel))
         {
-            if (b)
-            {
-                MathBuilder builder = new MathBuilder();
-                int min = Integer.MAX_VALUE;
+            return;
+        }
+
+        @SuppressWarnings("rawtypes")
+        KeyframeChannel rawChannel = (KeyframeChannel) channel;
+        @SuppressWarnings("rawtypes")
+        List<Keyframe> keyframes = rawChannel.getKeyframes();
+
+        for (int i = 0; i < keyframes.size(); i++)
+        {
+            Keyframe kf = keyframes.get(i);
+            double currentValue = rawChannel.getFactory().getY(kf.getValue());
+
+            kf.setValue(rawChannel.getFactory().yToValue(currentValue + offset), true);
+        }
+    }
+
+    private void offsetTimeReplays() {
+        UITextbox tick = new UITextbox((t) -> LAST_OFFSET = t);
+        UIIcon sectionExpression = new UIIcon(Icons.CODE, (b) -> {});
+        UIIcon sectionStagger = new UIIcon(Icons.TIME, (b) -> {});
+        UIIcon sectionAlternating = new UIIcon(Icons.EXCHANGE, (b) -> {});
+        UIIcon sectionRandom = new UIIcon(Icons.REFRESH, (b) -> {});
+        UITrackpad staggerStep = new UITrackpad((v) -> LAST_OFFSET_STEP = v.doubleValue());
+        UITrackpad randomSeed = new UITrackpad((v) -> LAST_OFFSET_RANDOM_SEED = v.doubleValue());
+        UITrackpad randomMin = new UITrackpad((v) -> LAST_OFFSET_RANDOM_MIN = v.doubleValue());
+        UITrackpad randomMax = new UITrackpad((v) -> LAST_OFFSET_RANDOM_MAX = v.doubleValue());
+        UIElement staggerControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_STEP),
+            staggerStep
+        );
+        UIElement randomControls = UI.column(4,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SEED),
+            randomSeed,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_RANDOM_MIN).marginTop(6),
+            randomMin,
+            UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_RANDOM_MAX).marginTop(6),
+            randomMax
+        );
+        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_TITLE,
+                UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION, (b) -> {
+                    if (b) {
+                        if (LAST_OFFSET_SECTION == 1) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            double step = staggerStep.getValue();
+                            int count = indices.size();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+                                float tickv = (float) (order * step);
+
+                                BaseValue.edit(replay, (r) -> r.shift(tickv));
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_OFFSET_SECTION == 2) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            double step = staggerStep.getValue();
+                            int count = indices.size();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+                                float tickv = (float) ((order % 2 == 0 ? 1D : -1D) * step);
+
+                                BaseValue.edit(replay, (r) -> r.shift(tickv));
+                            }
+
+                            return;
+                        }
+
+                        if (LAST_OFFSET_SECTION == 3) {
+                            List<Integer> indices = new ArrayList<>(this.current);
+
+                            Collections.sort(indices);
+
+                            double seed = randomSeed.getValue();
+                            double min = randomMin.getValue();
+                            double max = randomMax.getValue();
+                            double start = Math.min(min, max);
+                            double end = Math.max(min, max);
+                            java.util.Random random = new java.util.Random((long) Math.round(seed));
+                            int count = indices.size();
+
+                            for (int order = 0; order < count; order++) {
+                                int index = indices.get(order);
+                                Replay replay = this.list.get(index);
+                                float tickv = (float) (start + (end - start) * random.nextDouble());
+
+                                BaseValue.edit(replay, (r) -> r.shift(tickv));
+                            }
+
+                            return;
+                        }
+
+                        MathBuilder builder = new MathBuilder();
+                        int min = Integer.MAX_VALUE;
 
                 builder.register("i");
                 builder.register("o");
@@ -528,10 +990,95 @@ public class UIReplayList extends UIList<Replay>
         tick.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_EXPRESSION_TOOLTIP);
         tick.relative(panel.confirm).y(-1F, -5).w(1F).h(20);
 
-        panel.confirm.w(1F, -10);
-        panel.content.add(tick);
+        sectionExpression.active(LAST_OFFSET_SECTION == 0).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_EXPRESSION);
+        sectionStagger.active(LAST_OFFSET_SECTION == 1).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_STAGGER);
+        sectionAlternating.active(LAST_OFFSET_SECTION == 2).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_ALTERNATING);
+        sectionRandom.active(LAST_OFFSET_SECTION == 3).tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_SECTION_RANDOM);
 
-        UIOverlay.addOverlay(this.getContext(), panel);
+        sectionExpression.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 0;
+            sectionExpression.active(true);
+            sectionStagger.active(false);
+            sectionAlternating.active(false);
+            sectionRandom.active(false);
+            staggerControls.setVisible(false);
+            randomControls.setVisible(false);
+            tick.setVisible(true);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_EXPRESSION);
+        };
+
+        sectionStagger.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 1;
+            sectionExpression.active(false);
+            sectionStagger.active(true);
+            sectionAlternating.active(false);
+            sectionRandom.active(false);
+            staggerControls.setVisible(true);
+            randomControls.setVisible(false);
+            tick.setVisible(false);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_STAGGER);
+        };
+
+        sectionAlternating.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 2;
+            sectionExpression.active(false);
+            sectionStagger.active(false);
+            sectionAlternating.active(true);
+            sectionRandom.active(false);
+            staggerControls.setVisible(true);
+            randomControls.setVisible(false);
+            tick.setVisible(false);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_ALTERNATING);
+        };
+
+        sectionRandom.callback = (b) ->
+        {
+            LAST_OFFSET_SECTION = 3;
+            sectionExpression.active(false);
+            sectionStagger.active(false);
+            sectionAlternating.active(false);
+            sectionRandom.active(true);
+            staggerControls.setVisible(false);
+            randomControls.setVisible(true);
+            tick.setVisible(false);
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_RANDOM);
+        };
+
+        staggerStep.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_STEP);
+        randomSeed.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_RANDOM_SEED);
+        randomMin.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_RANDOM_MIN);
+        randomMax.values(1D, 0.1D, 10D).setValue(LAST_OFFSET_RANDOM_MAX);
+        staggerControls.relative(panel.confirm).x(6).y(-1F, -58).w(1F, -12).h(44);
+        staggerControls.setVisible(LAST_OFFSET_SECTION == 1 || LAST_OFFSET_SECTION == 2);
+        randomControls.relative(panel.content).x(6).y(70).w(1F, -12).h(1F, -130);
+        randomControls.setVisible(LAST_OFFSET_SECTION == 3);
+        tick.setVisible(LAST_OFFSET_SECTION == 0);
+
+        if (LAST_OFFSET_SECTION == 1)
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_STAGGER);
+        }
+        else if (LAST_OFFSET_SECTION == 2)
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_ALTERNATING);
+        }
+        else if (LAST_OFFSET_SECTION == 3)
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_RANDOM);
+        }
+        else
+        {
+            panel.setMessage(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_DESCRIPTION_EXPRESSION);
+        }
+
+        panel.confirm.w(1F, -10);
+        panel.content.add(staggerControls, randomControls, tick);
+        panel.icons.add(sectionExpression, sectionStagger, sectionAlternating, sectionRandom);
+
+        UIOverlay.addOverlay(this.getContext(), panel, 240, 240);
     }
 
     private void copyReplay()
@@ -669,19 +1216,33 @@ public class UIReplayList extends UIList<Replay>
         ArrayList<ModelBlockEntity> modelBlocks = new ArrayList<>(BBSRendering.capturedModelBlocks);
         UISearchList<String> search = new UISearchList<>(new UIStringList(null));
         UIList<String> list = search.list;
-        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_TITLE, UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_DESCRIPTION, (b) ->
-        {
-            if (b)
-            {
-                int index = list.getIndex();
-                ModelBlockEntity modelBlock = CollectionUtils.getSafe(modelBlocks, index);
 
-                if (modelBlock != null)
-                {
-                    this.fromModelBlock(modelBlock);
-                }
-            }
-        });
+        list.multi();
+
+        UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_TITLE,
+                UIKeys.SCENE_REPLAYS_CONTEXT_FROM_MODEL_BLOCK_DESCRIPTION, (b) -> {
+                    if (b) {
+                        List<String> selected = list.getCurrent();
+
+                        if (selected.isEmpty()) {
+                            int index = list.getIndex();
+                            ModelBlockEntity modelBlock = CollectionUtils.getSafe(modelBlocks, index);
+
+                            if (modelBlock != null) {
+                                this.fromModelBlock(modelBlock);
+                            }
+                        } else {
+                            for (String name : selected) {
+                                int index = list.getList().indexOf(name);
+                                ModelBlockEntity modelBlock = CollectionUtils.getSafe(modelBlocks, index);
+
+                                if (modelBlock != null) {
+                                    this.fromModelBlock(modelBlock);
+                                }
+                            }
+                        }
+                    }
+                });
 
         modelBlocks.sort(Comparator.comparing(ModelBlockEntity::getName));
 
@@ -807,6 +1368,119 @@ public class UIReplayList extends UIList<Replay>
         }
     }
 
+    private void applyRandomSkins()
+    {
+        if (this.isDeselected())
+        {
+            return;
+        }
+
+        UIFolderPickerOverlayPanel panel = new UIFolderPickerOverlayPanel(
+                UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS,
+                IKey.constant("Select the folder containing PNG skin files:"),
+                (folder) -> this.processRandomSkins(folder));
+
+        UIOverlay.addOverlay(this.getContext(), panel);
+    }
+
+    private void processRandomSkins(File skinsFolder) {
+        if (skinsFolder == null) {
+            return;
+        }
+
+        if (!skinsFolder.exists() || !skinsFolder.isDirectory()) {
+            UIOverlay.addOverlay(this.getContext(),
+                    new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR,
+                            IKey.constant("The specified folder does not exist or is not a directory.")));
+            return;
+        }
+
+        /* Get all PNG files from the folder */
+        List<File> skinFiles = new ArrayList<>();
+        File[] files = skinsFolder.listFiles();
+        
+        if (files != null)
+        {
+            for (File file : files)
+            {
+                if (file.isFile() && file.getName().toLowerCase().endsWith(".png"))
+                {
+                    skinFiles.add(file);
+                }
+            }
+        }
+
+        if (skinFiles.isEmpty())
+        {
+            UIOverlay.addOverlay(this.getContext(), 
+                new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR, 
+                IKey.constant("No PNG files found in the specified folder.")));
+            return;
+        }
+
+        /* Shuffle the skins for random assignment */
+        Collections.shuffle(skinFiles);
+
+        /* Get selected replays */
+        List<Replay> selectedReplays = this.getCurrent();
+        
+        if (selectedReplays.isEmpty())
+        {
+            return;
+        }
+
+        /* Apply skins to replays */
+        int skinIndex = 0;
+        int successCount = 0;
+        
+        for (Replay replay : selectedReplays)
+        {
+            File skinFile = skinFiles.get(skinIndex % skinFiles.size());
+            
+            /* Create a Link using the AssetProvider */
+            Link skinLink = BBSMod.getProvider().getLink(skinFile);
+            
+            if (skinLink == null)
+            {
+                /* If the file is not in the assets folder, skip it */
+                skinIndex++;
+                continue;
+            }
+            
+            /* Get the form and set the texture */
+            ValueForm formValue = replay.form;
+            if (formValue != null && formValue.get() != null)
+            {
+                Form form = formValue.get();
+                
+                if (form instanceof MobForm)
+                {
+                    ((MobForm) form).texture.set(skinLink);
+                    successCount++;
+                }
+                else if (form instanceof ModelForm)
+                {
+                    ((ModelForm) form).texture.set(skinLink);
+                    successCount++;
+                }
+            }
+            
+            skinIndex++;
+        }
+
+        /* Update UI */
+        this.update();
+        this.updateFilmEditor();
+
+        if (successCount == 0) {
+            UIOverlay.addOverlay(this.getContext(),
+                    new UIMessageOverlayPanel(UIKeys.GENERAL_ERROR,
+                            IKey.constant(
+                                    "The skins folder must be inside the BBS assets folder. For example: config/bbs/assets/models/!Skins/")));
+        }
+    }
+
+
     private void removeReplay()
     {
         if (this.isDeselected())
@@ -925,11 +1599,7 @@ public class UIReplayList extends UIList<Replay>
 
             y -= 10;
 
-            Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
-            Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
-            RenderSystem.setupLevelDiffuseLighting(a, b);
             FormUtilsClient.renderUI(form, context, x, y, x + 40, y + 40);
-            DiffuseLighting.disableGuiDepthLighting();
 
             context.batcher.unclip(context);
 

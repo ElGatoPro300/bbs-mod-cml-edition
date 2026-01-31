@@ -35,9 +35,11 @@ import mchorse.bbs_mod.forms.renderers.VanillaParticleFormRenderer;
 import mchorse.bbs_mod.forms.renderers.StructureFormRenderer;
 import mchorse.bbs_mod.forms.renderers.LightFormRenderer;
 import mchorse.bbs_mod.ui.framework.UIContext;
-import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
+import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.Util;
 
 import java.util.Collections;
@@ -55,12 +57,12 @@ public class FormUtilsClient
 
     static
     {
-        /* BlockBufferAllocatorStorage storage = new BlockBufferAllocatorStorage(); */
-        java.util.SequencedMap sortedMap = Util.make(new Object2ObjectLinkedOpenHashMap(), map -> {
-            map.put(TexturedRenderLayers.getEntitySolid(), new BufferAllocator(RenderLayer.getSolid().getExpectedBufferSize()));
-            map.put(TexturedRenderLayers.getEntityCutout(), new BufferAllocator(RenderLayer.getCutout().getExpectedBufferSize()));
-            map.put(TexturedRenderLayers.getBannerPatterns(), new BufferAllocator(RenderLayer.getCutoutMipped().getExpectedBufferSize()));
-            map.put(TexturedRenderLayers.getItemEntityTranslucentCull(), new BufferAllocator(RenderLayer.getTranslucent().getExpectedBufferSize()));
+        BlockBufferBuilderStorage storage = new BlockBufferBuilderStorage();
+        SortedMap sortedMap = Util.make(new Object2ObjectLinkedOpenHashMap(), map -> {
+            map.put(TexturedRenderLayers.getEntitySolid(), storage.get(RenderLayer.getSolid()));
+            map.put(TexturedRenderLayers.getEntityCutout(), storage.get(RenderLayer.getCutout()));
+            map.put(TexturedRenderLayers.getBannerPatterns(), storage.get(RenderLayer.getCutoutMipped()));
+            map.put(TexturedRenderLayers.getEntityTranslucentCull(), storage.get(RenderLayer.getTranslucent()));
             assignBufferBuilder(map, RenderLayer.getSolid());
             assignBufferBuilder(map, RenderLayer.getCutout());
             assignBufferBuilder(map, RenderLayer.getTranslucent());
@@ -70,8 +72,7 @@ public class FormUtilsClient
             assignBufferBuilder(map, TexturedRenderLayers.getShulkerBoxes());
             assignBufferBuilder(map, TexturedRenderLayers.getSign());
             assignBufferBuilder(map, TexturedRenderLayers.getHangingSign());
-            map.put(TexturedRenderLayers.getChest(), new BufferAllocator(786432));
-            /*
+            map.put(TexturedRenderLayers.getChest(), new BufferBuilder(786432));
             assignBufferBuilder(map, RenderLayer.getArmorGlint());
             assignBufferBuilder(map, RenderLayer.getArmorEntityGlint());
             assignBufferBuilder(map, RenderLayer.getGlint());
@@ -80,11 +81,10 @@ public class FormUtilsClient
             assignBufferBuilder(map, RenderLayer.getEntityGlint());
             assignBufferBuilder(map, RenderLayer.getDirectEntityGlint());
             assignBufferBuilder(map, RenderLayer.getWaterMask());
-            */
-            /* ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer)); */
+            ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.forEach(renderLayer -> assignBufferBuilder(map, renderLayer));
         });
 
-        customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferAllocator(1536), sortedMap);
+        customVertexConsumerProvider = new CustomVertexConsumerProvider(new BufferBuilder(1536), sortedMap);
 
         register(BillboardForm.class, BillboardFormRenderer::new);
         register(FluidForm.class, FluidFormRenderer::new);
@@ -103,9 +103,9 @@ public class FormUtilsClient
         register(LightForm.class, LightFormRenderer::new);
     }
 
-    private static void assignBufferBuilder(java.util.SequencedMap<RenderLayer, BufferAllocator> storage, RenderLayer layer)
+    private static void assignBufferBuilder(Object2ObjectLinkedOpenHashMap<RenderLayer, BufferBuilder> builderStorage, RenderLayer layer)
     {
-        storage.put(layer, new BufferAllocator(layer.getExpectedBufferSize()));
+        builderStorage.put(layer, new BufferBuilder(layer.getExpectedBufferSize()));
     }
 
     public static CustomVertexConsumerProvider getProvider()

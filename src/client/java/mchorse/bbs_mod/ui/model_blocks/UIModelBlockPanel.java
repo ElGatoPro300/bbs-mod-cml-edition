@@ -9,6 +9,7 @@ import mchorse.bbs_mod.blocks.ModelBlock;
 import mchorse.bbs_mod.camera.CameraUtils;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.graphics.Draw;
+import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ClientNetwork;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -37,11 +38,9 @@ import mchorse.bbs_mod.utils.PlayerUtils;
 import mchorse.bbs_mod.utils.RayTracing;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Transform;
-import mchorse.bbs_mod.utils.MathUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -49,10 +48,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import org.joml.Matrix4f;
-import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.HashSet;
 import java.util.List;
@@ -437,34 +434,11 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         double x = mc.mouse.getX();
         double y = mc.mouse.getY();
 
-        MatrixStack matrixStack = context.matrixStack();
-        Matrix4f positionMatrix = matrixStack != null ? matrixStack.peek().getPositionMatrix() : RenderSystem.getModelViewMatrix();
-        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
-
-        float m11 = projectionMatrix.m11();
-        float tanHalfFov = 1.0f / m11;
-        float aspect = m11 / projectionMatrix.m00();
-
-        float ndcX = ((float) x / mc.getWindow().getWidth()) * 2.0f - 1.0f;
-        float ndcY = -(((float) y / mc.getWindow().getHeight()) * 2.0f - 1.0f);
-
-        float f = MathUtils.toRad(camera.getPitch());
-        float g = MathUtils.toRad(-camera.getYaw());
-        float h = (float) Math.cos(g);
-        float i = (float) Math.sin(g);
-        float j = (float) Math.cos(f);
-        float k = (float) Math.sin(f);
-        Vector3f forward = new Vector3f(i * j, -k, h * j);
-        Vector3f upWorld = new Vector3f(0F, 1F, 0F);
-        Vector3f right = new Vector3f(forward).cross(upWorld).normalize();
-        Vector3f upCam = new Vector3f(right).cross(forward).normalize();
-
-        Vector3f direction = new Vector3f(forward)
-            .add(new Vector3f(right).mul(ndcX * tanHalfFov * aspect))
-            .add(new Vector3f(upCam).mul(ndcY * tanHalfFov))
-            .normalize();
-
-        this.mouseDirection.set(direction);
+        this.mouseDirection.set(CameraUtils.getMouseDirection(
+            RenderSystem.getProjectionMatrix(),
+            context.matrixStack().peek().getPositionMatrix(),
+            (int) x, (int) y, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()
+        ));
         this.hovered = this.getClosestObject(new Vector3d(pos.x, pos.y, pos.z), this.mouseDirection);
 
         RenderSystem.enableDepthTest();
@@ -475,23 +449,19 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
             if (!this.isEditing(entity))
             {
-                MatrixStack renderMatrixStack = context.matrixStack();
-                if (renderMatrixStack != null)
+                context.matrixStack().push();
+                context.matrixStack().translate(blockPos.getX() - pos.x, blockPos.getY() - pos.y, blockPos.getZ() - pos.z);
+
+                if (this.hovered == entity || entity == this.modelBlock)
                 {
-                    renderMatrixStack.push();
-                    renderMatrixStack.translate(blockPos.getX() - pos.x, blockPos.getY() - pos.y, blockPos.getZ() - pos.z);
-
-                    if (this.hovered == entity || entity == this.modelBlock)
-                    {
-                        Draw.renderBox(renderMatrixStack, 0D, 0D, 0D, 1D, 1D, 1D, 0, 0.5F, 1F);
-                    }
-                    else
-                    {
-                        Draw.renderBox(renderMatrixStack, 0D, 0D, 0D, 1D, 1D, 1D);
-                    }
-
-                    renderMatrixStack.pop();
+                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, 1D, 1D, 1D, 0, 0.5F, 1F);
                 }
+                else
+                {
+                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, 1D, 1D, 1D);
+                }
+
+                context.matrixStack().pop();
             }
         }
 
@@ -501,60 +471,82 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     private ModelBlockEntity getClosestObject(Vector3d finalPosition, Vector3f mouseDirection)
     {
         ModelBlockEntity closest = null;
-        double closestDist = Double.MAX_VALUE;
 
         for (ModelBlockEntity object : this.modelBlocks.getList())
         {
-            BlockPos pos = object.getPos();
-            Vector3d relOrigin = new Vector3d(finalPosition).sub(pos.getX(), pos.getY(), pos.getZ());
+            AABB aabb = this.getHitbox(object);
 
-            Matrix4f transform = object.getProperties().getTransform().createMatrix();
-            Matrix4f invTransform = new Matrix4f(transform).invert();
-
-            Vector4f origin4 = new Vector4f((float) relOrigin.x, (float) relOrigin.y, (float) relOrigin.z, 1.0F);
-            Vector4f dir4 = new Vector4f(mouseDirection.x, mouseDirection.y, mouseDirection.z, 0.0F);
-
-            /* Since the hitbox in the renderInWorld method is not transformed, we shouldn't
-             * transform the ray either. This was causing the selection to fail when the
-             * model block had a transformation. */
-
-            Vector3d localOrigin = new Vector3d(origin4.x, origin4.y, origin4.z);
-            Vector3f localDir = new Vector3f(dir4.x, dir4.y, dir4.z);
-
-            AABB unitBox = new AABB(0, 0, 0, 1, 1, 1);
-            Vector2d farNear = new Vector2d();
-
-            if (unitBox.intersectsRay(localOrigin, localDir, farNear))
+            if (aabb.intersectsRay(finalPosition, mouseDirection))
             {
-                double t = farNear.x;
-
-                if (t < 0)
+                if (closest == null)
                 {
-                    if (farNear.y < 0)
-                    {
-                        continue;
-                    }
-
-                    t = farNear.y;
-                }
-
-                Vector3f hitLocal = new Vector3f(localDir).mul((float) t).add(new Vector3f((float) localOrigin.x, (float) localOrigin.y, (float) localOrigin.z));
-                Vector4f hitRel = new Vector4f(hitLocal, 1.0F);
-
-                transform.transform(hitRel);
-
-                Vector3d hitWorld = new Vector3d(hitRel.x, hitRel.y, hitRel.z).add(pos.getX(), pos.getY(), pos.getZ());
-                double dist = finalPosition.distanceSquared(hitWorld);
-
-                if (dist < closestDist)
-                {
-                    closestDist = dist;
                     closest = object;
+                }
+                else
+                {
+                    AABB aabb2 = this.getHitbox(closest);
+
+                    if (finalPosition.distanceSquared(aabb.x, aabb.y, aabb.z) < finalPosition.distanceSquared(aabb2.x, aabb2.y, aabb2.z))
+                    {
+                        closest = object;
+                    }
+                }
+            }
+        }
+        return closest;
+    }
+
+    private AABB getHitbox(ModelBlockEntity closest)
+    {
+        BlockPos pos = closest.getPos();
+
+        double x = pos.getX();
+        double y = pos.getY();
+        double z = pos.getZ();
+        double w = 1D;
+        double h = 1D;
+        double d = 1D;
+
+        if (closest.getProperties().isHitbox())
+        {
+            Form form = closest.getProperties().getForm();
+
+            if (form != null && form.hitbox.get())
+            {
+                float width = form.hitboxWidth.get();
+                float height = form.hitboxHeight.get();
+
+                if (width > 0F && height > 0F)
+                {
+                    float halfWidth = width / 2F;
+
+                    double minX = x + 0.5D - halfWidth;
+                    double maxX = x + 0.5D + halfWidth;
+                    double minZ = z + 0.5D - halfWidth;
+                    double maxZ = z + 0.5D + halfWidth;
+                    double minY = y;
+                    double maxY = y + height;
+
+                    double clampedMinX = Math.max(x, minX);
+                    double clampedMinZ = Math.max(z, minZ);
+                    double clampedMaxX = Math.min(x + 1D, maxX);
+                    double clampedMaxZ = Math.min(z + 1D, maxZ);
+                    double clampedMaxY = Math.min(y + 1D, maxY);
+
+                    if (clampedMinX < clampedMaxX && clampedMinZ < clampedMaxZ && clampedMaxY > minY)
+                    {
+                        x = clampedMinX;
+                        y = minY;
+                        z = clampedMinZ;
+                        w = clampedMaxX - clampedMinX;
+                        h = clampedMaxY - minY;
+                        d = clampedMaxZ - clampedMinZ;
+                    }
                 }
             }
         }
 
-        return closest;
+        return new AABB(x, y, z, w, h, d);
     }
 
     public boolean isEditing(ModelBlockEntity entity)

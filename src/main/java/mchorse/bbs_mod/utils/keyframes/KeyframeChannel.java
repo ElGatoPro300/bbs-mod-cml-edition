@@ -114,21 +114,7 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             return null;
         }
 
-        /* Check whether given ticks are outside keyframe channel's range */
-        Keyframe<T> prev = this.list.get(0);
         int size = this.list.size();
-
-        if (size == 1 || ticks < prev.getTick())
-        {
-            return new KeyframeSegment<>(prev, prev);
-        }
-
-        Keyframe<T> last = this.list.get(size - 1);
-
-        if (ticks >= last.getTick())
-        {
-            return new KeyframeSegment<>(last, last);
-        }
 
         /* Use binary search to find the proper segment */
         int low = 0;
@@ -148,20 +134,48 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             }
         }
 
-        Keyframe<T> b = this.list.get(low);
+        int nextEnabledIdx = this.getNextEnabledIndex(low);
+        int prevEnabledIdx = this.getPreviousEnabledIndex(low - 1);
 
-        if (b.getTick() == Math.floor(ticks) && low < size - 1)
-        {
-            low += 1;
-            b = this.list.get(low);
-        }
+        Keyframe<T> a = null;
+        Keyframe<T> b = null;
 
-        Keyframe<T> a = low - 1 >= 0 ? this.list.get(low - 1) : b;
+        if (prevEnabledIdx != -1) a = this.list.get(prevEnabledIdx);
+        if (nextEnabledIdx != -1) b = this.list.get(nextEnabledIdx);
+
+        if (a == null && b == null) return null;
+        if (a == null) return new KeyframeSegment<>(b, b);
+        if (b == null) return new KeyframeSegment<>(a, a);
+
         KeyframeSegment<T> segment = new KeyframeSegment<>(a, b);
 
         segment.setup(ticks);
 
         return segment;
+    }
+
+    public int getPreviousEnabledIndex(int index)
+    {
+        for (int i = index; i >= 0; i--)
+        {
+            if (this.list.get(i).isEnabled())
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getNextEnabledIndex(int index)
+    {
+        for (int i = index; i < this.list.size(); i++)
+        {
+            if (this.list.get(i).isEnabled())
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /* Write only */

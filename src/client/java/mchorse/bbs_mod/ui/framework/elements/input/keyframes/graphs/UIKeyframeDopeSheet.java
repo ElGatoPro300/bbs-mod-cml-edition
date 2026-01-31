@@ -18,20 +18,19 @@ import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.Scale;
 import mchorse.bbs_mod.ui.utils.Scroll;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.Pair;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeShape;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.BufferAllocator;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -152,6 +151,12 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
         for (int i = 0; i < sheets.size(); i++)
         {
             UIKeyframeSheet sheet = sheets.get(i);
+
+            if (sheet.groupHeader)
+            {
+                continue;
+            }
+
             List keyframes = sheet.channel.getKeyframes();
 
             for (int j = 0; j < keyframes.size(); j++)
@@ -216,12 +221,12 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             tick = Math.round(tick);
         }
 
-        if (sheet != null)
+        if (sheet != null && !sheet.groupHeader)
         {
             this.addKeyframe(sheet, tick, null);
         }
 
-        return sheet != null;
+        return sheet != null && !sheet.groupHeader;
     }
 
     @Override
@@ -229,7 +234,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
     {
         UIKeyframeSheet sheet = this.getSheet(mouseY);
 
-        if (sheet == null)
+        if (sheet == null || sheet.groupHeader)
         {
             return null;
         }
@@ -300,6 +305,21 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
     @Override
     public boolean mouseClicked(UIContext context)
     {
+        if (context.mouseButton == 0 && this.keyframes.area.isInside(context))
+        {
+            UIKeyframeSheet sheet = this.getSheet(context.mouseY);
+
+            if (sheet != null && sheet.groupHeader)
+            {
+                if (sheet.toggleGroup != null)
+                {
+                    sheet.toggleGroup.run();
+                }
+
+                return true;
+            }
+        }
+
         return this.dopeSheet.mouseClicked(context);
     }
 
@@ -546,6 +566,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
         this.dopeSheet.scrollSize = (int) this.trackHeight * this.sheets.size() + TOP_MARGIN;
 
         Area area = this.keyframes.area;
+        BufferBuilder builder = Tessellator.getInstance().getBuffer();
         Matrix4f matrix = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
 
         for (int i = 0; i < this.sheets.size(); i++)
@@ -564,8 +585,26 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             int my = y + (int) this.trackHeight / 2;
             int cc = Colors.setA(sheet.color, hover ? 1F : 0.45F);
 
+            if (sheet.groupHeader)
+            {
+                FontRenderer font = context.batcher.getFont();
+                String title = sheet.title.get();
+                int bg = Colors.setA(0, 0.35F);
+
+                context.batcher.box(area.x, y, area.ex(), y + (int) this.trackHeight, bg);
+
+                Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
+                int iconX = area.x + 2;
+                int iconY = my - arrow.h / 2;
+                context.batcher.icon(arrow, iconX, iconY);
+
+                context.batcher.textShadow(title, iconX + arrow.w + 4, my - font.getHeight() / 2);
+
+                continue;
+            }
+
             /* Render track bars (horizontal lines) */
-            BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+            builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
             context.batcher.fillRect(builder, matrix, area.x, my - 1, area.w, 2, cc, cc, cc, cc);
 
@@ -631,11 +670,21 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 }
 
                 int kc = frame.getColor() != null ? frame.getColor().getRGBColor() | Colors.A100 : sheet.color;
+
+                if (!frame.isEnabled())
+                {
+                    kc = Colors.GRAY | Colors.A100;
+                }
+
                 int c = (sheet.selection.has(j) || isPointHover ? Colors.WHITE : kc) | Colors.A100;
 
                 if (toRemove)
                 {
                     c = Colors.RED | Colors.A100;
+                }
+                else if (!frame.isEnabled())
+                {
+                    c = Colors.setA(c, 0.6F);
                 }
 
                 int offset = toRemove ? 4 : 3;
@@ -656,7 +705,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             }
 
             RenderSystem.enableBlend();
-            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             BufferRenderer.drawWithGlobalProgram(builder.end());
 
             FontRenderer font = context.batcher.getFont();

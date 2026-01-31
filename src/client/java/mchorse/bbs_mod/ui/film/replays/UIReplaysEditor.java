@@ -105,6 +105,7 @@ public class UIReplaysEditor extends UIElement
     private Film film;
     private Replay replay;
     private Set<String> keys = new LinkedHashSet<>();
+    private final Map<String, Boolean> collapsedModelTracks = new HashMap<>();
 
     static
     {
@@ -611,10 +612,59 @@ public class UIReplaysEditor extends UIElement
             return false;
         });
 
+        List<UIKeyframeSheet> grouped = new ArrayList<>();
+        Set<String> addedGroups = new HashSet<>();
+
+        for (UIKeyframeSheet sheet : sheets)
+        {
+            Form form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
+
+            if (form != null && form.getParent() != null)
+            {
+                String path = FormUtils.getPath(form);
+                String groupKey = this.replay.uuid.get() + ":" + path;
+
+                if (addedGroups.add(groupKey))
+                {
+                    boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
+                    UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
+                        "__group__" + groupKey,
+                        IKey.constant(form.getDisplayName()),
+                        Colors.LIGHTEST_GRAY & Colors.RGB,
+                        groupKey,
+                        expanded,
+                        () ->
+                        {
+                            this.collapsedModelTracks.put(groupKey, expanded);
+                            this.updateChannelsList();
+                        }
+                    );
+
+                    grouped.add(header);
+                }
+
+                if (this.collapsedModelTracks.getOrDefault(groupKey, false))
+                {
+                    continue;
+                }
+            }
+
+            grouped.add(sheet);
+        }
+
+        sheets = grouped;
+
         Object lastForm = null;
 
         for (UIKeyframeSheet sheet : sheets)
         {
+            if (sheet.groupHeader)
+            {
+                sheet.separator = false;
+                lastForm = null;
+                continue;
+            }
+
             Object form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
 
             if (!Objects.equals(lastForm, form))
@@ -856,36 +906,43 @@ public class UIReplaysEditor extends UIElement
 
         if (propertyPath == null)
         {
-            String overlayPath = null;
+            String activeOverlayPath = null;
+            String posePath = null;
 
             for (UIKeyframeSheet sheet : graph.getSheets())
             {
                 BaseValueBasic property = sheet.property;
 
-                if (property != null && property.getId().startsWith("pose_overlay"))
+                if (property != null)
                 {
                     Form sheetForm = (Form) property.getParent();
                     String sheetFormPath = FormUtils.getPath(sheetForm);
 
                     if (sheetFormPath.equals(formPath))
                     {
-                        if (!sheet.channel.isEmpty())
+                        if (property.getId().equals("pose"))
                         {
-                            overlayPath = FormUtils.getPropertyPath(property);
-                            break;
+                            posePath = FormUtils.getPropertyPath(property);
                         }
-
-                        if (overlayPath == null)
+                        else if (property.getId().startsWith("pose_overlay"))
                         {
-                            overlayPath = FormUtils.getPropertyPath(property);
+                            if (!sheet.channel.isEmpty())
+                            {
+                                activeOverlayPath = FormUtils.getPropertyPath(property);
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            if (overlayPath != null)
+            if (activeOverlayPath != null)
             {
-                propertyPath = overlayPath;
+                propertyPath = activeOverlayPath;
+            }
+            else if (posePath != null)
+            {
+                propertyPath = posePath;
             }
         }
 
@@ -1039,7 +1096,7 @@ public class UIReplaysEditor extends UIElement
             BlockHitResult blockHitResult = RayTracing.rayTrace(
                 world,
                 RayTracing.fromVector3d(camera.position),
-                RayTracing.fromVector3f(camera.getMouseDirectionFov(context.mouseX, context.mouseY, area.x, area.y, area.w, area.h)),
+                RayTracing.fromVector3f(CameraUtils.getMouseDirection(camera.projection, camera.view, context.mouseX, context.mouseY, area.x, area.y, area.w, area.h)),
                 256F
             );
 

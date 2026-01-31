@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BOBJArmature
 {
@@ -73,12 +75,44 @@ public class BOBJArmature
                 }
             }
 
-            /* Sort bones according to their index */
-            this.orderedBones.sort(Comparator.comparingInt((o) -> o.index));
+            /* Sort bones topologically (parents first) to ensure correct matrix calculation order */
+            List<BOBJBone> sorted = new ArrayList<>();
+            Set<BOBJBone> visited = new HashSet<>();
+            
+            for (BOBJBone bone : this.bones.values())
+            {
+                this.sortBone(bone, sorted, visited);
+            }
+            
+            this.orderedBones = sorted;
 
-            this.matrices = new Matrix4f[this.orderedBones.size()];
+            int maxIndex = 0;
+            for (BOBJBone b : this.orderedBones)
+            {
+                if (b.index > maxIndex)
+                {
+                    maxIndex = b.index;
+                }
+            }
+            this.matrices = new Matrix4f[maxIndex + 1];
             this.initialized = true;
         }
+    }
+
+    private void sortBone(BOBJBone bone, List<BOBJBone> sorted, Set<BOBJBone> visited)
+    {
+        if (visited.contains(bone))
+        {
+            return;
+        }
+
+        if (bone.parentBone != null)
+        {
+            this.sortBone(bone.parentBone, sorted, visited);
+        }
+
+        visited.add(bone);
+        sorted.add(bone);
     }
 
     /**
@@ -88,6 +122,14 @@ public class BOBJArmature
     {
         for (BOBJBone bone : this.orderedBones)
         {
+            if (bone.index >= this.matrices.length)
+            {
+                Matrix4f[] newMatrices = new Matrix4f[bone.index + 1];
+                
+                System.arraycopy(this.matrices, 0, newMatrices, 0, this.matrices.length);
+                this.matrices = newMatrices;
+            }
+            
             this.matrices[bone.index] = bone.compute();
         }
     }
@@ -105,5 +147,20 @@ public class BOBJArmature
         }
 
         Collections.sort(this.orderedBones, (o1, o2) -> o1.index - o2.index);
+    }
+
+    public BOBJArmature copy()
+    {
+        BOBJArmature armature = new BOBJArmature(this.name);
+        
+        for (BOBJBone bone : this.orderedBones)
+        {
+            armature.addBone(bone.copy());
+        }
+        
+        armature.initArmature();
+        armature.setupMatrices();
+        
+        return armature;
     }
 }

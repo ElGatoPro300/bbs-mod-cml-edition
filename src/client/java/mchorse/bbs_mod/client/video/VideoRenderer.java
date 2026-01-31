@@ -1,9 +1,7 @@
 package mchorse.bbs_mod.client.video;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.client.BBSShaders;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -364,7 +362,7 @@ public class VideoRenderer
                 }
             }
 
-            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
             RenderSystem.setShaderTexture(0, texture);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
             RenderSystem.enableBlend();
@@ -374,15 +372,15 @@ public class VideoRenderer
             RenderSystem.disableCull();
 
             Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
             Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-            buffer.vertex(matrix, x, y + h, 0).texture(0, 1);
-            buffer.vertex(matrix, x + w, y + h, 0).texture(1, 1);
-            buffer.vertex(matrix, x + w, y, 0).texture(1, 0);
-            buffer.vertex(matrix, x, y, 0).texture(0, 0);
-            
-            BufferRenderer.drawWithGlobalProgram(buffer.end());
+            buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+            buffer.vertex(matrix, x, y + h, 0).texture(0, 1).next();
+            buffer.vertex(matrix, x + w, y + h, 0).texture(1, 1).next();
+            buffer.vertex(matrix, x + w, y, 0).texture(1, 0).next();
+            buffer.vertex(matrix, x, y, 0).texture(0, 0).next();
+            tessellator.draw();
             
             RenderSystem.enableCull();
             RenderSystem.depthMask(true);

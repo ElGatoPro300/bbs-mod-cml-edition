@@ -7,7 +7,6 @@ import mchorse.bbs_mod.client.renderer.ModelBlockEntityRenderer;
 import mchorse.bbs_mod.entity.ActorEntity;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.CustomVertexConsumerProvider;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
@@ -214,12 +213,12 @@ public abstract class BaseFilmController
             stack.pop();
         }
 
-        if (!relative && !context.nameTag.isEmpty())
+        if (!relative && !context.nameTag.isEmpty() && context.map == null)
         {
             stack.push();
             stack.translate(position.x - cx, position.y - cy, position.z - cz);
 
-            renderNameTag(entity, Text.literal(StringUtils.processColoredText(context.nameTag)), stack, context.consumers, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            renderNameTag(entity, Text.literal(StringUtils.processColoredText(context.nameTag)), stack, context.consumers, light);
 
             stack.pop();
         }
@@ -423,7 +422,7 @@ public abstract class BaseFilmController
         matrices.push();
         matrices.translate(0F, hitboxH, 0F);
         matrices.multiply(MinecraftClient.getInstance().getEntityRenderDispatcher().getRotation());
-        matrices.scale(0.025F, -0.025F, 0.025F);
+        matrices.scale(-0.025F, -0.025F, 0.025F);
 
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -432,29 +431,12 @@ public abstract class BaseFilmController
         int background = (int) (opacity * 255F) << 24;
         float h = (float) (-textRenderer.getWidth(text) / 2);
 
-        int maxLight = LightmapTextureManager.MAX_LIGHT_COORDINATE;
+        textRenderer.draw(text, h, 0, 0x20ffffff, false, matrix4f, vertexConsumers, sneaking ? TextRenderer.TextLayerType.SEE_THROUGH : TextRenderer.TextLayerType.NORMAL, background, light);
 
-            RenderSystem.enableBlend();
-            RenderSystem.disableCull();
-
-            CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
-
-            CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
-            {
-                RenderSystem.disableDepthTest();
-            });
-
-            textRenderer.draw(text, h, 0, 0x00FFFFFF, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, background, maxLight);
-            consumers.draw();
-
-            textRenderer.draw(text, h, 0, -1, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, 0, maxLight);
-            consumers.draw();
-
-            CustomVertexConsumerProvider.clearRunnables();
-            RenderSystem.enableDepthTest();
-
-            RenderSystem.enableCull();
-            RenderSystem.disableBlend();
+        if (sneaking)
+        {
+            textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, light);
+        }
 
         matrices.pop();
     }
@@ -639,7 +621,7 @@ public abstract class BaseFilmController
 
                             if (player instanceof ClientPlayerEntity playerEntity)
                             {
-                                /* playerEntity.input.sneaking = sneaking; */
+                                playerEntity.input.sneaking = sneaking;
                             }
 
                             player.fallDistance = replay.keyframes.fall.interpolate(ticks).floatValue();
@@ -769,7 +751,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+            filmContext.transition = getTransition(entity, context.tickDelta());
 
             filmContext.stack.push();
 

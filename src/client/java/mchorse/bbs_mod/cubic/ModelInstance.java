@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.cubic;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.bobj.BOBJBone;
 import mchorse.bbs_mod.cubic.data.animation.Animations;
 import mchorse.bbs_mod.cubic.data.model.Model;
@@ -33,7 +34,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -222,6 +223,31 @@ public class ModelInstance implements IModelInstance
         }
     }
 
+    public ModelInstance copy()
+    {
+        ModelInstance copy = new ModelInstance(this.id, this.model.copy(), this.animations, this.texture);
+
+        copy.poseGroup = this.poseGroup;
+        copy.procedural = this.procedural;
+        copy.culling = this.culling;
+        copy.onCpu = this.onCpu;
+        copy.anchorGroup = this.anchorGroup;
+        copy.view = this.view;
+
+        copy.scale.set(this.scale);
+        copy.uiScale = this.uiScale;
+        copy.sneakingPose = this.sneakingPose.copy();
+
+        for (ArmorSlot slot : this.itemsMain) copy.itemsMain.add(slot.copy());
+        for (ArmorSlot slot : this.itemsOff) copy.itemsOff.add(slot.copy());
+        copy.flippedParts.putAll(this.flippedParts);
+
+        if (this.fpMain != null) copy.fpMain = this.fpMain.copy();
+        if (this.fpOffhand != null) copy.fpOffhand = this.fpOffhand.copy();
+
+        return copy;
+    }
+
     public void setup()
     {
         if (this.model instanceof BOBJModel model)
@@ -342,9 +368,11 @@ public class ModelInstance implements IModelInstance
             }
             else
             {
-                RenderSystem.setShader(program.get());
+                RenderSystem.setShader(program);
 
-                BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+                BufferBuilder builder = Tessellator.getInstance().getBuffer();
+
+                builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
 
                 try
@@ -363,6 +391,11 @@ public class ModelInstance implements IModelInstance
 
             if (vao != null)
             {
+                if (defaultTexture != null)
+                {
+                    BBSModClient.getTextures().bindTexture(defaultTexture);
+                }
+
                 stack.push();
                 stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180F));
 

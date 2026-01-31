@@ -52,8 +52,6 @@ public class UIScreen extends Screen implements IFileDropListener
 
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        this.client = mc;
-
         this.menu = menu;
         this.context = new UIRenderingContext(new DrawContext(mc, mc.getBufferBuilders().getEntityVertexConsumers()));
 
@@ -75,10 +73,10 @@ public class UIScreen extends Screen implements IFileDropListener
         this.menu.renderInWorld(context);
     }
 
-    /* @Override */
+    @Override
     public void filesDragged(List<Path> paths)
     {
-        /* super.filesDragged(paths); */
+        super.filesDragged(paths);
 
         String[] filePaths = new String[paths.size()];
         int i = 0;
@@ -196,7 +194,7 @@ public class UIScreen extends Screen implements IFileDropListener
     {
         super.render(context, mouseX, mouseY, delta);
 
-        this.menu.context.setTransition(this.client.getRenderTickCounter().getTickDelta(false));
+        this.menu.context.setTransition(this.client.getTickDelta());
         this.menu.renderMenu(this.context, mouseX, mouseY);
         this.menu.context.render.executeRunnables();
     }
