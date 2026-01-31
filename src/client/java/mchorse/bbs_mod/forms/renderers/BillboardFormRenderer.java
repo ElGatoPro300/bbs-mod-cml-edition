@@ -72,7 +72,9 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition(),
-            null
+            null,
+            true,
+            false
         );
 
         stack.pop();
@@ -105,10 +107,10 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
             shading ? BBSShaders::getPickerBillboardProgram : BBSShaders::getPickerBillboardNoShadingProgram
         );
 
-        this.renderModel(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition(), context.camera);
+        this.renderModel(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition(), context.camera, false, context.modelRenderer);
     }
 
-    private void renderModel(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition, Camera camera)
+    private void renderModel(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition, Camera camera, boolean invertY, boolean modelRenderer)
     {
         Link t = this.form.texture.get();
 
@@ -181,10 +183,10 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
             uvQuad.transform(matrix);
         }
 
-        this.renderQuad(format, texture, shader, matrices, overlay, light, overlayColor, transition, camera);
+        this.renderQuad(format, texture, shader, matrices, overlay, light, overlayColor, transition, camera, invertY, modelRenderer);
     }
 
-    private void renderQuad(VertexFormat format, Texture texture, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition, Camera camera)
+    private void renderQuad(VertexFormat format, Texture texture, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition, Camera camera, boolean invertY, boolean modelRenderer)
     {
         BufferBuilder builder = net.minecraft.client.render.Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, format);
         Color color = this.form.color.get().copy();
@@ -200,11 +202,16 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
 
             modelMatrix.getScale(scale);
 
+            if (invertY)
+            {
+                scale.y = -scale.y;
+            }
+
             modelMatrix.m00(1).m01(0).m02(0);
             modelMatrix.m10(0).m11(1).m12(0);
             modelMatrix.m20(0).m21(0).m22(1);
 
-            if (camera != null)
+            if (camera != null && !modelRenderer)
             {
                 modelMatrix.mul(camera.view);
             }
@@ -212,6 +219,7 @@ public class BillboardFormRenderer extends FormRenderer<BillboardForm>
             modelMatrix.scale(scale);
 
             matrices.peek().getNormalMatrix().identity();
+            matrices.peek().getNormalMatrix().scale(1F / scale.x, 1F / scale.y, 1F / scale.z);
         }
 
         GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
