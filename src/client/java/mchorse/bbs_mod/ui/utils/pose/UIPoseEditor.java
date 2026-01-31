@@ -471,6 +471,8 @@ public class UIPoseEditor extends UIElement
 
     private void fillInGroups(Collection<String> groups, boolean reset)
     {
+        double scroll = this.groups.list.scroll.getScroll();
+
         this.groups.list.clear();
         this.groups.list.add(groups);
         this.groups.list.sort();
@@ -481,8 +483,18 @@ public class UIPoseEditor extends UIElement
 
         List<String> list = this.groups.list.getList();
         int i = Math.max(reset ? 0 : list.indexOf(lastLimb), 0);
+        String element = CollectionUtils.getSafe(list, i);
 
-        this.groups.list.setCurrentScroll(CollectionUtils.getSafe(list, i));
+        if (reset)
+        {
+            this.groups.list.setCurrentScroll(element);
+        }
+        else
+        {
+            this.groups.list.setCurrent(element);
+            this.groups.list.scroll.setScroll(scroll);
+        }
+
         this.pickBone(this.groups.list.getCurrentFirst());
         this.refreshCategories();
     }

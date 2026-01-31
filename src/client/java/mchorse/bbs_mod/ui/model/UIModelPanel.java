@@ -204,6 +204,14 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
             return;
         }
 
+        for (UIModelSection section : this.sections)
+        {
+            section.setConfig(this.data);
+        }
+
+        this.sectionsView.resize();
+        this.rightView.resize();
+
         Morph morph = Morph.getMorph(MinecraftClient.getInstance().player);
 
         if (morph != null)

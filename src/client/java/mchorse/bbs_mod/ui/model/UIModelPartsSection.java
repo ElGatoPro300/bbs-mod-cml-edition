@@ -103,6 +103,8 @@ public class UIModelPartsSection extends UIModelSection
     @Override
     public void setConfig(ModelConfig config)
     {
+        String oldId = this.config == null ? null : this.config.getId();
+
         super.setConfig(config);
         
         if (config != null)
@@ -117,7 +119,7 @@ public class UIModelPartsSection extends UIModelSection
             
             if (model != null)
             {
-                this.poseEditor.fillGroups(model.getModel().getAllGroupKeys(), true);
+                this.poseEditor.fillGroups(model.getModel().getAllGroupKeys(), oldId == null || !oldId.equals(config.getId()));
                 this.poseEditor.setDefaultTextureSupplier(() -> model.texture);
             }
         }

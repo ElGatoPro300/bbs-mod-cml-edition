@@ -280,6 +280,11 @@ public class ModelInstance implements IModelInstance
             config.put("sneaking_pose", this.sneakingPose.toData());
         }
 
+        if (this.parts != null && !this.parts.transforms.isEmpty())
+        {
+            config.put("parts", this.parts.toData());
+        }
+
         if (!this.flippedParts.isEmpty())
         {
             MapType map = new MapType();

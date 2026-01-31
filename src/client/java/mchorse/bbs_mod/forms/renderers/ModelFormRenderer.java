@@ -71,6 +71,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     private IAnimator animator;
     private ModelInstance lastModel;
     private ModelInstance cachedModel;
+    private ModelInstance sourceModel;
 
     private IEntity entity = new StubEntity();
 
@@ -143,29 +144,32 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             this.cachedModel.delete();
             this.cachedModel = null;
         }
+
+        this.sourceModel = null;
     }
 
     public ModelInstance getModel()
     {
         String modelId = this.form.model.get();
+        ModelInstance model = BBSModClient.getModels().getModel(modelId);
 
-        if (this.cachedModel == null || !this.cachedModel.id.equals(modelId))
+        if (this.cachedModel == null || !this.cachedModel.id.equals(modelId) || this.sourceModel != model)
         {
             if (this.cachedModel != null)
             {
                 this.cachedModel.delete();
             }
 
-            ModelInstance model = BBSModClient.getModels().getModel(modelId);
-
             if (model != null)
             {
                 this.cachedModel = model.copy();
                 this.cachedModel.setup();
+                this.sourceModel = model;
             }
             else
             {
                 this.cachedModel = null;
+                this.sourceModel = null;
             }
         }
 
