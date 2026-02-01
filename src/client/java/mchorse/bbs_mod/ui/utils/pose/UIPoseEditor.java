@@ -455,51 +455,25 @@ public class UIPoseEditor extends UIElement
 
     public void fillGroups(Collection<String> groups, boolean reset)
     {
-        this.fillGroups(groups, reset, false);
-    }
-
-    public void fillGroups(Collection<String> groups, boolean reset, boolean hideArmor)
-    {
         this.model = null;
         this.flippedParts = null;
 
-        this.fillInGroups(groups, reset, hideArmor);
+        this.fillInGroups(groups, reset);
     }
 
     public void fillGroups(IModel model, Map<String, String> flippedParts, boolean reset)
     {
-        this.fillGroups(model, flippedParts, reset, false);
-    }
-
-    public void fillGroups(IModel model, Map<String, String> flippedParts, boolean reset, boolean hideArmor)
-    {
         this.model = model;
         this.flippedParts = flippedParts;
 
-        this.fillInGroups(model == null ? Collections.emptyList() : model.getAllGroupKeys(), reset, hideArmor);
+        this.fillInGroups(model == null ? Collections.emptyList() : model.getAllGroupKeys(), reset);
     }
 
-    private void fillInGroups(Collection<String> groups, boolean reset, boolean hideArmor)
+    private void fillInGroups(Collection<String> groups, boolean reset)
     {
         double scroll = this.groups.list.scroll.getScroll();
 
         this.groups.list.clear();
-
-        if (hideArmor)
-        {
-            java.util.List<String> filtered = new java.util.ArrayList<>();
-
-            for (String group : groups)
-            {
-                if (!group.startsWith("armor_"))
-                {
-                    filtered.add(group);
-                }
-            }
-
-            groups = filtered;
-        }
-
         this.groups.list.add(groups);
         this.groups.list.sort();
 
