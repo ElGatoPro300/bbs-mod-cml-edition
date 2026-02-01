@@ -103,7 +103,7 @@ public class UIModelFormPanel extends UIFormPanel<ModelForm>
 
         this.poseEditor.setValuePose(form.pose);
         this.poseEditor.setPose(form.pose.get(), model == null ? this.form.model.get() : model.poseGroup);
-        this.poseEditor.fillGroups(model == null ? null : model.model, model == null ? null : model.flippedParts, true);
+        this.poseEditor.fillGroups(model == null ? null : model.model, model == null ? null : model.flippedParts, true, true);
         this.color.setColor(form.color.get().getARGBColor());
 
         this.shapeKeys.removeFromParent();

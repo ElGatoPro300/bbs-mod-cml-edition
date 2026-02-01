@@ -69,7 +69,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
             if (model != null)
             {
                 this.poseEditor.setPose(keyframe.getValue(), model.poseGroup);
-                this.poseEditor.fillGroups(model.model, model.flippedParts, false);
+                this.poseEditor.fillGroups(model.model, model.flippedParts, false, true);
 
                 /* Si la pista está anclada, seleccionar el hueso anclado al crear el editor */
                 if (BBSSettings.boneAnchoringEnabled.get() && sheet != null && sheet.anchoredBone != null)
@@ -85,7 +85,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
             List<String> bones = FormUtilsClient.getRenderer(mobForm).getBones();
 
             this.poseEditor.setPose(keyframe.getValue(), "");
-            this.poseEditor.fillGroups(bones, false);
+            this.poseEditor.fillGroups(bones, false, true);
 
             if (BBSSettings.boneAnchoringEnabled.get() && sheet != null && sheet.anchoredBone != null)
             {
