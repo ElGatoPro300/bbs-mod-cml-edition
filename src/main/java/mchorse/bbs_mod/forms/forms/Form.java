@@ -36,6 +36,8 @@ public abstract class Form extends ValueGroup
     public final ValueFloat lighting = new ValueFloat("lighting", 1F);
     public final ValueString name = new ValueString("name", "");
     public final ValueTransform transform = new ValueTransform("transform", new Transform());
+    public final ValueTransform transformState = new ValueTransform("transform_state", new Transform());
+    public final ValueTransform transformStateOverlay = new ValueTransform("transform_state_overlay", new Transform());
     public final ValueTransform transformOverlay = new ValueTransform("transform_overlay", new Transform());
     public final ValueFloat uiScale = new ValueFloat("uiScale", 1F);
     public final ValueAnchor anchor = new ValueAnchor("anchor", new Anchor());
@@ -72,6 +74,8 @@ public abstract class Form extends ValueGroup
         this.animatable.invisible();
         this.trackName.invisible();
         this.name.invisible();
+        this.transformState.invisible();
+        this.transformStateOverlay.invisible();
         this.uiScale.invisible();
         this.shaderShadow.invisible();
 
@@ -81,6 +85,8 @@ public abstract class Form extends ValueGroup
         this.add(this.lighting);
         this.add(this.name);
         this.add(this.transform);
+        this.add(this.transformState);
+        this.add(this.transformStateOverlay);
         this.add(this.transformOverlay);
 
         for (int i = 0; i < BBSSettings.recordingPoseTransformOverlays.get(); i++)

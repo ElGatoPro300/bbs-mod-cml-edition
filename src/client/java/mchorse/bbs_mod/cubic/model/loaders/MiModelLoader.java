@@ -81,6 +81,12 @@ public class MiModelLoader implements IModelLoader
                         }
                     }
                 }
+
+                if (cubicModel.topGroups.isEmpty()) {
+                    System.err.println("[MiModelLoader] WARNING: No top-level groups loaded! Model will be invisible.");
+                } else {
+                    System.out.println("[MiModelLoader] Loaded " + cubicModel.topGroups.size() + " top-level groups.");
+                }
                 
                 cubicModel.initialize();
                 
@@ -100,9 +106,22 @@ public class MiModelLoader implements IModelLoader
                             break;
                         }
                     }
-                    if (texture == null) {
-                         System.err.println("[MiModelLoader] Texture not found in links!");
+                }
+                
+                // Fallback: Try to find ANY png if explicit texture is missing
+                if (texture == null) {
+                    System.out.println("[MiModelLoader] Explicit texture not found. Searching for any PNG...");
+                    for (Link l : links) {
+                        if (l.path.endsWith(".png")) {
+                            texture = l;
+                            System.out.println("[MiModelLoader] Using fallback texture: " + l.toString());
+                            break;
+                        }
                     }
+                }
+
+                if (texture == null) {
+                     System.err.println("[MiModelLoader] CRITICAL: No texture found for model " + id + ". It might render black or invisible.");
                 }
                 
                 ModelInstance instance = new ModelInstance(id, cubicModel, new Animations(models.parser), texture);
@@ -120,6 +139,11 @@ public class MiModelLoader implements IModelLoader
         return null;
     }
 
+    private Vector3f swapYZ(Vector3f v)
+    {
+        return new Vector3f(v.x, v.z, v.y);
+    }
+
     private ModelGroup parseGroup(MapType data, Model model, ModelGroup parent)
     {
         String name = data.getString("name");
@@ -130,15 +154,18 @@ public class MiModelLoader implements IModelLoader
         if (data.has("position"))
         {
             Vector3f pos = DataStorageUtils.vector3fFromData(data.getList("position"));
-            group.initial.translate.set(pos);
-            group.initial.pivot.set(pos); 
+            // Swap Y and Z for Mine-imator -> Minecraft conversion
+            group.initial.translate.set(this.swapYZ(pos));
+            // In Mine-imator, position is the pivot
+            group.initial.pivot.set(group.initial.translate); 
         }
         
         // Rotation
         if (data.has("rotation"))
         {
              Vector3f rot = DataStorageUtils.vector3fFromData(data.getList("rotation"));
-             group.initial.rotate.set(rot);
+             // Swap Y and Z for rotation as well (Euler angles)
+             group.initial.rotate.set(this.swapYZ(rot));
         }
         
         // Shapes (Cubes)
@@ -179,7 +206,7 @@ public class MiModelLoader implements IModelLoader
     private ModelCube parseCube(MapType data)
     {
         String type = data.has("type") ? data.getString("type") : "unknown";
-        System.out.println("[MiModelLoader] Parsing cube type: " + type);
+        // System.out.println("[MiModelLoader] Parsing cube type: " + type);
 
         ModelCube cube = new ModelCube();
         
@@ -190,31 +217,54 @@ public class MiModelLoader implements IModelLoader
         if (data.has("from")) from.set(DataStorageUtils.vector3fFromData(data.getList("from")));
         if (data.has("to")) to.set(DataStorageUtils.vector3fFromData(data.getList("to")));
         
-        // Calculate size and origin
-        // 'from' is min, 'to' is max usually.
-        // Size = to - from
-        cube.size.set(to).sub(from);
-        cube.origin.set(from);
-        
-        System.out.println("[MiModelLoader] Cube size: " + cube.size + ", origin: " + cube.origin);
+        // Inflate (Mine-imator feature)
+        float inflate = data.has("inflate") ? data.getFloat("inflate") : 0;
+        if (inflate != 0)
+        {
+            from.sub(inflate, inflate, inflate);
+            to.add(inflate, inflate, inflate);
+        }
 
-        // Position/Rotation/Scale
-        if (data.has("position")) 
-        {
-            Vector3f pos = DataStorageUtils.vector3fFromData(data.getList("position"));
-            cube.origin.add(pos);
-        }
-        
-        if (data.has("rotation"))
-        {
-            cube.rotate.set(DataStorageUtils.vector3fFromData(data.getList("rotation")));
-        }
-        
+        // Apply local scale (Shape scale)
         if (data.has("scale"))
         {
             Vector3f scale = DataStorageUtils.vector3fFromData(data.getList("scale"));
-            cube.size.mul(scale);
-             System.out.println("[MiModelLoader] Applied scale: " + scale + " -> New size: " + cube.size);
+            // Apply scale to the bounds (relative to what? usually 0,0,0 if from/to are absolute coords)
+            // But wait, model_load_shape applies it to (from-inflate).
+            // So we scale the coordinates.
+            from.mul(scale);
+            to.mul(scale);
+        }
+
+        // Swap Y/Z for coords
+        from = this.swapYZ(from);
+        to = this.swapYZ(to);
+
+        // Ensure from < to for size calculation
+        Vector3f min = new Vector3f(Math.min(from.x, to.x), Math.min(from.y, to.y), Math.min(from.z, to.z));
+        Vector3f max = new Vector3f(Math.max(from.x, to.x), Math.max(from.y, to.y), Math.max(from.z, to.z));
+        
+        cube.origin.set(min);
+        cube.size.set(max).sub(min);
+
+        // Debug log for suspicious sizes
+        if (cube.size.lengthSquared() < 0.0001f) {
+             System.out.println("[MiModelLoader] WARNING: Cube has zero size! " + cube.size + " (Original from: " + from + ", to: " + to + ")");
+        } else {
+             // System.out.println("[MiModelLoader] Cube created. Origin: " + cube.origin + ", Size: " + cube.size);
+        }
+        
+        // Position offset (swapped)
+        if (data.has("position")) 
+        {
+            Vector3f pos = DataStorageUtils.vector3fFromData(data.getList("position"));
+            cube.origin.add(this.swapYZ(pos));
+        }
+        
+        // Rotation (swapped)
+        if (data.has("rotation"))
+        {
+            cube.rotate.set(this.swapYZ(DataStorageUtils.vector3fFromData(data.getList("rotation"))));
         }
         
         // UV setup BEFORE inflating for planes to ensure correct mapping
@@ -228,16 +278,14 @@ public class MiModelLoader implements IModelLoader
             }
         }
 
-        // If it's a plane, we might need to inflate it slightly to be visible
+        // Enforce minimum thickness for planes (after swapping, Y became Z or Y?)
+        // If type is plane, in MI it's usually flat on one axis.
         if (type.equals("plane"))
         {
-             System.out.println("[MiModelLoader] Detected flat plane, checking dimensions...");
-             // Enforce minimum thickness for visibility
              float minThickness = 0.01f;
              if (Math.abs(cube.size.x) < minThickness) cube.size.x = minThickness;
              if (Math.abs(cube.size.y) < minThickness) cube.size.y = minThickness;
              if (Math.abs(cube.size.z) < minThickness) cube.size.z = minThickness;
-             System.out.println("[MiModelLoader] Adjusted plane size to: " + cube.size);
         }
         
         return cube;

@@ -114,7 +114,21 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             return null;
         }
 
+        /* Check whether given ticks are outside keyframe channel's range */
+        Keyframe<T> prev = this.list.get(0);
         int size = this.list.size();
+
+        if (size == 1 || ticks < prev.getTick())
+        {
+            return new KeyframeSegment<>(prev, prev);
+        }
+
+        Keyframe<T> last = this.list.get(size - 1);
+
+        if (ticks >= last.getTick())
+        {
+            return new KeyframeSegment<>(last, last);
+        }
 
         /* Use binary search to find the proper segment */
         int low = 0;

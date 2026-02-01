@@ -116,7 +116,13 @@ public class UIReplaysEditorUtils
             }
         }
 
-        pickProperty(keyframeEditor, cursor, bone, StringUtils.combinePaths(path, type), false);
+        String key = StringUtils.combinePaths(path, type);
+        UIKeyframeSheet sheet = keyframeEditor.view.getGraph().getSheet(key);
+
+        if (sheet != null)
+        {
+            pickProperty(keyframeEditor, cursor, bone, sheet, sheet.channel.isEmpty());
+        }
     }
 
     private static void pickProperty(UIKeyframeEditor keyframeEditor, ICursor cursor, String bone, String key, boolean insert)
@@ -139,6 +145,11 @@ public class UIReplaysEditorUtils
             Keyframe keyframe = graph.addKeyframe(sheet, tick, null);
 
             graph.selectKeyframe(keyframe);
+
+            if (keyframeEditor.editor instanceof UIPoseKeyframeFactory poseFactory)
+            {
+                poseFactory.poseEditor.selectBone(bone);
+            }
 
             return;
         }
