@@ -50,6 +50,8 @@ public class UIModelPanel extends UIDataDashboardPanel<ModelConfig>
     {
         super(dashboard);
 
+        this.overlay.add.setEnabled(false);
+
         this.renderer = new UIModelEditorRenderer();
         this.renderer.relative(this).wTo(this.iconBar.getFlex()).h(1F);
         this.renderer.setCallback(this::pickBone);
