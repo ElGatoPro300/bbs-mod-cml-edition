@@ -209,6 +209,8 @@ public abstract class UIModelRenderer extends UIElement
      */
     private void renderModel(UIContext context)
     {
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableCull();
         RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
         this.setupPosition();
@@ -251,6 +253,8 @@ public abstract class UIModelRenderer extends UIElement
         context.resetMatrix();
 
         RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableCull();
 
         this.processInputs(context);
     }
