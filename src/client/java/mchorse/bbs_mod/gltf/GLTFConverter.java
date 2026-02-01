@@ -40,12 +40,9 @@ public class GLTFConverter
         Map<String, BOBJAction> actions = new HashMap<>(); // Not parsing animations yet
         Map<String, BOBJArmature> armatures = new HashMap<>();
 
-        // Create Armature from Nodes
-        BOBJArmature armature = new BOBJArmature("armature");
+        // Create Armature from Nodes (Use GLTFArmature)
+        GLTFArmature armature = new GLTFArmature("armature");
         armatures.put("armature", armature);
-
-        List<BOBJBone> boneList = new ArrayList<>();
-        Map<Integer, BOBJBone> nodeToBone = new HashMap<>();
 
         // Initialize Bones
         if (gltf.nodes != null)
@@ -53,21 +50,20 @@ public class GLTFConverter
             for (int i = 0; i < gltf.nodes.size(); i++)
             {
                 GLTF.GLTFNode node = gltf.nodes.get(i);
-                String name = node.name == null ? "node_" + i : node.name;
+                String originalName = node.name == null ? "node_" + i : node.name;
                 
                 // Parent will be set later
-                BOBJBone bone = new BOBJBone(i, name, "", new Matrix4f());
-                boneList.add(bone);
-                nodeToBone.put(i, bone);
-                armature.bones.put(name, bone);
-                armature.orderedBones.add(bone);
+                BOBJBone bone = new BOBJBone(i, originalName, "", new Matrix4f());
+                
+                // Register bone using GLTFArmature (handles unique naming and node mapping)
+                armature.registerBone(i, bone);
             }
 
             // Build Hierarchy and Transforms
             for (int i = 0; i < gltf.nodes.size(); i++)
             {
                 GLTF.GLTFNode node = gltf.nodes.get(i);
-                BOBJBone bone = nodeToBone.get(i);
+                BOBJBone bone = armature.nodeToBone.get(i);
                 
                 // Set Transform
                 Matrix4f localTransform = new Matrix4f();
@@ -89,7 +85,7 @@ public class GLTFConverter
                 {
                     for (Integer childIdx : node.children)
                     {
-                        BOBJBone childBone = nodeToBone.get(childIdx);
+                        BOBJBone childBone = armature.nodeToBone.get(childIdx);
                         if (childBone != null)
                         {
                             childBone.parent = bone.name;
@@ -101,11 +97,11 @@ public class GLTFConverter
             
             // Compute World Matrices (BoneMat)
             // We need to traverse from root. Find roots (nodes with no parent)
-            for (BOBJBone bone : boneList)
+            for (BOBJBone bone : armature.orderedBones)
             {
                 if (bone.parentBone == null)
                 {
-                    computeBoneRecursively(bone.index, new Matrix4f(), nodeToBone, gltf);
+                    computeBoneRecursively(bone.index, new Matrix4f(), armature.nodeToBone, gltf);
                 }
             }
         }
@@ -123,7 +119,7 @@ public class GLTFConverter
                         for (int k = 0; k < skin.joints.size(); k++)
                         {
                             int jointNodeIndex = skin.joints.get(k);
-                            BOBJBone bone = nodeToBone.get(jointNodeIndex);
+                            BOBJBone bone = armature.nodeToBone.get(jointNodeIndex);
                             if (bone != null)
                             {
                                 bone.invBoneMat.set(ibms[k]);
@@ -149,7 +145,7 @@ public class GLTFConverter
                 if (node.mesh >= 0 && node.mesh < gltf.meshes.size())
                 {
                     GLTF.GLTFMesh gltfMesh = gltf.meshes.get(node.mesh);
-                    BOBJBone nodeBone = nodeToBone.get(i);
+                    BOBJBone nodeBone = armature.nodeToBone.get(i);
                     Matrix4f transform = nodeBone.boneMat; // World Transform
                     Matrix4f normalTransform = new Matrix4f(transform).invert().transpose();
                     
@@ -221,7 +217,7 @@ public class GLTFConverter
                                         if (jointIndex >= 0 && jointIndex < skin.joints.size())
                                         {
                                             int nodeIndex = skin.joints.get(jointIndex);
-                                            BOBJBone bone = nodeToBone.get(nodeIndex);
+                                            BOBJBone bone = armature.nodeToBone.get(nodeIndex);
                                             if (bone != null)
                                             {
                                                 vertex.weights.add(new Weight(bone.name, weight));
@@ -297,7 +293,7 @@ public class GLTFConverter
         }
         
         // Finalize Armature (Inverse Bind Matrices)
-        for (BOBJBone bone : boneList)
+        for (BOBJBone bone : armature.orderedBones)
         {
              // BOBJBone constructor already inverted the initial boneMat (which we set to World Transform)
              // So invBoneMat should be correct for "Bind Pose" which is the current state.
@@ -305,7 +301,7 @@ public class GLTFConverter
         }
 
         BOBJData data = new BOBJData(vertices, textures, normals, meshes, actions, armatures);
-        convertAnimations(gltf, data, nodeToBone);
+        convertAnimations(gltf, data, armature.nodeToBone);
 
         System.out.println("GLTFConverter: Finished conversion.");
         System.out.println("  Vertices: " + vertices.size());
