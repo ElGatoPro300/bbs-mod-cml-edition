@@ -491,11 +491,6 @@ public class ModelInstance implements IModelInstance
 
             if (vao != null)
             {
-                if (defaultTexture != null)
-                {
-                    BBSModClient.getTextures().bindTexture(defaultTexture);
-                }
-
                 stack.push();
                 stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180F));
 

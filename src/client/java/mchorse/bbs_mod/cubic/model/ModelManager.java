@@ -8,6 +8,7 @@ import mchorse.bbs_mod.cubic.model.loaders.CubicModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.GeoCubicModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.GLTFModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.IModelLoader;
+import mchorse.bbs_mod.cubic.model.loaders.MiModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.VoxModelLoader;
 import mchorse.bbs_mod.data.DataToString;
 import mchorse.bbs_mod.data.types.MapType;
@@ -60,6 +61,7 @@ public class ModelManager implements IWatchDogListener
         this.loaders.add(new GeoCubicModelLoader());
         this.loaders.add(new VoxModelLoader());
         this.loaders.add(new GLTFModelLoader());
+        this.loaders.add(new MiModelLoader());
     }
 
     /**
@@ -187,6 +189,7 @@ public class ModelManager implements IWatchDogListener
             || link.path.endsWith(".obj")
             || link.path.endsWith(".gltf")
             || link.path.endsWith(".glb")
+            || link.path.endsWith(".mimodel")
             || link.path.endsWith(".animation.json")
             || link.path.endsWith(".vox")
             || link.path.endsWith("/config.json");
