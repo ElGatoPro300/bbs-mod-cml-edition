@@ -4,6 +4,8 @@ import mchorse.bbs_mod.cubic.IModelInstance;
 import mchorse.bbs_mod.cubic.data.animation.Animation;
 import mchorse.bbs_mod.cubic.data.animation.Animations;
 import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.states.AnimationState;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
@@ -54,6 +56,7 @@ public class Animator implements IAnimator
     public int jumpingCounter;
 
     private IModelInstance model;
+    private Form form;
 
     @Override
     public List<String> getActions()
@@ -65,9 +68,10 @@ public class Animator implements IAnimator
     }
 
     @Override
-    public void setup(IModelInstance model, ActionsConfig actions, boolean fade)
+    public void setup(IModelInstance model, ActionsConfig actions, boolean fade, Form form)
     {
         this.model = model;
+        this.form = form;
 
         this.idle = this.createAction(this.idle, actions.getConfig("idle"), true);
         this.running = this.createAction(this.running, actions.getConfig("running"), true);
@@ -115,6 +119,24 @@ public class Animator implements IAnimator
      */
     public ActionPlayback createAction(ActionPlayback old, ActionConfig config, boolean looping, int priority)
     {
+        if (config.isState && this.form != null)
+        {
+            AnimationState state = this.form.states.getById(config.name);
+
+            if (state != null)
+            {
+                if (old != null && old.state == state)
+                {
+                    old.config = config;
+                    old.setSpeed(1);
+
+                    return old;
+                }
+
+                return new ActionPlayback(state, config, looping, priority);
+            }
+        }
+
         Animations animations = this.model == null ? null : this.model.getAnimations();
 
         if (animations == null)
@@ -177,6 +199,13 @@ public class Animator implements IAnimator
         if (this.lastActive != null)
         {
             this.lastActive.update();
+
+            if (this.lastActive.finishedFading() && this.lastActive.isFadingModeOut())
+            {
+                this.lastActive.stopFade();
+                this.lastActive.reset(this.form);
+                this.lastActive = null;
+            }
         }
 
         /* Update secondary actions */
@@ -191,6 +220,7 @@ public class Animator implements IAnimator
             if (action.finishedFading() && action.isFadingModeOut())
             {
                 action.stopFade();
+                action.reset(this.form);
                 it.remove();
             }
         }
@@ -303,24 +333,38 @@ public class Animator implements IAnimator
      */
     public void setActiveAction(ActionPlayback action)
     {
-        if (this.active == action || action == null)
+        if (this.active == action)
         {
             return;
         }
 
-        if (this.active != null && action.priority < this.active.priority)
+        if (this.active != null && action != null && action.priority < this.active.priority)
         {
             return;
         }
 
         if (this.active != null)
         {
+            if (action == null)
+            {
+                this.active.fadeOut();
+                this.actions.add(this.active);
+                this.active = null;
+                this.lastActive = null;
+
+                return;
+            }
+
             this.lastActive = this.active;
         }
 
         this.active = action;
-        this.active.rewind();
-        this.active.fadeIn();
+        
+        if (this.active != null)
+        {
+            this.active.rewind();
+            this.active.fadeIn();
+        }
     }
 
     public void addAction(ActionPlayback action)
@@ -361,35 +405,35 @@ public class Animator implements IAnimator
     {
         if (this.basePre != null)
         {
-            this.basePre.apply(target, armature.getModel(), transition, 1F, false);
+            this.basePre.apply(target, armature.getModel(), transition, 1F, false, this.form);
         }
 
-        if (this.lastActive != null && this.active.isFading())
+        if (this.lastActive != null && this.active != null && this.active.isFading())
         {
-            this.lastActive.apply(target, armature.getModel(), transition, 1F, false);
+            this.lastActive.apply(target, armature.getModel(), transition, 1F, false, this.form);
         }
 
         if (this.active != null)
         {
             float fade = this.active.isFading() ? this.active.getFadeFactor(transition) : 1F;
 
-            this.active.apply(target, armature.getModel(), transition, fade, false);
+            this.active.apply(target, armature.getModel(), transition, fade, false, this.form);
         }
 
         if (this.basePost != null)
         {
-            this.basePost.apply(target, armature.getModel(), transition, 1F, false);
+            this.basePost.apply(target, armature.getModel(), transition, 1F, false, this.form);
         }
 
         for (ActionPlayback action : this.actions)
         {
             if (action.isFading())
             {
-                action.apply(target, armature.getModel(), transition, action.getFadeFactor(transition), true);
+                action.apply(target, armature.getModel(), transition, action.getFadeFactor(transition), true, this.form);
             }
             else
             {
-                action.apply(target, armature.getModel(), transition, 1F, true);
+                action.apply(target, armature.getModel(), transition, 1F, true, this.form);
             }
         }
     }
