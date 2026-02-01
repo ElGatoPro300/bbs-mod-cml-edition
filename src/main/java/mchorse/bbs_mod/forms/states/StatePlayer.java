@@ -1,10 +1,20 @@
 package mchorse.bbs_mod.forms.states;
 
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.MobForm;
+import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.utils.interps.Lerps;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class StatePlayer
 {
+    private static final Map<String, String> POSE_REMAP = Map.of(
+        "pose", "pose_state",
+        "pose_overlay", "pose_state_overlay"
+    );
+
     private AnimationState state;
     private int tick;
 
@@ -65,12 +75,12 @@ public class StatePlayer
             blend *= this.kill ? (this.killTimer - transition) / (float) this.state.fadeOut.get() : 1F;
         }
 
-        this.state.properties.applyProperties(form, t, blend);
+        this.state.properties.applyProperties(form, t, blend, form instanceof MobForm || form instanceof ModelForm ? POSE_REMAP : null);
     }
 
     public void resetValues(Form form)
     {
-        this.state.properties.resetProperties(form);
+        this.state.properties.resetProperties(form, POSE_REMAP);
     }
 
     public void expire()

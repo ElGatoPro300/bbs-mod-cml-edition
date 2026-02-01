@@ -15,15 +15,21 @@ public class MobForm extends Form
     public final ValueBoolean slim = new ValueBoolean("slim", false);
 
     public final ValuePose pose = new ValuePose("pose", new Pose());
+    public final ValuePose poseState = new ValuePose("pose_state", new Pose());
+    public final ValuePose poseStateOverlay = new ValuePose("pose_state_overlay", new Pose());
     public final ValuePose poseOverlay = new ValuePose("pose_overlay", new Pose());
 
     public MobForm()
     {
         this.slim.invisible();
+        this.poseState.invisible();
+        this.poseStateOverlay.invisible();
 
         this.add(this.mobID);
         this.add(this.mobNBT);
         this.add(this.pose);
+        this.add(this.poseState);
+        this.add(this.poseStateOverlay);
         this.add(this.poseOverlay);
         this.add(this.texture);
         this.add(this.slim);
