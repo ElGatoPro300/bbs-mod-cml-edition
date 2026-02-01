@@ -490,7 +490,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     @Override
     public boolean renderArm(MatrixStack matrices, int light, AbstractClientPlayerEntity player, Hand hand)
     {
-        this.ensureAnimator(MinecraftClient.getInstance().getTickDelta());
+        this.ensureAnimator(MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true));
         ModelInstance model = this.getModel();
 
         if (this.animator != null && model != null)
