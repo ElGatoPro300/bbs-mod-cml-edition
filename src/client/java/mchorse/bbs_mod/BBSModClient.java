@@ -1,8 +1,6 @@
 package mchorse.bbs_mod;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.serialization.MapCodec;
-import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.audio.SoundManager;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
 import mchorse.bbs_mod.camera.clips.ClipFactoryData;
@@ -11,7 +9,6 @@ import mchorse.bbs_mod.camera.clips.misc.CurveClientClip;
 import mchorse.bbs_mod.camera.clips.misc.TrackerClientClip;
 import mchorse.bbs_mod.camera.controller.CameraController;
 import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.client.renderer.ModelBlockEntityRenderer;
 import mchorse.bbs_mod.client.renderer.entity.ActorEntityRenderer;
 import mchorse.bbs_mod.client.renderer.entity.GunProjectileEntityRenderer;
@@ -75,7 +72,6 @@ import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 import mchorse.bbs_mod.ui.utils.keys.KeybindSettings;
 import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.ScreenshotRecorder;
 import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
@@ -87,43 +83,32 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.item.model.special.SpecialModelTypes;
-import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.registry.RegistryKeys;
-import org.joml.Matrix4fStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.joml.Matrix4f;
-
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.Arrays;
 
 public class BBSModClient implements ClientModInitializer
 {
@@ -225,16 +210,6 @@ public class BBSModClient implements ClientModInitializer
     public static GunZoom getGunZoom()
     {
         return gunZoom;
-    }
-
-    public static GunItemRenderer getGunItemRenderer()
-    {
-        return gunItemRenderer;
-    }
-
-    public static ModelBlockItemRenderer getModelBlockItemRenderer()
-    {
-        return modelBlockItemRenderer;
     }
 
     public static KeyBinding getKeyZoom()
@@ -462,7 +437,10 @@ public class BBSModClient implements ClientModInitializer
 
         WorldRenderEvents.AFTER_ENTITIES.register((context) ->
         {
-            BBSRendering.renderCoolStuff(context);
+            if (!BBSRendering.isIrisShadersEnabled())
+            {
+                BBSRendering.renderCoolStuff(context);
+            }
 
             if (BBSSettings.chromaSkyEnabled.get())
             {
@@ -482,7 +460,9 @@ public class BBSModClient implements ClientModInitializer
                     stack.translate(0F, 0F, -d);
 
                     RenderSystem.enableDepthTest();
-                    BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+                    BufferBuilder builder = Tessellator.getInstance().getBuffer();
+
+                    builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
                     float fov = MinecraftClient.getInstance().options.getFov().getValue();
                     float dd = d * (float) Math.pow(fov / 40F, 2F);
@@ -495,18 +475,9 @@ public class BBSModClient implements ClientModInitializer
                         color.r, color.g, color.b, 1F
                     );
 
-                    RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
-
-                    Matrix4fStack mvStack = RenderSystem.getModelViewStack();
-                    mvStack.pushMatrix();
-                    mvStack.identity();
-                    MatrixStackUtils.applyModelViewMatrix();
+                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
                     BufferRenderer.drawWithGlobalProgram(builder.end());
-
-                    mvStack.popMatrix();
-                    MatrixStackUtils.applyModelViewMatrix();
-
                     RenderSystem.disableDepthTest();
 
                     stack.pop();
@@ -611,13 +582,13 @@ public class BBSModClient implements ClientModInitializer
             }
         });
 
-        HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
+        HudRenderCallback.EVENT.register((drawContext, tickDelta) ->
         {
-            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(false));
+            BBSRendering.renderHud(drawContext, tickDelta);
 
             if (gunZoom != null)
             {
-                gunZoom.update(keyZoom.isPressed(), tickCounter.getLastFrameDuration());
+                gunZoom.update(keyZoom.isPressed(), MinecraftClient.getInstance().getLastFrameDuration());
 
                 if (gunZoom.canBeRemoved())
                 {
@@ -666,11 +637,10 @@ public class BBSModClient implements ClientModInitializer
         EntityRendererRegistry.register(BBSMod.ACTOR_ENTITY, ActorEntityRenderer::new);
         EntityRendererRegistry.register(BBSMod.GUN_PROJECTILE_ENTITY, GunProjectileEntityRenderer::new);
 
-        /* Block entity renderers */
-        BlockEntityRendererFactories.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
+        BlockEntityRendererRegistryImpl.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
 
-        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
-        SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
+        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.MODEL_BLOCK_ITEM, modelBlockItemRenderer);
+        BuiltinItemRendererRegistry.INSTANCE.register(BBSMod.GUN_ITEM, gunItemRenderer);
 
         /* Create folders */
         BBSMod.getAudioFolder().mkdirs();

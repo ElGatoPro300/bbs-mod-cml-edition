@@ -1,6 +1,5 @@
 package mchorse.bbs_mod.ui.forms;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.forms.FormCategories;
 import mchorse.bbs_mod.forms.FormUtils;
@@ -21,10 +20,7 @@ import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.render.DiffuseLighting;
-import org.joml.Vector3f;
-import org.joml.Matrix3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +48,17 @@ public class UIFormList extends UIElement
 
         this.forms = UI.scrollView(0, 0);
         this.forms.scroll.cancelScrolling();
-        this.bar = new UIElement();
+        this.bar = new UIElement()
+        {
+            @Override
+            public void render(UIContext context)
+            {
+                context.batcher.getContext().getMatrices().push();
+                context.batcher.getContext().getMatrices().translate(0, 0, 200);
+                super.render(context);
+                context.batcher.getContext().getMatrices().pop();
+            }
+        };
         this.search = new UITextbox(100, this::search).placeholder(UIKeys.FORMS_LIST_SEARCH);
         this.edit = new UIIcon(Icons.EDIT, this::edit);
         this.edit.tooltip(UIKeys.FORMS_LIST_EDIT, Direction.TOP);
@@ -236,10 +242,7 @@ public class UIFormList extends UIElement
             this.setSelected(selected);
         }
 
-        Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
-        Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
-
-        RenderSystem.setupLevelDiffuseLighting(a, b);
+        DiffuseLighting.enableGuiDepthLighting();
 
         super.render(context);
 

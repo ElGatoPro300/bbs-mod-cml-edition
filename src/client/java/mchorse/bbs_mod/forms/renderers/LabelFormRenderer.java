@@ -18,8 +18,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.BufferAllocator;
-import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
@@ -35,12 +34,12 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
 
         /* 1 - BR, 2 - BL, 3 - TL, 4 - TR */
-        builder.vertex(matrix4f, x1, y1, z1).color(r, g, b, a);
-        builder.vertex(matrix4f, x2, y2, z2).color(r, g, b, a);
-        builder.vertex(matrix4f, x3, y3, z3).color(r, g, b, a);
-        builder.vertex(matrix4f, x1, y1, z1).color(r, g, b, a);
-        builder.vertex(matrix4f, x3, y3, z3).color(r, g, b, a);
-        builder.vertex(matrix4f, x4, y4, z4).color(r, g, b, a);
+        builder.vertex(matrix4f, x1, y1, z1).color(r, g, b, a).texture(0F, 0F).next();
+        builder.vertex(matrix4f, x2, y2, z2).color(r, g, b, a).texture(0F, 0F).next();
+        builder.vertex(matrix4f, x3, y3, z3).color(r, g, b, a).texture(0F, 0F).next();
+        builder.vertex(matrix4f, x1, y1, z1).color(r, g, b, a).texture(0F, 0F).next();
+        builder.vertex(matrix4f, x3, y3, z3).color(r, g, b, a).texture(0F, 0F).next();
+        builder.vertex(matrix4f, x4, y4, z4).color(r, g, b, a).texture(0F, 0F).next();
     }
 
     public LabelFormRenderer(LabelForm form)
@@ -104,7 +103,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                RenderSystem.setShader(BBSShaders::getPickerModelsProgram);
             });
 
             light = 0;
@@ -455,7 +454,9 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
         context.stack.push();
         context.stack.translate(0, 0, -0.2F);
 
-        BufferBuilder builder = new BufferBuilder(new BufferAllocator(1536), VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+        BufferBuilder builder = Tessellator.getInstance().getBuffer();
+
+        builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE);
 
         fillQuad(
             builder, context.stack,
@@ -468,7 +469,7 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferRenderer.drawWithGlobalProgram(builder.end());
         context.stack.pop();
     }

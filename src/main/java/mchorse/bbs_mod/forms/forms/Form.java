@@ -36,6 +36,8 @@ public abstract class Form extends ValueGroup
     public final ValueFloat lighting = new ValueFloat("lighting", 1F);
     public final ValueString name = new ValueString("name", "");
     public final ValueTransform transform = new ValueTransform("transform", new Transform());
+    public final ValueTransform transformState = new ValueTransform("transform_state", new Transform());
+    public final ValueTransform transformStateOverlay = new ValueTransform("transform_state_overlay", new Transform());
     public final ValueTransform transformOverlay = new ValueTransform("transform_overlay", new Transform());
     public final ValueFloat uiScale = new ValueFloat("uiScale", 1F);
     public final ValueAnchor anchor = new ValueAnchor("anchor", new Anchor());
@@ -72,6 +74,8 @@ public abstract class Form extends ValueGroup
         this.animatable.invisible();
         this.trackName.invisible();
         this.name.invisible();
+        this.transformState.invisible();
+        this.transformStateOverlay.invisible();
         this.uiScale.invisible();
         this.shaderShadow.invisible();
 
@@ -81,6 +85,8 @@ public abstract class Form extends ValueGroup
         this.add(this.lighting);
         this.add(this.name);
         this.add(this.transform);
+        this.add(this.transformState);
+        this.add(this.transformStateOverlay);
         this.add(this.transformOverlay);
 
         for (int i = 0; i < BBSSettings.recordingPoseTransformOverlays.get(); i++)
@@ -235,19 +241,19 @@ public abstract class Form extends ValueGroup
 
         if (hp != 20F)
         {
-            entity.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(hp);
+            entity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(hp);
             entity.setHealth(hp);
         }
-        if (speed != 0.1F) entity.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(speed);
-        /* if (stepHeight != 0.5F) entity.setStepHeight(stepHeight); */
+        if (speed != 0.1F) entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(speed);
+        if (stepHeight != 0.5F) entity.setStepHeight(stepHeight);
     }
 
     public void onDemorph(LivingEntity entity)
     {
-        entity.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(20F);
+        entity.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(20F);
         entity.setHealth(20F);
-        entity.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.1F);
-        /* entity.setStepHeight(0.5F); */
+        entity.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1F);
+        entity.setStepHeight(0.5F);
     }
 
     /* ID and display name */
