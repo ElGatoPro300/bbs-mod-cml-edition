@@ -195,6 +195,39 @@ public class ModelManager implements IWatchDogListener
             || link.path.endsWith("/config.json");
     }
 
+    public void saveConfig(String id, MapType config)
+    {
+        Link modelLink = Link.assets(MODELS_PREFIX + id + "/config.json");
+        java.io.File file = BBSMod.getProvider().getFile(modelLink);
+
+        if (file != null)
+        {
+            try
+            {
+                IOUtils.writeText(file, DataToString.toString(config, true));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean renameModel(String from, String to)
+    {
+        Link fromLink = Link.assets(MODELS_PREFIX + from);
+        Link toLink = Link.assets(MODELS_PREFIX + to);
+        java.io.File fromFile = BBSMod.getProvider().getFile(fromLink);
+        java.io.File toFile = BBSMod.getProvider().getFile(toLink);
+
+        if (fromFile != null && fromFile.exists() && fromFile.isDirectory() && toFile != null && !toFile.exists())
+        {
+            return fromFile.renameTo(toFile);
+        }
+
+        return false;
+    }
+
     /**
      * Watch dog listener implementation. This is a pretty bad hardcoded
      * solution that would only work for the cubic model loader.
