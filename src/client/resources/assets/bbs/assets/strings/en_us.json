@@ -87,6 +87,8 @@
     "bbs.config.editor.duration-comment": "What is default duration of a camera clip (in ticks)",
     "bbs.config.editor.flight_free_look": "Flight free look",
     "bbs.config.editor.flight_free_look-comment": "When enabled, you can look around in flight mode without holding mouse buttons",
+    "bbs.config.editor.group_model_tracks": "Group model tracks",
+    "bbs.config.editor.group_model_tracks-comment": "When enabled, model tracks (like limbs) will be grouped into expandable tabs in the replay editor",
     "bbs.config.editor.guides_color": "Guides color",
     "bbs.config.editor.guides_color-comment": "Color that will be used for rule of thirds and center lines (including transparency)",
     "bbs.config.editor.horizontal_clip_editor": "Horizontal clip editor",
