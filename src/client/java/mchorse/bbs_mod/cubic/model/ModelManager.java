@@ -85,14 +85,40 @@ public class ModelManager implements IWatchDogListener
             {
                 String path = link.path;
 
-                int slash = path.indexOf('/');
-                int lastSlash = path.lastIndexOf('/');
-
-                if (slash != lastSlash)
+                if (path.startsWith(MODELS_PREFIX))
                 {
-                    path = path.substring(slash + 1, lastSlash);
-
-                    keys.add(path);
+                    int slash = path.indexOf('/');
+                    int lastSlash = path.lastIndexOf('/');
+    
+                    if (slash != lastSlash)
+                    {
+                        path = path.substring(slash + 1, lastSlash);
+    
+                        keys.add(path);
+                    }
+                }
+                else if (path.startsWith(ModAddonManager.ADDON_FOLDER + "/"))
+                {
+                    String relative = path.substring(ModAddonManager.ADDON_FOLDER.length() + 1);
+                    int slash = relative.indexOf('/');
+                    
+                    if (slash != -1)
+                    {
+                        // It is a folder: modaddon/folder/file
+                        keys.add(relative.substring(0, slash));
+                    }
+                    else
+                    {
+                        // It is a flat file: modaddon/file.ext
+                        String name = StringUtils.fileName(path);
+                        
+                        if (name.contains("."))
+                        {
+                            name = StringUtils.removeExtension(name);
+                        }
+                        
+                        keys.add(name);
+                    }
                 }
             }
         }
@@ -118,6 +144,51 @@ public class ModelManager implements IWatchDogListener
         ModelInstance model = null;
         Link modelLink = Link.assets(MODELS_PREFIX + id);
         Collection<Link> links = this.provider.getLinksFromPath(modelLink, true);
+
+        if (links.isEmpty())
+        {
+            Link addonLink = Link.assets(ModAddonManager.ADDON_FOLDER + "/" + id);
+            Collection<Link> addonLinks = this.provider.getLinksFromPath(addonLink, true);
+
+            if (!addonLinks.isEmpty())
+            {
+                modelLink = addonLink;
+                links = addonLinks;
+            }
+            else
+            {
+                /* Try to find a flat file in modaddon folder that matches the ID */
+                List<Link> allAddons = ModAddonManager.scanAddons();
+                
+                for (Link link : allAddons)
+                {
+                    String filename = StringUtils.fileName(link.path);
+                    
+                    if (filename.contains("."))
+                    {
+                        filename = StringUtils.removeExtension(filename);
+                    }
+                    
+                    if (filename.equals(id) && this.isRelodable(link))
+                    {
+                        modelLink = link;
+                        links = new ArrayList<>();
+                        links.add(link);
+                        
+                        /* Also try to find config */
+                        Link config = Link.assets(ModAddonManager.ADDON_FOLDER + "/" + id + ".json");
+                        
+                        if (this.provider.hasAsset(config))
+                        {
+                            links.add(config);
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+        }
+
         MapType config = this.loadConfig(modelLink);
 
         for (IModelLoader loader : this.loaders)
@@ -197,7 +268,7 @@ public class ModelManager implements IWatchDogListener
 
     public boolean isRelodable(Link link)
     {
-        if (!link.path.startsWith(MODELS_PREFIX))
+        if (!link.path.startsWith(MODELS_PREFIX) && !link.path.startsWith(ModAddonManager.ADDON_FOLDER + "/"))
         {
             return false;
         }
@@ -242,9 +313,24 @@ public class ModelManager implements IWatchDogListener
             {
                 key = StringUtils.parentPath(link.path.substring(MODELS_PREFIX.length()));
             }
-            else if (link.path.startsWith(ModAddonManager.ADDON_FOLDER))
+            else if (link.path.startsWith(ModAddonManager.ADDON_FOLDER + "/"))
             {
-                key = StringUtils.parentPath(link.path.substring(ModAddonManager.ADDON_FOLDER.length() + 1));
+                String relative = link.path.substring(ModAddonManager.ADDON_FOLDER.length() + 1);
+                int slash = relative.indexOf('/');
+                
+                if (slash != -1)
+                {
+                    key = relative.substring(0, slash);
+                }
+                else
+                {
+                    key = StringUtils.fileName(link.path);
+                    
+                    if (key.contains("."))
+                    {
+                        key = StringUtils.removeExtension(key);
+                    }
+                }
             }
 
             ModelInstance model = this.models.remove(key);

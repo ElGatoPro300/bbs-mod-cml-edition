@@ -54,6 +54,21 @@ public class AssetProvider
         throw new FileNotFoundException("Asset " + link + " couldn't be found!");
     }
 
+    public boolean hasAsset(Link link)
+    {
+        List<ISourcePack> packs = this.getPacks(link.source);
+
+        for (ISourcePack pack : packs)
+        {
+            if (pack.hasAsset(link))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public File getFile(Link link)
     {
         if (link == null)
