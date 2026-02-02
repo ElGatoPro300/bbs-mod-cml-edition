@@ -1,17 +1,10 @@
 package mchorse.bbs_mod.cubic.model.loaders;
 
 import mchorse.bbs_mod.cubic.ModelInstance;
-import mchorse.bbs_mod.cubic.data.animation.Animations;
 import mchorse.bbs_mod.cubic.model.ModelManager;
-import mchorse.bbs_mod.cubic.model.bobj.BOBJModel;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.bobj.BOBJArmature;
-import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.bobj.BOBJLoader;
-import org.joml.Matrix4f;
 import org.objectweb.asm.ClassReader;
-
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
