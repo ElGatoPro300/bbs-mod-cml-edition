@@ -106,9 +106,18 @@ public abstract class BaseFilmController
 
         if (relative)
         {
-            cx = position.x - context.replay.relativeOffset.get().x;
-            cy = position.y - context.replay.relativeOffset.get().y;
-            cz = position.z - context.replay.relativeOffset.get().z;
+            if (context.map != null)
+            {
+                cx = context.replay.keyframes.x.interpolate(0F) - context.replay.relativeOffset.get().x;
+                cy = context.replay.keyframes.y.interpolate(0F) - context.replay.relativeOffset.get().y;
+                cz = context.replay.keyframes.z.interpolate(0F) - context.replay.relativeOffset.get().z;
+            }
+            else
+            {
+                cx = position.x - context.replay.relativeOffset.get().x;
+                cy = position.y - context.replay.relativeOffset.get().y;
+                cz = position.z - context.replay.relativeOffset.get().z;
+            }
         }
 
         Matrix4f target = null;
@@ -160,7 +169,11 @@ public abstract class BaseFilmController
         {
             stack.peek().getPositionMatrix().identity();
             stack.peek().getNormalMatrix().identity();
-            stack.multiply(camera.getRotation());
+
+            if (context.map == null)
+            {
+                stack.multiply(camera.getRotation());
+            }
         }
 
         MatrixStackUtils.multiply(stack, target);
