@@ -299,9 +299,10 @@ public class UIModelEditorRenderer extends UIModelRenderer
             {
                 boolean wasProcedural = model.procedural;
 
-                model.applyConfig((MapType) this.config.toData());
+                model.applyConfig(this.config.toData().asMap());
                 model.texture = this.config.texture.get();
-                model.color = this.config.color.get();
+                model.color.set(this.config.color.get());
+                model.setup();
 
                 if (wasProcedural != model.procedural)
                 {
@@ -334,21 +335,22 @@ public class UIModelEditorRenderer extends UIModelRenderer
                 this.deletePreview();
 
                 this.previewModel = new ModelInstance(globalModel.id, globalModel.model, globalModel.animations, globalModel.texture);
-                this.previewModel.setup();
 
                 if (this.config != null)
                 {
                     try
                     {
-                        this.previewModel.applyConfig((MapType) this.config.toData());
+                        this.previewModel.applyConfig(this.config.toData().asMap());
                         this.previewModel.texture = this.config.texture.get();
-                        this.previewModel.color = this.config.color.get();
+                        this.previewModel.color.set(this.config.color.get());
                     }
                     catch (Exception e)
                     {
                         e.printStackTrace();
                     }
                 }
+
+                this.previewModel.setup();
 
                 this.lastModelId = modelId;
             }

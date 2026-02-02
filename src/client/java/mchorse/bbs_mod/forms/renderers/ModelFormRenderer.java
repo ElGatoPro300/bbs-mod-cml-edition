@@ -163,6 +163,11 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         return this.cachedModel;
     }
 
+    public void invalidateCachedModel()
+    {
+        this.cachedModel = null;
+    }
+
     public Pose getPose()
     {
         Pose pose = this.form.pose.get().copy();
@@ -231,7 +236,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             /* Update the config */
             if (this.animator != null && !Objects.equals(actionsConfig, this.lastConfigs))
             {
-                this.animator.setup(model, actionsConfig, true);
+                this.animator.setup(model, actionsConfig, true, this.form);
 
                 this.lastConfigs = new ActionsConfig();
                 this.lastConfigs.copy(actionsConfig);
@@ -241,7 +246,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         }
 
         this.animator = model.procedural ? new ProceduralAnimator() : new Animator();
-        this.animator.setup(model, actionsConfig, false);
+        this.animator.setup(model, actionsConfig, false, this.form);
 
         this.lastConfigs = new ActionsConfig();
         this.lastConfigs.copy(actionsConfig);
@@ -369,7 +374,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     private void renderArmor(IEntity target, MatrixStack stack, ArmorType type, ArmorSlot armorSlot, Color color, int overlay, int light)
     {
-        Matrix4f matrix = this.bones.get(armorSlot.group).matrix();
+        Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
 
         if (matrix != null)
         {
@@ -405,7 +410,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
         for (ArmorSlot armorSlot : items)
         {
-            Matrix4f matrix = this.bones.get(armorSlot.group).matrix();
+            Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
 
             if (matrix != null)
             {

@@ -67,6 +67,7 @@ public class ModelInstance implements IModelInstance
     public Vector3f scale = new Vector3f(1F);
     public float uiScale = 1F;
     public Pose sneakingPose = new Pose();
+    public Color color = new Color(1, 1, 1, 1);
 
     public List<ArmorSlot> itemsMain = new ArrayList<>();
     public List<ArmorSlot> itemsOff = new ArrayList<>();
@@ -145,7 +146,7 @@ public class ModelInstance implements IModelInstance
 
             for (BaseType type : list)
             {
-                ArmorSlot slot = new ArmorSlot();
+                ArmorSlot slot = new ArmorSlot("");
 
                 slot.fromData(type);
                 this.itemsMain.add(slot);
@@ -157,7 +158,7 @@ public class ModelInstance implements IModelInstance
 
             for (BaseType type : list)
             {
-                ArmorSlot slot = new ArmorSlot();
+                ArmorSlot slot = new ArmorSlot("");
 
                 slot.fromData(type);
                 this.itemsOff.add(slot);
@@ -194,7 +195,7 @@ public class ModelInstance implements IModelInstance
                 try
                 {
                     ArmorType type = ArmorType.valueOf(key.toUpperCase());
-                    ArmorSlot slot = new ArmorSlot();
+                    ArmorSlot slot = new ArmorSlot("");
 
                     slot.fromData(map.getMap(key));
                     this.armorSlots.put(type, slot);
@@ -205,12 +206,12 @@ public class ModelInstance implements IModelInstance
         }
         if (config.has("fp_main"))
         {
-            this.fpMain = new ArmorSlot();
+            this.fpMain = new ArmorSlot("");
             this.fpMain.fromData(config.get("fp_main"));
         }
         if (config.has("fp_offhand"))
         {
-            this.fpOffhand = new ArmorSlot();
+            this.fpOffhand = new ArmorSlot("");
             this.fpOffhand.fromData(config.get("fp_offhand"));
         }
 
@@ -221,6 +222,64 @@ public class ModelInstance implements IModelInstance
 
             this.view.fromData(config.getMap("look_at"));
         }
+    }
+
+    public MapType toConfig()
+    {
+        MapType config = new MapType();
+
+        config.putBool("procedural", this.procedural);
+        config.putBool("culling", this.culling);
+        config.putBool("on_cpu", this.onCpu);
+        if (!this.poseGroup.equals(this.id)) config.putString("pose_group", this.poseGroup);
+        if (this.texture != null) config.put("texture", LinkUtils.toData(this.texture));
+        
+        if (!this.itemsMain.isEmpty())
+        {
+            ListType list = new ListType();
+            for (ArmorSlot slot : this.itemsMain) list.add(slot.toData());
+            config.put("items_main", list);
+        }
+        
+        if (!this.itemsOff.isEmpty())
+        {
+            ListType list = new ListType();
+            for (ArmorSlot slot : this.itemsOff) list.add(slot.toData());
+            config.put("items_off", list);
+        }
+
+        if (this.uiScale != 1F) config.putFloat("ui_scale", this.uiScale);
+        if (this.scale.x != 1F || this.scale.y != 1F || this.scale.z != 1F) config.put("scale", DataStorageUtils.vector3fToData(this.scale));
+        
+        config.put("sneaking_pose", this.sneakingPose.toData());
+        if (!this.anchorGroup.isEmpty()) config.putString("anchor", this.anchorGroup);
+        
+        if (!this.flippedParts.isEmpty())
+        {
+            MapType map = new MapType();
+            for (Map.Entry<String, String> entry : this.flippedParts.entrySet())
+            {
+                map.putString(entry.getKey(), entry.getValue());
+            }
+            config.put("flipped_parts", map);
+        }
+        
+        if (!this.armorSlots.isEmpty())
+        {
+            MapType map = new MapType();
+            for (Map.Entry<ArmorType, ArmorSlot> entry : this.armorSlots.entrySet())
+            {
+                map.put(entry.getKey().name().toLowerCase(), entry.getValue().toData());
+            }
+            config.put("armor_slots", map);
+        }
+
+        if (this.fpMain != null) config.put("fp_main", this.fpMain.toData());
+        if (this.fpOffhand != null) config.put("fp_offhand", this.fpOffhand.toData());
+        
+        if (this.view != null) config.put("look_at", this.view.toData());
+
+        return config;
     }
 
     public ModelInstance copy()

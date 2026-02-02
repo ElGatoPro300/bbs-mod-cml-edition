@@ -3,13 +3,16 @@ package mchorse.bbs_mod.cubic.model;
 import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.cubic.MolangHelper;
+import mchorse.bbs_mod.cubic.model.addons.ModAddonManager;
 import mchorse.bbs_mod.cubic.model.loaders.BOBJModelLoader;
+import mchorse.bbs_mod.cubic.model.loaders.ClassModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.CubicModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.GeoCubicModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.GLTFModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.IModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.MiModelLoader;
 import mchorse.bbs_mod.cubic.model.loaders.VoxModelLoader;
+import mchorse.bbs_mod.data.DataStorageUtils;
 import mchorse.bbs_mod.data.DataToString;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.math.molang.MolangParser;
@@ -62,6 +65,7 @@ public class ModelManager implements IWatchDogListener
         this.loaders.add(new VoxModelLoader());
         this.loaders.add(new GLTFModelLoader());
         this.loaders.add(new MiModelLoader());
+        this.loaders.add(new ClassModelLoader());
     }
 
     /**
@@ -70,6 +74,7 @@ public class ModelManager implements IWatchDogListener
     public List<String> getAvailableKeys()
     {
         List<Link> models = new ArrayList<>(BBSMod.getProvider().getLinksFromPath(Link.assets("models"), true));
+        models.addAll(ModAddonManager.scanAddons());
         Set<String> keys = new HashSet<>();
 
         models.sort((a, b) -> a.toString().compareToIgnoreCase(b.toString()));
@@ -155,6 +160,25 @@ public class ModelManager implements IWatchDogListener
         return null;
     }
 
+    public void saveConfig(String id, MapType data)
+    {
+        Link link = Link.assets(MODELS_PREFIX + id + "/config.json");
+        java.io.File file = this.provider.getFile(link);
+
+        DataToString.writeSilently(file, data, true);
+    }
+
+    public void renameModel(String id, String name)
+    {
+        java.io.File folder = this.provider.getFile(Link.assets(MODELS_PREFIX + id));
+        java.io.File newFolder = this.provider.getFile(Link.assets(MODELS_PREFIX + name));
+        
+        if (folder != null && folder.exists() && newFolder != null)
+        {
+            folder.renameTo(newFolder);
+        }
+    }
+
     public void reload()
     {
         for (ModelInstance model : this.models.values())
@@ -190,6 +214,7 @@ public class ModelManager implements IWatchDogListener
             || link.path.endsWith(".gltf")
             || link.path.endsWith(".glb")
             || link.path.endsWith(".mimodel")
+            || link.path.endsWith(".class")
             || link.path.endsWith(".animation.json")
             || link.path.endsWith(".vox")
             || link.path.endsWith("/config.json");
@@ -211,7 +236,17 @@ public class ModelManager implements IWatchDogListener
 
         if (this.isRelodable(link))
         {
-            String key = StringUtils.parentPath(link.path.substring(MODELS_PREFIX.length()));
+            String key = "";
+            
+            if (link.path.startsWith(MODELS_PREFIX))
+            {
+                key = StringUtils.parentPath(link.path.substring(MODELS_PREFIX.length()));
+            }
+            else if (link.path.startsWith(ModAddonManager.ADDON_FOLDER))
+            {
+                key = StringUtils.parentPath(link.path.substring(ModAddonManager.ADDON_FOLDER.length() + 1));
+            }
+
             ModelInstance model = this.models.remove(key);
 
             if (model != null)
