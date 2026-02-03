@@ -706,6 +706,22 @@ public class ShapeFormRenderer extends FormRenderer<ShapeForm>
                 c = new Color().set(color);
             }
             
+            double[] normal = new double[3];
+            this.evaluator.computeNormal(normal, x, y, z, this.time);
+            
+            nx += (float) normal[0];
+            ny += (float) normal[1];
+            nz += (float) normal[2];
+            
+            float len = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
+            
+            if (len > 0.0001f)
+            {
+                nx /= len;
+                ny /= len;
+                nz /= len;
+            }
+            
             x += nx * disp;
             y += ny * disp;
             z += nz * disp;

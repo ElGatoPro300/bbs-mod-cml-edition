@@ -49,6 +49,16 @@ public class ShapeGraphEvaluator
         return color;
     }
 
+    public void computeNormal(double[] normal, double x, double y, double z, double time)
+    {
+        if (this.output != null)
+        {
+            if (this.hasInput(this.output.id, 2)) normal[0] += this.evaluate(this.output, 2, x, y, z, time);
+            if (this.hasInput(this.output.id, 3)) normal[1] += this.evaluate(this.output, 3, x, y, z, time);
+            if (this.hasInput(this.output.id, 4)) normal[2] += this.evaluate(this.output, 4, x, y, z, time);
+        }
+    }
+
     private double evaluate(ShapeNode node, int outputIndex, double x, double y, double z, double time)
     {
         if (node instanceof ValueNode) return ((ValueNode) node).value;
@@ -106,13 +116,63 @@ public class ShapeGraphEvaluator
             double ny = this.getInput(n.id, 1, x, y, z, time);
             double nz = this.getInput(n.id, 2, x, y, z, time);
             double scale = this.getInput(n.id, 3, x, y, z, time);
+            double detail = this.getInput(n.id, 4, x, y, z, time);
+            double roughness = this.getInput(n.id, 5, x, y, z, time);
             
             if (!this.hasInput(n.id, 0)) nx = x;
             if (!this.hasInput(n.id, 1)) ny = y;
             if (!this.hasInput(n.id, 2)) nz = z;
             if (!this.hasInput(n.id, 3)) scale = 1;
+            if (!this.hasInput(n.id, 4)) detail = 1;
+            if (!this.hasInput(n.id, 5)) roughness = 0.5;
             
-            return this.noiseGen.noise(nx * scale, ny * scale, nz * scale);
+            double result = 0;
+            double amplitude = 1;
+            double frequency = 1;
+            double maxAmplitude = 0;
+            
+            for (int i = 0; i < (int)detail; i++)
+            {
+                result += this.noiseGen.noise(nx * scale * frequency, ny * scale * frequency, nz * scale * frequency) * amplitude;
+                maxAmplitude += amplitude;
+                amplitude *= roughness;
+                frequency *= 2;
+            }
+            
+            return maxAmplitude == 0 ? 0 : result / maxAmplitude;
+        }
+
+        if (node instanceof BumpNode)
+        {
+            BumpNode b = (BumpNode) node;
+            
+            if (!this.hasInput(b.id, 0)) return 0;
+            
+            double strength = this.hasInput(b.id, 1) ? this.getInput(b.id, 1, x, y, z, time) : 1.0;
+            double dist = this.hasInput(b.id, 2) ? this.getInput(b.id, 2, x, y, z, time) : 0.1;
+            
+            if (dist <= 0.0001) dist = 0.0001;
+            
+            ShapeConnection c = this.inputs.get(b.id).get(0);
+            ShapeNode inputNode = this.nodes.get(c.outputNodeId);
+            
+            double height = this.evaluate(inputNode, c.outputIndex, x, y, z, time);
+            
+            if (outputIndex == 0) // X gradient
+            {
+                double heightX = this.evaluate(inputNode, c.outputIndex, x + dist, y, z, time);
+                return (height - heightX) / dist * strength;
+            }
+            if (outputIndex == 1) // Y gradient
+            {
+                double heightY = this.evaluate(inputNode, c.outputIndex, x, y + dist, z, time);
+                return (height - heightY) / dist * strength;
+            }
+            if (outputIndex == 2) // Z gradient
+            {
+                double heightZ = this.evaluate(inputNode, c.outputIndex, x, y, z + dist, time);
+                return (height - heightZ) / dist * strength;
+            }
         }
 
         if (node instanceof FlowNoiseNode)
