@@ -13,6 +13,7 @@ import elgatopro300.bbs_cml.forms.forms.ItemForm;
 import elgatopro300.bbs_cml.forms.forms.LabelForm;
 import elgatopro300.bbs_cml.forms.forms.MobForm;
 import elgatopro300.bbs_cml.forms.forms.StructureForm;
+import elgatopro300.bbs_cml.forms.forms.ShapeForm;
 import elgatopro300.bbs_cml.forms.forms.TrailForm;
 import elgatopro300.bbs_cml.forms.forms.VanillaParticleForm;
 import elgatopro300.bbs_cml.forms.forms.LightForm;
@@ -59,6 +60,7 @@ public class ExtraFormSection extends FormSection
         StructureForm structure = new StructureForm();
         FluidForm fluid = new FluidForm();
         LightForm light = new LightForm();
+        ShapeForm shape = new ShapeForm();
         try
         {
             String preferred = "structures/tree.nbt";
@@ -102,6 +104,7 @@ public class ExtraFormSection extends FormSection
         extra.addForm(vanillaParticle);
         extra.addForm(trail);
         extra.addForm(structure);
+        extra.addForm(shape);
         extra.addForm(fluid);
         extra.addForm(light);
 

@@ -32,6 +32,7 @@ import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
 import elgatopro300.bbs_cml.forms.renderers.ParticleFormRenderer;
 import elgatopro300.bbs_cml.forms.renderers.TrailFormRenderer;
 import elgatopro300.bbs_cml.forms.renderers.VanillaParticleFormRenderer;
+import elgatopro300.bbs_cml.forms.renderers.ShapeFormRenderer;
 import elgatopro300.bbs_cml.forms.renderers.StructureFormRenderer;
 import elgatopro300.bbs_cml.forms.renderers.LightFormRenderer;
 import elgatopro300.bbs_cml.ui.framework.UIContext;
@@ -100,6 +101,7 @@ public class FormUtilsClient
         register(TrailForm.class, TrailFormRenderer::new);
         register(FramebufferForm.class, FramebufferFormRenderer::new);
         register(StructureForm.class, StructureFormRenderer::new);
+        register(ShapeForm.class, ShapeFormRenderer::new);
         register(LightForm.class, LightFormRenderer::new);
     }
 

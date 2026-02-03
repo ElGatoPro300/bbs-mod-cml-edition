@@ -43,6 +43,7 @@ import elgatopro300.bbs_cml.ui.forms.editors.forms.UIMobForm;
 import elgatopro300.bbs_cml.ui.forms.editors.forms.UIModelForm;
 import elgatopro300.bbs_cml.ui.forms.editors.forms.UIParticleForm;
 import elgatopro300.bbs_cml.ui.forms.editors.forms.UIStructureForm;
+import elgatopro300.bbs_cml.ui.forms.editors.forms.UIShapeForm;
 import elgatopro300.bbs_cml.ui.forms.editors.forms.UITrailForm;
 import elgatopro300.bbs_cml.ui.forms.editors.forms.UIVanillaParticleForm;
 import elgatopro300.bbs_cml.ui.forms.editors.forms.UILightForm;
@@ -138,6 +139,7 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
         register(VanillaParticleForm.class, UIVanillaParticleForm::new);
         register(TrailForm.class, UITrailForm::new);
         register(StructureForm.class, UIStructureForm::new);
+        register(ShapeForm.class, UIShapeForm::new);
         register(LightForm.class, UILightForm::new);
         register(FramebufferForm.class, UIFramebufferForm::new);
     }

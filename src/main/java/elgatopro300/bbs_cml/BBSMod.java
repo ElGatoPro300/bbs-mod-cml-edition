@@ -65,6 +65,7 @@ import elgatopro300.bbs_cml.forms.forms.BlockForm;
 import elgatopro300.bbs_cml.forms.forms.ExtrudedForm;
 import elgatopro300.bbs_cml.forms.forms.FluidForm;
 import elgatopro300.bbs_cml.forms.forms.FramebufferForm;
+import elgatopro300.bbs_cml.forms.forms.ShapeForm;
 import elgatopro300.bbs_cml.forms.forms.StructureForm;
 import elgatopro300.bbs_cml.forms.forms.LightForm;
 import elgatopro300.bbs_cml.forms.forms.ItemForm;
@@ -459,6 +460,7 @@ public class BBSMod implements ModInitializer
             .register(Link.bbs("trail"), TrailForm.class, null)
             .register(Link.bbs("framebuffer"), FramebufferForm.class, null)
             .register(Link.bbs("structure"), StructureForm.class, null)
+            .register(Link.bbs("shape"), ShapeForm.class, null)
             .register(Link.bbs("light"), LightForm.class, null);
 
         events.post(new RegisterFormsEvent(forms));

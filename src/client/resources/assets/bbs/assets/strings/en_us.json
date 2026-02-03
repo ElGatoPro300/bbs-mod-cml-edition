@@ -1554,7 +1554,6 @@
     "studio.ui.utility.reload_textures": "Textures",
     "studio.ui.utility.resize": "Resize window",
     "studio.ui.utility.title": "Utility panel",
-
     "bbs.ui.forms.editors.shape.title": "Shape",
     "bbs.ui.forms.editors.shape.type": "Shape type",
     "bbs.ui.forms.editors.shape.geometry": "Geometry",
@@ -1563,7 +1562,6 @@
     "bbs.ui.forms.editors.shape.type.sphere": "Sphere",
     "bbs.ui.forms.editors.shape.type.cylinder": "Cylinder",
     "bbs.ui.forms.editors.shape.type.capsule": "Capsule",
-
     "bbs.ui.forms.editors.shape.size_x": "Size X",
     "bbs.ui.forms.editors.shape.size_y": "Size Y",
     "bbs.ui.forms.editors.shape.size_z": "Size Z",
@@ -1594,5 +1592,6 @@
     "bbs.ui.trigger_blocks.remove_form": "Remove form",
     "bbs.ui.trigger_blocks.add_form_name": "Change form to %s",
     "bbs.ui.trigger_blocks.pos1": "Position 1",
-    "bbs.ui.trigger_blocks.pos2": "Position 2"
+    "bbs.ui.trigger_blocks.pos2": "Position 2",
+    "bbs.ui.forms.editors.shape.texture_scroll_y": "Scroll Y"
 }
