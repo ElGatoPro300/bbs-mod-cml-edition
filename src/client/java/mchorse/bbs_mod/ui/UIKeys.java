@@ -1142,24 +1142,4 @@ public class UIKeys
 
     public static final KeyCollection C_KEYBIND_CATGORIES = new KeyCollection("keybinds.config.^.title");
     public static final KeyCollection C_KEYBIND_CATGORIES_TOOLTIP = new KeyCollection("keybinds.config.^.tooltip");
-
-    /* Shape Form */
-    public static final IKey FORMS_EDITORS_SHAPE_TITLE = L10n.lang("bbs.ui.forms.editors.shape.title");
-    public static final IKey FORMS_EDITORS_SHAPE_TYPE = L10n.lang("bbs.ui.forms.editors.shape.type");
-    public static final IKey FORMS_EDITORS_SHAPE_GEOMETRY = L10n.lang("bbs.ui.forms.editors.shape.geometry");
-    public static final IKey FORMS_EDITORS_SHAPE_APPEARANCE = L10n.lang("bbs.ui.forms.editors.shape.appearance");
-
-    public static final IKey FORMS_EDITORS_SHAPE_TYPE_BOX = L10n.lang("bbs.ui.forms.editors.shape.type.box");
-    public static final IKey FORMS_EDITORS_SHAPE_TYPE_SPHERE = L10n.lang("bbs.ui.forms.editors.shape.type.sphere");
-    public static final IKey FORMS_EDITORS_SHAPE_TYPE_CYLINDER = L10n.lang("bbs.ui.forms.editors.shape.type.cylinder");
-    public static final IKey FORMS_EDITORS_SHAPE_TYPE_CAPSULE = L10n.lang("bbs.ui.forms.editors.shape.type.capsule");
-
-    public static final IKey FORMS_EDITORS_SHAPE_SIZE_X = L10n.lang("bbs.ui.forms.editors.shape.size_x");
-    public static final IKey FORMS_EDITORS_SHAPE_SIZE_Y = L10n.lang("bbs.ui.forms.editors.shape.size_y");
-    public static final IKey FORMS_EDITORS_SHAPE_SIZE_Z = L10n.lang("bbs.ui.forms.editors.shape.size_z");
-    public static final IKey FORMS_EDITORS_SHAPE_SUBDIVISIONS = L10n.lang("bbs.ui.forms.editors.shape.subdivisions");
-    public static final IKey FORMS_EDITORS_SHAPE_PICK_TEXTURE = L10n.lang("bbs.ui.forms.editors.shape.pick_texture");
-    public static final IKey FORMS_EDITORS_SHAPE_TEXTURE_SCALE = L10n.lang("bbs.ui.forms.editors.shape.texture_scale");
-    public static final IKey FORMS_EDITORS_SHAPE_TEXTURE_SCROLL_X = L10n.lang("bbs.ui.forms.editors.shape.texture_scroll_x");
-    public static final IKey FORMS_EDITORS_SHAPE_TEXTURE_SCROLL_Y = L10n.lang("bbs.ui.forms.editors.shape.texture_scroll_y");
 }
