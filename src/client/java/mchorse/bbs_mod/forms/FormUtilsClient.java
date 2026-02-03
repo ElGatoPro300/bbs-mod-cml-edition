@@ -15,6 +15,7 @@ import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.forms.ParticleForm;
 import mchorse.bbs_mod.forms.forms.TrailForm;
 import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
+import mchorse.bbs_mod.forms.forms.ShapeForm;
 import mchorse.bbs_mod.forms.forms.StructureForm;
 import mchorse.bbs_mod.forms.forms.LightForm;
 import mchorse.bbs_mod.forms.renderers.AnchorFormRenderer;
@@ -32,6 +33,7 @@ import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
 import mchorse.bbs_mod.forms.renderers.ParticleFormRenderer;
 import mchorse.bbs_mod.forms.renderers.TrailFormRenderer;
 import mchorse.bbs_mod.forms.renderers.VanillaParticleFormRenderer;
+import mchorse.bbs_mod.forms.renderers.ShapeFormRenderer;
 import mchorse.bbs_mod.forms.renderers.StructureFormRenderer;
 import mchorse.bbs_mod.forms.renderers.LightFormRenderer;
 import mchorse.bbs_mod.ui.framework.UIContext;
@@ -100,6 +102,7 @@ public class FormUtilsClient
         register(TrailForm.class, TrailFormRenderer::new);
         register(FramebufferForm.class, FramebufferFormRenderer::new);
         register(StructureForm.class, StructureFormRenderer::new);
+        register(ShapeForm.class, ShapeFormRenderer::new);
         register(LightForm.class, LightFormRenderer::new);
     }
 
