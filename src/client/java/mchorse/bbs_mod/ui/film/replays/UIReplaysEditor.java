@@ -612,50 +612,47 @@ public class UIReplaysEditor extends UIElement
             return false;
         });
 
-        if (BBSSettings.editorGroupModelTracks.get())
+        List<UIKeyframeSheet> grouped = new ArrayList<>();
+        Set<String> addedGroups = new HashSet<>();
+
+        for (UIKeyframeSheet sheet : sheets)
         {
-            List<UIKeyframeSheet> grouped = new ArrayList<>();
-            Set<String> addedGroups = new HashSet<>();
+            Form form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
 
-            for (UIKeyframeSheet sheet : sheets)
+            if (form != null && form.getParent() != null)
             {
-                Form form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
+                String path = FormUtils.getPath(form);
+                String groupKey = this.replay.uuid.get() + ":" + path;
 
-                if (form != null && form.getParent() != null)
+                if (addedGroups.add(groupKey))
                 {
-                    String path = FormUtils.getPath(form);
-                    String groupKey = this.replay.uuid.get() + ":" + path;
+                    boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
+                    UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
+                        "__group__" + groupKey,
+                        IKey.constant(form.getDisplayName()),
+                        Colors.LIGHTEST_GRAY & Colors.RGB,
+                        groupKey,
+                        expanded,
+                        () ->
+                        {
+                            this.collapsedModelTracks.put(groupKey, expanded);
+                            this.updateChannelsList();
+                        }
+                    );
 
-                    if (addedGroups.add(groupKey))
-                    {
-                        boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
-                        UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
-                            "__group__" + groupKey,
-                            IKey.constant(form.getDisplayName()),
-                            Colors.LIGHTEST_GRAY & Colors.RGB,
-                            groupKey,
-                            expanded,
-                            () ->
-                            {
-                                this.collapsedModelTracks.put(groupKey, expanded);
-                                this.updateChannelsList();
-                            }
-                        );
-
-                        grouped.add(header);
-                    }
-
-                    if (this.collapsedModelTracks.getOrDefault(groupKey, false))
-                    {
-                        continue;
-                    }
+                    grouped.add(header);
                 }
 
-                grouped.add(sheet);
+                if (this.collapsedModelTracks.getOrDefault(groupKey, false))
+                {
+                    continue;
+                }
             }
 
-            sheets = grouped;
+            grouped.add(sheet);
         }
+
+        sheets = grouped;
 
         Object lastForm = null;
 

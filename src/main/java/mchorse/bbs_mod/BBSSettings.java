@@ -88,7 +88,6 @@ public class BBSSettings
     public static ValueBoolean editorRewind;
     public static ValueBoolean editorHorizontalClipEditor;
     public static ValueBoolean editorMinutesBackup;
-    public static ValueBoolean editorGroupModelTracks;
 
     public static ValueFloat recordingCountdown;
     public static ValueBoolean recordingSwipeDamage;
@@ -242,7 +241,6 @@ public class BBSSettings
         editorRewind = builder.getBoolean("rewind", true);
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
-        editorGroupModelTracks = builder.getBoolean("group_model_tracks", true);
 
         builder.category("recording");
         recordingCountdown = builder.getFloat("countdown", 1.5F, 0F, 30F);
