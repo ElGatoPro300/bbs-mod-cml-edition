@@ -13,7 +13,6 @@ import mchorse.bbs_mod.forms.forms.ItemForm;
 import mchorse.bbs_mod.forms.forms.LabelForm;
 import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.StructureForm;
-import mchorse.bbs_mod.forms.forms.ShapeForm;
 import mchorse.bbs_mod.forms.forms.TrailForm;
 import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
 import mchorse.bbs_mod.forms.forms.LightForm;
@@ -58,7 +57,6 @@ public class ExtraFormSection extends FormSection
         VanillaParticleForm vanillaParticle = new VanillaParticleForm();
         TrailForm trail = new TrailForm();
         StructureForm structure = new StructureForm();
-        ShapeForm shape = new ShapeForm();
         FluidForm fluid = new FluidForm();
         LightForm light = new LightForm();
         try
@@ -104,7 +102,6 @@ public class ExtraFormSection extends FormSection
         extra.addForm(vanillaParticle);
         extra.addForm(trail);
         extra.addForm(structure);
-        extra.addForm(shape);
         extra.addForm(fluid);
         extra.addForm(light);
 

@@ -1433,23 +1433,5 @@
     "studio.ui.utility.reload_terrain": "Terrain",
     "studio.ui.utility.reload_textures": "Textures",
     "studio.ui.utility.resize": "Resize window",
-    "studio.ui.utility.title": "Utility panel",
-
-    "bbs.ui.forms.editors.shape.title": "Shape",
-    "bbs.ui.forms.editors.shape.type": "Shape type",
-    "bbs.ui.forms.editors.shape.geometry": "Geometry",
-    "bbs.ui.forms.editors.shape.appearance": "Appearance",
-    "bbs.ui.forms.editors.shape.type.box": "Box",
-    "bbs.ui.forms.editors.shape.type.sphere": "Sphere",
-    "bbs.ui.forms.editors.shape.type.cylinder": "Cylinder",
-    "bbs.ui.forms.editors.shape.type.capsule": "Capsule",
-
-    "bbs.ui.forms.editors.shape.size_x": "Size X",
-    "bbs.ui.forms.editors.shape.size_y": "Size Y",
-    "bbs.ui.forms.editors.shape.size_z": "Size Z",
-    "bbs.ui.forms.editors.shape.subdivisions": "Subdivisions",
-    "bbs.ui.forms.editors.shape.pick_texture": "Pick texture",
-    "bbs.ui.forms.editors.shape.texture_scale": "Texture Scale",
-    "bbs.ui.forms.editors.shape.texture_scroll_x": "Scroll X",
-    "bbs.ui.forms.editors.shape.texture_scroll_y": "Scroll Y"
+    "studio.ui.utility.title": "Utility panel"
 }
