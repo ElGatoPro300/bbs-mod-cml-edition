@@ -20,7 +20,7 @@ public class NoiseNode extends ShapeNode
     @Override
     public List<String> getInputs()
     {
-        return Arrays.asList("x", "y", "z", "scale", "detail", "roughness");
+        return Arrays.asList("x", "y", "z", "scale");
     }
 
     @Override

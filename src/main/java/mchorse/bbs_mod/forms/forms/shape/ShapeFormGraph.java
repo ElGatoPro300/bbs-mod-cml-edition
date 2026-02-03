@@ -6,7 +6,6 @@ import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.forms.shape.nodes.ColorNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.CommentNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.CoordinateNode;
-import mchorse.bbs_mod.forms.forms.shape.nodes.BumpNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.MathNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.MixColorNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.NoiseNode;
@@ -129,7 +128,6 @@ public class ShapeFormGraph
         if ("voronoi".equals(type)) return new VoronoiNode();
         if ("flow_noise".equals(type)) return new FlowNoiseNode();
         if ("trigger".equals(type)) return new TriggerNode();
-        if ("bump".equals(type)) return new BumpNode();
         return null;
     }
 }
