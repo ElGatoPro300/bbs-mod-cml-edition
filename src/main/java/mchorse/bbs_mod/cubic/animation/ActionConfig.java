@@ -8,6 +8,7 @@ import java.util.Objects;
 public class ActionConfig implements IMapSerializable
 {
     public String name = "";
+    public boolean isState = false;
     public boolean loop = true;
     public float speed = 1;
     public float fade = 5;
@@ -34,6 +35,7 @@ public class ActionConfig implements IMapSerializable
             ActionConfig config = (ActionConfig) obj;
 
             return Objects.equals(this.name, config.name)
+                && this.isState == config.isState
                 && this.loop == config.loop
                 && this.speed == config.speed
                 && this.fade == config.fade
@@ -47,6 +49,7 @@ public class ActionConfig implements IMapSerializable
     {
         ActionConfig config = new ActionConfig(this.name);
 
+        config.isState = this.isState;
         config.loop = this.loop;
         config.speed = this.speed;
         config.fade = this.fade;
@@ -62,13 +65,14 @@ public class ActionConfig implements IMapSerializable
 
     public boolean isDefault()
     {
-        return this.loop && this.speed == 1 && this.fade == 5 && this.tick == 0;
+        return !this.isState && this.loop && this.speed == 1 && this.fade == 5 && this.tick == 0;
     }
 
     @Override
     public void toData(MapType data)
     {
         data.putString("name", this.name);
+        if (this.isState) data.putBool("isState", this.isState);
         data.putBool("loop", this.loop);
         data.putFloat("speed", this.speed);
         data.putFloat("fade", this.fade);
@@ -79,6 +83,7 @@ public class ActionConfig implements IMapSerializable
     public void fromData(MapType data)
     {
         this.name = data.getString("name");
+        if (data.has("isState")) this.isState = data.getBool("isState");
         this.loop = data.getBool("loop");
         this.speed = data.getFloat("speed");
         this.fade = data.getFloat("fade");
