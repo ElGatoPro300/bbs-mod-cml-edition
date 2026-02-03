@@ -8,8 +8,6 @@ import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
-import mchorse.bbs_mod.forms.states.AnimationState;
-import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
@@ -18,16 +16,13 @@ import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.utils.UI;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class UIActionsConfigEditor extends UIElement
 {
     public UIStringList actions;
     public UISearchList<String> animations;
     public UIToggle loop;
-    public UIToggle proceduralActions;
     public UITrackpad speed;
     public UITrackpad fade;
     public UITrackpad tick;
@@ -36,7 +31,6 @@ public class UIActionsConfigEditor extends UIElement
     private ActionConfig config;
     private Runnable preCallback;
     private Runnable postCallback;
-    private ModelForm form;
 
     public UIActionsConfigEditor(Runnable preCallback, Runnable postCallback)
     {
@@ -50,11 +44,7 @@ public class UIActionsConfigEditor extends UIElement
         this.animations = new UISearchList<>(new UIStringList((l) ->
         {
             this.callback(this.preCallback);
-            String name = this.animations.list.getIndex() == 0 ? "" : l.get(0);
-
-            this.config.name = name;
-            this.config.isState = this.form != null && this.form.states.getById(name) != null;
-
+            this.config.name = this.animations.list.getIndex() == 0 ? "" : l.get(0);
             this.callback(this.postCallback);
         }));
         this.animations.list.cancelScrollEdge();
@@ -66,15 +56,6 @@ public class UIActionsConfigEditor extends UIElement
             this.config.loop = b.getValue();
             this.callback(this.postCallback);
         });
-        this.proceduralActions = new UIToggle(IKey.raw("Procedural Actions"), (b) ->
-        {
-            this.callback(this.preCallback);
-            this.configs.proceduralActions = b.getValue();
-            this.callback(this.postCallback);
-
-            this.setConfigs(this.configs, this.form);
-        });
-        this.proceduralActions.marginTop(6);
         this.speed = new UITrackpad((v) ->
         {
             this.callback(this.preCallback);
@@ -97,7 +78,7 @@ public class UIActionsConfigEditor extends UIElement
         this.tick.limit(0).integer();
 
         this.column().vertical().stretch();
-        this.add(UI.label(UIKeys.FORMS_EDITORS_MODEL_ACTIONS), this.actions, this.proceduralActions);
+        this.add(UI.label(UIKeys.FORMS_EDITORS_MODEL_ACTIONS), this.actions);
         this.add(UI.label(UIKeys.FORMS_EDITORS_ACTIONS_ANIMATIONS).marginTop(6), this.animations, this.loop);
         this.add(UI.label(UIKeys.FORMS_EDITORS_ACTIONS_SPEED).marginTop(6), this.speed);
         this.add(UI.label(UIKeys.FORMS_EDITORS_ACTIONS_FADE).marginTop(6), this.fade);
@@ -114,42 +95,16 @@ public class UIActionsConfigEditor extends UIElement
 
     public void setConfigs(ActionsConfig configs, ModelForm form)
     {
-        this.form = form;
         ModelFormRenderer renderer = (ModelFormRenderer) FormUtilsClient.getRenderer(form);
         ModelInstance model = renderer.getModel();
 
         renderer.ensureAnimator(0F);
 
-        this.proceduralActions.setVisible(model != null && model.procedural);
-        this.proceduralActions.setValue(configs.proceduralActions);
-
         IAnimator animator = renderer.getAnimator();
         Collection<String> animations = model != null ? model.animations.animations.keySet() : null;
-        List<String> allAnimations = new ArrayList<>();
-
-        if (animations != null)
-        {
-            allAnimations.addAll(animations);
-        }
-
-        if (form != null)
-        {
-            for (AnimationState state : form.states.getAllTyped())
-            {
-                String id = state.customId.get();
-
-                if (id.isEmpty())
-                {
-                    id = state.id.get();
-                }
-
-                allAnimations.add(id);
-            }
-        }
-
         Collection<String> actions = animator != null ? animator.getActions() : null;
 
-        this.setConfigs(configs, allAnimations, actions);
+        this.setConfigs(configs, animations, actions);
     }
 
     public void setConfigs(ActionsConfig configs, Collection<String> animations, Collection<String> actions)

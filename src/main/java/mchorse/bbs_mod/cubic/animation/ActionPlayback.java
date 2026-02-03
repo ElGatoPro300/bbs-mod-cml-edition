@@ -3,22 +3,10 @@ package mchorse.bbs_mod.cubic.animation;
 import mchorse.bbs_mod.cubic.IModel;
 import mchorse.bbs_mod.cubic.data.animation.Animation;
 import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.forms.MobForm;
-import mchorse.bbs_mod.forms.forms.ModelForm;
-import mchorse.bbs_mod.forms.states.AnimationState;
-
-import java.util.Map;
 
 public class ActionPlayback
 {
-    private static final Map<String, String> POSE_REMAP = Map.of(
-        "pose", "pose_state",
-        "pose_overlay", "pose_state_overlay"
-    );
-
     public Animation action;
-    public AnimationState state;
     public ActionConfig config;
 
     private int fade;
@@ -44,16 +32,6 @@ public class ActionPlayback
     {
         this(action, config, looping);
         this.priority = priority;
-    }
-
-    public ActionPlayback(AnimationState state, ActionConfig config, boolean looping, int priority)
-    {
-        this.state = state;
-        this.config = config;
-        this.duration = state.duration.get();
-        this.looping = looping;
-        this.priority = priority;
-        this.setSpeed(1);
     }
 
     /* Action playback control methods */
@@ -222,36 +200,18 @@ public class ActionPlayback
         return ticks;
     }
 
-    public void apply(IEntity target, IModel armature, float transition, float blend, boolean skipInitial, Form form)
+    public void apply(IEntity target, IModel armature, float transition, float blend, boolean skipInitial)
     {
         float tick = this.getTick(transition);
 
-        if (this.state != null && form != null)
-        {
-            this.state.properties.applyProperties(form, tick, blend, form instanceof MobForm || form instanceof ModelForm ? POSE_REMAP : null);
-        }
-        else if (this.action != null)
-        {
-            armature.apply(target, this.action, tick, blend, transition, skipInitial);
-        }
+        armature.apply(target, this.action, tick, blend, transition, skipInitial);
     }
 
     public void postApply(IEntity target, IModel armature, float transition)
     {
         float tick = this.getTick(transition);
 
-        if (this.action != null)
-        {
-            armature.postApply(target, this.action, tick, transition);
-        }
-    }
-
-    public void reset(Form form)
-    {
-        if (this.state != null && form != null)
-        {
-            this.state.properties.resetProperties(form, POSE_REMAP);
-        }
+        armature.postApply(target, this.action, tick, transition);
     }
 
     public static enum Fade
