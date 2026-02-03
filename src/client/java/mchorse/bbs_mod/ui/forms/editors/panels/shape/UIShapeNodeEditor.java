@@ -3,6 +3,7 @@ package mchorse.bbs_mod.ui.forms.editors.panels.shape;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.forms.shape.ShapeConnection;
 import mchorse.bbs_mod.forms.forms.shape.ShapeFormGraph;
+import mchorse.bbs_mod.forms.forms.shape.nodes.BumpNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.ColorNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.CommentNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.CoordinateNode;
@@ -88,6 +89,7 @@ public class UIShapeNodeEditor extends UIElement
             add.action(Icons.ADD, IKey.raw("Value"), () -> this.addNode(new ValueNode(), this.lastMouseX, this.lastMouseY));
             add.action(Icons.TIME, IKey.raw("Time"), () -> this.addNode(new TimeNode(), this.lastMouseX, this.lastMouseY));
             add.action(Icons.FULLSCREEN, IKey.raw("Coordinate"), () -> this.addNode(new CoordinateNode(), this.lastMouseX, this.lastMouseY));
+            add.action(Icons.ADD, IKey.raw("Bump"), () -> this.addNode(new BumpNode(), this.lastMouseX, this.lastMouseY));
             add.action(Icons.MATERIAL, IKey.raw("Color"), () -> this.addNode(new ColorNode(), this.lastMouseX, this.lastMouseY));
         add.action(Icons.MATERIAL, IKey.raw("Mix Color"), () -> this.addNode(new MixColorNode(), this.lastMouseX, this.lastMouseY));
         add.action(Icons.EDIT, IKey.raw("Comment"), () -> this.addNode(new CommentNode(), this.lastMouseX, this.lastMouseY));
