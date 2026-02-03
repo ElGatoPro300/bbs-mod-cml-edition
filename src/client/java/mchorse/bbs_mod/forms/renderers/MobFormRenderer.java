@@ -16,8 +16,10 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.PlayerUtils;
+import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
@@ -317,14 +319,9 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
                 entity.hurtTime = v != 10 ? 100 : 0;
             }
 
-            Pose pose = this.form.poseState.get().copy();
-
-            this.applyPose(pose, this.form.poseStateOverlay.get());
-            this.applyPose(pose, this.form.pose.get());
-            this.applyPose(pose, this.form.poseOverlay.get());
-
-            currentPose = pose;
-            currentPoseOverlay = null;
+            
+            currentPose = this.form.pose.get();
+            currentPoseOverlay = this.form.poseOverlay.get();
 
             MinecraftClient.getInstance().getEntityRenderDispatcher().render(this.entity, 0D, 0D, 0D, 0F, context.getTransition(), context.stack, consumers, light);
 

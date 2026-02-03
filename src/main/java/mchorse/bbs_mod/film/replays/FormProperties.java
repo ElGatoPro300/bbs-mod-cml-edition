@@ -73,28 +73,57 @@ public class FormProperties extends ValueGroup
 
     public void applyProperties(Form form, float tick)
     {
-        this.applyProperties(form, tick, 1F);
+        this.applyProperties(form, tick, 1F, null);
     }
 
     public void applyProperties(Form form, float tick, float blend)
+    {
+        this.applyProperties(form, tick, blend, null);
+    }
+
+    public void applyProperties(Form form, float tick, float blend, Map<String, String> keyRemap)
     {
         if (form == null)
         {
             return;
         }
 
+        /* First, check for missing channels and reset them */
+        this.checkMissingProperties(form, keyRemap);
+
         for (KeyframeChannel value : this.properties.values())
         {
-            this.applyProperty(tick, form, value, blend);
+            this.applyProperty(tick, form, value, blend, keyRemap);
         }
     }
 
     private void checkMissingProperties(Form form, Map<String, String> keyRemap)
+    {
+        /* Get all possible properties that could be animated */
+        if (form == null) return;
+        
+        List<String> allKeys = new ArrayList<>();
+        allKeys.addAll(this.properties.keySet());
+        
         
         return;
+    }
+
     private void applyProperty(float tick, Form form, KeyframeChannel value, float blend)
     {
-        BaseValueBasic property = FormUtils.getProperty(form, value.getId());
+        this.applyProperty(tick, form, value, blend, null);
+    }
+
+    private void applyProperty(float tick, Form form, KeyframeChannel value, float blend, Map<String, String> keyRemap)
+    {
+        String key = value.getId();
+
+        if (keyRemap != null && keyRemap.containsKey(key))
+        {
+            key = keyRemap.get(key);
+        }
+
+        BaseValueBasic property = FormUtils.getProperty(form, key);
 
         if (property == null)
         {
@@ -116,7 +145,7 @@ public class FormProperties extends ValueGroup
             }
             else
             {
-                property.setRuntimeValue(segment.createInterpolated());
+                property.setRuntimeValue(value.getFactory().copy(segment.createInterpolated()));
             }
         }
         else
@@ -127,6 +156,11 @@ public class FormProperties extends ValueGroup
 
     public void resetProperties(Form form)
     {
+        this.resetProperties(form, null);
+    }
+
+    public void resetProperties(Form form, Map<String, String> keyRemap)
+    {
         if (form == null)
         {
             return;
@@ -134,7 +168,14 @@ public class FormProperties extends ValueGroup
 
         for (KeyframeChannel value : this.properties.values())
         {
-            BaseValueBasic property = FormUtils.getProperty(form, value.getId());
+            String key = value.getId();
+
+            if (keyRemap != null && keyRemap.containsKey(key))
+            {
+                key = keyRemap.get(key);
+            }
+
+            BaseValueBasic property = FormUtils.getProperty(form, key);
 
             if (property == null)
             {
