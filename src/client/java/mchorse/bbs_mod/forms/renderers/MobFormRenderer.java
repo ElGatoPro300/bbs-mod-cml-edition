@@ -262,46 +262,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
             RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }
-
-    private void applyPose(Pose targetPose, Pose pose)
-    {
-        for (Map.Entry<String, PoseTransform> entry : pose.transforms.entrySet())
-        {
-            PoseTransform poseTransform = targetPose.get(entry.getKey());
-            PoseTransform value = entry.getValue();
-
-            if (value.fix != 0)
-            {
-                poseTransform.translate.lerp(value.translate, value.fix);
-                poseTransform.scale.lerp(value.scale, value.fix);
-                poseTransform.rotate.lerp(value.rotate, value.fix);
-                poseTransform.rotate2.lerp(value.rotate2, value.fix);
-                poseTransform.pivot.lerp(value.pivot, value.fix);
-            }
-            else
-            {
-                poseTransform.translate.add(value.translate);
-                poseTransform.scale.add(value.scale).sub(1, 1, 1);
-                poseTransform.rotate.add(value.rotate);
-                poseTransform.rotate2.add(value.rotate2);
-                poseTransform.pivot.add(value.pivot);
-            }
-
-            if (value.fix != 0)
-            {
-                poseTransform.color.lerp(value.color, value.fix);
-                poseTransform.lighting = Lerps.lerp(poseTransform.lighting, value.lighting, value.fix);
-            }
-            else
-            {
-                poseTransform.color.r += value.color.r;
-                poseTransform.color.g += value.color.g;
-                poseTransform.color.b += value.color.b;
-                poseTransform.color.a += value.color.a;
-                poseTransform.lighting += value.lighting;
-            }
-        }
-    }
+ 
 
     @Override
     protected void render3D(FormRenderingContext context)
@@ -358,14 +319,9 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
                 entity.hurtTime = v != 10 ? 100 : 0;
             }
 
-            Pose pose = this.form.poseState.get().copy();
-
-            this.applyPose(pose, this.form.poseStateOverlay.get());
-            this.applyPose(pose, this.form.pose.get());
-            this.applyPose(pose, this.form.poseOverlay.get());
-
-            currentPose = pose;
-            currentPoseOverlay = null;
+            
+            currentPose = this.form.pose.get();
+            currentPoseOverlay = this.form.poseOverlay.get();
 
             MinecraftClient.getInstance().getEntityRenderDispatcher().render(this.entity, 0D, 0D, 0D, 0F, context.getTransition(), context.stack, consumers, light);
 
