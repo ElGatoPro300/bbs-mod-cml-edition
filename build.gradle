@@ -44,6 +44,12 @@ loom {
 	}
 
 	accessWidenerPath.set(getRootProject().file("src/main/resources/bbs.accesswidener"))
+
+	runs {
+		client {
+			vmArgs "-Dorg.lwjgl.openal.libname=${project.file('audio_fix/openal-soft-1.15.1-bin/Win64/soft_oal.dll').absolutePath}"
+		}
+	}
 }
 
 configurations.all {
