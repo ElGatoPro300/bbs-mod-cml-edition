@@ -189,7 +189,7 @@ public abstract class UIKeyframeFactory <T> extends UIElement
         });
         this.shape.tooltip(UIKeys.KEYFRAMES_CHANGE_SHAPE);
 
-        this.scroll.add(UI.row(this.interp, this.enabled, this.tick, this.duration));
+        this.scroll.add(UI.row(this.enabled, this.interp, this.tick, this.duration));
         this.scroll.add(UI.row(this.shape, this.color));
 
         this.add(this.scroll);
