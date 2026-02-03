@@ -89,9 +89,6 @@ public class FormProperties extends ValueGroup
         }
     }
 
-    private void checkMissingProperties(Form form, Map<String, String> keyRemap)
-        
-        return;
     private void applyProperty(float tick, Form form, KeyframeChannel value, float blend)
     {
         BaseValueBasic property = FormUtils.getProperty(form, value.getId());
