@@ -139,6 +139,17 @@ public abstract class UIForm <T extends Form> extends UIPanelBase<UIFormPanel<T>
         }
     }
 
+    public void refresh()
+    {
+        if (this.form != null)
+        {
+            for (UIFormPanel<T> panel : this.panels)
+            {
+                panel.startEdit(this.form);
+            }
+        }
+    }
+
     public void finishEdit()
     {
         for (UIFormPanel<T> panel : this.panels)

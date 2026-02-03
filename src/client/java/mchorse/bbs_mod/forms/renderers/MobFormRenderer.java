@@ -16,8 +16,10 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.PlayerUtils;
+import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
@@ -260,6 +262,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
             RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }
+ 
 
     @Override
     protected void render3D(FormRenderingContext context)
@@ -316,6 +319,7 @@ public class MobFormRenderer extends FormRenderer<MobForm> implements ITickable
                 entity.hurtTime = v != 10 ? 100 : 0;
             }
 
+            
             currentPose = this.form.pose.get();
             currentPoseOverlay = this.form.poseOverlay.get();
 

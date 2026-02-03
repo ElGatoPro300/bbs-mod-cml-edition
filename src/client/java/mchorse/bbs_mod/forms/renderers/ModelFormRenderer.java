@@ -10,6 +10,7 @@ import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.cubic.animation.ActionsConfig;
 import mchorse.bbs_mod.cubic.animation.Animator;
 import mchorse.bbs_mod.cubic.animation.IAnimator;
+import mchorse.bbs_mod.cubic.animation.ProceduralActionAnimator;
 import mchorse.bbs_mod.cubic.animation.ProceduralAnimator;
 import mchorse.bbs_mod.cubic.data.model.ModelGroup;
 import mchorse.bbs_mod.cubic.model.ArmorSlot;
@@ -180,17 +181,11 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     public Pose getPose()
     {
-        Pose pose = this.form.pose.get().copy();
-        Pose overlay = this.form.poseOverlay.get();
+        Pose pose = this.form.poseState.get().copy();
 
-        ModelInstance model = this.getModel();
-
-        if (model != null)
-        {
-            this.applyPose(pose, model.parts);
-        }
-
-        this.applyPose(pose, overlay);
+        this.applyPose(pose, this.form.poseStateOverlay.get());
+        this.applyPose(pose, this.form.pose.get());
+        this.applyPose(pose, this.form.poseOverlay.get());
 
         for (ValuePose newPose : this.form.additionalOverlays)
         {
@@ -259,7 +254,15 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             /* Update the config */
             if (this.animator != null && !Objects.equals(actionsConfig, this.lastConfigs))
             {
-                this.animator.setup(model, actionsConfig, true);
+                /* Re-create animator if procedural action mode changed */
+                if (actionsConfig.proceduralActions != this.lastConfigs.proceduralActions)
+                {
+                    this.animator = actionsConfig.proceduralActions
+                        ? new ProceduralActionAnimator()
+                        : (model.procedural ? new ProceduralAnimator() : new Animator());
+                }
+                
+                this.animator.setup(model, actionsConfig, true, this.form);
 
                 this.lastConfigs = new ActionsConfig();
                 this.lastConfigs.copy(actionsConfig);
@@ -268,8 +271,10 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             return;
         }
 
-        this.animator = model.procedural ? new ProceduralAnimator() : new Animator();
-        this.animator.setup(model, actionsConfig, false);
+        this.animator = actionsConfig.proceduralActions
+            ? new ProceduralActionAnimator()
+            : (model.procedural ? new ProceduralAnimator() : new Animator());
+        this.animator.setup(model, actionsConfig, false, this.form);
 
         this.lastConfigs = new ActionsConfig();
         this.lastConfigs.copy(actionsConfig);
