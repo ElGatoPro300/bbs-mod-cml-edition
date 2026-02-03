@@ -20,11 +20,8 @@ public class ModelForm extends Form
     public final ValueLink texture = new ValueLink("texture", null);
     public final ValueString model = new ValueString("model", "");
     public final ValuePose pose = new ValuePose("pose", new Pose());
-    public final ValuePose poseState = new ValuePose("pose_state", new Pose());
-    public final ValuePose poseStateOverlay = new ValuePose("pose_state_overlay", new Pose());
     public final ValuePose poseOverlay = new ValuePose("pose_overlay", new Pose());
     public final ValueActionsConfig actions = new ValueActionsConfig("actions", new ActionsConfig());
-
     public final ValueColor color = new ValueColor("color", Color.white());
     public final ValueShapeKeys shapeKeys = new ValueShapeKeys("shape_keys", new ShapeKeys());
 
@@ -34,14 +31,9 @@ public class ModelForm extends Form
     {
         super();
 
-        this.poseState.invisible();
-        this.poseStateOverlay.invisible();
-
         this.add(this.texture);
         this.add(this.model);
         this.add(this.pose);
-        this.add(this.poseState);
-        this.add(this.poseStateOverlay);
         this.add(this.poseOverlay);
 
         for (int i = 0; i < BBSSettings.recordingPoseTransformOverlays.get(); i++)

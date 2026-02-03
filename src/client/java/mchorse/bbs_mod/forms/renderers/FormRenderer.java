@@ -152,9 +152,7 @@ public abstract class FormRenderer <T extends Form>
     {
         Transform transform = new Transform();
 
-        transform.copy(this.form.transformState.get());
-        this.applyTransform(transform, this.form.transformStateOverlay.get());
-        this.applyTransform(transform, this.form.transform.get());
+        transform.copy(this.form.transform.get());
         this.applyTransform(transform, this.form.transformOverlay.get());
 
         for (ValueTransform t : this.form.additionalTransforms)
