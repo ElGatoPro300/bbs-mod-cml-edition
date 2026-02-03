@@ -46,6 +46,7 @@ loom {
 	accessWidenerPath.set(getRootProject().file("src/main/resources/bbs.accesswidener"))
 }
 
+configurations.all {
     resolutionStrategy {
         eachDependency { DependencyResolveDetails details ->
             if (details.requested.group == 'org.lwjgl') {
