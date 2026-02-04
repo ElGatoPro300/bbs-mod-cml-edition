@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.ui.forms.editors;
 
 import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.forms.AnchorForm;
@@ -114,6 +115,7 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
     public UIIcon openStateEditor;
 
     public Form form;
+    private MapType storedForm;
 
     private Consumer<Form> callback;
     private UICopyPasteController copyPasteController;
@@ -201,7 +203,19 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
 
         this.openStates = new UIIcon(Icons.MORE, (b) ->
         {
-            UIAnimationStatesOverlayPanel panel = new UIAnimationStatesOverlayPanel(this.form.states, this.statesKeyframes.getState(), (state) -> this.pickState(state));
+            UIAnimationStatesOverlayPanel panel = new UIAnimationStatesOverlayPanel(this.form.states, this.statesKeyframes.getState(), (state) -> this.pickState(state))
+            {
+                @Override
+                public void onClose()
+                {
+                    super.onClose();
+
+                    if (UIFormEditor.this.editor != null)
+                    {
+                        UIFormEditor.this.editor.refresh();
+                    }
+                }
+            };
 
             panel.setUndoId("animation_states_overlay_panel");
             UIOverlay.addOverlay(this.getContext(), panel, 280, 0.5F).eventPropagataion(EventPropagation.PASS);
@@ -361,6 +375,41 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
     {
         this.formEditor.toggleVisible();
         this.statesEditor.toggleVisible();
+
+        if (this.statesEditor.isVisible())
+        {
+            this.storedForm = this.form.toData().asMap();
+        }
+        else if (this.storedForm != null)
+        {
+            AnimationState currentState = this.statesKeyframes.getState();
+            String stateId = currentState != null ? currentState.id.get() : null;
+            BaseType currentStates = this.form.states.toData();
+            Form newForm = FormUtils.fromData(this.storedForm);
+
+            if (newForm != null)
+            {
+                this.form.copy(newForm);
+            }
+            else
+            {
+                this.form.fromData(this.storedForm);
+            }
+
+            this.form.states.fromData(currentStates);
+
+            if (stateId != null)
+            {
+                AnimationState newState = this.form.states.getById(stateId);
+
+                if (newState != null)
+                {
+                    this.pickState(newState);
+                }
+            }
+
+            this.storedForm = null;
+        }
     }
 
     private void toggleSidebar()
