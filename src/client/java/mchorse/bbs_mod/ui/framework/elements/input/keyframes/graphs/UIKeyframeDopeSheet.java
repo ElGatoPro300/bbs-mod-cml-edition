@@ -670,21 +670,11 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 }
 
                 int kc = frame.getColor() != null ? frame.getColor().getRGBColor() | Colors.A100 : sheet.color;
-
-                if (!frame.isEnabled())
-                {
-                    kc = Colors.GRAY | Colors.A100;
-                }
-
                 int c = (sheet.selection.has(j) || isPointHover ? Colors.WHITE : kc) | Colors.A100;
 
                 if (toRemove)
                 {
                     c = Colors.RED | Colors.A100;
-                }
-                else if (!frame.isEnabled())
-                {
-                    c = Colors.setA(c, 0.6F);
                 }
 
                 int offset = toRemove ? 4 : 3;
