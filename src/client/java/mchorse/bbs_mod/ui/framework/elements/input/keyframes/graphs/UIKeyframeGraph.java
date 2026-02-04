@@ -532,22 +532,14 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
         /* Render graph */
         LineBuilder lineBuilder = new LineBuilder(0.7F);
 
-        Keyframe lastEnabled = null;
-
         for (int i = 0; i < keyframes.size(); i++)
         {
             Keyframe frame = (Keyframe) keyframes.get(i);
-
-            if (!frame.isEnabled())
-            {
-                continue;
-            }
-
-            Keyframe prev = lastEnabled;
+            Keyframe prev = i > 0 ? (Keyframe) keyframes.get(i - 1) : null;
             int x = this.keyframes.toGraphX(frame.getTick());
             int y = this.toGraphY(sheet.channel.getFactory().getY(frame.getValue()));
 
-            if (lastEnabled == null && x > this.keyframes.area.x)
+            if (i == 0 && x > this.keyframes.area.x)
             {
                 lineBuilder.add(this.keyframes.area.x, y);
             }
@@ -582,18 +574,7 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
 
             lineBuilder.add(x, y);
 
-            boolean isLast = true;
-
-            for (int k = i + 1; k < keyframes.size(); k++)
-            {
-                if (((Keyframe) keyframes.get(k)).isEnabled())
-                {
-                    isLast = false;
-                    break;
-                }
-            }
-
-            if (isLast && x < this.keyframes.area.ex())
+            if (i == keyframes.size() - 1 && x < this.keyframes.area.ex())
             {
                 lineBuilder.add(this.keyframes.area.ex(), y);
             }
@@ -629,8 +610,6 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
                 lineBuilder.push();
                 lineBuilder.add(x, y);
             }
-
-            lastEnabled = frame;
         }
 
         lineBuilder.render(context.batcher, SolidColorLineRenderer.get(Colors.COLOR.set(Colors.setA(sheet.color, 1F))));
@@ -672,21 +651,11 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
             }
 
             int kc = frame.getColor() != null ? frame.getColor().getRGBColor() | Colors.A100 : sheet.color;
-
-            if (!frame.isEnabled())
-            {
-                kc = Colors.GRAY | Colors.A100;
-            }
-
             int c = (sheet.selection.has(i) || isPointHover ? Colors.WHITE : kc) | Colors.A100;
 
             if (toRemove)
             {
                 c = Colors.RED | Colors.A100;
-            }
-            else if (!frame.isEnabled())
-            {
-                c = Colors.setA(c, 0.6F);
             }
 
             int offset = toRemove ? 4 : 3;
