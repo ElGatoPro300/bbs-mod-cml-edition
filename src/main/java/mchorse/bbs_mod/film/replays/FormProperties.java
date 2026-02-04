@@ -16,10 +16,8 @@ import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class FormProperties extends ValueGroup
@@ -73,57 +71,25 @@ public class FormProperties extends ValueGroup
 
     public void applyProperties(Form form, float tick)
     {
-        this.applyProperties(form, tick, 1F, null);
+        this.applyProperties(form, tick, 1F);
     }
 
     public void applyProperties(Form form, float tick, float blend)
-    {
-        this.applyProperties(form, tick, blend, null);
-    }
-
-    public void applyProperties(Form form, float tick, float blend, Map<String, String> keyRemap)
     {
         if (form == null)
         {
             return;
         }
 
-        /* First, check for missing channels and reset them */
-        this.checkMissingProperties(form, keyRemap);
-
         for (KeyframeChannel value : this.properties.values())
         {
-            this.applyProperty(tick, form, value, blend, keyRemap);
+            this.applyProperty(tick, form, value, blend);
         }
-    }
-
-    private void checkMissingProperties(Form form, Map<String, String> keyRemap)
-    {
-        /* Get all possible properties that could be animated */
-        if (form == null) return;
-        
-        List<String> allKeys = new ArrayList<>();
-        allKeys.addAll(this.properties.keySet());
-        
-        
-        return;
     }
 
     private void applyProperty(float tick, Form form, KeyframeChannel value, float blend)
     {
-        this.applyProperty(tick, form, value, blend, null);
-    }
-
-    private void applyProperty(float tick, Form form, KeyframeChannel value, float blend, Map<String, String> keyRemap)
-    {
-        String key = value.getId();
-
-        if (keyRemap != null && keyRemap.containsKey(key))
-        {
-            key = keyRemap.get(key);
-        }
-
-        BaseValueBasic property = FormUtils.getProperty(form, key);
+        BaseValueBasic property = FormUtils.getProperty(form, value.getId());
 
         if (property == null)
         {
@@ -145,7 +111,7 @@ public class FormProperties extends ValueGroup
             }
             else
             {
-                property.setRuntimeValue(value.getFactory().copy(segment.createInterpolated()));
+                property.setRuntimeValue(segment.createInterpolated());
             }
         }
         else
@@ -156,11 +122,6 @@ public class FormProperties extends ValueGroup
 
     public void resetProperties(Form form)
     {
-        this.resetProperties(form, null);
-    }
-
-    public void resetProperties(Form form, Map<String, String> keyRemap)
-    {
         if (form == null)
         {
             return;
@@ -168,14 +129,7 @@ public class FormProperties extends ValueGroup
 
         for (KeyframeChannel value : this.properties.values())
         {
-            String key = value.getId();
-
-            if (keyRemap != null && keyRemap.containsKey(key))
-            {
-                key = keyRemap.get(key);
-            }
-
-            BaseValueBasic property = FormUtils.getProperty(form, key);
+            BaseValueBasic property = FormUtils.getProperty(form, value.getId());
 
             if (property == null)
             {
@@ -251,67 +205,6 @@ public class FormProperties extends ValueGroup
                 this.add(property);
             }
         }
-
-        /* Migration: synthesize structure_light from legacy emit_light and light_intensity channels */
-        try
-        {
-            KeyframeChannel<?> emit = this.properties.get("emit_light");
-            KeyframeChannel<?> intensity = this.properties.get("light_intensity");
-
-            if (emit != null || intensity != null)
-            {
-                KeyframeChannel<?> mergedAny = this.properties.get("structure_light");
-                @SuppressWarnings("unchecked")
-                KeyframeChannel<mchorse.bbs_mod.forms.forms.utils.StructureLightSettings> merged = mergedAny != null
-                    ? (KeyframeChannel<mchorse.bbs_mod.forms.forms.utils.StructureLightSettings>) mergedAny
-                    : new KeyframeChannel<>("structure_light", KeyframeFactories.STRUCTURE_LIGHT_SETTINGS);
-
-                if (mergedAny == null)
-                {
-                    this.properties.put("structure_light", merged);
-                    this.add(merged);
-                }
-
-                java.util.TreeSet<Float> ticks = new java.util.TreeSet<>();
-                if (emit != null) for (Object kfObj : emit.getKeyframes()) { ticks.add(((Keyframe<?>) kfObj).getTick()); }
-                if (intensity != null) for (Object kfObj : intensity.getKeyframes()) { ticks.add(((Keyframe<?>) kfObj).getTick()); }
-
-                for (float t : ticks)
-                {
-                    boolean enabled = false;
-                    int value = 0;
-
-                    if (emit != null)
-                    {
-                        KeyframeSegment seg = emit.find(t);
-                        if (seg != null)
-                        {
-                            Object v = seg.createInterpolated();
-                            if (v instanceof Boolean b) enabled = b;
-                            else if (v instanceof Number n) enabled = n.floatValue() >= 0.5F;
-                        }
-                    }
-
-                    if (intensity != null)
-                    {
-                        KeyframeSegment seg = intensity.find(t);
-                        if (seg != null)
-                        {
-                            Object v = seg.createInterpolated();
-                            if (v instanceof Number n) value = Math.round(n.floatValue());
-                        }
-                    }
-
-                    mchorse.bbs_mod.forms.forms.utils.StructureLightSettings payload = new mchorse.bbs_mod.forms.forms.utils.StructureLightSettings(
-                        enabled,
-                        Math.max(0, Math.min(15, value))
-                    );
-
-                    merged.insert(t, payload);
-                }
-            }
-        }
-        catch (Throwable ignored) {}
     }
 
     @Override

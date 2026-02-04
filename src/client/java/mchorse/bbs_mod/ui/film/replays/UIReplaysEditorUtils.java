@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 
 public class UIReplaysEditorUtils
 {
-        public static UIPropTransform getEditableTransform(UIKeyframeEditor editor)
+    public static UIPropTransform getEditableTransform(UIKeyframeEditor editor)
     {
         if (editor == null || editor.editor == null)
         {
@@ -109,20 +109,21 @@ public class UIReplaysEditorUtils
 
             if (lastSheet != null && lastSheet.property != null)
             {
-                if (FormUtils.getPath((Form) lastSheet.property.getParent()).equals(FormUtils.getPath(form)) && lastSheet.property.getId().startsWith("pose"))
+                if (FormUtils.getPath((Form) lastSheet.property.getParent()).equals(FormUtils.getPath(form)) && lastSheet.property.getId().startsWith("pose") && !lastSheet.channel.isEmpty())
                 {
-                    type = lastSheet.property.getId();
+                    type = lastSheet.id;
                 }
             }
         }
 
-        String key = StringUtils.combinePaths(path, type);
-        UIKeyframeSheet sheet = keyframeEditor.view.getGraph().getSheet(key);
+        UIKeyframeSheet sheet = keyframeEditor.view.getGraph().getSheet(StringUtils.combinePaths(path, type));
 
-        if (sheet != null)
+        if (sheet != null && sheet.channel.isEmpty())
         {
-            pickProperty(keyframeEditor, cursor, bone, sheet, sheet.channel.isEmpty());
+            type = "pose";
         }
+
+        pickProperty(keyframeEditor, cursor, bone, StringUtils.combinePaths(path, type), false);
     }
 
     private static void pickProperty(UIKeyframeEditor keyframeEditor, ICursor cursor, String bone, String key, boolean insert)
@@ -145,11 +146,6 @@ public class UIReplaysEditorUtils
             Keyframe keyframe = graph.addKeyframe(sheet, tick, null);
 
             graph.selectKeyframe(keyframe);
-
-            if (keyframeEditor.editor instanceof UIPoseKeyframeFactory poseFactory)
-            {
-                poseFactory.poseEditor.selectBone(bone);
-            }
 
             return;
         }

@@ -199,8 +199,6 @@ public class Icons
     public static final Icon INTERP_SINE_INOUT = register(new Icon(ATLAS, "interp_sine_inout", 176, 192));
     public static final Icon INTERP_CIRCLE_INOUT = register(new Icon(ATLAS, "interp_circle_inout", 192, 192));
     public static final Icon INTERP_BEZIER = register(new Icon(ATLAS, "interp_bezier", 208, 192));
-    public static final Icon INTERP_CUSTOM = register(new Icon(ATLAS, "interp_custom", 224, 192));
-    public static final Icon INTERP_ADD = register(new Icon(ATLAS, "interp_add", 240, 192));
 
     public static final Icon INTERP_QUAD_OUT = register(new Icon(ATLAS, "interp_quad_out", 48, 208));
     public static final Icon INTERP_CUBIC_OUT = register(new Icon(ATLAS, "interp_cubic_out", 64, 208));
@@ -224,14 +222,8 @@ public class Icons
     public static final Icon INTERP_SINE_IN = register(new Icon(ATLAS, "interp_sine_in", 176, 224));
     public static final Icon INTERP_CIRCLE_IN = register(new Icon(ATLAS, "interp_circle_in", 192, 224));
 
-    public static final Icon INTERP_BSPLINE = register(new Icon(ATLAS, "interp_bspline", 0, 208));
-    public static final Icon INTERP_AKIMA = register(new Icon(ATLAS, "interp_akima", 16, 208));
-    public static final Icon INTERP_TCB = register(new Icon(ATLAS, "interp_tcb", 32, 208));
-    public static final Icon INTERP_NURBS = register(new Icon(ATLAS, "interp_nurbs", 0, 224));
-
     public static final Icon CHECKBOARD = register(new Icon(ATLAS, "checkboard", 0, 240));
     public static final Icon DISABLED = register(new Icon(ATLAS, "disabled", 16, 240));
-    public static final Icon ENABLED = register(new Icon(ATLAS, "enabled", 96, 96));
     public static final Icon CURSOR = register(new Icon(ATLAS, "cursor", 32, 240));
 
     public static final Icon MOUSE_BODY = new Icon(ATLAS, "mouse_body", 241, 237, 14, 18);

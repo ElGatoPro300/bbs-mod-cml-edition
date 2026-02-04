@@ -3,18 +3,15 @@ package mchorse.bbs_mod.ui.film;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.audio.AudioRenderer;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.clips.misc.AudioClip;
-import mchorse.bbs_mod.camera.clips.misc.VideoClip;
 import mchorse.bbs_mod.camera.controller.RunnerCameraController;
 import mchorse.bbs_mod.camera.data.Angle;
 import mchorse.bbs_mod.camera.data.Point;
 import mchorse.bbs_mod.camera.data.Position;
 import mchorse.bbs_mod.camera.utils.TimeUtils;
 import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.client.video.VideoRenderer;
 import mchorse.bbs_mod.film.Films;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.window.Window;
@@ -43,7 +40,6 @@ import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.clips.Clip;
 import mchorse.bbs_mod.utils.clips.Clips;
 import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -214,16 +210,9 @@ public class UIFilmPreview extends UIElement
 
     public void openReplays()
     {
-        if (!this.panel.isDockedLayout())
-        {
-            UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
+        UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
 
-            overlay.eventPropagataion(EventPropagation.PASS);
-        }
-        else
-        {
-            this.panel.toggleReplaysSidebar();
-        }
+        overlay.eventPropagataion(EventPropagation.PASS);
     }
 
     public void openOnionSkin()
@@ -302,24 +291,6 @@ public class UIFilmPreview extends UIElement
             context.batcher.texturedBox(texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, texture.height, texture.width, 0, texture.width, texture.height);
         }
 
-        if (this.panel.getData() != null)
-        {
-            /* Render global video clips (overlays) */
-            VideoRenderer.renderClips(
-                context.batcher.getContext().getMatrices(),
-                context.batcher,
-                this.panel.getData().camera.getClips(this.panel.getCursor()),
-                this.panel.getCursor(),
-                this.panel.getRunner().isRunning(),
-                this.getViewport(),
-                context.menu.viewport,
-                context,
-                context.menu.width,
-                context.menu.height,
-                true
-            );
-        }
-
         this.renderCursor(context);
 
         /* Render rule of thirds */
@@ -331,40 +302,8 @@ public class UIFilmPreview extends UIElement
             context.batcher.box(area.x + area.w - area.w / 3, area.y, area.x + area.w - area.w / 3 + 1, area.y + area.h, guidesColor);
 
             context.batcher.box(area.x, area.y + area.h / 3 - 1, area.x + area.w, area.y + area.h / 3, guidesColor);
-            context.batcher.box(area.x, area.y + area.h - area.h / 3 - 1, area.x + area.w, area.y + area.h - area.h / 3, guidesColor);
+            context.batcher.box(area.x, area.y + area.h - area.h / 3, area.x + area.w, area.y + area.h - area.h / 3 + 1, guidesColor);
         }
-
-        /* Render safe margins (action safe 90%, title safe 80%) */
-        if (BBSSettings.editorSafeMargins.get())
-        {
-            int guidesColor = BBSSettings.editorSafeMarginsColor.get();
-
-            int actionMarginX = Math.round(area.w * 0.05F);
-            int actionMarginY = Math.round(area.h * 0.05F);
-            int actionLeft = area.x + actionMarginX;
-            int actionRight = area.x + area.w - actionMarginX;
-            int actionTop = area.y + actionMarginY;
-            int actionBottom = area.y + area.h - actionMarginY;
-
-            context.batcher.box(actionLeft, actionTop, actionLeft + 1, actionBottom, guidesColor);
-            context.batcher.box(actionRight - 1, actionTop, actionRight, actionBottom, guidesColor);
-            context.batcher.box(actionLeft, actionTop, actionRight, actionTop + 1, guidesColor);
-            context.batcher.box(actionLeft, actionBottom - 1, actionRight, actionBottom, guidesColor);
-
-            int titleMarginX = Math.round(area.w * 0.10F);
-            int titleMarginY = Math.round(area.h * 0.10F);
-            int titleLeft = area.x + titleMarginX;
-            int titleRight = area.x + area.w - titleMarginX;
-            int titleTop = area.y + titleMarginY;
-            int titleBottom = area.y + area.h - titleMarginY;
-
-            context.batcher.box(titleLeft, titleTop, titleLeft + 1, titleBottom, guidesColor);
-            context.batcher.box(titleRight - 1, titleTop, titleRight, titleBottom, guidesColor);
-            context.batcher.box(titleLeft, titleTop, titleRight, titleTop + 1, guidesColor);
-            context.batcher.box(titleLeft, titleBottom - 1, titleRight, titleBottom, guidesColor);
-        }
-
-        VideoRenderer.update();
 
         if (BBSSettings.editorCenterLines.get())
         {
@@ -434,19 +373,19 @@ public class UIFilmPreview extends UIElement
     private void renderCursor(UIContext context)
     {
         net.minecraft.client.render.Camera mcCamera = MinecraftClient.getInstance().gameRenderer.getCamera();
-        org.joml.Matrix4fStack stack = RenderSystem.getModelViewStack();
+        MatrixStack stack = RenderSystem.getModelViewStack();
 
-        stack.pushMatrix();
+        stack.push();
 
-        stack.mul(context.batcher.getContext().getMatrices().peek().getPositionMatrix());
+        stack.multiplyPositionMatrix(context.batcher.getContext().getMatrices().peek().getPositionMatrix());
         stack.translate(area.x + 16, area.ey() - 12, 0F);
-        stack.rotate(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
-        stack.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
+        stack.multiply(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
+        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
         stack.scale(-1F, -1F, -1F);
-        MatrixStackUtils.applyModelViewMatrix();
+        RenderSystem.applyModelViewMatrix();
         RenderSystem.renderCrosshair(10);
 
-        stack.popMatrix();
-        MatrixStackUtils.applyModelViewMatrix();
+        stack.pop();
+        RenderSystem.applyModelViewMatrix();
     }
 }

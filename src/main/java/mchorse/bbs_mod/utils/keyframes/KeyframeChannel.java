@@ -6,14 +6,11 @@ import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.core.ValueList;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.interps.Interpolations;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.utils.interps.IInterp;
 import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Keyframe channel
@@ -148,48 +145,20 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             }
         }
 
-        int nextEnabledIdx = this.getNextEnabledIndex(low);
-        int prevEnabledIdx = this.getPreviousEnabledIndex(low - 1);
+        Keyframe<T> b = this.list.get(low);
 
-        Keyframe<T> a = null;
-        Keyframe<T> b = null;
+        if (b.getTick() == Math.floor(ticks) && low < size - 1)
+        {
+            low += 1;
+            b = this.list.get(low);
+        }
 
-        if (prevEnabledIdx != -1) a = this.list.get(prevEnabledIdx);
-        if (nextEnabledIdx != -1) b = this.list.get(nextEnabledIdx);
-
-        if (a == null && b == null) return null;
-        if (a == null) return new KeyframeSegment<>(b, b);
-        if (b == null) return new KeyframeSegment<>(a, a);
-
+        Keyframe<T> a = low - 1 >= 0 ? this.list.get(low - 1) : b;
         KeyframeSegment<T> segment = new KeyframeSegment<>(a, b);
 
         segment.setup(ticks);
 
         return segment;
-    }
-
-    public int getPreviousEnabledIndex(int index)
-    {
-        for (int i = index; i >= 0; i--)
-        {
-            if (this.list.get(i).isEnabled())
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public int getNextEnabledIndex(int index)
-    {
-        for (int i = index; i < this.list.size(); i++)
-        {
-            if (this.list.get(i).isEnabled())
-            {
-                return i;
-            }
-        }
-        return -1;
     }
 
     /* Write only */
@@ -271,24 +240,7 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
 
             if (tick < prev.getTick())
             {
-                Keyframe<T> kf = new Keyframe<>("", this.factory, tick, value);
-                if (BBSSettings.defaultInterpolation != null)
-                {
-                    int idx = BBSSettings.defaultInterpolation.get();
-                    int i = 0;
-                    for (Map.Entry<String, IInterp> e : Interpolations.MAP.entrySet())
-                    {
-                        if (i == idx)
-                        {
-                            kf.getInterpolation().setInterp(e.getValue());
-                            break;
-                        }
-
-                        i++;
-                    }
-                }
-
-                this.add(0, kf);
+                this.add(0, new Keyframe<>("", this.factory, tick, value));
                 this.sort();
 
                 this.postNotify();
@@ -319,25 +271,7 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             prev = frame;
         }
 
-        Keyframe<T> kf = new Keyframe<T>("", this.factory, tick, value);
-
-        if (BBSSettings.defaultInterpolation != null)
-        {
-            int idx = BBSSettings.defaultInterpolation.get();
-            int i = 0;
-            for (Map.Entry<String, IInterp> e : Interpolations.MAP.entrySet())
-            {
-                if (i == idx)
-                {
-                    kf.getInterpolation().setInterp(e.getValue());
-                    break;
-                }
-
-                i++;
-            }
-        }
-
-        this.add(index, kf);
+        this.add(index, new Keyframe<T>("", this.factory, tick, value));
         this.sort();
         this.postNotify();
 
@@ -400,25 +334,7 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
     @Override
     protected Keyframe<T> create(String id)
     {
-        Keyframe<T> kf = new Keyframe<>(id, this.factory);
-
-        if (BBSSettings.defaultInterpolation != null)
-        {
-            int idx = BBSSettings.defaultInterpolation.get();
-            int i = 0;
-            for (Map.Entry<String, IInterp> e : Interpolations.MAP.entrySet())
-            {
-                if (i == idx)
-                {
-                    kf.getInterpolation().setInterp(e.getValue());
-                    break;
-                }
-
-                i++;
-            }
-        }
-
-        return kf;
+        return new Keyframe<>(id, this.factory);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mchorse.bbs_mod.ui.forms.editors;
 
 import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.forms.AnchorForm;
@@ -10,7 +9,6 @@ import mchorse.bbs_mod.forms.forms.BlockForm;
 import mchorse.bbs_mod.forms.forms.BodyPart;
 import mchorse.bbs_mod.forms.forms.BodyPartManager;
 import mchorse.bbs_mod.forms.forms.ExtrudedForm;
-import mchorse.bbs_mod.forms.forms.FluidForm;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.FramebufferForm;
 import mchorse.bbs_mod.forms.forms.ItemForm;
@@ -18,8 +16,6 @@ import mchorse.bbs_mod.forms.forms.LabelForm;
 import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.forms.ParticleForm;
-import mchorse.bbs_mod.forms.forms.StructureForm;
-import mchorse.bbs_mod.forms.forms.LightForm;
 import mchorse.bbs_mod.forms.forms.TrailForm;
 import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
 import mchorse.bbs_mod.forms.states.AnimationState;
@@ -35,7 +31,6 @@ import mchorse.bbs_mod.ui.forms.editors.forms.UIAnchorForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIBillboardForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIBlockForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIExtrudedForm;
-import mchorse.bbs_mod.ui.forms.editors.forms.UIFluidForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIFramebufferForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIItemForm;
@@ -43,10 +38,8 @@ import mchorse.bbs_mod.ui.forms.editors.forms.UILabelForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIMobForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIModelForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIParticleForm;
-import mchorse.bbs_mod.ui.forms.editors.forms.UIStructureForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UITrailForm;
 import mchorse.bbs_mod.ui.forms.editors.forms.UIVanillaParticleForm;
-import mchorse.bbs_mod.ui.forms.editors.forms.UILightForm;
 import mchorse.bbs_mod.ui.forms.editors.states.UIAnimationStatesOverlayPanel;
 import mchorse.bbs_mod.ui.forms.editors.states.keyframes.UIAnimationStateEditor;
 import mchorse.bbs_mod.ui.forms.editors.utils.UIPickableFormRenderer;
@@ -81,7 +74,7 @@ import java.util.function.Supplier;
 
 public class UIFormEditor extends UIElement implements IUIFormList, ICursor
 {
-    public static Map<Class, Supplier<UIForm>> panels = new HashMap<>();
+    private static Map<Class, Supplier<UIForm>> panels = new HashMap<>();
 
     private static float treeWidth = 0F;
     private static boolean TOGGLED = true;
@@ -113,7 +106,6 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
     public UIIcon openStateEditor;
 
     public Form form;
-    private MapType storedForm;
 
     private Consumer<Form> callback;
     private UICopyPasteController copyPasteController;
@@ -126,7 +118,6 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
     static
     {
         register(BillboardForm.class, UIBillboardForm::new);
-        register(FluidForm.class, UIFluidForm::new);
         register(ExtrudedForm.class, UIExtrudedForm::new);
         register(LabelForm.class, UILabelForm::new);
         register(ModelForm.class, UIModelForm::new);
@@ -137,8 +128,6 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
         register(MobForm.class, UIMobForm::new);
         register(VanillaParticleForm.class, UIVanillaParticleForm::new);
         register(TrailForm.class, UITrailForm::new);
-        register(StructureForm.class, UIStructureForm::new);
-        register(LightForm.class, UILightForm::new);
         register(FramebufferForm.class, UIFramebufferForm::new);
     }
 
@@ -200,19 +189,7 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
 
         this.openStates = new UIIcon(Icons.MORE, (b) ->
         {
-            UIAnimationStatesOverlayPanel panel = new UIAnimationStatesOverlayPanel(this.form.states, this.statesKeyframes.getState(), (state) -> this.pickState(state))
-            {
-                @Override
-                public void onClose()
-                {
-                    super.onClose();
-
-                    if (UIFormEditor.this.editor != null)
-                    {
-                        UIFormEditor.this.editor.refresh();
-                    }
-                }
-            };
+            UIAnimationStatesOverlayPanel panel = new UIAnimationStatesOverlayPanel(this.form.states, this.statesKeyframes.getState(), (state) -> this.pickState(state));
 
             panel.setUndoId("animation_states_overlay_panel");
             UIOverlay.addOverlay(this.getContext(), panel, 280, 0.5F).eventPropagataion(EventPropagation.PASS);
@@ -372,41 +349,6 @@ public class UIFormEditor extends UIElement implements IUIFormList, ICursor
     {
         this.formEditor.toggleVisible();
         this.statesEditor.toggleVisible();
-
-        if (this.statesEditor.isVisible())
-        {
-            this.storedForm = this.form.toData().asMap();
-        }
-        else if (this.storedForm != null)
-        {
-            AnimationState currentState = this.statesKeyframes.getState();
-            String stateId = currentState != null ? currentState.id.get() : null;
-            BaseType currentStates = this.form.states.toData();
-            Form newForm = FormUtils.fromData(this.storedForm);
-
-            if (newForm != null)
-            {
-                this.form.copy(newForm);
-            }
-            else
-            {
-                this.form.fromData(this.storedForm);
-            }
-
-            this.form.states.fromData(currentStates);
-
-            if (stateId != null)
-            {
-                AnimationState newState = this.form.states.getById(stateId);
-
-                if (newState != null)
-                {
-                    this.pickState(newState);
-                }
-            }
-
-            this.storedForm = null;
-        }
     }
 
     private void toggleSidebar()

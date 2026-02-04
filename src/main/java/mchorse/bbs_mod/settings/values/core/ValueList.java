@@ -89,9 +89,7 @@ public abstract class ValueList <T extends BaseValue> extends BaseValueGroup
 
         for (BaseValue value : group.getAll())
         {
-            T newValue = this.create(value.getId());
-
-            this.add(newValue);
+            this.list.add(this.create(value.getId()));
         }
     }
 

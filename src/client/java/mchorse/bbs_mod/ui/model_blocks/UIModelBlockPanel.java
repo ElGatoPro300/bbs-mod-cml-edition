@@ -5,11 +5,9 @@ import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
-import mchorse.bbs_mod.blocks.ModelBlock;
 import mchorse.bbs_mod.camera.CameraUtils;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.graphics.Draw;
-import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ClientNetwork;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -25,35 +23,26 @@ import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.model_blocks.camera.ImmersiveModelBlockCameraController;
 import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.UIUtils;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.utils.Direction;
 import mchorse.bbs_mod.utils.AABB;
 import mchorse.bbs_mod.utils.PlayerUtils;
 import mchorse.bbs_mod.utils.RayTracing;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Transform;
-import mchorse.bbs_mod.utils.MathUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import org.joml.Matrix4f;
-import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,10 +58,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UINestedEdit pickEdit;
     public UIToggle enabled;
     public UIToggle shadow;
-    public UIToggle hitbox;
     public UIToggle global;
     public UIToggle lookAt;
-    public UITrackpad lightLevel;
     public UIPropTransform transform;
 
     private ModelBlockEntity modelBlock;
@@ -155,7 +142,6 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         this.enabled = new UIToggle(UIKeys.CAMERA_PANELS_ENABLED, (b) -> this.modelBlock.getProperties().setEnabled(b.getValue()));
         this.shadow = new UIToggle(UIKeys.MODEL_BLOCKS_SHADOW, (b) -> this.modelBlock.getProperties().setShadow(b.getValue()));
-        this.hitbox = new UIToggle(UIKeys.MODEL_BLOCKS_HITBOX, (b) -> this.modelBlock.getProperties().setHitbox(b.getValue()));
         this.global = new UIToggle(UIKeys.MODEL_BLOCKS_GLOBAL, (b) ->
         {
             this.modelBlock.getProperties().setGlobal(b.getValue());
@@ -163,51 +149,10 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         });
         this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
 
-        this.lightLevel = new UITrackpad((v) ->
-        {
-            if (this.modelBlock == null) return;
-
-            int lvl = v.intValue();
-
-            this.modelBlock.getProperties().setLightLevel(lvl);
-
-            try
-            {
-                MinecraftClient mc = MinecraftClient.getInstance();
-
-                if (mc.world != null)
-                {
-                    BlockPos p = this.modelBlock.getPos();
-                    BlockState state = mc.world.getBlockState(p);
-
-                    mc.world.setBlockState(p, state.with(ModelBlock.LIGHT_LEVEL, lvl), Block.NOTIFY_LISTENERS);
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-        }).integer().limit(0, 15);
-
-        /* Make the trackpad visually distinct: wider and yellow numbers */
-        this.lightLevel.textbox.setColor(Colors.YELLOW);
-        this.lightLevel.w(1F);
-
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
-        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, this.transform, UI.row(5, 0, 20, new UIElement()
-            {
-                @Override
-                public void render(UIContext context)
-                {
-                    super.render(context);
-
-                    context.batcher.icon(Icons.LIGHT, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
-                }
-            }.w(20).h(20), this.lightLevel));
-
-        this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, Direction.BOTTOM);
+        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.transform);
 
         this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
         this.scrollView.scroll.opposite().cancelScrolling();
@@ -377,10 +322,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform.setTransform(properties.getTransform());
         this.enabled.setValue(properties.isEnabled());
         this.shadow.setValue(properties.isShadow());
-        this.hitbox.setValue(properties.isHitbox());
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
-        this.lightLevel.setValue(properties.getLightLevel());
     }
 
     private void save(ModelBlockEntity modelBlock)
@@ -438,34 +381,11 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         double x = mc.mouse.getX();
         double y = mc.mouse.getY();
 
-        MatrixStack matrixStack = context.matrixStack();
-        Matrix4f positionMatrix = matrixStack != null ? matrixStack.peek().getPositionMatrix() : RenderSystem.getModelViewMatrix();
-        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
-
-        float m11 = projectionMatrix.m11();
-        float tanHalfFov = 1.0f / m11;
-        float aspect = m11 / projectionMatrix.m00();
-
-        float ndcX = ((float) x / mc.getWindow().getWidth()) * 2.0f - 1.0f;
-        float ndcY = -(((float) y / mc.getWindow().getHeight()) * 2.0f - 1.0f);
-
-        float f = MathUtils.toRad(camera.getPitch());
-        float g = MathUtils.toRad(-camera.getYaw());
-        float h = (float) Math.cos(g);
-        float i = (float) Math.sin(g);
-        float j = (float) Math.cos(f);
-        float k = (float) Math.sin(f);
-        Vector3f forward = new Vector3f(i * j, -k, h * j);
-        Vector3f upWorld = new Vector3f(0F, 1F, 0F);
-        Vector3f right = new Vector3f(forward).cross(upWorld).normalize();
-        Vector3f upCam = new Vector3f(right).cross(forward).normalize();
-
-        Vector3f direction = new Vector3f(forward)
-            .add(new Vector3f(right).mul(ndcX * tanHalfFov * aspect))
-            .add(new Vector3f(upCam).mul(ndcY * tanHalfFov))
-            .normalize();
-
-        this.mouseDirection.set(direction);
+        this.mouseDirection.set(CameraUtils.getMouseDirection(
+            RenderSystem.getProjectionMatrix(),
+            context.matrixStack().peek().getPositionMatrix(),
+            (int) x, (int) y, 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()
+        ));
         this.hovered = this.getClosestObject(new Vector3d(pos.x, pos.y, pos.z), this.mouseDirection);
 
         RenderSystem.enableDepthTest();
@@ -476,23 +396,19 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
             if (!this.isEditing(entity))
             {
-                MatrixStack renderMatrixStack = context.matrixStack();
-                if (renderMatrixStack != null)
+                context.matrixStack().push();
+                context.matrixStack().translate(blockPos.getX() - pos.x, blockPos.getY() - pos.y, blockPos.getZ() - pos.z);
+
+                if (this.hovered == entity || entity == this.modelBlock)
                 {
-                    renderMatrixStack.push();
-                    renderMatrixStack.translate(blockPos.getX() - pos.x, blockPos.getY() - pos.y, blockPos.getZ() - pos.z);
-
-                    if (this.hovered == entity || entity == this.modelBlock)
-                    {
-                        Draw.renderBox(renderMatrixStack, 0D, 0D, 0D, 1D, 1D, 1D, 0, 0.5F, 1F);
-                    }
-                    else
-                    {
-                        Draw.renderBox(renderMatrixStack, 0D, 0D, 0D, 1D, 1D, 1D);
-                    }
-
-                    renderMatrixStack.pop();
+                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, 1D, 1D, 1D, 0, 0.5F, 1F);
                 }
+                else
+                {
+                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, 1D, 1D, 1D);
+                }
+
+                context.matrixStack().pop();
             }
         }
 
@@ -502,59 +418,28 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     private ModelBlockEntity getClosestObject(Vector3d finalPosition, Vector3f mouseDirection)
     {
         ModelBlockEntity closest = null;
-        double closestDist = Double.MAX_VALUE;
 
         for (ModelBlockEntity object : this.modelBlocks.getList())
         {
-            BlockPos pos = object.getPos();
-            Vector3d relOrigin = new Vector3d(finalPosition).sub(pos.getX(), pos.getY(), pos.getZ());
+            AABB aabb = this.getHitbox(object);
 
-            Matrix4f transform = object.getProperties().getTransform().createMatrix();
-            Matrix4f invTransform = new Matrix4f(transform).invert();
-
-            Vector4f origin4 = new Vector4f((float) relOrigin.x, (float) relOrigin.y, (float) relOrigin.z, 1.0F);
-            Vector4f dir4 = new Vector4f(mouseDirection.x, mouseDirection.y, mouseDirection.z, 0.0F);
-
-            /* Since the hitbox in the renderInWorld method is not transformed, we shouldn't
-             * transform the ray either. This was causing the selection to fail when the
-             * model block had a transformation. */
-
-            Vector3d localOrigin = new Vector3d(origin4.x, origin4.y, origin4.z);
-            Vector3f localDir = new Vector3f(dir4.x, dir4.y, dir4.z);
-
-            AABB unitBox = new AABB(0, 0, 0, 1, 1, 1);
-            Vector2d farNear = new Vector2d();
-
-            if (unitBox.intersectsRay(localOrigin, localDir, farNear))
+            if (aabb.intersectsRay(finalPosition, mouseDirection))
             {
-                double t = farNear.x;
-
-                if (t < 0)
+                if (closest == null)
                 {
-                    if (farNear.y < 0)
-                    {
-                        continue;
-                    }
-
-                    t = farNear.y;
-                }
-
-                Vector3f hitLocal = new Vector3f(localDir).mul((float) t).add(new Vector3f((float) localOrigin.x, (float) localOrigin.y, (float) localOrigin.z));
-                Vector4f hitRel = new Vector4f(hitLocal, 1.0F);
-
-                transform.transform(hitRel);
-
-                Vector3d hitWorld = new Vector3d(hitRel.x, hitRel.y, hitRel.z).add(pos.getX(), pos.getY(), pos.getZ());
-                double dist = finalPosition.distanceSquared(hitWorld);
-
-                if (dist < closestDist)
-                {
-                    closestDist = dist;
                     closest = object;
+                }
+                else
+                {
+                    AABB aabb2 = this.getHitbox(closest);
+
+                    if (finalPosition.distanceSquared(aabb.x, aabb.y, aabb.z) < finalPosition.distanceSquared(aabb2.x, aabb2.y, aabb2.z))
+                    {
+                        closest = object;
+                    }
                 }
             }
         }
-
         return closest;
     }
 
@@ -562,53 +447,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     {
         BlockPos pos = closest.getPos();
 
-        double x = pos.getX();
-        double y = pos.getY();
-        double z = pos.getZ();
-        double w = 1D;
-        double h = 1D;
-        double d = 1D;
-
-        if (closest.getProperties().isHitbox())
-        {
-            Form form = closest.getProperties().getForm();
-
-            if (form != null && form.hitbox.get())
-            {
-                float width = form.hitboxWidth.get();
-                float height = form.hitboxHeight.get();
-
-                if (width > 0F && height > 0F)
-                {
-                    float halfWidth = width / 2F;
-
-                    double minX = x + 0.5D - halfWidth;
-                    double maxX = x + 0.5D + halfWidth;
-                    double minZ = z + 0.5D - halfWidth;
-                    double maxZ = z + 0.5D + halfWidth;
-                    double minY = y;
-                    double maxY = y + height;
-
-                    double clampedMinX = Math.max(x, minX);
-                    double clampedMinZ = Math.max(z, minZ);
-                    double clampedMaxX = Math.min(x + 1D, maxX);
-                    double clampedMaxZ = Math.min(z + 1D, maxZ);
-                    double clampedMaxY = Math.min(y + 1D, maxY);
-
-                    if (clampedMinX < clampedMaxX && clampedMinZ < clampedMaxZ && clampedMaxY > minY)
-                    {
-                        x = clampedMinX;
-                        y = minY;
-                        z = clampedMinZ;
-                        w = clampedMaxX - clampedMinX;
-                        h = clampedMaxY - minY;
-                        d = clampedMaxZ - clampedMinZ;
-                    }
-                }
-            }
-        }
-
-        return new AABB(x, y, z, w, h, d);
+        return new AABB(pos.getX(), pos.getY(), pos.getZ(), 1D, 1D, 1D);
     }
 
     public boolean isEditing(ModelBlockEntity entity)

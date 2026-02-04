@@ -10,7 +10,6 @@ import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.cubic.animation.ActionsConfig;
 import mchorse.bbs_mod.cubic.animation.Animator;
 import mchorse.bbs_mod.cubic.animation.IAnimator;
-import mchorse.bbs_mod.cubic.animation.ProceduralActionAnimator;
 import mchorse.bbs_mod.cubic.animation.ProceduralAnimator;
 import mchorse.bbs_mod.cubic.data.model.ModelGroup;
 import mchorse.bbs_mod.cubic.model.ArmorSlot;
@@ -31,24 +30,19 @@ import mchorse.bbs_mod.settings.values.core.ValuePose;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.joml.Vectors;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
-import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKeys;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.item.ModelTransformationMode;
-import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -56,7 +50,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -75,8 +68,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     private ActionsConfig lastConfigs;
     private IAnimator animator;
     private ModelInstance lastModel;
-    private ModelInstance cachedModel;
-    private ModelInstance sourceModel;
 
     private IEntity entity = new StubEntity();
 
@@ -142,52 +133,17 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
         return this.animator;
     }
 
-    public void invalidateCachedModel()
-    {
-        if (this.cachedModel != null)
-        {
-            this.cachedModel.delete();
-            this.cachedModel = null;
-        }
-
-        this.sourceModel = null;
-    }
-
     public ModelInstance getModel()
     {
-        String modelId = this.form.model.get();
-        ModelInstance model = BBSModClient.getModels().getModel(modelId);
-
-        if (this.cachedModel == null || !this.cachedModel.id.equals(modelId) || this.sourceModel != model)
-        {
-            if (this.cachedModel != null)
-            {
-                this.cachedModel.delete();
-            }
-
-            if (model != null)
-            {
-                this.cachedModel = model.copy();
-                this.cachedModel.setup();
-                this.sourceModel = model;
-            }
-            else
-            {
-                this.cachedModel = null;
-                this.sourceModel = null;
-            }
-        }
-
-        return this.cachedModel;
+        return getModel(this.form);
     }
 
     public Pose getPose()
     {
-        Pose pose = this.form.poseState.get().copy();
+        Pose pose = this.form.pose.get().copy();
+        Pose overlay = this.form.poseOverlay.get();
 
-        this.applyPose(pose, this.form.poseStateOverlay.get());
-        this.applyPose(pose, this.form.pose.get());
-        this.applyPose(pose, this.form.poseOverlay.get());
+        this.applyPose(pose, overlay);
 
         for (ValuePose newPose : this.form.additionalOverlays)
         {
@@ -206,12 +162,10 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             if (value.fix != 0)
             {
-                poseTransform.fix = value.fix;
                 poseTransform.translate.lerp(value.translate, value.fix);
                 poseTransform.scale.lerp(value.scale, value.fix);
                 poseTransform.rotate.lerp(value.rotate, value.fix);
                 poseTransform.rotate2.lerp(value.rotate2, value.fix);
-                poseTransform.pivot.lerp(value.pivot, value.fix);
             }
             else
             {
@@ -219,23 +173,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
                 poseTransform.scale.add(value.scale).sub(1, 1, 1);
                 poseTransform.rotate.add(value.rotate);
                 poseTransform.rotate2.add(value.rotate2);
-                poseTransform.pivot.add(value.pivot);
-            }
-
-            if (value.fix != 0)
-            {
-                poseTransform.color.lerp(value.color, value.fix);
-                poseTransform.lighting = Lerps.lerp(poseTransform.lighting, value.lighting, value.fix);
-            }
-            else
-            {
-                poseTransform.color.mul(value.color);
-                poseTransform.lighting += value.lighting;
-            }
-
-            if (value.texture != null)
-            {
-                poseTransform.texture = LinkUtils.copy(value.texture);
             }
         }
     }
@@ -256,15 +193,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             /* Update the config */
             if (this.animator != null && !Objects.equals(actionsConfig, this.lastConfigs))
             {
-                /* Re-create animator if procedural action mode changed */
-                if (actionsConfig.proceduralActions != this.lastConfigs.proceduralActions)
-                {
-                    this.animator = actionsConfig.proceduralActions
-                        ? new ProceduralActionAnimator()
-                        : (model.procedural ? new ProceduralAnimator() : new Animator());
-                }
-                
-                this.animator.setup(model, actionsConfig, true, this.form);
+                this.animator.setup(model, actionsConfig, true);
 
                 this.lastConfigs = new ActionsConfig();
                 this.lastConfigs.copy(actionsConfig);
@@ -273,10 +202,8 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             return;
         }
 
-        this.animator = actionsConfig.proceduralActions
-            ? new ProceduralActionAnimator()
-            : (model.procedural ? new ProceduralAnimator() : new Animator());
-        this.animator.setup(model, actionsConfig, false, this.form);
+        this.animator = model.procedural ? new ProceduralAnimator() : new Animator();
+        this.animator.setup(model, actionsConfig, false);
 
         this.lastConfigs = new ActionsConfig();
         this.lastConfigs.copy(actionsConfig);
@@ -326,16 +253,8 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             BBSModClient.getTextures().bindTexture(texture);
             RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
-            Vector3f light0 = new Vector3f(0.85F, 0.85F, -1F).normalize();
-            Vector3f light1 = new Vector3f(-0.85F, 0.85F, 1F).normalize();
-            RenderSystem.setupLevelDiffuseLighting(light0, light1);
-
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? () ->
-                {
-                    RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-                    return RenderSystem.getShader();
-                }
+                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
 
             this.renderModel(this.entity, mainShader, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
@@ -352,7 +271,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             stack.pop();
             stack.pop();
 
-            DiffuseLighting.disableGuiDepthLighting();
             RenderSystem.depthFunc(GL11.GL_ALWAYS);
         }
     }
@@ -366,7 +284,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
         GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
 
         gameRenderer.getLightmapTextureManager().enable();
@@ -383,10 +300,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             newStack.peek().getNormalMatrix().scale(1F / Vectors.EMPTY_3F.x, -1F / Vectors.EMPTY_3F.y, 1F / Vectors.EMPTY_3F.z);
         }
 
-        /* Pass form-level texture so VAO renderer can respect it */
-        Link link = this.form.texture.get();
-        Link defaultTexture = link == null ? model.texture : link;
-        model.render(newStack, program, color, light, overlay, stencilMap, this.form.shapeKeys.get(), defaultTexture);
+        model.render(newStack, program, color, light, overlay, stencilMap, this.form.shapeKeys.get());
 
         gameRenderer.getLightmapTextureManager().disable();
         gameRenderer.getOverlayTexture().teardownOverlayColor();
@@ -414,7 +328,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
     private void renderArmor(IEntity target, MatrixStack stack, ArmorType type, ArmorSlot armorSlot, Color color, int overlay, int light)
     {
-        Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
+        Matrix4f matrix = this.bones.get(armorSlot.group).matrix();
 
         if (matrix != null)
         {
@@ -450,7 +364,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
         for (ArmorSlot armorSlot : items)
         {
-            Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
+            Matrix4f matrix = this.bones.get(armorSlot.group).matrix();
 
             if (matrix != null)
             {
@@ -495,7 +409,6 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     @Override
     public boolean renderArm(MatrixStack matrices, int light, AbstractClientPlayerEntity player, Hand hand)
     {
-        this.ensureAnimator(MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true));
         ModelInstance model = this.getModel();
 
         if (this.animator != null && model != null)
@@ -518,7 +431,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
                 while (g != null)
                 {
-                    if (g.id.equals(slot.group.get()))
+                    if (g.id.equals(slot.group))
                     {
                         visible = true;
 
@@ -540,11 +453,7 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
             BBSModClient.getTextures().bindTexture(texture);
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? () ->
-                {
-                    RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-                    return RenderSystem.getShader();
-                }
+                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
 
             RenderSystem.enableDepthTest();
@@ -586,17 +495,10 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
 
             context.stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
 
-            if (texture != null)
-            {
-                BBSModClient.getTextures().bindTexture(texture);
-            }
+            BBSModClient.getTextures().bindTexture(texture);
 
             Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
-                ? () ->
-                {
-                    RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
-                    return RenderSystem.getShader();
-                }
+                ? GameRenderer::getRenderTypeEntityTranslucentCullProgram
                 : BBSShaders::getModel;
             Supplier<ShaderProgram> shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
 

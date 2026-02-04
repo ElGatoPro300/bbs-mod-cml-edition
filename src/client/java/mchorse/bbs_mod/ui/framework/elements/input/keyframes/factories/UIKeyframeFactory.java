@@ -30,14 +30,13 @@ import java.util.Map;
 
 public abstract class UIKeyframeFactory <T> extends UIElement
 {
-    public static final Map<IKeyframeFactory, IUIKeyframeFactoryFactory> FACTORIES = new HashMap<>();
+    private static final Map<IKeyframeFactory, IUIKeyframeFactoryFactory> FACTORIES = new HashMap<>();
     private static final Map<IKeyframeFactory, Integer> SCROLLS = new HashMap<>();
 
     public UIScrollView scroll;
     public UITrackpad tick;
     public UITrackpad duration;
     public UIIcon interp;
-    public UIIcon enabled;
 
     public UIIcon shape;
     public UIColor color;
@@ -63,7 +62,6 @@ public abstract class UIKeyframeFactory <T> extends UIElement
         register(KeyframeFactories.ACTIONS_CONFIG, UIActionsConfigKeyframeFactory::new);
         register(KeyframeFactories.SHAPE_KEYS, UIShapeKeysKeyframeFactory::new);
         register(KeyframeFactories.PARTICLE_SETTINGS, UIParticleSettingsKeyframeFactory::new);
-        register(KeyframeFactories.STRUCTURE_LIGHT_SETTINGS, UIStructureLightSettingsKeyframeFactory::new);
     }
 
     public static <T> void register(IKeyframeFactory<T> clazz, IUIKeyframeFactoryFactory<T> factory)
@@ -107,31 +105,6 @@ public abstract class UIKeyframeFactory <T> extends UIElement
         this.tick.getEvents().register(UITrackpadDragEndEvent.class, (e) -> this.editor.submitKeyframes());
         this.duration = new UITrackpad((v) -> this.setDuration(v.floatValue()));
         this.duration.limit(0, Float.MAX_VALUE).tooltip(UIKeys.KEYFRAMES_FORCED_DURATION);
-
-        this.enabled = new UIIcon(Icons.ENABLED, (b) ->
-        {
-            this.editor.cacheKeyframes();
-
-            boolean enabled = !this.keyframe.isEnabled();
-
-            this.keyframe.setEnabled(enabled);
-            this.update();
-
-            for (UIKeyframeSheet sheet : this.editor.getGraph().getSheets())
-            {
-                for (Keyframe kf : sheet.selection.getSelected())
-                {
-                    if (kf != this.keyframe)
-                    {
-                        kf.setEnabled(enabled);
-                    }
-                }
-            }
-
-            this.editor.submitKeyframes();
-        });
-        this.enabled.tooltip(UIKeys.CAMERA_PANELS_ENABLED);
-
         this.interp = new UIIcon(Icons.GRAPH, (b) ->
         {
             Interpolation interp = this.keyframe.getInterpolation();
@@ -189,13 +162,14 @@ public abstract class UIKeyframeFactory <T> extends UIElement
         });
         this.shape.tooltip(UIKeys.KEYFRAMES_CHANGE_SHAPE);
 
-        this.scroll.add(UI.row(this.interp, this.enabled, this.tick, this.duration));
+        this.scroll.add(UI.row(this.interp, this.tick, this.duration));
         this.scroll.add(UI.row(this.shape, this.color));
 
         this.add(this.scroll);
 
         /* Fill data */
-        this.update();
+        this.tick.setValue(TimeUtils.toTime(keyframe.getTick()));
+        this.duration.setValue(TimeUtils.toTime(keyframe.getDuration()));
     }
 
     public Keyframe<T> getKeyframe()
@@ -223,9 +197,6 @@ public abstract class UIKeyframeFactory <T> extends UIElement
     public void update()
     {
         this.tick.setValue(TimeUtils.toTime(this.keyframe.getTick()));
-        this.duration.setValue(TimeUtils.toTime(this.keyframe.getDuration()));
-        this.color.setColor(this.keyframe.getColor() == null ? 0 : this.keyframe.getColor().getRGBColor());
-        this.enabled.both(this.keyframe.isEnabled() ? Icons.ENABLED : Icons.DISABLED);
     }
 
     public static interface IUIKeyframeFactoryFactory <T>
