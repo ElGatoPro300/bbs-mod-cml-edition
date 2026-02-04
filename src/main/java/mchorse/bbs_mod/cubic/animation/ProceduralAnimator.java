@@ -16,9 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.states.AnimationState;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +25,6 @@ public class ProceduralAnimator implements IAnimator
     public ActionPlayback basePost;
 
     private IModelInstance model;
-    private Form form;
 
     @Override
     public List<String> getActions()
@@ -37,10 +33,9 @@ public class ProceduralAnimator implements IAnimator
     }
 
     @Override
-    public void setup(IModelInstance model, ActionsConfig actions, boolean fade, Form form)
+    public void setup(IModelInstance model, ActionsConfig actions, boolean fade)
     {
         this.model = model;
-        this.form = form;
 
         this.basePre = this.createAction(this.basePre, actions.getConfig("base_pre"), true);
         this.basePost = this.createAction(this.basePost, actions.getConfig("base_post"), true);
@@ -62,7 +57,6 @@ public class ProceduralAnimator implements IAnimator
      */
     public ActionPlayback createAction(ActionPlayback old, ActionConfig config, boolean looping, int priority)
     {
-       
         Animations animations = this.model == null ? null : this.model.getAnimations();
 
         if (animations == null)
@@ -115,7 +109,7 @@ public class ProceduralAnimator implements IAnimator
 
         if (this.basePre != null)
         {
-            this.basePre.apply(target, armature.getModel(), transition, 1F, false, this.form);
+            this.basePre.apply(target, armature.getModel(), transition, 1F, false);
         }
 
         IModel model = armature.getModel();

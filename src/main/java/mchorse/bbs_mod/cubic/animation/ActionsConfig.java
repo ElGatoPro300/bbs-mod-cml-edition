@@ -14,7 +14,6 @@ public class ActionsConfig implements IMapSerializable
     private static Map<String, ActionConfig> b = new HashMap<>();
 
     public Map<String, ActionConfig> actions = new HashMap<>();
-    public boolean proceduralActions = false;
 
     public static void removeDefaultActions(Map<String, ActionConfig> map)
     {
@@ -53,7 +52,7 @@ public class ActionsConfig implements IMapSerializable
             removeDefaultActions(a);
             removeDefaultActions(b);
 
-            return a.equals(b) && this.proceduralActions == config.proceduralActions;
+            return a.equals(b);
         }
 
         return false;
@@ -62,7 +61,6 @@ public class ActionsConfig implements IMapSerializable
     public void copy(ActionsConfig config)
     {
         this.actions.clear();
-        this.proceduralActions = config.proceduralActions;
 
         for (Map.Entry<String, ActionConfig> entry : config.actions.entrySet())
         {
@@ -80,11 +78,6 @@ public class ActionsConfig implements IMapSerializable
     @Override
     public void toData(MapType data)
     {
-        if (this.proceduralActions)
-        {
-            data.putBool("proceduralActions", this.proceduralActions);
-        }
-
         for (Map.Entry<String, ActionConfig> entry : this.actions.entrySet())
         {
             if (entry.getValue().isDefault())
@@ -105,7 +98,6 @@ public class ActionsConfig implements IMapSerializable
     public void fromData(MapType data)
     {
         this.actions.clear();
-        this.proceduralActions = data.getBool("proceduralActions");
 
         for (Map.Entry<String, BaseType> entry : data)
         {
