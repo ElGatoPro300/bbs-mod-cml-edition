@@ -40,8 +40,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.joml.Matrix4f;
-
 @Environment(EnvType.CLIENT)
 @Mixin(value = ShadowRenderer.class, remap = false)
 public class ShadowRendererMixin
@@ -113,9 +111,7 @@ public class ShadowRendererMixin
                             FilmControllerContext context = FilmControllerContext.instance
                                 .setup(editorController.getEntities(), entity, replay, gameCamera, shadowStack, consumers, transition)
                                 .shadow((Boolean) replay.shadow.get(), (Float) replay.shadowSize.get())
-                                .relative((Boolean) replay.relative.get())
-                                .isShadowPass(true)
-                                .viewMatrix(new Matrix4f(shadowStack.peek().getPositionMatrix()));
+                                .relative((Boolean) replay.relative.get());
 
                             BaseFilmController.renderEntity(context);
 
@@ -194,8 +190,7 @@ public class ShadowRendererMixin
                     FilmControllerContext context = FilmControllerContext.instance
                         .setup(controller.getEntities(), entity, replay, gameCamera, shadowStack, consumers, transition)
                         .shadow((Boolean) replay.shadow.get(), (Float) replay.shadowSize.get())
-                        .relative((Boolean) replay.relative.get())
-                        .isShadowPass(true);
+                        .relative((Boolean) replay.relative.get());
 
                     BaseFilmController.renderEntity(context);
                 }
@@ -234,8 +229,7 @@ public class ShadowRendererMixin
                     FilmControllerContext context = FilmControllerContext.instance
                         .setup(recorder.getEntities(), entity, replay, gameCamera, shadowStack, consumers, transition)
                         .shadow((Boolean) replay.shadow.get(), (Float) replay.shadowSize.get())
-                        .relative((Boolean) replay.relative.get())
-                        .viewMatrix(new Matrix4f(shadowStack.peek().getPositionMatrix()));
+                        .relative((Boolean) replay.relative.get());
 
                     BaseFilmController.renderEntity(context);
                 }
@@ -295,8 +289,7 @@ public class ShadowRendererMixin
             FilmControllerContext ctx = FilmControllerContext.instance
                 .setup(editorController.getEntities(), entity, replay, camera, shadowStack, consumers, 0F)
                 .shadow((Boolean) replay.shadow.get(), (Float) replay.shadowSize.get())
-                .relative((Boolean) replay.relative.get())
-                .viewMatrix(new Matrix4f(shadowStack.peek().getPositionMatrix()));
+                .relative((Boolean) replay.relative.get());
 
             BaseFilmController.renderEntity(ctx);
 
