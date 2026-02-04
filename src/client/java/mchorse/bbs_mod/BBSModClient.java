@@ -15,8 +15,25 @@ import mchorse.bbs_mod.client.renderer.entity.GunProjectileEntityRenderer;
 import mchorse.bbs_mod.client.renderer.item.GunItemRenderer;
 import mchorse.bbs_mod.client.renderer.item.ModelBlockItemRenderer;
 import mchorse.bbs_mod.cubic.model.ModelManager;
+import mchorse.bbs_mod.events.BBSAddonMod;
 import mchorse.bbs_mod.events.register.RegisterClientSettingsEvent;
+import mchorse.bbs_mod.events.register.RegisterDashboardPanelsEvent;
+import mchorse.bbs_mod.events.register.RegisterFormCategoriesEvent;
+import mchorse.bbs_mod.events.register.RegisterImportersEvent;
+import mchorse.bbs_mod.events.register.RegisterInterpolationsEvent;
+import mchorse.bbs_mod.events.register.RegisterIconsEvent;
+import mchorse.bbs_mod.events.register.RegisterUIKeyframeFactoriesEvent;
+import mchorse.bbs_mod.events.register.RegisterKeyframeShapesEvent;
+import mchorse.bbs_mod.events.register.RegisterFormsRenderersEvent;
+import mchorse.bbs_mod.events.register.RegisterUIValueFactoriesEvent;
+import mchorse.bbs_mod.events.register.RegisterFormEditorsEvent;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.settings.ui.UIValueMap;
+import mchorse.bbs_mod.ui.forms.editors.UIFormEditor;
 import mchorse.bbs_mod.events.register.RegisterL10nEvent;
+import mchorse.bbs_mod.events.register.RegisterParticleComponentsEvent;
+import mchorse.bbs_mod.events.register.RegisterShadersEvent;
+import mchorse.bbs_mod.events.register.RegisterSourcePacksEvent;
 import mchorse.bbs_mod.film.Films;
 import mchorse.bbs_mod.film.Recorder;
 import mchorse.bbs_mod.film.replays.Replay;
@@ -33,6 +50,8 @@ import mchorse.bbs_mod.morphing.Morph;
 import mchorse.bbs_mod.network.ClientNetwork;
 import mchorse.bbs_mod.network.ServerNetwork;
 import mchorse.bbs_mod.particles.ParticleManager;
+import mchorse.bbs_mod.particles.ParticleScheme;
+import mchorse.bbs_mod.utils.interps.Interpolations;
 import mchorse.bbs_mod.resources.AssetProvider;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.resources.packs.URLError;
@@ -43,6 +62,8 @@ import mchorse.bbs_mod.selectors.EntitySelectors;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.dashboard.UIDashboard;
 import mchorse.bbs_mod.ui.film.UIFilmPanel;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIKeyframeFactory;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.shapes.KeyframeShapeRenderers;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
 import mchorse.bbs_mod.ui.framework.UIScreen;
 import mchorse.bbs_mod.ui.model_blocks.UIModelBlockEditorMenu;
@@ -56,6 +77,7 @@ import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.resources.MinecraftSourcePack;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -316,6 +338,13 @@ public class BBSModClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
+        FabricLoader.getInstance()
+            .getEntrypointContainers("bbs-addon-client", BBSAddonMod.class)
+            .forEach((container) ->
+            {
+                BBSMod.events.register(container.getEntrypoint());
+            });
+
         AssetProvider provider = BBSMod.getProvider();
 
         textures = new TextureManager(provider);
@@ -333,6 +362,16 @@ public class BBSModClient implements ClientModInitializer
 
         models = new ModelManager(provider);
         formCategories = new FormCategories();
+        BBSMod.events.post(new RegisterFormCategoriesEvent(formCategories));
+        BBSMod.events.post(new RegisterImportersEvent());
+        BBSMod.events.post(new RegisterParticleComponentsEvent(ParticleScheme.PARSER.components));
+        BBSMod.events.post(new RegisterInterpolationsEvent(Interpolations.MAP));
+        BBSMod.events.post(new RegisterFormsRenderersEvent());
+        BBSMod.events.post(new RegisterFormEditorsEvent(UIFormEditor.panels));
+        BBSMod.events.post(new RegisterIconsEvent());
+        BBSMod.events.post(new RegisterUIValueFactoriesEvent(UIValueMap.factories));
+        BBSMod.events.post(new RegisterUIKeyframeFactoriesEvent(UIKeyframeFactory.FACTORIES));
+        BBSMod.events.post(new RegisterKeyframeShapesEvent(KeyframeShapeRenderers.SHAPES));
         screenshotRecorder = new ScreenshotRecorder(new File(parentFile, "screenshots"));
         videoRecorder = new VideoRecorder();
         selectors = new EntitySelectors();
