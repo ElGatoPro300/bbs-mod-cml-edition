@@ -10,6 +10,9 @@ import mchorse.bbs_mod.camera.clips.misc.SubtitleClip;
 import mchorse.bbs_mod.camera.controller.CameraWorkCameraController;
 import mchorse.bbs_mod.camera.controller.PlayCameraController;
 import mchorse.bbs_mod.events.ModelBlockEntityUpdateCallback;
+import mchorse.bbs_mod.film.replays.Replay;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.texture.TextureFormat;
@@ -20,6 +23,7 @@ import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.film.UIFilmPanel;
 import mchorse.bbs_mod.ui.film.UISubtitleRenderer;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
+import mchorse.bbs_mod.ui.framework.UIRenderingContext;
 import mchorse.bbs_mod.ui.framework.UIScreen;
 import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
@@ -71,6 +75,8 @@ public class BBSRendering
 
     private static int width;
     private static int height;
+
+    private static final UIBaseMenu replayHudMenu = new UIBaseMenu() {};
 
     private static boolean toggleFramebuffer;
     private static Framebuffer framebuffer;
@@ -414,7 +420,9 @@ public class BBSRendering
 
         BBSModClient.getFilms().renderHud(batcher2D, tickDelta);
 
-        if (videoRecorder.isRecording() && BBSSettings.recordingOverlays.get() && UIScreen.getCurrentMenu() == null)
+        boolean showRecordingOverlay = videoRecorder.isRecording() && BBSSettings.recordingOverlays.get() && UIScreen.getCurrentMenu() == null;
+
+        if (showRecordingOverlay)
         {
             int count = videoRecorder.getCounter();
             String label = UIKeys.FILM_VIDEO_RECORDING.format(
@@ -430,6 +438,123 @@ public class BBSRendering
             batcher2D.icon(Icons.SPHERE, Colors.RED | Colors.A100, x, y);
             batcher2D.textShadow(label, x + 18, y + 4);
         }
+
+        if (UIScreen.getCurrentMenu() == null && BBSSettings.editorReplayHud.get())
+        {
+            renderSelectedReplayHud(drawContext, batcher2D, showRecordingOverlay ? 20 : 0);
+        }
+    }
+
+    private static void renderSelectedReplayHud(DrawContext drawContext, Batcher2D batcher2D, int yOffset)
+    {
+        Replay replay = BBSModClient.getSelectedReplay();
+
+        if (replay == null)
+        {
+            return;
+        }
+
+        Form form = replay.form.get();
+        String label = getReplayDisplayName(replay, form);
+        boolean hasForm = form != null;
+        int size = hasForm ? 24 : 0;
+        int padding = 3;
+        int gap = hasForm ? 4 : 0;
+
+        int margin = 5;
+        float textScale = 0.85F;
+        int textWidth = batcher2D.getFont().getWidth(label);
+        int textHeight = batcher2D.getFont().getHeight();
+        int scaledTextWidth = Math.round(textWidth * textScale);
+        int scaledTextHeight = Math.round(textHeight * textScale);
+        int boxH = Math.max(size, scaledTextHeight) + padding * 2;
+        int textBoxW = scaledTextWidth + padding * 2;
+        int totalW = (hasForm ? size + gap : 0) + textBoxW;
+        int x = getReplayHudX(margin, totalW);
+        int y = getReplayHudY(margin + yOffset, boxH);
+        int contentX = x + padding;
+        int contentY = y + padding;
+        int textBoxX = contentX + (hasForm ? size + gap : 0) - padding;
+        int textBoxH = scaledTextHeight + padding * 2;
+        int textBoxY = y + (boxH - textBoxH) / 2;
+
+        if (!label.isEmpty())
+        {
+            batcher2D.box(textBoxX, textBoxY, textBoxX + textBoxW, textBoxY + textBoxH, Colors.A50);
+        }
+
+        if (hasForm)
+        {
+            MinecraftClient mc = MinecraftClient.getInstance();
+            Window window = mc.getWindow();
+
+            replayHudMenu.resize(window.getScaledWidth(), window.getScaledHeight());
+            replayHudMenu.context.setup(new UIRenderingContext(drawContext));
+
+            int modelX1 = contentX;
+            int modelY1 = contentY + (boxH - padding * 2 - size) / 2;
+            int modelX2 = modelX1 + size;
+            int modelY2 = modelY1 + size;
+
+            FormUtilsClient.renderUI(form, replayHudMenu.context, modelX1, modelY1, modelX2, modelY2);
+
+            contentX = modelX2 + gap;
+        }
+
+        int textX = textBoxX + padding;
+        int textY = textBoxY + padding;
+
+        drawContext.getMatrices().push();
+        drawContext.getMatrices().scale(textScale, textScale, 1F);
+        batcher2D.textShadow(label, textX / textScale, textY / textScale);
+        drawContext.getMatrices().pop();
+    }
+
+    private static int getReplayHudX(int margin, int totalW)
+    {
+        int position = BBSSettings.editorReplayHudPosition.get();
+        int screenW = MinecraftClient.getInstance().getWindow().getScaledWidth();
+        boolean right = position == 1 || position == 3;
+
+        return right ? screenW - margin - totalW : margin;
+    }
+
+    private static int getReplayHudY(int margin, int boxH)
+    {
+        int position = BBSSettings.editorReplayHudPosition.get();
+        int screenH = MinecraftClient.getInstance().getWindow().getScaledHeight();
+        boolean bottom = position == 2 || position == 3;
+
+        return bottom ? screenH - margin - boxH : margin;
+    }
+
+    private static String getReplayDisplayName(Replay replay, Form form)
+    {
+        String label = replay.label.get();
+
+        if (!label.isEmpty())
+        {
+            return label;
+        }
+
+        if (form != null)
+        {
+            String formName = form.getDisplayName();
+
+            if (!formName.isEmpty())
+            {
+                return formName;
+            }
+        }
+
+        String nameTag = replay.nameTag.get();
+
+        if (!nameTag.isEmpty())
+        {
+            return nameTag;
+        }
+
+        return replay.getId();
     }
 
     public static void renderCoolStuff(WorldRenderContext worldRenderContext)
