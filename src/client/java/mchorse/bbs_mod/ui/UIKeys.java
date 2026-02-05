@@ -470,6 +470,17 @@ public class UIKeys
     public static final IKey FORMS_EDITORS_LABEL_SHADOW_COLOR = L10n.lang("bbs.ui.forms.editors.label.shadow_color");
     public static final IKey FORMS_EDITORS_LABEL_SHADOW_OFFSET = L10n.lang("bbs.ui.forms.editors.label.shadow_offset");
     public static final IKey FORMS_EDITORS_LABEL_TITLE = L10n.lang("bbs.ui.forms.editors.label.title");
+    public static final IKey FORMS_EDITORS_LABEL_NAMETAG = L10n.lang("bbs.ui.forms.editors.label.nametag");
+    public static final IKey FORMS_EDITORS_LABEL_NAMETAG_HINT = L10n.lang("bbs.ui.forms.editors.label.nametag_hint");
+    public static final IKey FORMS_EDITORS_LABEL_COLOR_FORMAT_GUIDE = L10n.lang("bbs.ui.forms.editors.label.color_format_guide");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_HEADER = L10n.lang("bbs.ui.forms.editors.label.format_header");
+    public static final IKey FORMS_EDITORS_LABEL_COLOR_EXAMPLE = L10n.lang("bbs.ui.forms.editors.label.color_example");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_GLITCH = L10n.lang("bbs.ui.forms.editors.label.format_glitch");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_BOLD = L10n.lang("bbs.ui.forms.editors.label.format_bold");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_STRIKETHROUGH = L10n.lang("bbs.ui.forms.editors.label.format_strikethrough");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_UNDERLINE = L10n.lang("bbs.ui.forms.editors.label.format_underline");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_ITALIC = L10n.lang("bbs.ui.forms.editors.label.format_italic");
+    public static final IKey FORMS_EDITORS_LABEL_FORMAT_RESET = L10n.lang("bbs.ui.forms.editors.label.format_reset");
     public static final IKey FORMS_EDITORS_LABEL_ADVANCED_TEXT = L10n.lang("bbs.ui.forms.editors.label.advanced_text");
     public static final IKey FORMS_EDITORS_LABEL_FONT = L10n.lang("bbs.ui.forms.editors.label.font");
     public static final IKey FORMS_EDITORS_LABEL_OPEN_FONTS_FOLDER = L10n.lang("bbs.ui.forms.editors.label.open_fonts_folder");
