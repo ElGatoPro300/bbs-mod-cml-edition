@@ -232,6 +232,25 @@ public class BBSModClient implements ClientModInitializer
         return dashboard;
     }
 
+    public static Replay getSelectedReplay()
+    {
+        UIDashboard dashboard = getDashboard();
+
+        if (dashboard == null)
+        {
+            return null;
+        }
+
+        UIFilmPanel panel = dashboard.getPanel(UIFilmPanel.class);
+
+        if (panel == null)
+        {
+            return null;
+        }
+
+        return panel.replayEditor.getReplay();
+    }
+
     public static int getGUIScale()
     {
         int scale = BBSSettings.userIntefaceScale.get();
