@@ -177,16 +177,16 @@ public class UIFluidFormPanel extends UIFormPanel<FluidForm>
         boolean anyOcean = ocean || procedural;
         boolean isDrop = !anyOcean;
         
-        this.sizeX.setVisible(anyOcean);
-        this.sizeY.setVisible(anyOcean);
-        this.sizeZ.setVisible(anyOcean);
-        this.fillBlock.setVisible(ocean);
-        this.waveAmplitude.setVisible(anyOcean);
-        this.waveFrequency.setVisible(procedural);
+        this.sizeX.setEnabled(anyOcean);
+        this.sizeY.setEnabled(anyOcean);
+        this.sizeZ.setEnabled(anyOcean);
+        this.fillBlock.setEnabled(ocean);
+        this.waveAmplitude.setEnabled(anyOcean);
+        this.waveFrequency.setEnabled(procedural);
 
-        this.dropSize.setVisible(isDrop);
-        this.surfaceTension.setVisible(isDrop);
-        this.viscosity.setVisible(isDrop);
+        this.dropSize.setEnabled(isDrop);
+        this.surfaceTension.setEnabled(isDrop);
+        this.viscosity.setEnabled(isDrop);
     }
 
     @Override
