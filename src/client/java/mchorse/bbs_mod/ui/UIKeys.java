@@ -787,6 +787,15 @@ public class UIKeys
     public static final IKey PANELS_MODALS_RENAME_FOLDER_TITLE = L10n.lang("bbs.ui.panels.modals.rename_folder-title");
     public static final IKey PANELS_PARTICLES = L10n.lang("bbs.ui.panels.particles");
     public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS = L10n.lang("bbs.ui.scene.replays.context.random_skins");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_TITLE = L10n.lang("bbs.ui.scene.replays.context.random_skins.title");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_DESCRIPTION = L10n.lang("bbs.ui.scene.replays.context.random_skins.description");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_FOLDER = L10n.lang("bbs.ui.scene.replays.context.random_skins.folder");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_PICK_FOLDER = L10n.lang("bbs.ui.scene.replays.context.random_skins.pick_folder");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_PICK_FOLDER_TITLE = L10n.lang("bbs.ui.scene.replays.context.random_skins.pick_folder.title");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_PICK_FOLDER_DESCRIPTION = L10n.lang("bbs.ui.scene.replays.context.random_skins.pick_folder.description");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_MODEL_STEVE = L10n.lang("bbs.ui.scene.replays.context.random_skins.model_steve");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_MODEL_ALEX = L10n.lang("bbs.ui.scene.replays.context.random_skins.model_alex");
+    public static final IKey SCENE_REPLAYS_CONTEXT_RANDOM_SKINS_FOLDER_REQUIRED = L10n.lang("bbs.ui.scene.replays.context.random_skins.folder_required");
     public static final IKey PANELS_SAVED_NOTIFICATION = L10n.lang("bbs.ui.panels.saved-notification");
     public static final IKey POSE_CONTEXT_APPLY = L10n.lang("bbs.ui.pose.context.apply");
     public static final IKey POSE_CONTEXT_COPY = L10n.lang("bbs.ui.pose.context.copy");

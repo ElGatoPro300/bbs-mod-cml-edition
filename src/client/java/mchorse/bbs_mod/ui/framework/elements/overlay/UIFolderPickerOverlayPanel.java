@@ -54,8 +54,8 @@ public class UIFolderPickerOverlayPanel extends UIOverlayPanel
             }
         };
         
-        // Only show folders (paths ending with /)
-        this.picker.filter((l) -> l.path.endsWith("/"));
+        // Show folders first, then PNG files
+        this.picker.filter((l) -> l.path.endsWith("/") || l.path.toLowerCase().endsWith(".png"));
         this.picker.background();
         
         // Buttons
