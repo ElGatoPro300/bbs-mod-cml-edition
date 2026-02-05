@@ -148,48 +148,20 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             }
         }
 
-        int nextEnabledIdx = this.getNextEnabledIndex(low);
-        int prevEnabledIdx = this.getPreviousEnabledIndex(low - 1);
+        Keyframe<T> b = this.list.get(low);
 
-        Keyframe<T> a = null;
-        Keyframe<T> b = null;
+        if (b.getTick() == Math.floor(ticks) && low < size - 1)
+        {
+            low += 1;
+            b = this.list.get(low);
+        }
 
-        if (prevEnabledIdx != -1) a = this.list.get(prevEnabledIdx);
-        if (nextEnabledIdx != -1) b = this.list.get(nextEnabledIdx);
-
-        if (a == null && b == null) return null;
-        if (a == null) return new KeyframeSegment<>(b, b);
-        if (b == null) return new KeyframeSegment<>(a, a);
-
+        Keyframe<T> a = low - 1 >= 0 ? this.list.get(low - 1) : b;
         KeyframeSegment<T> segment = new KeyframeSegment<>(a, b);
 
         segment.setup(ticks);
 
         return segment;
-    }
-
-    public int getPreviousEnabledIndex(int index)
-    {
-        for (int i = index; i >= 0; i--)
-        {
-            if (this.list.get(i).isEnabled())
-            {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public int getNextEnabledIndex(int index)
-    {
-        for (int i = index; i < this.list.size(); i++)
-        {
-            if (this.list.get(i).isEnabled())
-            {
-                return i;
-            }
-        }
-        return -1;
     }
 
     /* Write only */
