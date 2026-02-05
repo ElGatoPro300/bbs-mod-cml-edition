@@ -419,7 +419,8 @@ public abstract class BaseFilmController
     private static void renderNameTag(IEntity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
     {
         boolean sneaking = !entity.isSneaking();
-        float hitboxH = (float) entity.getPickingHitbox().h + 0.5F;
+        float hitboxH = (float) entity.getPickingHitbox().h + (entity.isSneaking() ? 0.25F : 0.5F);
+
 
         matrices.push();
         matrices.translate(0F, hitboxH, 0F);
