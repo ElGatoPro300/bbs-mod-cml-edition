@@ -425,10 +425,6 @@ public class UIKeys
     public static final IKey FLUID_CATEGORY_DROP = L10n.lang("bbs.fluid.category.drop");
     public static final IKey FLUID_SUBDIVISIONS = L10n.lang("bbs.forms.editors.fluid.subdivisions");
     public static final IKey FLUID_SMOOTH_SHADING = L10n.lang("bbs.forms.editors.fluid.smooth_shading");
-    public static final IKey FLUID_DEBUG = L10n.lang("bbs.fluid.debug");
-    public static final IKey FLUID_SIZE_X = L10n.lang("bbs.fluid.size_x");
-    public static final IKey FLUID_SIZE_Y = L10n.lang("bbs.fluid.size_y");
-    public static final IKey FLUID_SIZE_Z = L10n.lang("bbs.fluid.size_z");
     public static final IKey FORMS_EDITORS_BILLBOARD_PICK_TEXTURE = L10n.lang("bbs.ui.forms.editors.billboard.pick_texture");
     public static final IKey FORMS_EDITORS_BILLBOARD_RESIZE_CROP = L10n.lang("bbs.ui.forms.editors.billboard.resize_crop");
     public static final IKey FORMS_EDITORS_BILLBOARD_ROTATION = L10n.lang("bbs.ui.forms.editors.billboard.rotation");
