@@ -78,6 +78,8 @@
     "bbs.config.editor.clip_type_labels-comment": "Muestra el tipo de clip en la línea de tiempo del Editor de Cámara y Acciones",
     "bbs.config.editor.replay_sprint_particles": "Partículas de sprint en replays",
     "bbs.config.editor.replay_sprint_particles-comment": "Emite partículas de sprint en replays al correr (modo no actor)",
+    "bbs.config.editor.replay_editor_title_limit": "Límite de título del editor de replays",
+    "bbs.config.editor.replay_editor_title_limit-comment": "Máximo de caracteres mostrados en los títulos de grupos de pistas (0 = sin límite)",
     "bbs.config.editor.replay_hud": "HUD de replay",
     "bbs.config.editor.replay_hud-comment": "Muestra la vista previa del replay seleccionado en el HUD",
     "bbs.config.editor.replay_hud_position": "Posición del HUD de replay",
