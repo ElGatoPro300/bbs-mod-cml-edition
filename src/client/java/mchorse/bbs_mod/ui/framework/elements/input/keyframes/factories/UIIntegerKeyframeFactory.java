@@ -141,15 +141,8 @@ public class UIIntegerKeyframeFactory extends UIKeyframeFactory<Integer>
     {
         super.update();
 
-        if (this.value != null)
-        {
-            this.value.setValue(this.keyframe.getValue());
-        }
-
-        if (this.handles != null)
-        {
-            this.handles.update();
-        }
+        this.value.setValue(this.keyframe.getValue());
+        this.handles.update();
     }
 
     private Replay findReplay(BaseValue value)

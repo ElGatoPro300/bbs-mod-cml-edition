@@ -352,6 +352,8 @@ public class UIReplaysEditor extends UIElement
     {
         this.replay = replay;
 
+        BBSModClient.setSelectedReplay(replay);
+
         if (resetOrbit)
         {
             this.filmPanel.getController().orbit.reset();
@@ -621,40 +623,102 @@ public class UIReplaysEditor extends UIElement
             {
                 Form form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
 
-                if (form != null && form.getParent() != null)
+                if (form != null && (form.getParent() != null || form instanceof ModelForm))
                 {
-                    String path = FormUtils.getPath(form);
-                    String groupKey = this.replay.uuid.get() + ":" + path;
-
-                    if (addedGroups.add(groupKey))
+                    if (form != null && form.getParent() != null)
                     {
-                        boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
-                        UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
-                            "__group__" + groupKey,
-                            IKey.constant(form.getDisplayName()),
-                            Colors.LIGHTEST_GRAY & Colors.RGB,
-                            groupKey,
-                            expanded,
-                            () ->
-                            {
-                                this.collapsedModelTracks.put(groupKey, expanded);
-                                this.updateChannelsList();
-                            }
-                        );
+                        String path = FormUtils.getPath(form);
+                        String groupKey = this.replay.uuid.get() + ":" + path;
 
-                        grouped.add(header);
+                        if (addedGroups.add(groupKey))
+                        {
+                            boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
+                            UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
+                                "__group__" + groupKey,
+                                IKey.constant(form.getDisplayName()),
+                                Colors.LIGHTEST_GRAY & Colors.RGB,
+                                groupKey,
+                                expanded,
+                                () ->
+                                {
+                                    this.collapsedModelTracks.put(groupKey, expanded);
+                                    this.updateChannelsList();
+                                }
+                            );
+
+                            grouped.add(header);
+                        }
+
+                        if (this.collapsedModelTracks.getOrDefault(groupKey, false))
+                        {
+                            continue;
+                        }
                     }
 
-                    if (this.collapsedModelTracks.getOrDefault(groupKey, false))
-                    {
-                        continue;
-                    }
+                    grouped.add(sheet);
                 }
-
-                grouped.add(sheet);
             }
 
             sheets = grouped;
+        }
+
+        /* Ensure main model header is on top without reordering tracks */
+        if (this.replay.form.get() instanceof ModelForm)
+        {
+            Form rootForm = FormUtils.getRoot(this.replay.form.get());
+            String rootPath = FormUtils.getPath(rootForm);
+            String rootKey = this.replay.uuid.get() + ":" + rootPath;
+            UIKeyframeSheet rootHeader = null;
+
+            for (UIKeyframeSheet sheet : sheets)
+            {
+                if (sheet.groupHeader && rootKey.equals(sheet.groupKey))
+                {
+                    rootHeader = sheet;
+                    break;
+                }
+            }
+
+            if (rootHeader != null)
+            {
+                List<UIKeyframeSheet> reordered = new ArrayList<>();
+                reordered.add(rootHeader);
+
+                for (UIKeyframeSheet sheet : sheets)
+                {
+                    if (sheet != rootHeader)
+                    {
+                        reordered.add(sheet);
+                    }
+                }
+
+                sheets = reordered;
+
+                if (this.collapsedModelTracks.getOrDefault(rootKey, false))
+                {
+                    sheets.removeIf((sheet) ->
+                    {
+                        if (sheet.groupHeader)
+                        {
+                            return false;
+                        }
+
+                        if (sheet.property == null)
+                        {
+                            return ReplayKeyframes.CURATED_CHANNELS.contains(sheet.id);
+                        }
+
+                        Form sheetForm = FormUtils.getForm(sheet.property);
+
+                        if (sheetForm == null)
+                        {
+                            return false;
+                        }
+
+                        return FormUtils.getPath(sheetForm).equals(rootPath);
+                    });
+                }
+            }
         }
 
         Object lastForm = null;
