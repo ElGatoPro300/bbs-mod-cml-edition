@@ -85,6 +85,8 @@
     "bbs.config.editor.clip_type_labels-comment": "Display the clip type in the timeline for Camera and Action editors",
     "bbs.config.editor.replay_sprint_particles": "Replay sprint particles",
     "bbs.config.editor.replay_sprint_particles-comment": "Emit sprint particles for replays when sprinting (non-actor mode)",
+    "bbs.config.editor.replay_editor_title_limit": "Replay editor title limit",
+    "bbs.config.editor.replay_editor_title_limit-comment": "Maximum characters shown for replay sheet group titles (0 = no limit)",
      "bbs.config.editor.replay_hud": "Replay HUD",
     "bbs.config.editor.replay_hud-comment": "Show the selected replay preview on the HUD",
     "bbs.config.editor.replay_hud_position": "Replay HUD position",

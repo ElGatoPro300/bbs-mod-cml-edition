@@ -78,6 +78,18 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
         this.dopeSheet.clamp();
     }
 
+    private String getDisplayTitle(String title)
+    {
+        int limit = BBSSettings.editorReplayEditorTitleLimit.get();
+
+        if (limit <= 0)
+        {
+            return title;
+        }
+
+        return title.length() > limit ? title.substring(0, limit) + "..." : title;
+    }
+
     /* Graphing */
 
     public Scroll getYAxis()
@@ -315,7 +327,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 {
                     FontRenderer font = context.batcher.getFont();
                     String title = sheet.title.get();
-                    String displayTitle = title.length() > 12 ? title.substring(0, 12) + "..." : title;
+                    String displayTitle = this.getDisplayTitle(title);
                     Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
                     int clickableWidth = 2 + arrow.w + 4 + font.getWidth(displayTitle) + 6;
                     int left = this.keyframes.area.x;
@@ -599,7 +611,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             {
                 FontRenderer font = context.batcher.getFont();
                 String title = sheet.title.get();
-                String displayTitle = title.length() > 12 ? title.substring(0, 12) + "..." : title;
+                String displayTitle = this.getDisplayTitle(title);
                 int bg = Colors.setA(0, 0.35F);
 
                 context.batcher.box(area.x, y, area.ex(), y + (int) this.trackHeight, bg);
