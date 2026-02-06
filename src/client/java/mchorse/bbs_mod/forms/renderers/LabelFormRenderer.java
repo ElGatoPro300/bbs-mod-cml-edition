@@ -29,7 +29,6 @@ import java.util.List;
 
 public class LabelFormRenderer extends FormRenderer<LabelForm>
 {
-    private float nametagAlpha = 1F;
     public static void fillQuad(BufferBuilder builder, MatrixStack stack, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, float r, float g, float b, float a)
     {
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
@@ -94,14 +93,6 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
         float fontSize = this.form.fontSize.get();
         float scale = (1F / 16F) * (fontSize <= 0 ? 1F : fontSize);
         int light = context.light;
-
-        this.nametagAlpha = 1F;
-
-        if (this.form.nametag.get() && context.entity != null && context.entity.isSneaking())
-        {
-            context.stack.translate(0F, -0.5F, 0F);
-            this.nametagAlpha = 0.125F;
-        }
 
         MatrixStackUtils.scaleStack(context.stack, scale, -scale, scale);
 
@@ -227,9 +218,6 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         Color shadowColor = this.form.shadowColor.get().copy();
         Color color = this.form.color.get().copy();
-
-        shadowColor.a *= this.nametagAlpha;
-        color.a *= this.nametagAlpha;
         
         float opacity = this.form.opacity.get();
         color.a *= opacity;
@@ -370,7 +358,6 @@ public class LabelFormRenderer extends FormRenderer<LabelForm>
 
         color.mul(context.color);
         shadowColor.mul(context.color);
-        shadowColor.a *= this.nametagAlpha;
         
         int align = this.form.textAlign.get(); // 0: Left, 1: Center, 2: Right
 

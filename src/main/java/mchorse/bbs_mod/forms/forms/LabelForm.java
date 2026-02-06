@@ -11,7 +11,6 @@ public class LabelForm extends Form
 {
     public final ValueString text = new ValueString("text", "Hello, World!");
     public final ValueBoolean billboard = new ValueBoolean("billboard", false);
-    public final ValueBoolean nametag = new ValueBoolean("nametag", false);
     public final ValueColor color = new ValueColor("color", Color.white());
 
     public final ValueInt max = new ValueInt("max", -1);
@@ -59,7 +58,6 @@ public class LabelForm extends Form
 
         this.add(this.text);
         this.add(this.billboard);
-        this.add(this.nametag);
         this.add(this.color);
         this.add(this.max);
         this.add(this.anchorX);
