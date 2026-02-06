@@ -7,3 +7,6 @@ This repository is the source code of BBS CML EDITION.
 If you'd like to contribute to BBS CML EDITION code-wise, all contributions are welcome as long as they are well-reviewed and don't break the code.
 
 See `LICENSE.md` for information about the license.
+
+Note:
+For some reason, this branch can only be compiled with ".\gradlew build --no-configuration-cache", so if the compilation fails, run this command while you're still figuring out the cause.
