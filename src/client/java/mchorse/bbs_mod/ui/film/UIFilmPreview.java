@@ -213,16 +213,16 @@ public class UIFilmPreview extends UIElement
 
     public void openReplays()
     {
-        if (!this.panel.isDockedLayout())
-        {
+        /* if (!this.panel.isDockedLayout())
+        { */
             UIOverlay overlay = UIOverlay.addOverlayLeft(this.getContext(), this.panel.replayEditor.replays, 360);
 
             overlay.eventPropagataion(EventPropagation.PASS);
-        }
+        /* }
         else
-        {
-            this.panel.toggleReplaysSidebar();
-        }
+        { */
+            //this.panel.toggleReplaysSidebar();
+        //}
     }
 
     public void openOnionSkin()

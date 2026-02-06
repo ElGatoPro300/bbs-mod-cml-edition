@@ -314,10 +314,20 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             {
                 if (sheet.toggleGroup != null)
                 {
-                    sheet.toggleGroup.run();
-                }
+                    FontRenderer font = context.batcher.getFont();
+                    String title = sheet.title.get();
+                    String displayTitle = title.length() > 12 ? title.substring(0, 12) + "..." : title;
+                    Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
+                    int clickableWidth = 2 + arrow.w + 4 + font.getWidth(displayTitle) + 6;
+                    int left = this.keyframes.area.x;
 
-                return true;
+                    if (context.mouseX >= left && context.mouseX <= left + clickableWidth)
+                    {
+                        sheet.toggleGroup.run();
+
+                        return true;
+                    }
+                }
             }
         }
 
@@ -589,6 +599,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             {
                 FontRenderer font = context.batcher.getFont();
                 String title = sheet.title.get();
+                String displayTitle = title.length() > 12 ? title.substring(0, 12) + "..." : title;
                 int bg = Colors.setA(0, 0.35F);
 
                 context.batcher.box(area.x, y, area.ex(), y + (int) this.trackHeight, bg);
@@ -596,9 +607,14 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
                 int iconX = area.x + 2;
                 int iconY = my - arrow.h / 2;
-                context.batcher.icon(arrow, iconX, iconY);
+                int textX = iconX + arrow.w + 4;
+                int textY = my - font.getHeight() / 2;
+                int textW = font.getWidth(displayTitle);
+                int textBg = Colors.setA(BBSSettings.primaryColor.get(), 0.35F);
 
-                context.batcher.textShadow(title, iconX + arrow.w + 4, my - font.getHeight() / 2);
+                context.batcher.box(iconX - 3, textY - 2, textX + textW + 3, textY + font.getHeight() + 2, textBg);
+                context.batcher.icon(arrow, iconX, iconY);
+                context.batcher.textShadow(displayTitle, textX, textY);
 
                 continue;
             }
