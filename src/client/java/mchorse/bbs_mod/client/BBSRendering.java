@@ -524,8 +524,9 @@ public class BBSRendering
         int position = BBSSettings.editorReplayHudPosition.get();
         int screenH = MinecraftClient.getInstance().getWindow().getScaledHeight();
         boolean bottom = position == 2 || position == 3;
+        int extraTopLeft = position == 0 ? 12 : 0;
 
-        return bottom ? screenH - margin - boxH : margin;
+        return bottom ? screenH - margin - boxH : margin + extraTopLeft;
     }
 
     private static String getReplayDisplayName(Replay replay, Form form)
