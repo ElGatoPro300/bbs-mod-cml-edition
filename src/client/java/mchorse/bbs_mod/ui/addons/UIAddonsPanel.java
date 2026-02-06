@@ -8,6 +8,7 @@ import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.dashboard.UIDashboard;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanel;
+import mchorse.bbs_mod.ui.dashboard.panels.UISidebarDashboardPanel;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
@@ -27,10 +28,9 @@ import net.fabricmc.loader.api.metadata.Person;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class UIAddonsPanel extends UIDashboardPanel
+public class UIAddonsPanel extends UISidebarDashboardPanel
 {
     public UIScrollView addons;
-    public UIElement sidebar;
     public UIIcon reload;
 
     private static boolean registeredIcons = false;
@@ -46,32 +46,22 @@ public class UIAddonsPanel extends UIDashboardPanel
         }
 
         this.addons = new UIScrollView();
-        this.addons.relative(this).w(1F, -20).h(1F);
+        this.addons.relative(this.editor).w(1F).h(1F);
         this.addons.column(5).vertical().stretch().scroll().padding(10);
         
-        this.sidebar = new UIElement()
-        {
-            @Override
-            public void render(UIContext context)
-            {
-                context.batcher.box(this.area.x, this.area.y, this.area.ex(), this.area.ey(), Colors.A25);
-                context.batcher.outline(this.area.x, this.area.y, this.area.x, this.area.ey(), Colors.A50 | Colors.LIGHTER_GRAY);
-                
-                super.render(context);
-            }
-        };
-        this.sidebar.relative(this).x(1F, -20).w(20).h(1F);
+        this.editor.add(this.addons);
 
         this.reload = new UIIcon(Icons.REFRESH, (b) -> this.reload());
-        this.reload.relative(this.sidebar).x(0.5F).y(2).w(16).h(16).anchorX(0.5F);
         this.reload.tooltip(UIKeys.ADDONS_RELOAD);
         
-        this.sidebar.add(this.reload);
-
-        this.add(this.addons, this.sidebar);
+        this.iconBar.add(this.reload);
 
         this.reload();
     }
+
+    @Override
+    public void requestNames()
+    {}
 
     public void reload()
     {
