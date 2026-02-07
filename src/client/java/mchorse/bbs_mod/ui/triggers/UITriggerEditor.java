@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.ui.triggers;
 
 import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
+import mchorse.bbs_mod.network.ClientNetwork;
 import mchorse.bbs_mod.settings.values.core.ValueList;
 import mchorse.bbs_mod.triggers.Trigger;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
@@ -25,19 +26,23 @@ public class UITriggerEditor extends UIElement
     {
         this.collidable = new UIToggle(TriggerKeys.COLLIDABLE, false, (b) ->
         {
-            if (this.entity != null) this.entity.collidable.set(b.getValue());
+            if (this.entity != null)
+            {
+                this.entity.collidable.set(b.getValue());
+                this.save();
+            }
         });
 
         this.left = new UIButton(TriggerKeys.LEFT_CLICK, (b) -> this.openOverlay(false));
         this.right = new UIButton(TriggerKeys.RIGHT_CLICK, (b) -> this.openOverlay(true));
         
-        this.x1 = new UITrackpad((v) -> { if (this.entity != null) this.entity.pos1.set(v.floatValue(), this.entity.pos1.get().y, this.entity.pos1.get().z); }).limit(0, 1).increment(0.1);
-        this.y1 = new UITrackpad((v) -> { if (this.entity != null) this.entity.pos1.set(this.entity.pos1.get().x, v.floatValue(), this.entity.pos1.get().z); }).limit(0, 1).increment(0.1);
-        this.z1 = new UITrackpad((v) -> { if (this.entity != null) this.entity.pos1.set(this.entity.pos1.get().x, this.entity.pos1.get().y, v.floatValue()); }).limit(0, 1).increment(0.1);
+        this.x1 = new UITrackpad((v) -> { if (this.entity != null) { this.entity.pos1.set(v.floatValue(), this.entity.pos1.get().y, this.entity.pos1.get().z); this.save(); } }).limit(0, 1).increment(0.1);
+        this.y1 = new UITrackpad((v) -> { if (this.entity != null) { this.entity.pos1.set(this.entity.pos1.get().x, v.floatValue(), this.entity.pos1.get().z); this.save(); } }).limit(0, 1).increment(0.1);
+        this.z1 = new UITrackpad((v) -> { if (this.entity != null) { this.entity.pos1.set(this.entity.pos1.get().x, this.entity.pos1.get().y, v.floatValue()); this.save(); } }).limit(0, 1).increment(0.1);
         
-        this.x2 = new UITrackpad((v) -> { if (this.entity != null) this.entity.pos2.set(v.floatValue(), this.entity.pos2.get().y, this.entity.pos2.get().z); }).limit(0, 1).increment(0.1);
-        this.y2 = new UITrackpad((v) -> { if (this.entity != null) this.entity.pos2.set(this.entity.pos2.get().x, v.floatValue(), this.entity.pos2.get().z); }).limit(0, 1).increment(0.1);
-        this.z2 = new UITrackpad((v) -> { if (this.entity != null) this.entity.pos2.set(this.entity.pos2.get().x, this.entity.pos2.get().y, v.floatValue()); }).limit(0, 1).increment(0.1);
+        this.x2 = new UITrackpad((v) -> { if (this.entity != null) { this.entity.pos2.set(v.floatValue(), this.entity.pos2.get().y, this.entity.pos2.get().z); this.save(); } }).limit(0, 1).increment(0.1);
+        this.y2 = new UITrackpad((v) -> { if (this.entity != null) { this.entity.pos2.set(this.entity.pos2.get().x, v.floatValue(), this.entity.pos2.get().z); this.save(); } }).limit(0, 1).increment(0.1);
+        this.z2 = new UITrackpad((v) -> { if (this.entity != null) { this.entity.pos2.set(this.entity.pos2.get().x, this.entity.pos2.get().y, v.floatValue()); this.save(); } }).limit(0, 1).increment(0.1);
 
         this.add(UI.row(this.left, this.right), this.collidable);
         this.add(UI.label(TriggerKeys.POS1), UI.row(this.x1, this.y1, this.z1));
@@ -69,6 +74,14 @@ public class UITriggerEditor extends UIElement
         if (this.entity == null) return;
 
         ValueList<Trigger> list = rightClick ? this.entity.right : this.entity.left;
-        UIOverlay.addOverlay(this.getContext(), new UITriggerOverlayPanel(list), 400, 250);
+        UIOverlay.addOverlay(this.getContext(), new UITriggerOverlayPanel(list, this::save), 400, 250);
+    }
+
+    private void save()
+    {
+        if (this.entity != null)
+        {
+            ClientNetwork.sendTriggerBlockUpdate(this.entity.getPos(), this.entity);
+        }
     }
 }
