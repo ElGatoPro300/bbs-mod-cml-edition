@@ -9,9 +9,7 @@ import mchorse.bbs_mod.events.ModelBlockEntityUpdateCallback;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.StubEntity;
 import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.forms.BillboardForm;
 import mchorse.bbs_mod.forms.forms.LightForm;
-import mchorse.bbs_mod.resources.Link;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,7 +17,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -99,38 +96,38 @@ public class ModelBlockEntity extends BlockEntity
         this.currentYaw = currentYaw;
     }
 
-    public void tick(World world, BlockPos pos, BlockState state)
+    public static void tick(World world, BlockPos pos, BlockState state, ModelBlockEntity blockEntity)
     {
-        ModelBlockEntityUpdateCallback.EVENT.invoker().update(this);
+        ModelBlockEntityUpdateCallback.EVENT.invoker().update(blockEntity);
         /* Asegura que el StubEntity tenga posición y mundo correctos para cálculos de luz/bioma.
          * Sin esto, el entity se queda en (0,0,0) y los renders toman luz de esa zona,
          * provocando oscurecimiento en editor, miniatura y bloque de modelo. */
-        this.entity.setWorld(world);
+        blockEntity.entity.setWorld(world);
 
         double x = pos.getX() + 0.5D;
         double y = pos.getY();
         double z = pos.getZ() + 0.5D;
 
-        this.entity.setPosition(x, y, z);
+        blockEntity.entity.setPosition(x, y, z);
 
         /* Initialize previous position/yaw on the very first tick to avoid
          * a huge movement delta (spike) when the block is placed. */
         try
         {
-            if (this.entity.getAge() == 0)
+            if (blockEntity.entity.getAge() == 0)
             {
-                this.entity.setPrevX(x);
-                this.entity.setPrevY(y);
-                this.entity.setPrevZ(z);
+                blockEntity.entity.setPrevX(x);
+                blockEntity.entity.setPrevY(y);
+                blockEntity.entity.setPrevZ(z);
 
-                this.entity.setPrevYaw(this.entity.getYaw());
-                this.entity.setPrevHeadYaw(this.entity.getHeadYaw());
-                this.entity.setPrevPitch(this.entity.getPitch());
-                this.entity.setPrevBodyYaw(this.entity.getBodyYaw());
-                this.entity.setPrevPrevBodyYaw(this.entity.getPrevBodyYaw());
+                blockEntity.entity.setPrevYaw(blockEntity.entity.getYaw());
+                blockEntity.entity.setPrevHeadYaw(blockEntity.entity.getHeadYaw());
+                blockEntity.entity.setPrevPitch(blockEntity.entity.getPitch());
+                blockEntity.entity.setPrevBodyYaw(blockEntity.entity.getBodyYaw());
+                blockEntity.entity.setPrevPrevBodyYaw(blockEntity.entity.getPrevBodyYaw());
 
-                float[] extra = this.entity.getExtraVariables();
-                float[] prevExtra = this.entity.getPrevExtraVariables();
+                float[] extra = blockEntity.entity.getExtraVariables();
+                float[] prevExtra = blockEntity.entity.getPrevExtraVariables();
 
                 if (extra != null && prevExtra != null)
                 {
@@ -143,12 +140,12 @@ public class ModelBlockEntity extends BlockEntity
         }
         catch (Exception e) {}
 
-        this.entity.update();
-        this.properties.update(this.entity);
+        blockEntity.entity.update();
+        blockEntity.properties.update(blockEntity.entity);
         if (!world.isClient)
         {
-            int target = this.properties.getLightLevel();
-            Form form = this.properties.getForm();
+            int target = blockEntity.properties.getLightLevel();
+            Form form = blockEntity.properties.getForm();
 
             if (form instanceof LightForm lightForm && lightForm.enabled.get())
             {
@@ -166,10 +163,10 @@ public class ModelBlockEntity extends BlockEntity
                 target = level;
             }
 
-            if (target != this.lastLightLevel)
+            if (target != blockEntity.lastLightLevel)
             {
-                this.lastLightLevel = target;
-                this.properties.setLightLevel(target);
+                blockEntity.lastLightLevel = target;
+                blockEntity.properties.setLightLevel(target);
 
                 try
                 {
@@ -188,15 +185,15 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt(WrapperLookup registryLookup)
+    public NbtCompound toInitialChunkDataNbt()
     {
-        return this.createNbtWithId(registryLookup);
+        return createNbt();
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, WrapperLookup registryLookup)
+    protected void writeNbt(NbtCompound nbt)
     {
-        super.writeNbt(nbt, registryLookup);
+        super.writeNbt(nbt);
 
         MapType data = this.properties.toData();
 
@@ -204,9 +201,9 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, WrapperLookup registryLookup)
+    public void readNbt(NbtCompound nbt)
     {
-        super.readNbt(nbt, registryLookup);
+        super.readNbt(nbt);
 
         BaseType baseType = DataStorageUtils.readFromNbtCompound(nbt, "Properties");
 
