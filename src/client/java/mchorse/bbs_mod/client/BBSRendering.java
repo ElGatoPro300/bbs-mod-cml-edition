@@ -5,11 +5,14 @@ import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
+import mchorse.bbs_mod.client.renderer.ModelBlockEntityRenderer;
+import mchorse.bbs_mod.client.renderer.TriggerBlockEntityRenderer;
 import mchorse.bbs_mod.camera.clips.misc.CurveClip;
 import mchorse.bbs_mod.camera.clips.misc.SubtitleClip;
 import mchorse.bbs_mod.camera.controller.CameraWorkCameraController;
 import mchorse.bbs_mod.camera.controller.PlayCameraController;
 import mchorse.bbs_mod.events.ModelBlockEntityUpdateCallback;
+import mchorse.bbs_mod.events.TriggerBlockEntityUpdateCallback;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.Form;
@@ -189,6 +192,7 @@ public class BBSRendering
     public static void startTick()
     {
         capturedModelBlocks.clear();
+        TriggerBlockEntityRenderer.capturedTriggerBlocks.clear();
     }
 
     public static void setup()
@@ -202,6 +206,14 @@ public class BBSRendering
             if (entity.getWorld().isClient())
             {
                 capturedModelBlocks.add(entity);
+            }
+        });
+
+        TriggerBlockEntityUpdateCallback.EVENT.register((entity) ->
+        {
+            if (entity.getWorld().isClient())
+            {
+                TriggerBlockEntityRenderer.capturedTriggerBlocks.add(entity);
             }
         });
 
@@ -543,8 +555,9 @@ public class BBSRendering
         int position = BBSSettings.editorReplayHudPosition.get();
         int screenH = MinecraftClient.getInstance().getWindow().getScaledHeight();
         boolean bottom = position == 2 || position == 3;
+        int extraTopLeft = position == 0 ? 12 : 0;
 
-        return bottom ? screenH - margin - boxH : margin;
+        return bottom ? screenH - margin - boxH : margin + extraTopLeft;
     }
 
     private static String getReplayDisplayName(Replay replay, Form form)
