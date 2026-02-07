@@ -44,7 +44,6 @@ import java.util.Map;
 public class ModelBlock extends Block implements BlockEntityProvider, Waterloggable
 {
     public static final IntProperty LIGHT_LEVEL = IntProperty.of("light_level", 0, 15);
-
     public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> validateTicker(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker)
     {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
@@ -107,7 +106,7 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type)
     {
-        return validateTicker(type, BBSMod.MODEL_BLOCK_ENTITY, (w, p, s, e) -> ModelBlockEntity.tick(w, p, s, e));
+        return validateTicker(type, BBSMod.MODEL_BLOCK_ENTITY, (theWorld, blockPos, blockState, blockEntity) -> blockEntity.tick(theWorld, blockPos, blockState));
     }
 
     @Nullable

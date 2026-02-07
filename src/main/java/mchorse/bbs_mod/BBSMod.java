@@ -203,7 +203,7 @@ public class BBSMod implements ModInitializer
         .dropsNothing()
         .nonOpaque()
         .notSolid()
-        .strength(-1F, 3600000F));
+        .strength(0F));
 
     public static final Block CHROMA_RED_BLOCK = createChromaBlock();
     public static final Block CHROMA_GREEN_BLOCK = createChromaBlock();

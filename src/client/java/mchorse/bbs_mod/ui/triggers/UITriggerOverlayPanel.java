@@ -22,13 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class UITriggerOverlayPanel extends UIEditorOverlayPanel<Trigger>
 {
     private ValueList<Trigger> triggers;
-    private Runnable onClose;
-
-    public UITriggerOverlayPanel(ValueList<Trigger> triggers, Runnable onClose)
-    {
-        this(triggers);
-        this.onClose = onClose;
-    }
 
     public UITriggerOverlayPanel(ValueList<Trigger> triggers)
     {
@@ -37,17 +30,6 @@ public class UITriggerOverlayPanel extends UIEditorOverlayPanel<Trigger>
         this.triggers = triggers;
         this.list.add(triggers.getAllTyped());
         this.pickItem(triggers.getAllTyped().isEmpty() ? null : triggers.getAllTyped().get(0), true);
-    }
-
-    @Override
-    public void close()
-    {
-        super.close();
-
-        if (this.onClose != null)
-        {
-            this.onClose.run();
-        }
     }
 
     @Override
