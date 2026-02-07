@@ -1756,7 +1756,25 @@ public class UIReplayList extends UIList<Replay> {
 
     @Override
     protected String elementToString(UIContext context, int i, Replay element) {
-        return context.batcher.getFont().limitToWidth(element.getName(), this.area.w - 20);
+        String label = element.label.get();
+        String name = label;
+
+        if (name == null || name.isEmpty())
+        {
+            Form form = element.form.get();
+            String displayName = form == null ? "" : form.name.get();
+
+            if (displayName == null || displayName.isEmpty())
+            {
+                name = form == null ? element.getId() : form.getDisplayName();
+            }
+            else
+            {
+                name = displayName;
+            }
+        }
+
+        return context.batcher.getFont().limitToWidth(name, this.area.w - 20);
     }
 
     @Override
