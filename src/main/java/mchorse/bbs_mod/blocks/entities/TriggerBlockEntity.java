@@ -110,9 +110,9 @@ public class TriggerBlockEntity extends BlockEntity
         }
     }
     
-    public void tick(World world, BlockPos pos, BlockState state)
+    public static void tick(World world, BlockPos pos, BlockState state, TriggerBlockEntity blockEntity)
     {
-        TriggerBlockEntityUpdateCallback.EVENT.invoker().update(this);
+        TriggerBlockEntityUpdateCallback.EVENT.invoker().update(blockEntity);
     }
 
     @Override
