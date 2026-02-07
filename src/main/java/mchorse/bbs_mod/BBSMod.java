@@ -399,6 +399,7 @@ public class BBSMod implements ModInitializer
         settingsFolder = new File(gameFolder, "config/bbs/settings");
 
         assetsFolder.mkdirs();
+        new File(assetsFolder, "video").mkdirs();
 
         FabricLoader.getInstance()
             .getEntrypointContainers("bbs-addon", BBSAddonMod.class)
