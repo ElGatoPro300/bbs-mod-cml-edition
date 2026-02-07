@@ -14,8 +14,10 @@ import mchorse.bbs_mod.actions.types.item.ItemDropActionClip;
 import mchorse.bbs_mod.actions.types.item.UseBlockItemActionClip;
 import mchorse.bbs_mod.actions.types.item.UseItemActionClip;
 import mchorse.bbs_mod.blocks.ModelBlock;
+import mchorse.bbs_mod.blocks.TriggerBlock;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
 import mchorse.bbs_mod.camera.clips.ClipFactoryData;
 import mchorse.bbs_mod.camera.clips.converters.DollyToKeyframeConverter;
 import mchorse.bbs_mod.camera.clips.converters.DollyToPathConverter;
@@ -97,6 +99,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -108,6 +111,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -122,6 +126,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
@@ -187,6 +192,14 @@ public class BBSMod implements ModInitializer
         .notSolid()
         .strength(0F)
         .luminance((state) -> state.get(ModelBlock.LIGHT_LEVEL)));
+
+    public static final Block TRIGGER_BLOCK = new TriggerBlock(FabricBlockSettings.create()
+        .noBlockBreakParticles()
+        .dropsNothing()
+        .nonOpaque()
+        .notSolid()
+        .strength(0F));
+
     public static final Block CHROMA_RED_BLOCK = createChromaBlock();
     public static final Block CHROMA_GREEN_BLOCK = createChromaBlock();
     public static final Block CHROMA_BLUE_BLOCK = createChromaBlock();
@@ -197,6 +210,7 @@ public class BBSMod implements ModInitializer
     public static final Block CHROMA_WHITE_BLOCK = createChromaBlock();
 
     public static final BlockItem MODEL_BLOCK_ITEM = new BlockItem(MODEL_BLOCK, new Item.Settings());
+    public static final BlockItem TRIGGER_BLOCK_ITEM = new BlockItem(TRIGGER_BLOCK, new Item.Settings());
     public static final GunItem GUN_ITEM = new GunItem(new Item.Settings().maxCount(1));
     public static final BlockItem CHROMA_RED_BLOCK_ITEM = new BlockItem(CHROMA_RED_BLOCK, new Item.Settings());
     public static final BlockItem CHROMA_GREEN_BLOCK_ITEM = new BlockItem(CHROMA_GREEN_BLOCK, new Item.Settings());
@@ -215,12 +229,19 @@ public class BBSMod implements ModInitializer
         FabricBlockEntityTypeBuilder.create(ModelBlockEntity::new, MODEL_BLOCK).build()
     );
 
+    public static final BlockEntityType<TriggerBlockEntity> TRIGGER_BLOCK_ENTITY = Registry.register(
+        Registries.BLOCK_ENTITY_TYPE,
+        new Identifier(MOD_ID, "trigger_block"),
+        FabricBlockEntityTypeBuilder.create(TriggerBlockEntity::new, TRIGGER_BLOCK).build()
+    );
+
     public static final ItemGroup ITEM_GROUP = FabricItemGroup.builder()
         .icon(() -> createModelBlockStack(Link.assets("textures/icon.png")))
         .displayName(Text.translatable("itemGroup.bbs.main"))
         .entries((context, entries) ->
         {
             entries.add(createModelBlockStack(Link.assets("textures/model_block.png")));
+            entries.add(new ItemStack(TRIGGER_BLOCK_ITEM));
             entries.add(CHROMA_RED_BLOCK_ITEM);
             entries.add(CHROMA_GREEN_BLOCK_ITEM);
             entries.add(CHROMA_BLUE_BLOCK_ITEM);
@@ -399,6 +420,7 @@ public class BBSMod implements ModInitializer
         settingsFolder = new File(gameFolder, "config/bbs/settings");
 
         assetsFolder.mkdirs();
+        new File(assetsFolder, "video").mkdirs();
 
         FabricLoader.getInstance()
             .getEntrypointContainers("bbs-addon", BBSAddonMod.class)
@@ -512,6 +534,7 @@ public class BBSMod implements ModInitializer
 
         /* Blocks */
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "model"), MODEL_BLOCK);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "trigger"), TRIGGER_BLOCK);
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_red"), CHROMA_RED_BLOCK);
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_green"), CHROMA_GREEN_BLOCK);
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_blue"), CHROMA_BLUE_BLOCK);
@@ -522,6 +545,7 @@ public class BBSMod implements ModInitializer
         Registry.register(Registries.BLOCK, new Identifier(MOD_ID, "chroma_white"), CHROMA_WHITE_BLOCK);
 
         Registry.register(Registries.ITEM, new Identifier(MOD_ID, "model"), MODEL_BLOCK_ITEM);
+        Registry.register(Registries.ITEM, new Identifier(MOD_ID, "trigger"), TRIGGER_BLOCK_ITEM);
         Registry.register(Registries.ITEM, new Identifier(MOD_ID, "gun"), GUN_ITEM);
         Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_red"), CHROMA_RED_BLOCK_ITEM);
         Registry.register(Registries.ITEM, new Identifier(MOD_ID, "chroma_green"), CHROMA_GREEN_BLOCK_ITEM);
@@ -537,6 +561,33 @@ public class BBSMod implements ModInitializer
 
     private void registerEvents()
     {
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
+        {
+            BlockEntity be = world.getBlockEntity(pos);
+
+            if (be instanceof TriggerBlockEntity trigger)
+            {
+                if (player.isCreative())
+                {
+                    return ActionResult.PASS;
+                }
+
+                if (world.isClient)
+                {
+                    return ActionResult.SUCCESS;
+                }
+
+                if (player instanceof ServerPlayerEntity serverPlayer)
+                {
+                    trigger.trigger(serverPlayer, false);
+                }
+
+                return ActionResult.SUCCESS;
+            }
+
+            return ActionResult.PASS;
+        });
+
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) ->
         {
             if (entity instanceof ServerPlayerEntity player)

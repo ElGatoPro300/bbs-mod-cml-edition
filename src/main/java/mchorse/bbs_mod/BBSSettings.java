@@ -252,6 +252,10 @@ public class BBSSettings
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
 
+        builder.category("display");
+        editorReplayHud = builder.getBoolean("replay_hud", true);
+        editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
+
         builder.category("recording");
         recordingCountdown = builder.getFloat("countdown", 1.5F, 0F, 30F);
         recordingSwipeDamage = builder.getBoolean("swipe_damage", false);
