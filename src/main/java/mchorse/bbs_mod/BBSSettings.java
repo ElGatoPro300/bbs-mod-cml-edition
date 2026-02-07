@@ -87,7 +87,6 @@ public class BBSSettings
     public static ValueBoolean editorClipPreview;
     public static ValueBoolean editorClipTypeLabels;
     public static ValueBoolean editorReplaySprintParticles;
-    public static ValueInt editorReplayEditorTitleLimit;
     public static ValueBoolean editorReplayHud;
     public static ValueInt editorReplayHudPosition;
     public static ValueBoolean editorRewind;
@@ -245,14 +244,11 @@ public class BBSSettings
         editorClipPreview = builder.getBoolean("clip_preview", true);
         editorClipTypeLabels = builder.getBoolean("clip_type_labels", true);
         editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", true);
-        editorReplayEditorTitleLimit = builder.getInt("replay_editor_title_limit", 12, 0, 64);
+        editorReplayHud = builder.getBoolean("replay_hud", true);
+        editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
         editorRewind = builder.getBoolean("rewind", true);
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
-
-        builder.category("display");
-        editorReplayHud = builder.getBoolean("replay_hud", true);
-        editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
 
         builder.category("recording");
         recordingCountdown = builder.getFloat("countdown", 1.5F, 0F, 30F);
