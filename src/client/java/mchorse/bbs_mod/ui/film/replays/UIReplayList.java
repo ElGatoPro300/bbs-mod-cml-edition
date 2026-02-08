@@ -1959,6 +1959,29 @@ public class UIReplayList extends UIList<Replay> {
         return path.isEmpty() ? 0 : path.split("/").length;
     }
 
+    public void ensureVisible(Replay replay) {
+        String path = getReplayPath(replay);
+        boolean changed = false;
+
+        if (!path.isEmpty()) {
+            String[] parts = path.split("/");
+            String current = "";
+
+            for (String part : parts) {
+                current = current.isEmpty() ? part : current + "/" + part;
+
+                if (!this.expandedGroups.getOrDefault(current, true)) {
+                    this.expandedGroups.put(current, true);
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) {
+            this.buildVisualList();
+        }
+    }
+
     @Override
     public boolean subMouseClicked(UIContext context) {
         if (context.mouseButton == 0) {
