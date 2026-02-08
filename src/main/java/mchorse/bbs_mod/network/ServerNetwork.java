@@ -194,6 +194,7 @@ public class ServerNetwork
                 PayloadTypeRegistry.playS2C().register(idFor(CLIENT_SELECTED_SLOT), BufPayload.codecFor(idFor(CLIENT_SELECTED_SLOT)));
                 PayloadTypeRegistry.playS2C().register(idFor(CLIENT_ANIMATION_STATE_MODEL_BLOCK_TRIGGER), BufPayload.codecFor(idFor(CLIENT_ANIMATION_STATE_MODEL_BLOCK_TRIGGER)));
                 PayloadTypeRegistry.playS2C().register(idFor(CLIENT_REFRESH_MODEL_BLOCKS), BufPayload.codecFor(idFor(CLIENT_REFRESH_MODEL_BLOCKS)));
+                PayloadTypeRegistry.playS2C().register(idFor(CLIENT_CLICKED_TRIGGER_BLOCK_PACKET), BufPayload.codecFor(idFor(CLIENT_CLICKED_TRIGGER_BLOCK_PACKET)));
             }
         } catch (Throwable t) {
         }

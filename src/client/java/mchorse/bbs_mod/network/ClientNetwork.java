@@ -89,6 +89,7 @@ public class ClientNetwork
         CustomPayload.Id<ServerNetwork.BufPayload> C_SELECTED_SLOT_ID = ServerNetwork.idFor(ServerNetwork.CLIENT_SELECTED_SLOT);
         CustomPayload.Id<ServerNetwork.BufPayload> C_ANIM_STATE_MB_TRIGGER_ID = ServerNetwork.idFor(ServerNetwork.CLIENT_ANIMATION_STATE_MODEL_BLOCK_TRIGGER);
         CustomPayload.Id<ServerNetwork.BufPayload> C_REFRESH_MODEL_BLOCKS_ID = ServerNetwork.idFor(ServerNetwork.CLIENT_REFRESH_MODEL_BLOCKS);
+        CustomPayload.Id<ServerNetwork.BufPayload> C_CLICKED_TRIGGER_BLOCK_ID = ServerNetwork.idFor(ServerNetwork.CLIENT_CLICKED_TRIGGER_BLOCK_PACKET);
 
         PayloadTypeRegistry.playS2C().register(C_CLICKED_ID, ServerNetwork.BufPayload.codecFor(C_CLICKED_ID));
         PayloadTypeRegistry.playS2C().register(C_PLAYER_FORM_ID, ServerNetwork.BufPayload.codecFor(C_PLAYER_FORM_ID));
@@ -107,6 +108,7 @@ public class ClientNetwork
         PayloadTypeRegistry.playS2C().register(C_SELECTED_SLOT_ID, ServerNetwork.BufPayload.codecFor(C_SELECTED_SLOT_ID));
         PayloadTypeRegistry.playS2C().register(C_ANIM_STATE_MB_TRIGGER_ID, ServerNetwork.BufPayload.codecFor(C_ANIM_STATE_MB_TRIGGER_ID));
         PayloadTypeRegistry.playS2C().register(C_REFRESH_MODEL_BLOCKS_ID, ServerNetwork.BufPayload.codecFor(C_REFRESH_MODEL_BLOCKS_ID));
+        PayloadTypeRegistry.playS2C().register(C_CLICKED_TRIGGER_BLOCK_ID, ServerNetwork.BufPayload.codecFor(C_CLICKED_TRIGGER_BLOCK_ID));
 
         ClientPlayNetworking.registerGlobalReceiver(C_CLICKED_ID, (payload, context) -> handleClientModelBlockPacket(context.client(), payload.asPacketByteBuf()));
         ClientPlayNetworking.registerGlobalReceiver(C_PLAYER_FORM_ID, (payload, context) -> handlePlayerFormPacket(context.client(), payload.asPacketByteBuf()));
@@ -125,6 +127,7 @@ public class ClientNetwork
         ClientPlayNetworking.registerGlobalReceiver(C_SELECTED_SLOT_ID, (payload, context) -> handleSelectedSlotPacket(context.client(), payload.asPacketByteBuf()));
         ClientPlayNetworking.registerGlobalReceiver(C_ANIM_STATE_MB_TRIGGER_ID, (payload, context) -> handleAnimationStateModelBlockPacket(context.client(), payload.asPacketByteBuf()));
         ClientPlayNetworking.registerGlobalReceiver(C_REFRESH_MODEL_BLOCKS_ID, (payload, context) -> handleRefreshModelBlocksPacket(context.client(), payload.asPacketByteBuf()));
+        ClientPlayNetworking.registerGlobalReceiver(C_CLICKED_TRIGGER_BLOCK_ID, (payload, context) -> handleClickedTriggerBlockPacket(context.client(), payload.asPacketByteBuf()));
     }
 
     /* Handlers */
