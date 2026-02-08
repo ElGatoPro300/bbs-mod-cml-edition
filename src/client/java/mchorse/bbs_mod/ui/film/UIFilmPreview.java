@@ -156,6 +156,11 @@ public class UIFilmPreview extends UIElement
             {
                 this.panel.getController().toggleInstantKeyframes();
             });
+
+            menu.action(Icons.ALL_DIRECTIONS, UIKeys.FILM_CONTROLLER_KEYS_TOGGLE_COUNTDOWN_CONTROL, this.panel.getController().isCountdownControlEnabled(), () ->
+            {
+                this.panel.getController().toggleCountdownControl();
+            });
         });
         this.recordVideo = new UIIcon(Icons.VIDEO_CAMERA, (b) ->
         {

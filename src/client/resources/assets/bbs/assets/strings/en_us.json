@@ -544,6 +544,7 @@
     "bbs.ui.film.controller.keys.start_recording": "Start recording",
     "bbs.ui.film.controller.keys.toggle_control": "Toggle actor control",
     "bbs.ui.film.controller.keys.toggle_instant_keyframes": "Toggle automatic keyframe insertion",
+    "bbs.ui.film.controller.keys.toggle_countdown_control": "Turn off countdown control",
     "bbs.ui.film.controller.onion_skin.all-description": "Enable onion skin for all replays",
     "bbs.ui.film.controller.onion_skin.group": "Group: %s",
     "bbs.ui.film.controller.onion_skin.keys.toggle": "Toggle onion skin",
