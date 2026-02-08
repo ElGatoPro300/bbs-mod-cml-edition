@@ -1969,6 +1969,10 @@ public class UIReplayList extends UIList<Replay> {
     }
 
     public void ensureVisible(Replay replay) {
+        if (replay == null) {
+            return;
+        }
+
         String path = getReplayPath(replay);
         boolean changed = false;
 
