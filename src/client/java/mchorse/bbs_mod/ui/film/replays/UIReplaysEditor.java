@@ -365,6 +365,7 @@ public class UIReplaysEditor extends UIElement
 
         if (select)
         {
+            this.replays.replays.ensureVisible(replay);
             this.replays.replays.setCurrentScroll(replay);
         }
     }
