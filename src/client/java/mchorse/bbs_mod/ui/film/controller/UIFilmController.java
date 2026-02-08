@@ -266,7 +266,16 @@ public class UIFilmController extends UIElement
 
     public IEntity getCurrentEntity()
     {
-        return this.getEntities().get(this.panel.replayEditor.replays.replays.getIndex());
+        Replay replay = this.panel.replayEditor.getReplay();
+
+        if (replay == null)
+        {
+            return null;
+        }
+
+        int index = this.panel.getData().replays.getList().indexOf(replay);
+
+        return this.getEntities().get(index);
     }
 
     public int getPovMode()
@@ -410,9 +419,8 @@ public class UIFilmController extends UIElement
     private boolean canControl()
     {
         UIContext context = this.getContext();
-        boolean running = this.panel.isRunning() || (this.recording && this.recordingCountdown > 0);
 
-        return this.controlled != null && context != null && running && !this.hasBlockingOverlay();
+        return this.controlled != null && context != null && !this.hasBlockingOverlay();
     }
 
     /* Recording */
@@ -1286,12 +1294,15 @@ public class UIFilmController extends UIElement
             Replay replay = CollectionUtils.getSafe(this.panel.getData().replays.getList(), this.panel.replayEditor.replays.replays.getIndex());
             Pair<String, Boolean> bone = this.getBone();
 
-            BaseFilmController.renderEntity(FilmControllerContext.instance
-                .setup(this.getEntities(), entity, replay, renderContext)
-                .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
-                .stencil(this.stencilMap)
-                .relative(replay.relative.get())
-                .bone(bone == null ? null : bone.a, bone != null && bone.b));
+            if (replay != null)
+            {
+                BaseFilmController.renderEntity(FilmControllerContext.instance
+                    .setup(this.getEntities(), entity, replay, renderContext)
+                    .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
+                    .stencil(this.stencilMap)
+                    .relative(replay.relative.get())
+                    .bone(bone == null ? null : bone.a, bone != null && bone.b));
+            }
         }
 
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);

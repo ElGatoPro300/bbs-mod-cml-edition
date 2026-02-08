@@ -365,6 +365,7 @@ public class UIReplaysEditor extends UIElement
 
         if (select)
         {
+            this.replays.replays.ensureVisible(replay);
             this.replays.replays.setCurrentScroll(replay);
         }
     }
@@ -969,6 +970,9 @@ public class UIReplaysEditor extends UIElement
         {
             String activeOverlayPath = null;
             String posePath = null;
+            double minPoseDist = Double.MAX_VALUE;
+            double minOverlayDist = Double.MAX_VALUE;
+            int currentTick = this.filmPanel.getCursor();
 
             for (UIKeyframeSheet sheet : graph.getSheets())
             {
@@ -984,20 +988,40 @@ public class UIReplaysEditor extends UIElement
                         if (property.getId().equals("pose"))
                         {
                             posePath = FormUtils.getPropertyPath(property);
+
+                            if (!sheet.channel.isEmpty())
+                            {
+                                KeyframeSegment segment = sheet.channel.find(currentTick);
+
+                                if (segment != null)
+                                {
+                                    minPoseDist = Math.abs(segment.getClosest().getTick() - currentTick);
+                                }
+                            }
                         }
                         else if (property.getId().startsWith("pose_overlay"))
                         {
                             if (!sheet.channel.isEmpty())
                             {
-                                activeOverlayPath = FormUtils.getPropertyPath(property);
-                                break;
+                                KeyframeSegment segment = sheet.channel.find(currentTick);
+
+                                if (segment != null)
+                                {
+                                    double dist = Math.abs(segment.getClosest().getTick() - currentTick);
+
+                                    if (activeOverlayPath == null)
+                                    {
+                                        activeOverlayPath = FormUtils.getPropertyPath(property);
+                                        minOverlayDist = dist;
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
 
-            if (activeOverlayPath != null)
+            if (activeOverlayPath != null && minOverlayDist < minPoseDist)
             {
                 propertyPath = activeOverlayPath;
             }
