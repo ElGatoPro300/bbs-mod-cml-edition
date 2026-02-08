@@ -202,6 +202,7 @@ public class BBSMod implements ModInitializer
         .luminance((state) -> state.get(ModelBlock.LIGHT_LEVEL)));
         
     public static final Block TRIGGER_BLOCK = new TriggerBlock(AbstractBlock.Settings.create()
+        .registryKey(RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(MOD_ID, "trigger")))
         .noBlockBreakParticles()
         .dropsNothing()
         .nonOpaque()
