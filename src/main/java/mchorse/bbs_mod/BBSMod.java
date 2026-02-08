@@ -236,7 +236,7 @@ public class BBSMod implements ModInitializer
 
     public static final BlockEntityType<TriggerBlockEntity> TRIGGER_BLOCK_ENTITY = Registry.register(
         Registries.BLOCK_ENTITY_TYPE,
-        new Identifier(MOD_ID, "trigger_block"),
+        Identifier.of(MOD_ID, "trigger_block"),
         FabricBlockEntityTypeBuilder.create(TriggerBlockEntity::new, TRIGGER_BLOCK).build()
     );
 

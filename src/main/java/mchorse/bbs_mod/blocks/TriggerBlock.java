@@ -21,6 +21,8 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.WorldView;
@@ -35,7 +37,7 @@ public class TriggerBlock extends Block implements BlockEntityProvider
     }
 
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state)
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state)
     {
         BlockEntity entity = world.getBlockEntity(pos);
 
@@ -44,8 +46,8 @@ public class TriggerBlock extends Block implements BlockEntityProvider
             ItemStack stack = new ItemStack(this);
             NbtCompound compound = new NbtCompound();
 
-            compound.put("BlockEntityTag", triggerBlock.createNbtWithId());
-            stack.setNbt(compound);
+            compound.put("BlockEntityTag", triggerBlock.createNbtWithId(world.getRegistryManager()));
+            stack.set(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(compound));
 
             return stack;
         }
@@ -95,9 +97,9 @@ public class TriggerBlock extends Block implements BlockEntityProvider
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit)
     {
-        if (hand == Hand.MAIN_HAND)
+        if (player.getMainHandStack().isEmpty())
         {
             if (!world.isClient && player instanceof ServerPlayerEntity serverPlayer)
             {
@@ -123,7 +125,7 @@ public class TriggerBlock extends Block implements BlockEntityProvider
             return ActionResult.SUCCESS;
         }
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
