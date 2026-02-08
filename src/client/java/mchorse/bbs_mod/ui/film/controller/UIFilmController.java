@@ -408,9 +408,8 @@ public class UIFilmController extends UIElement
     private boolean canControl()
     {
         UIContext context = this.getContext();
-        boolean running = this.panel.isRunning() || (this.recording && this.recordingCountdown > 0);
 
-        return this.controlled != null && context != null && running && !this.hasBlockingOverlay();
+        return this.controlled != null && context != null && !this.hasBlockingOverlay();
     }
 
     /* Recording */
