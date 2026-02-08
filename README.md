@@ -1,4 +1,4 @@
-# BBS CML EDITION
+# BBS CML EDITION: A New Era (Update 2.0)
 
 BBS CML EDITION is a fork of BBS mod for Fabric 1.20.1, 1.20.4, 1.21.1 (and coming soon 1.21.4). It works on Forge and NeoForge as well. Its main task is to facilitate making animated content within Minecraft. For more information, see BBS mod's [Modrinth](https://modrinth.com/mod/bbs-cml-edition) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/bbs-cml-edition) pages.
 
