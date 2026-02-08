@@ -16,8 +16,16 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Gizmo
 {
+    public interface IGizmoHandler
+    {
+        public void start(Gizmo gizmo, int index, int mouseX, int mouseY, UIPropTransform transform);
+    }
+
     public final static int STENCIL_X = 1;
     public final static int STENCIL_Y = 2;
     public final static int STENCIL_Z = 3;
@@ -38,9 +46,15 @@ public class Gizmo
     private int mouseY;
 
     private UIPropTransform currentTransform;
+    private Map<Integer, IGizmoHandler> handlers = new HashMap<>();
 
     private Gizmo()
     {}
+
+    public void register(int index, IGizmoHandler handler)
+    {
+        this.handlers.put(index, handler);
+    }
 
     public Mode getMode()
     {
@@ -66,6 +80,14 @@ public class Gizmo
         if (!BBSSettings.gizmos.get())
         {
             return false;
+        }
+
+        if (this.handlers.containsKey(index))
+        {
+            this.handlers.get(index).start(this, index, mouseX, mouseY, transform);
+            this.index = index;
+
+            return true;
         }
 
         if (index >= STENCIL_X && index <= STENCIL_FREE)
