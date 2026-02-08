@@ -2,6 +2,7 @@ package mchorse.bbs_mod;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.audio.SoundManager;
+import mchorse.bbs_mod.addons.AddonInfo;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
 import mchorse.bbs_mod.camera.clips.ClipFactoryData;
 import mchorse.bbs_mod.camera.clips.misc.AudioClientClip;
@@ -34,6 +35,12 @@ import mchorse.bbs_mod.settings.ui.UIValueMap;
 import mchorse.bbs_mod.ui.forms.editors.UIFormEditor;
 import mchorse.bbs_mod.events.register.RegisterL10nEvent;
 import mchorse.bbs_mod.events.register.RegisterParticleComponentsEvent;
+import mchorse.bbs_mod.events.register.RegisterPropTransformEvent;
+import mchorse.bbs_mod.events.register.RegisterStencilMapEvent;
+import mchorse.bbs_mod.events.register.RegisterRayTracingEvent;
+import mchorse.bbs_mod.events.register.RegisterFilmPreviewEvent;
+import mchorse.bbs_mod.events.register.RegisterReplayListContextMenuEvent;
+import mchorse.bbs_mod.events.register.RegisterReplayPanelEvent;
 import mchorse.bbs_mod.events.register.RegisterShadersEvent;
 import mchorse.bbs_mod.events.register.RegisterSourcePacksEvent;
 import mchorse.bbs_mod.film.Films;
@@ -82,6 +89,8 @@ import mchorse.bbs_mod.utils.resources.MinecraftSourcePack;
 import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.metadata.ContactInformation;
+import net.fabricmc.loader.api.metadata.Person;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -118,8 +127,18 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class BBSModClient implements ClientModInitializer
 {
+    public static final List<AddonInfo> registeredAddons = new ArrayList<>();
+
+    public static void registerAddon(AddonInfo info)
+    {
+        registeredAddons.add(info);
+    }
     private static TextureManager textures;
     private static FramebufferManager framebuffers;
     private static SoundManager sounds;
@@ -411,6 +430,12 @@ public class BBSModClient implements ClientModInitializer
         BBSMod.events.post(new RegisterUIValueFactoriesEvent(UIValueMap.factories));
         BBSMod.events.post(new RegisterUIKeyframeFactoriesEvent(UIKeyframeFactory.FACTORIES));
         BBSMod.events.post(new RegisterKeyframeShapesEvent(KeyframeShapeRenderers.SHAPES));
+        BBSMod.events.post(new RegisterPropTransformEvent());
+        BBSMod.events.post(new RegisterStencilMapEvent());
+        BBSMod.events.post(new RegisterRayTracingEvent());
+        BBSMod.events.post(new RegisterFilmPreviewEvent());
+        BBSMod.events.post(new RegisterReplayListContextMenuEvent());
+        BBSMod.events.post(new RegisterReplayPanelEvent());
         screenshotRecorder = new ScreenshotRecorder(new File(parentFile, "screenshots"));
         videoRecorder = new VideoRecorder();
         selectors = new EntitySelectors();
@@ -678,6 +703,38 @@ public class BBSModClient implements ClientModInitializer
 
         /* Network */
         ClientNetwork.setup();
+
+        /* Register addons from FabricLoader */
+        FabricLoader.getInstance()
+            .getEntrypointContainers("bbs-addon", BBSAddonMod.class)
+            .forEach((container) ->
+            {
+                net.fabricmc.loader.api.metadata.ModMetadata meta = container.getProvider().getMetadata();
+                String id = meta.getId();
+                String name = meta.getName();
+                String version = meta.getVersion().getFriendlyString();
+                String description = meta.getDescription();
+                List<String> authors = meta.getAuthors().stream().map(Person::getName).toList();
+                
+                Link icon = null;
+                Optional<String> iconPath = meta.getIconPath(64);
+                if (iconPath.isPresent())
+                {
+                    String path = iconPath.get();
+                    if (path.startsWith("assets/"))
+                    {
+                        String relative = path.substring("assets/".length());
+                        icon = new Link("mod_icons", relative);
+                    }
+                }
+                
+                ContactInformation contact = meta.getContact();
+                String website = contact.get("homepage").orElse("");
+                String issues = contact.get("issues").orElse("");
+                String source = contact.get("sources").orElse("");
+
+                registerAddon(new AddonInfo(id, name, version, description, authors, icon, website, issues, source));
+            });
 
         /* Entity renderers */
         EntityRendererRegistry.register(BBSMod.ACTOR_ENTITY, ActorEntityRenderer::new);
