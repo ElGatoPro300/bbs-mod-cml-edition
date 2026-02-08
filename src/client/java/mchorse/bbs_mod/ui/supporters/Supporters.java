@@ -808,6 +808,7 @@ public class Supporters
         /* CML Animators */
         this.add("Discord", "https://discord.gg/MAHVQBSce6", "textures/banners/CML.png").withDate(12, 1);
         this.add("ElGatoPro300", "https://www.youtube.com/@ElGatoPro300", "textures/banners/ElGatoPro300.png").withDate(12, 1);
+        this.add("Diobede", "https://www.youtube.com/watch?v=iik25wqIuFo", "textures/banners/Diobede.png").withDate(12, 1);
         this.add("seb024xd", "https://www.youtube.com/@seb024yt", "textures/banners/seb024xd.png").withDate(12, 1);
         this.add("SEKZA_MC", "https://www.youtube.com/@secxavier49_official", "textures/banners/SEKZA_MC.png").withDate(12, 1);
         this.add("MrJack", "https://x.com/MrJackDnZ", "textures/banners/MrJack.png").withDate(12, 1);
