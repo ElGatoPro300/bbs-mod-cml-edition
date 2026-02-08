@@ -74,14 +74,23 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
                 MatrixStackUtils.applyTransform(matrices, transform);
 
                 RenderSystem.enableDepthTest();
-                Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
-                Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
-                RenderSystem.setupLevelDiffuseLighting(a, b);
-                int maxLight = 15728880;
+
+                if (mode == ModelTransformationMode.GUI)
+                {
+                    Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
+                    Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+                    RenderSystem.setupLevelDiffuseLighting(a, b);
+                }
+
                 FormUtilsClient.render(form, new FormRenderingContext()
                     .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false))
                     .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
-                DiffuseLighting.disableGuiDepthLighting();
+
+                if (mode == ModelTransformationMode.GUI)
+                {
+                    DiffuseLighting.disableGuiDepthLighting();
+                }
+
                 RenderSystem.disableDepthTest();
 
                 matrices.pop();
