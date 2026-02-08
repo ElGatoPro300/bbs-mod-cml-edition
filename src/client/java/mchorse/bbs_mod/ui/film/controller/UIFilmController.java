@@ -63,6 +63,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -111,6 +112,11 @@ public class UIFilmController extends UIElement
     private List<String> recordingGroups;
     private BaseType recordingOld;
     private boolean instantKeyframes;
+    private boolean countdownControl;
+
+    private boolean wasFlying;
+    private boolean wasAllowFlying;
+    private boolean flightModified;
 
     /* Replay and group picking */
     private IEntity hoveredEntity;
@@ -200,6 +206,16 @@ public class UIFilmController extends UIElement
     public void toggleInstantKeyframes()
     {
         this.instantKeyframes = !this.instantKeyframes;
+    }
+
+    public boolean isCountdownControlEnabled()
+    {
+        return this.countdownControl;
+    }
+
+    public void toggleCountdownControl()
+    {
+        this.countdownControl = !this.countdownControl;
     }
 
     public boolean isPaused()
@@ -392,8 +408,9 @@ public class UIFilmController extends UIElement
     private boolean canControl()
     {
         UIContext context = this.getContext();
+        boolean running = this.panel.isRunning() || (this.recording && this.recordingCountdown > 0);
 
-        return this.controlled != null && context != null && this.panel.isRunning() && !this.hasBlockingOverlay();
+        return this.controlled != null && context != null && running && !this.hasBlockingOverlay();
     }
 
     /* Recording */
@@ -504,6 +521,18 @@ public class UIFilmController extends UIElement
             this.toggleControl();
         }
 
+        if (groups != null && !groups.contains(ReplayKeyframes.GROUP_POSITION))
+        {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+            this.wasAllowFlying = player.getAbilities().allowFlying;
+            this.wasFlying = player.getAbilities().flying;
+            this.flightModified = true;
+
+            player.getAbilities().allowFlying = true;
+            player.getAbilities().flying = true;
+        }
+
         this.toggleMousePointer(this.controlled != null);
     }
 
@@ -520,6 +549,15 @@ public class UIFilmController extends UIElement
         if (this.controlled != null)
         {
             this.toggleControl();
+        }
+
+        if (this.flightModified)
+        {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+            player.getAbilities().allowFlying = this.wasAllowFlying;
+            player.getAbilities().flying = this.wasFlying;
+            this.flightModified = false;
         }
 
         this.panel.setCursor(this.recordingTick);
@@ -627,7 +665,7 @@ public class UIFilmController extends UIElement
 
             InputUtil.Key utilKey = InputUtil.fromKeyCode(context.getKeyCode(), context.getScanCode());
 
-            if (this.canControlWithKeyboard(utilKey))
+            if (this.canControlWithKeyboard(utilKey) && !(this.recording && this.recordingCountdown > 0 && !this.countdownControl))
             {
                 return true;
             }
@@ -922,7 +960,7 @@ public class UIFilmController extends UIElement
             extraVariables[index * 2 + 1] = this.mouseStick.x;
         }
 
-        if (this.instantKeyframes)
+        if (this.instantKeyframes && this.panel.isRunning())
         {
             this.insertFrame();
         }
