@@ -7,6 +7,7 @@ import mchorse.bbs_mod.actions.ActionRecorder;
 import mchorse.bbs_mod.actions.ActionState;
 import mchorse.bbs_mod.actions.PlayerType;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
 import mchorse.bbs_mod.data.DataStorageUtils;
 import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.ByteType;
@@ -77,6 +78,7 @@ public class ServerNetwork
     public static final Identifier CLIENT_SELECTED_SLOT = Identifier.of(BBSMod.MOD_ID, "c15");
     public static final Identifier CLIENT_ANIMATION_STATE_MODEL_BLOCK_TRIGGER = Identifier.of(BBSMod.MOD_ID, "c16");
     public static final Identifier CLIENT_REFRESH_MODEL_BLOCKS = Identifier.of(BBSMod.MOD_ID, "c17");
+    public static final Identifier CLIENT_CLICKED_TRIGGER_BLOCK_PACKET = Identifier.of(BBSMod.MOD_ID, "c18");
 
     public static final Identifier SERVER_MODEL_BLOCK_FORM_PACKET = Identifier.of(BBSMod.MOD_ID, "s1");
     public static final Identifier SERVER_MODEL_BLOCK_TRANSFORMS_PACKET = Identifier.of(BBSMod.MOD_ID, "s2");
@@ -91,6 +93,8 @@ public class ServerNetwork
     public static final Identifier SERVER_SHARED_FORM = Identifier.of(BBSMod.MOD_ID, "s11");
     public static final Identifier SERVER_ZOOM = Identifier.of(BBSMod.MOD_ID, "s12");
     public static final Identifier SERVER_PAUSE_FILM = Identifier.of(BBSMod.MOD_ID, "s13");
+    public static final Identifier SERVER_TRIGGER_BLOCK_UPDATE = Identifier.of(BBSMod.MOD_ID, "s14");
+    public static final Identifier SERVER_TRIGGER_BLOCK_CLICK = Identifier.of(BBSMod.MOD_ID, "s15");
 
     private static ServerPacketCrusher crusher = new ServerPacketCrusher();
 
@@ -162,6 +166,8 @@ public class ServerNetwork
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_SHARED_FORM), BufPayload.codecFor(idFor(SERVER_SHARED_FORM)));
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_ZOOM), BufPayload.codecFor(idFor(SERVER_ZOOM)));
         PayloadTypeRegistry.playC2S().register(idFor(SERVER_PAUSE_FILM), BufPayload.codecFor(idFor(SERVER_PAUSE_FILM)));
+        PayloadTypeRegistry.playC2S().register(idFor(SERVER_TRIGGER_BLOCK_UPDATE), BufPayload.codecFor(idFor(SERVER_TRIGGER_BLOCK_UPDATE)));
+        PayloadTypeRegistry.playC2S().register(idFor(SERVER_TRIGGER_BLOCK_CLICK), BufPayload.codecFor(idFor(SERVER_TRIGGER_BLOCK_CLICK)));
 
         try {
             Class<?> envTypeClass = Class.forName("net.fabricmc.api.EnvType");
@@ -218,7 +224,7 @@ public class ServerNetwork
 
         crusher.receive(buf, (bytes, packetByteBuf) ->
         {
-            BlockPos pos = buf.readBlockPos();
+            BlockPos pos = packetByteBuf.readBlockPos();
 
             try
             {
@@ -237,6 +243,60 @@ public class ServerNetwork
             }
             catch (Exception e)
             {}
+        });
+    }
+
+    private static void handleTriggerBlockUpdatePacket(MinecraftServer server, ServerPlayerEntity player, PacketByteBuf buf)
+    {
+        if (!PermissionUtils.arePanelsAllowed(server, player))
+        {
+            return;
+        }
+
+        crusher.receive(buf, (bytes, packetByteBuf) ->
+        {
+            BlockPos pos = packetByteBuf.readBlockPos();
+
+            try
+            {
+                MapType data = (MapType) DataStorageUtils.readFromBytes(bytes);
+
+                server.execute(() ->
+                {
+                    World world = player.getWorld();
+                    BlockEntity be = world.getBlockEntity(pos);
+
+                    if (be instanceof mchorse.bbs_mod.blocks.entities.TriggerBlockEntity trigger)
+                    {
+                        if (data.has("left")) trigger.left.fromData(data.getList("left"));
+                        if (data.has("right")) trigger.right.fromData(data.getList("right"));
+                        if (data.has("pos1")) trigger.pos1.fromData(data.getList("pos1"));
+                        if (data.has("pos2")) trigger.pos2.fromData(data.getList("pos2"));
+                        if (data.has("collidable")) trigger.collidable.set(data.getBool("collidable"));
+
+                        trigger.markDirty();
+                        world.updateListeners(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+                    }
+                });
+            }
+            catch (Exception e)
+            {}
+        });
+    }
+
+    private static void handleTriggerBlockClickPacket(MinecraftServer server, ServerPlayerEntity player, PacketByteBuf buf)
+    {
+        BlockPos pos = buf.readBlockPos();
+
+        server.execute(() ->
+        {
+            World world = player.getWorld();
+            BlockEntity be = world.getBlockEntity(pos);
+
+            if (be instanceof TriggerBlockEntity trigger)
+            {
+                trigger.trigger(player, false);
+            }
         });
     }
 
@@ -674,6 +734,15 @@ public class ServerNetwork
         buf.writeBlockPos(pos);
 
         ServerPlayNetworking.send(player, BufPayload.from(buf, idFor(CLIENT_CLICKED_MODEL_BLOCK_PACKET)));
+    }
+
+    public static void sendClickedTriggerBlock(ServerPlayerEntity player, BlockPos pos)
+    {
+        PacketByteBuf buf = PacketByteBufs.create();
+
+        buf.writeBlockPos(pos);
+
+        ServerPlayNetworking.send(player, CLIENT_CLICKED_TRIGGER_BLOCK_PACKET, buf);
     }
 
     public static void sendPlayFilm(ServerPlayerEntity player, ServerWorld world, String filmId, boolean withCamera)

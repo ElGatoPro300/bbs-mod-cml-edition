@@ -13,6 +13,7 @@ import mchorse.bbs_mod.camera.controller.CameraController;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.client.renderer.ModelBlockEntityRenderer;
+import mchorse.bbs_mod.client.renderer.TriggerBlockEntityRenderer;
 import mchorse.bbs_mod.client.renderer.entity.ActorEntityRenderer;
 import mchorse.bbs_mod.client.renderer.entity.GunProjectileEntityRenderer;
 import mchorse.bbs_mod.client.renderer.item.GunItemRenderer;
@@ -81,6 +82,8 @@ import mchorse.bbs_mod.utils.VideoRecorder;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.resources.MinecraftSourcePack;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -101,6 +104,7 @@ import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.item.model.special.SpecialModelTypes;
@@ -114,6 +118,7 @@ import net.minecraft.registry.RegistryKeys;
 import org.joml.Matrix4fStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -378,6 +383,23 @@ public class BBSModClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
+        {
+            if (world.getBlockEntity(pos) instanceof TriggerBlockEntity)
+            {
+                if (player.isCreative())
+                {
+                    return ActionResult.PASS;
+                }
+
+                ClientNetwork.sendTriggerBlockClick(pos);
+
+                return ActionResult.SUCCESS;
+            }
+
+            return ActionResult.PASS;
+        });
+
         FabricLoader.getInstance()
             .getEntrypointContainers("bbs-addon-client", BBSAddonMod.class)
             .forEach((container) ->
@@ -551,6 +573,7 @@ public class BBSModClient implements ClientModInitializer
         ClientTickEvents.START_CLIENT_TICK.register((client) ->
         {
             BBSRendering.startTick();
+            TriggerBlockEntityRenderer.capturedTriggerBlocks.clear();
         });
 
         ClientTickEvents.END_WORLD_TICK.register((client) ->
@@ -685,6 +708,7 @@ public class BBSModClient implements ClientModInitializer
 
         /* Block entity renderers */
         BlockEntityRendererFactories.register(BBSMod.MODEL_BLOCK_ENTITY, ModelBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BBSMod.TRIGGER_BLOCK_ENTITY, TriggerBlockEntityRenderer::new);
 
         SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "gun"), GunItemRenderer.Unbaked.CODEC);
         SpecialModelTypes.ID_MAPPER.put(Identifier.of(BBSMod.MOD_ID, "model_block"), ModelBlockItemRenderer.Unbaked.CODEC);
