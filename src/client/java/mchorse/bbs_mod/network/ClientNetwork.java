@@ -645,6 +645,6 @@ public class ClientNetwork
 
         buf.writeBlockPos(pos);
 
-        ClientPlayNetworking.send(ServerNetwork.SERVER_TRIGGER_BLOCK_CLICK, buf);
+        ClientPlayNetworking.send(ServerNetwork.BufPayload.from(buf, ServerNetwork.idFor(ServerNetwork.SERVER_TRIGGER_BLOCK_CLICK)));
     }
 }

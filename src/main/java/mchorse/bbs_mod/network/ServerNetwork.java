@@ -742,7 +742,7 @@ public class ServerNetwork
 
         buf.writeBlockPos(pos);
 
-        ServerPlayNetworking.send(player, CLIENT_CLICKED_TRIGGER_BLOCK_PACKET, buf);
+        ServerPlayNetworking.send(player, BufPayload.from(buf, idFor(CLIENT_CLICKED_TRIGGER_BLOCK_PACKET)));
     }
 
     public static void sendPlayFilm(ServerPlayerEntity player, ServerWorld world, String filmId, boolean withCamera)
