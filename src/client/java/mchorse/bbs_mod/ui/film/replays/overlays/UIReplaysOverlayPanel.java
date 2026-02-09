@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.ui.film.replays.overlays;
 
+import com.mojang.logging.LogUtils;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -17,6 +18,7 @@ import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
 import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.UIDataUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,8 @@ import java.util.function.Consumer;
 
 public class UIReplaysOverlayPanel extends UIOverlayPanel
 {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     public static final List<Consumer<UIReplaysOverlayPanel>> extensions = new ArrayList<>();
 
     public UIReplayList replays;
@@ -80,7 +84,11 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
             this.edit((replay) -> replay.enabled.set(b.getValue()));
             filmPanel.getController().createEntities();
         });
-        this.label = new UITextbox(1000, (s) -> this.edit((replay) -> replay.label.set(s)));
+        this.label = new UITextbox(1000, (s) -> this.edit((replay) ->
+        {
+            replay.label.set(s);
+            LOGGER.info("Replay display name changed: replayId={}, label={}", replay.getId(), s);
+        }));
         this.label.textbox.setPlaceholder(UIKeys.FILM_REPLAY_LABEL);
 
         this.groupLabel = new UITextbox(1000, (s) ->
