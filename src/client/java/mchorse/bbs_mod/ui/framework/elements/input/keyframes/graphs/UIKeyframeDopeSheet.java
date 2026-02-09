@@ -5,20 +5,16 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.camera.utils.TimeUtils;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.ui.forms.editors.utils.UIStructureOverlayPanel;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.shapes.IKeyframeShapeRenderer;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.shapes.KeyframeShapeRenderers;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.Scale;
 import mchorse.bbs_mod.ui.utils.Scroll;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.Pair;
@@ -151,12 +147,6 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
         for (int i = 0; i < sheets.size(); i++)
         {
             UIKeyframeSheet sheet = sheets.get(i);
-
-            if (sheet.groupHeader)
-            {
-                continue;
-            }
-
             List keyframes = sheet.channel.getKeyframes();
 
             for (int j = 0; j < keyframes.size(); j++)
@@ -221,12 +211,12 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             tick = Math.round(tick);
         }
 
-        if (sheet != null && !sheet.groupHeader)
+        if (sheet != null)
         {
             this.addKeyframe(sheet, tick, null);
         }
 
-        return sheet != null && !sheet.groupHeader;
+        return sheet != null;
     }
 
     @Override
@@ -234,7 +224,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
     {
         UIKeyframeSheet sheet = this.getSheet(mouseY);
 
-        if (sheet == null || sheet.groupHeader)
+        if (sheet == null)
         {
             return null;
         }
@@ -305,21 +295,6 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
     @Override
     public boolean mouseClicked(UIContext context)
     {
-        if (context.mouseButton == 0 && this.keyframes.area.isInside(context))
-        {
-            UIKeyframeSheet sheet = this.getSheet(context.mouseY);
-
-            if (sheet != null && sheet.groupHeader)
-            {
-                if (sheet.toggleGroup != null)
-                {
-                    sheet.toggleGroup.run();
-                }
-
-                return true;
-            }
-        }
-
         return this.dopeSheet.mouseClicked(context);
     }
 
@@ -585,24 +560,6 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             int my = y + (int) this.trackHeight / 2;
             int cc = Colors.setA(sheet.color, hover ? 1F : 0.45F);
 
-            if (sheet.groupHeader)
-            {
-                FontRenderer font = context.batcher.getFont();
-                String title = sheet.title.get();
-                int bg = Colors.setA(0, 0.35F);
-
-                context.batcher.box(area.x, y, area.ex(), y + (int) this.trackHeight, bg);
-
-                Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
-                int iconX = area.x + 2;
-                int iconY = my - arrow.h / 2;
-                context.batcher.icon(arrow, iconX, iconY);
-
-                context.batcher.textShadow(title, iconX + arrow.w + 4, my - font.getHeight() / 2);
-
-                continue;
-            }
-
             /* Render track bars (horizontal lines) */
             builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
@@ -699,37 +656,17 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             BufferRenderer.drawWithGlobalProgram(builder.end());
 
             FontRenderer font = context.batcher.getFont();
-            String baseTitle = sheet.title.get();
-            String displayTitle;
-
-            if (sheet.anchoredBone != null)
-            {
-                String anchored = sheet.anchoredBone;
-
-                if (baseTitle.isEmpty() || baseTitle.equals(sheet.id) || baseTitle.equals(anchored))
-                {
-                    displayTitle = anchored;
-                }
-                else
-                {
-                    displayTitle = baseTitle;
-                }
-            }
-            else
-            {
-                displayTitle = baseTitle;
-            }
-            int lw = font.getWidth(displayTitle);
+            int lw = font.getWidth(sheet.title.get());
 
             context.batcher.gradientHBox(area.ex() - lw - 10, y, area.ex(), y + (int) this.trackHeight, sheet.color, sheet.color | (hover ? Colors.A75 : Colors.A25));
 
             if (hover)
             {
-                context.batcher.textShadow(displayTitle, area.ex() - lw - 5, my - font.getHeight() / 2);
+                context.batcher.textShadow(sheet.title.get(), area.ex() - lw - 5, my - font.getHeight() / 2);
             }
             else
             {
-                context.batcher.text(displayTitle, area.ex() - lw - 5, my - font.getHeight() / 2, Colors.WHITE & 0x88ffffff);
+                context.batcher.text(sheet.title.get(), area.ex() - lw - 5, my - font.getHeight() / 2, Colors.WHITE & 0x88ffffff);
             }
 
             Icon icon = sheet.getIcon();
