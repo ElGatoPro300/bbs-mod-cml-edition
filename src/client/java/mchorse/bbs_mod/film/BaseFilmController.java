@@ -120,13 +120,6 @@ public abstract class BaseFilmController
                 cy = position.y + context.replay.relativeOffset.get().y;
                 cz = position.z + context.replay.relativeOffset.get().z;
             }
-
-            if (context.isShadowPass)
-            {
-                cx += camera.getPos().x;
-                cy += camera.getPos().y;
-                cz += camera.getPos().z;
-            }
         }
 
         Matrix4f target = null;
@@ -172,19 +165,12 @@ public abstract class BaseFilmController
             .stencilMap(context.map)
             .color(context.color);
 
-        formContext.relative = relative;
-        formContext.isShadowPass = context.isShadowPass;
-        formContext.viewMatrix = context.viewMatrix;
-
         stack.push();
 
         if (relative)
         {
-            if (!context.isShadowPass)
-            {
-                stack.peek().getPositionMatrix().identity();
-                stack.peek().getNormalMatrix().identity();
-            }
+            stack.peek().getPositionMatrix().identity();
+            stack.peek().getNormalMatrix().identity();
 
             if (context.map == null)
             {
@@ -686,7 +672,7 @@ public abstract class BaseFilmController
 
                             if (player instanceof ClientPlayerEntity playerEntity)
                             {
-                                playerEntity.input.sneaking = sneaking;
+                                /* playerEntity.input.sneaking = sneaking; */
                             }
 
                             player.fallDistance = replay.keyframes.fall.interpolate(ticks).floatValue();

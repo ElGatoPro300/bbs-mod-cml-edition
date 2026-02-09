@@ -37,9 +37,7 @@ public class FilmControllerContext
 
     public String nameTag = "";
     public boolean relative;
-    public boolean isShadowPass;
     public Matrix4f localGroupTransform;
-    public Matrix4f viewMatrix;
 
     private FilmControllerContext()
     {}
@@ -53,9 +51,7 @@ public class FilmControllerContext
         this.local = false;
         this.nameTag = "";
         this.relative = false;
-        this.isShadowPass = false;
         this.localGroupTransform = null;
-        this.viewMatrix = null;
     }
 
     public FilmControllerContext setup(IntObjectMap<IEntity> entities, IEntity entity, Replay replay, WorldRenderContext context)
@@ -107,13 +103,6 @@ public class FilmControllerContext
         return this;
     }
 
-    public FilmControllerContext viewMatrix(Matrix4f viewMatrix)
-    {
-        this.viewMatrix = viewMatrix;
-
-        return this;
-    }
-
     public FilmControllerContext shadow(boolean shadow, float shadowRadius)
     {
         this.shadowRadius = shadow ? shadowRadius : 0F;
@@ -161,13 +150,6 @@ public class FilmControllerContext
     public FilmControllerContext relative(boolean relative)
     {
         this.relative = relative;
-
-        return this;
-    }
-
-    public FilmControllerContext isShadowPass(boolean isShadowPass)
-    {
-        this.isShadowPass = isShadowPass;
 
         return this;
     }
