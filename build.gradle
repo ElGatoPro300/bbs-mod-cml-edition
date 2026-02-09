@@ -76,11 +76,15 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
+    def replaceProperties = [
+            "version": project.version
+    ]
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+    inputs.properties replaceProperties
+
+    filesMatching("fabric.mod.json") {
+        expand replaceProperties
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
