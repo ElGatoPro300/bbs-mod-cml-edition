@@ -246,8 +246,6 @@ public class BBSSettings
         editorClipTypeLabels = builder.getBoolean("clip_type_labels", true);
         editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", true);
         editorReplayEditorTitleLimit = builder.getInt("replay_editor_title_limit", 12, 0, 64);
-        editorReplayHud = builder.getBoolean("replay_hud", true);
-        editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
         editorRewind = builder.getBoolean("rewind", true);
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
