@@ -1,0 +1,317 @@
+---- Minecraft Crash Report ----
+// Don't do that.
+
+Time: 2026-02-10 15:35:36
+Description: keyPressed event handler
+
+java.lang.IllegalStateException: Property by path 5/replays/0/properties/pose/5 can't be found!
+	at knot//mchorse.bbs_mod.settings.values.base.BaseValueGroup.getRecursively(BaseValueGroup.java:29)
+	at knot//mchorse.bbs_mod.ui.film.utils.undo.ValueChangeUndo.undo(ValueChangeUndo.java:88)
+	at knot//mchorse.bbs_mod.ui.film.utils.undo.ValueChangeUndo.undo(ValueChangeUndo.java:11)
+	at knot//mchorse.bbs_mod.utils.undo.UndoManager.undo(UndoManager.java:170)
+	at knot//mchorse.bbs_mod.ui.film.UIFilmPanel.undo(UIFilmPanel.java:1041)
+	at knot//mchorse.bbs_mod.ui.utils.keys.KeybindManager.checkKeybinds(KeybindManager.java:108)
+	at knot//mchorse.bbs_mod.ui.utils.keys.KeybindManager.check(KeybindManager.java:63)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keybindsKeyPressed(UIElement.java:1352)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1171)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.childrenKeyPressed(UIElement.java:1257)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1164)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.childrenKeyPressed(UIElement.java:1257)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1164)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.childrenKeyPressed(UIElement.java:1257)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1164)
+	at knot//mchorse.bbs_mod.ui.framework.UIBaseMenu.handleKey(UIBaseMenu.java:176)
+	at knot//mchorse.bbs_mod.ui.framework.UIScreen.method_25404(UIScreen.java:171)
+	at knot//net.minecraft.class_309.method_1454(class_309.java:407)
+	at knot//net.minecraft.class_437.method_25412(class_437.java:414)
+	at knot//net.minecraft.class_309.method_1466(class_309.java:403)
+	at knot//net.minecraft.class_309.method_22678(class_309.java:492)
+	at knot//net.minecraft.class_1255.execute(class_1255.java:102)
+	at knot//net.minecraft.class_309.method_22676(class_309.java:492)
+	at knot//org.lwjgl.glfw.GLFWKeyCallback$Container.invoke(GLFWKeyCallback.java:82)
+	at knot//com.moulberry.axiom.editor.CustomImGuiImplGlfw.keyCallback(CustomImGuiImplGlfw.java:388)
+	at knot//org.lwjgl.glfw.GLFWKeyCallbackI.callback(GLFWKeyCallbackI.java:44)
+	at knot//org.lwjgl.system.JNI.invokeV(Native Method)
+	at knot//org.lwjgl.glfw.GLFW.glfwPollEvents(GLFW.java:3438)
+	at knot//com.mojang.blaze3d.systems.RenderSystem.pollEvents(RenderSystem.java:202)
+	at knot//com.mojang.blaze3d.systems.RenderSystem.flipFrame(RenderSystem.java:220)
+	at knot//net.minecraft.class_1041.method_15998(class_1041.java:287)
+	at knot//net.minecraft.class_310.method_1523(class_310.java:1349)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:888)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:514)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at org.prismlauncher.launcher.impl.StandardLauncher.launch(StandardLauncher.java:115)
+	at org.prismlauncher.EntryPoint.listen(EntryPoint.java:129)
+	at org.prismlauncher.EntryPoint.main(EntryPoint.java:70)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Render thread
+Stacktrace:
+	at knot//mchorse.bbs_mod.settings.values.base.BaseValueGroup.getRecursively(BaseValueGroup.java:29)
+	at knot//mchorse.bbs_mod.ui.film.utils.undo.ValueChangeUndo.undo(ValueChangeUndo.java:88)
+	at knot//mchorse.bbs_mod.ui.film.utils.undo.ValueChangeUndo.undo(ValueChangeUndo.java:11)
+	at knot//mchorse.bbs_mod.utils.undo.UndoManager.undo(UndoManager.java:170)
+	at knot//mchorse.bbs_mod.ui.film.UIFilmPanel.undo(UIFilmPanel.java:1041)
+	at knot//mchorse.bbs_mod.ui.utils.keys.KeybindManager.checkKeybinds(KeybindManager.java:108)
+	at knot//mchorse.bbs_mod.ui.utils.keys.KeybindManager.check(KeybindManager.java:63)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keybindsKeyPressed(UIElement.java:1352)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1171)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.childrenKeyPressed(UIElement.java:1257)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1164)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.childrenKeyPressed(UIElement.java:1257)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1164)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.childrenKeyPressed(UIElement.java:1257)
+	at knot//mchorse.bbs_mod.ui.framework.elements.UIElement.keyPressed(UIElement.java:1164)
+	at knot//mchorse.bbs_mod.ui.framework.UIBaseMenu.handleKey(UIBaseMenu.java:176)
+	at knot//mchorse.bbs_mod.ui.framework.UIScreen.method_25404(UIScreen.java:171)
+	at knot//net.minecraft.class_309.method_1454(class_309.java:407)
+
+-- Affected screen --
+Details:
+	Screen name: mchorse.bbs_mod.ui.framework.UIScreen
+Stacktrace:
+	at knot//net.minecraft.class_437.method_25412(class_437.java:414)
+	at knot//net.minecraft.class_309.method_1466(class_309.java:403)
+	at knot//net.minecraft.class_309.method_22678(class_309.java:492)
+	at knot//net.minecraft.class_1255.execute(class_1255.java:102)
+	at knot//net.minecraft.class_309.method_22676(class_309.java:492)
+	at knot//org.lwjgl.glfw.GLFWKeyCallback$Container.invoke(GLFWKeyCallback.java:82)
+	at knot//com.moulberry.axiom.editor.CustomImGuiImplGlfw.keyCallback(CustomImGuiImplGlfw.java:388)
+	at knot//org.lwjgl.glfw.GLFWKeyCallbackI.callback(GLFWKeyCallbackI.java:44)
+	at knot//org.lwjgl.system.JNI.invokeV(Native Method)
+	at knot//org.lwjgl.glfw.GLFW.glfwPollEvents(GLFW.java:3438)
+	at knot//com.mojang.blaze3d.systems.RenderSystem.pollEvents(RenderSystem.java:202)
+	at knot//com.mojang.blaze3d.systems.RenderSystem.flipFrame(RenderSystem.java:220)
+	at knot//net.minecraft.class_1041.method_15998(class_1041.java:287)
+	at knot//net.minecraft.class_310.method_1523(class_310.java:1349)
+	at knot//net.minecraft.class_310.method_1514(class_310.java:888)
+	at knot//net.minecraft.client.main.Main.main(Main.java:265)
+	at net.fabricmc.loader.impl.game.minecraft.MinecraftGameProvider.launch(MinecraftGameProvider.java:514)
+	at net.fabricmc.loader.impl.launch.knot.Knot.launch(Knot.java:72)
+	at net.fabricmc.loader.impl.launch.knot.KnotClient.main(KnotClient.java:23)
+	at org.prismlauncher.launcher.impl.StandardLauncher.launch(StandardLauncher.java:115)
+	at org.prismlauncher.EntryPoint.listen(EntryPoint.java:129)
+	at org.prismlauncher.EntryPoint.main(EntryPoint.java:70)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.20.4
+	Minecraft Version ID: 1.20.4
+	Operating System: Windows 11 (amd64) version 10.0
+	Java Version: 17.0.15, Microsoft
+	Java VM Version: OpenJDK 64-Bit Server VM (mixed mode), Microsoft
+	Memory: 649056752 bytes (618 MiB) / 2548039680 bytes (2430 MiB) up to 4294967296 bytes (4096 MiB)
+	CPUs: 12
+	Processor Vendor: GenuineIntel
+	Processor Name: 11th Gen Intel(R) Core(TM) i5-11400H @ 2.70GHz
+	Identifier: Intel64 Family 6 Model 141 Stepping 1
+	Microarchitecture: unknown
+	Frequency (GHz): 2.69
+	Number of physical packages: 1
+	Number of physical CPUs: 6
+	Number of logical CPUs: 12
+	Graphics card #0 name: Parsec Virtual Display Adapter
+	Graphics card #0 vendor: Parsec Cloud, Inc.
+	Graphics card #0 VRAM (MB): 0.00
+	Graphics card #0 deviceId: unknown
+	Graphics card #0 versionInfo: DriverVersion=0.45.0.0
+	Graphics card #1 name: LuminonCore IDDCX Adapter
+	Graphics card #1 vendor: LuminonCore
+	Graphics card #1 VRAM (MB): 0.00
+	Graphics card #1 deviceId: unknown
+	Graphics card #1 versionInfo: DriverVersion=1.0.2018.1204
+	Graphics card #2 name: Intel(R) UHD Graphics
+	Graphics card #2 vendor: Intel Corporation (0x8086)
+	Graphics card #2 VRAM (MB): 2048.00
+	Graphics card #2 deviceId: 0x9a68
+	Graphics card #2 versionInfo: DriverVersion=32.0.101.7082
+	Graphics card #3 name: NVIDIA GeForce GTX 1650 with Max-Q Design
+	Graphics card #3 vendor: NVIDIA (0x10de)
+	Graphics card #3 VRAM (MB): 4095.00
+	Graphics card #3 deviceId: 0x1f9d
+	Graphics card #3 versionInfo: DriverVersion=32.0.15.9174
+	Memory slot #0 capacity (MB): 8192.00
+	Memory slot #0 clockSpeed (GHz): 3.20
+	Memory slot #0 type: DDR4
+	Memory slot #1 capacity (MB): 16384.00
+	Memory slot #1 clockSpeed (GHz): 3.20
+	Memory slot #1 type: DDR4
+	Virtual memory max (MB): 42709.67
+	Virtual memory used (MB): 31746.20
+	Swap memory total (MB): 18432.00
+	Swap memory used (MB): 136.25
+	JVM Flags: 3 total; -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump -Xms512m -Xmx4096m
+	Fabric Mods: 
+		axiom: Axiom 5.2.1
+			com_moulberry_axiomclientapi: axiomclientapi 1.0.98
+			com_moulberry_mixinconstraints: mixinconstraints 1.0.9
+			lattice: Lattice 1.3.0
+		bbs: BBS CML Edition 1.9-1.20.4
+		better-selection: Better Text Selection 1.4
+		c2me: Concurrent Chunk Management Engine 0.2.0+alpha.11.72
+			c2me-base: Concurrent Chunk Management Engine (Base) 0.2.0+alpha.11.72
+			c2me-client-uncapvd: Concurrent Chunk Management Engine (Client/Uncap View Distance) 0.2.0+alpha.11.72
+			c2me-fixes-chunkio-threading-issues: Concurrent Chunk Management Engine (Fixes/Chunk IO/Threading Issues) 0.2.0+alpha.11.72
+			c2me-fixes-general-threading-issues: Concurrent Chunk Management Engine (Fixes/General/Threading Issues) 0.2.0+alpha.11.72
+			c2me-fixes-worldgen-threading-issues: Concurrent Chunk Management Engine (Fixes/WorldGen/Threading Issues) 0.2.0+alpha.11.72
+			c2me-fixes-worldgen-vanilla-bugs: Concurrent Chunk Management Engine (Fixes/WorldGen/Vanilla Bugs) 0.2.0+alpha.11.72
+			c2me-notickvd: Concurrent Chunk Management Engine (No Tick View Distance) 0.2.0+alpha.11.72
+			c2me-opts-allocs: Concurrent Chunk Management Engine (Optimizations/Memory Allocations) 0.2.0+alpha.11.72
+			c2me-opts-chunk-access: Concurrent Chunk Management Engine (Optimizations/Chunk Access) 0.2.0+alpha.11.72
+			c2me-opts-chunkio: Concurrent Chunk Management Engine (Optimizations/Chunk IO) 0.2.0+alpha.11.72
+			c2me-opts-math: Concurrent Chunk Management Engine (Optimizations/Math) 0.2.0+alpha.11.72
+			c2me-opts-scheduling: Concurrent Chunk Management Engine (Optimizations/Scheduling) 0.2.0+alpha.11.72
+			c2me-opts-worldgen-general: Concurrent Chunk Management Engine (Optimizations/General WorldGen) 0.2.0+alpha.11.72
+			c2me-opts-worldgen-vanilla: Concurrent Chunk Management Engine (Optimizations/Vanilla WorldGen) 0.2.0+alpha.11.72
+			c2me-rewrites-chunk-serializer: Concurrent Chunk Management Engine (Rewrites/Chunk Serializer) 0.2.0+alpha.11.72
+			c2me-rewrites-chunkio: Concurrent Chunk Management Engine (Rewrites/Chunk IO) 0.2.0+alpha.11.72
+			c2me-server-utils: Concurrent Chunk Management Engine (Server Utils) 0.2.0+alpha.11.72
+			c2me-threading-chunkio: Concurrent Chunk Management Engine (Threading/WorldGen) 0.2.0+alpha.11.72
+			c2me-threading-lighting: Concurrent Chunk Management Engine (Threading/Lighting) 0.2.0+alpha.11.72
+			c2me-threading-worldgen: Concurrent Chunk Management Engine (Threading/WorldGen) 0.2.0+alpha.11.72
+			com_electronwill_night-config_core: core 3.6.5
+			com_electronwill_night-config_toml: toml 3.6.5
+			com_ibm_async_asyncutil: asyncutil 0.1.0
+			net_objecthunter_exp4j: exp4j 0.4.8
+			org_threadly_threadly: threadly 7.0
+		cloth-config: Cloth Config v13 13.0.138
+			cloth-basic-math: cloth-basic-math 0.6.1
+		continuity: Continuity 3.0.0+1.20.2
+		dashloader: DashLoader 5.0.0-beta.4+1.20.4
+			com_github_luben_zstd-jni: zstd-jni 1.5.7-1
+			dev_notalpha_hyphen: Hyphen 0.4.0-rc.5
+			dev_notalpha_taski: Taski 2.1.0
+		enhancedblockentities: Enhanced Block Entities 0.10.1+1.20.4
+			advanced_runtime_resource_pack: Runtime Resource Pack 0.8.1
+		entity_model_features: Entity Model Features 3.0.10
+		entity_texture_features: Entity Texture Features 7.0.8
+		entityculling: EntityCulling 1.9.5
+			transition: TRansition 1.0.11
+			trender: TRender 1.0.10
+		fabric-api: Fabric API 0.97.3+1.20.4
+			fabric-api-base: Fabric API Base 0.4.37+78d798af4f
+			fabric-api-lookup-api-v1: Fabric API Lookup API (v1) 1.6.50+82b1bb3e4f
+			fabric-biome-api-v1: Fabric Biome API (v1) 13.0.17+78d798af4f
+			fabric-block-api-v1: Fabric Block API (v1) 1.0.17+3e2216cb4f
+			fabric-block-view-api-v2: Fabric BlockView API (v2) 1.0.5+78d798af4f
+			fabric-blockrenderlayer-v1: Fabric BlockRenderLayer Registration (v1) 1.1.47+78d798af4f
+			fabric-client-tags-api-v1: Fabric Client Tags 1.1.8+78d798af4f
+			fabric-command-api-v1: Fabric Command API (v1) 1.2.42+f71b366f4f
+			fabric-command-api-v2: Fabric Command API (v2) 2.2.21+78d798af4f
+			fabric-commands-v0: Fabric Commands (v0) 0.2.59+df3654b34f
+			fabric-containers-v0: Fabric Containers (v0) 0.1.88+df3654b34f
+			fabric-content-registries-v0: Fabric Content Registries (v0) 5.0.16+78d798af4f
+			fabric-convention-tags-v1: Fabric Convention Tags 1.5.11+78d798af4f
+			fabric-crash-report-info-v1: Fabric Crash Report Info (v1) 0.2.24+78d798af4f
+			fabric-data-attachment-api-v1: Fabric Data Attachment API (v1) 1.1.5+b90db5744f
+			fabric-data-generation-api-v1: Fabric Data Generation API (v1) 13.2.6+5c0133444f
+			fabric-dimensions-v1: Fabric Dimensions API (v1) 2.1.63+6605d1a84f
+			fabric-entity-events-v1: Fabric Entity Events (v1) 1.6.2+09fc25014f
+			fabric-events-interaction-v0: Fabric Events Interaction (v0) 0.7.2+389931eb4f
+			fabric-events-lifecycle-v0: Fabric Events Lifecycle (v0) 0.2.76+df3654b34f
+			fabric-game-rule-api-v1: Fabric Game Rule API (v1) 1.0.47+78d798af4f
+			fabric-item-api-v1: Fabric Item API (v1) 2.3.1+cadc140c4f
+			fabric-item-group-api-v1: Fabric Item Group API (v1) 4.0.27+ee30b13a4f
+			fabric-key-binding-api-v1: Fabric Key Binding API (v1) 1.0.42+78d798af4f
+			fabric-keybindings-v0: Fabric Key Bindings (v0) 0.2.40+df3654b34f
+			fabric-lifecycle-events-v1: Fabric Lifecycle Events (v1) 2.3.1+a67ffb5d4f
+			fabric-loot-api-v2: Fabric Loot API (v2) 2.1.10+78d798af4f
+			fabric-message-api-v1: Fabric Message API (v1) 6.0.6+78d798af4f
+			fabric-mining-level-api-v1: Fabric Mining Level API (v1) 2.1.66+78d798af4f
+			fabric-model-loading-api-v1: Fabric Model Loading API (v1) 1.0.9+78d798af4f
+			fabric-models-v0: Fabric Models (v0) 0.4.8+9386d8a74f
+			fabric-networking-api-v1: Fabric Networking API (v1) 3.1.9+6abb6a4b4f
+			fabric-object-builder-api-v1: Fabric Object Builder API (v1) 13.1.0+dba1195c4f
+			fabric-particles-v1: Fabric Particles (v1) 1.1.8+78d798af4f
+			fabric-recipe-api-v1: Fabric Recipe API (v1) 2.0.22+78d798af4f
+			fabric-registry-sync-v0: Fabric Registry Sync (v0) 4.0.21+ee30b13a4f
+			fabric-renderer-api-v1: Fabric Renderer API (v1) 3.2.5+78d798af4f
+			fabric-renderer-indigo: Fabric Renderer - Indigo 1.5.6+d331d3144f
+			fabric-renderer-registries-v1: Fabric Renderer Registries (v1) 3.2.54+df3654b34f
+			fabric-rendering-data-attachment-v1: Fabric Rendering Data Attachment (v1) 0.3.43+73761d2e4f
+			fabric-rendering-fluids-v1: Fabric Rendering Fluids (v1) 3.1.2+e761c6694f
+			fabric-rendering-v0: Fabric Rendering (v0) 1.1.57+df3654b34f
+			fabric-rendering-v1: Fabric Rendering (v1) 3.2.1+6fd945a04f
+			fabric-resource-conditions-api-v1: Fabric Resource Conditions API (v1) 2.3.15+78d798af4f
+			fabric-resource-loader-v0: Fabric Resource Loader (v0) 0.11.21+ee30b13a4f
+			fabric-screen-api-v1: Fabric Screen API (v1) 2.0.18+78d798af4f
+			fabric-screen-handler-api-v1: Fabric Screen Handler API (v1) 1.3.57+78d798af4f
+			fabric-sound-api-v1: Fabric Sound API (v1) 1.0.18+78d798af4f
+			fabric-transfer-api-v1: Fabric Transfer API (v1) 4.0.12+90f2d7b14f
+			fabric-transitive-access-wideners-v1: Fabric Transitive Access Wideners (v1) 5.0.15+78d798af4f
+		fabric-language-kotlin: Fabric Language Kotlin 1.13.8+kotlin.2.3.0
+			org_jetbrains_kotlin_kotlin-reflect: kotlin-reflect 2.3.0
+			org_jetbrains_kotlin_kotlin-stdlib: kotlin-stdlib 2.3.0
+			org_jetbrains_kotlin_kotlin-stdlib-jdk7: kotlin-stdlib-jdk7 2.3.0
+			org_jetbrains_kotlin_kotlin-stdlib-jdk8: kotlin-stdlib-jdk8 2.3.0
+			org_jetbrains_kotlinx_atomicfu-jvm: atomicfu-jvm 0.29.0
+			org_jetbrains_kotlinx_kotlinx-coroutines-core-jvm: kotlinx-coroutines-core-jvm 1.10.2
+			org_jetbrains_kotlinx_kotlinx-coroutines-jdk8: kotlinx-coroutines-jdk8 1.10.2
+			org_jetbrains_kotlinx_kotlinx-datetime-jvm: kotlinx-datetime-jvm 0.7.1
+			org_jetbrains_kotlinx_kotlinx-io-bytestring-jvm: kotlinx-io-bytestring-jvm 0.8.2
+			org_jetbrains_kotlinx_kotlinx-io-core-jvm: kotlinx-io-core-jvm 0.8.2
+			org_jetbrains_kotlinx_kotlinx-serialization-cbor-jvm: kotlinx-serialization-cbor-jvm 1.9.0
+			org_jetbrains_kotlinx_kotlinx-serialization-core-jvm: kotlinx-serialization-core-jvm 1.9.0
+			org_jetbrains_kotlinx_kotlinx-serialization-json-jvm: kotlinx-serialization-json-jvm 1.9.0
+		fabricloader: Fabric Loader 0.18.4
+			mixinextras: MixinExtras 0.5.0
+		ferritecore: FerriteCore 6.0.3
+		indium: Indium 1.0.31+mc1.20.4
+		iris: Iris 1.7.2+mc1.20.4
+			io_github_douira_glsl-transformer: glsl-transformer 2.0.1
+			org_anarres_jcpp: jcpp 1.4.14
+			org_antlr_antlr4-runtime: antlr4-runtime 4.13.1
+		java: OpenJDK 64-Bit Server VM 17
+		lambdynlights: LambDynamicLights 2.3.4+1.20.4
+			pride: Pride Lib 1.2.0+1.19.4
+			spruceui: SpruceUI 5.0.3+1.20.2
+		memoryleakfix: Memory Leak Fix 1.1.5
+		minecraft: Minecraft 1.20.4
+		modernfix: ModernFix 5.17.0+mc1.20.4
+		modmenu: Mod Menu 9.2.0
+		moreculling: More Culling 1.20.4-0.24.0
+			conditional-mixin: conditional mixin 0.3.2
+			mixinsquared: MixinSquared 0.1.1
+		mousetweaks: Mouse Tweaks 2.26
+		mr_remove_terralithintromessage: Remove Terralith Intro Message 1.1
+		notenoughcrashes: Not Enough Crashes 4.4.7+1.20.4
+		nvidium: Nvidium 0.2.6-beta
+		packetfixer: Packet Fixer 3.3.1
+		paxi: Paxi 1.20.4-Fabric-4.4.1
+			org_reflections_reflections: reflections 0.10.2
+		placeholder-api: Placeholder API 2.4.0-pre.3+1.20.4
+		reeses-sodium-options: Reese's Sodium Options 1.7.2+mc1.20.4-build.102
+		resourcify: Resourcify 1.6.1
+		rrls: Remove Reloading Screen 4.0.3+mc1.20.4-fabric
+		sodium: Sodium 0.5.8+mc1.20.4
+		sodium-extra: Sodium Extra 0.5.4+mc1.20.4-build.116
+			caffeineconfig: CaffeineConfig 1.3.0+1.17
+			crowdin-translate: CrowdinTranslate 1.4+1.19.3
+		starlight: Starlight 1.1.3+fabric.f5dcd1a
+		tectonic: Tectonic 2.3.5b
+		terralith: Terralith 2.5.4
+		xaeroworldmap: Xaero's World Map 1.40.6
+			xaerolib: XaeroLib 1.0.46
+		yet_another_config_lib_v3: YetAnotherConfigLib 3.6.6+1.20.4-fabric
+			com_twelvemonkeys_common_common-image: common-image 3.12.0
+			com_twelvemonkeys_common_common-io: common-io 3.12.0
+			com_twelvemonkeys_common_common-lang: common-lang 3.12.0
+			com_twelvemonkeys_imageio_imageio-core: imageio-core 3.12.0
+			com_twelvemonkeys_imageio_imageio-metadata: imageio-metadata 3.12.0
+			com_twelvemonkeys_imageio_imageio-webp: imageio-webp 3.12.0
+			org_quiltmc_parsers_gson: gson 0.2.1
+			org_quiltmc_parsers_json: json 0.2.1
+		yungsapi: YUNG's API 1.20.4-Fabric-4.4.3
+			org_javassist_javassist: javassist 3.29.2-GA
+		zoomify: Zoomify 2.14.6+1.20.4
+			com_akuleshov7_ktoml-core-jvm: ktoml-core-jvm 0.5.2
+	Loaded Shaderpack: (off)
+	Client Crashes Since Restart: 1
+	Integrated Server Crashes Since Restart: 0
+	Suspected Mods: Minecraft (minecraft), Axiom (axiom), Fabric Loader (fabricloader), BBS CML Edition (bbs)
