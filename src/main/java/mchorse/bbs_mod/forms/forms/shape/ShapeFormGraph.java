@@ -11,9 +11,12 @@ import mchorse.bbs_mod.forms.forms.shape.nodes.MathNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.MixColorNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.NoiseNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.FlowNoiseNode;
+import mchorse.bbs_mod.forms.forms.shape.nodes.IrisShaderNode;
+import mchorse.bbs_mod.forms.forms.shape.nodes.IrisAttributeNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.TriggerNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.TimeNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.ValueNode;
+import mchorse.bbs_mod.forms.forms.shape.nodes.VectorMathNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.VoronoiNode;
 
 
@@ -115,7 +118,7 @@ public class ShapeFormGraph
         }
     }
 
-    private ShapeNode createNode(String type)
+    public ShapeNode createNode(String type)
     {
         if ("output".equals(type)) return new OutputNode();
         if ("coordinate".equals(type)) return new CoordinateNode();
@@ -130,6 +133,9 @@ public class ShapeFormGraph
         if ("flow_noise".equals(type)) return new FlowNoiseNode();
         if ("trigger".equals(type)) return new TriggerNode();
         if ("bump".equals(type)) return new BumpNode();
+        if ("iris_shader".equals(type)) return new IrisShaderNode();
+        if ("iris_attribute".equals(type)) return new IrisAttributeNode();
+        if ("vector_math".equals(type)) return new VectorMathNode();
         return null;
     }
 }

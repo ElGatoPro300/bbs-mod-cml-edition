@@ -24,7 +24,10 @@ import org.lwjgl.opengl.GL11;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.forms.forms.shape.ShapeGraphEvaluator;
+import mchorse.bbs_mod.forms.forms.shape.nodes.IrisAttributeNode;
+import mchorse.bbs_mod.forms.forms.shape.nodes.IrisShaderNode;
 import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.iris.ShaderCurves;
 import net.minecraft.client.render.BufferRenderer;
 
 import net.minecraft.client.gl.ShaderProgram;
@@ -84,6 +87,21 @@ public class ShapeFormRenderer extends FormRenderer<ShapeForm>
         
         this.time = (System.currentTimeMillis() % 200000) / 1000F;
 
+        if (!this.evaluator.irisNodes.isEmpty() && BBSRendering.isIrisShadersEnabled())
+        {
+            for (IrisShaderNode node : this.evaluator.irisNodes)
+            {
+                if (node.uniform.isEmpty()) continue;
+
+                ShaderCurves.ShaderVariable variable = ShaderCurves.variableMap.get(node.uniform);
+
+                if (variable != null)
+                {
+                    variable.value = (float) this.evaluator.evaluateInput(node.id, 0, 0, 0, 0, this.time);
+                }
+            }
+        }
+
         RenderSystem.setShader(shader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
@@ -116,8 +134,41 @@ public class ShapeFormRenderer extends FormRenderer<ShapeForm>
             BBSModClient.getTextures().bindTexture(mchorse.bbs_mod.particles.ParticleScheme.DEFAULT_TEXTURE);
         }
 
+        Color finalColor = new Color(this.form.color.get().r, this.form.color.get().g, this.form.color.get().b, this.form.color.get().a);
+
+        if (!this.evaluator.irisAttributeNodes.isEmpty())
+        {
+            int blockLight = (light >> 4) & 0xF;
+            int skyLight = (light >> 20) & 0xF;
+            int overlayU = overlay & 0xFFFF;
+            int overlayV = (overlay >> 16) & 0xFFFF;
+
+            for (IrisAttributeNode node : this.evaluator.irisAttributeNodes)
+            {
+                double val = this.evaluator.evaluateInput(node.id, 0, 0, 0, 0, this.time);
+
+                switch (node.attribute)
+                {
+                    case COLOR_R: finalColor.r = (float) val; break;
+                    case COLOR_G: finalColor.g = (float) val; break;
+                    case COLOR_B: finalColor.b = (float) val; break;
+                    case COLOR_A: finalColor.a = (float) val; break;
+                    case LIGHT_BLOCK: blockLight = (int) val; break;
+                    case LIGHT_SKY: skyLight = (int) val; break;
+                    case OVERLAY_U: overlayU = (int) val; break;
+                    case OVERLAY_V: overlayV = (int) val; break;
+                }
+            }
+
+            blockLight = Math.max(0, Math.min(15, blockLight));
+            skyLight = Math.max(0, Math.min(15, skyLight));
+
+            light = (blockLight << 4) | (skyLight << 20);
+            overlay = overlayU | (overlayV << 16);
+        }
+
         // Apply Color
-        Color c = this.form.color.get();
+        Color c = finalColor;
         // RenderSystem.setShaderColor is not enough for VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL
         // We need to pass color per vertex
 
