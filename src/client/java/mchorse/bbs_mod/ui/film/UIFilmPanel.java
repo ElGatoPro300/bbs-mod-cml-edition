@@ -1004,6 +1004,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         else
         {
             this.undoHandler = null;
+            BBSModClient.setSelectedReplay(null);
         }
 
         this.preview.replays.setEnabled(data != null);
