@@ -1039,12 +1039,12 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
     public void undo()
     {
-        if (this.data != null && this.undoHandler.getUndoManager().undo(this.data)) UIUtils.playClick();
+        if (this.data != null && this.undoHandler.undo(this.data)) UIUtils.playClick();
     }
 
     public void redo()
     {
-        if (this.data != null && this.undoHandler.getUndoManager().redo(this.data)) UIUtils.playClick();
+        if (this.data != null && this.undoHandler.redo(this.data)) UIUtils.playClick();
     }
 
     public boolean isFlying()
