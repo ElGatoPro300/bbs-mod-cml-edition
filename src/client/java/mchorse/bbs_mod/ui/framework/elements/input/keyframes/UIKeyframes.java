@@ -555,19 +555,29 @@ public class UIKeyframes extends UIElement
         /* Apply the data in order and submit to pre-/post-handlers */
         SheetCache cache = new SheetCache(this.currentGraph.getSheets());
 
-        for (Pair<BaseType, UIKeyframeSheet> pair : this.cache.data)
+        for (Pair<KeyframeChannel, UIKeyframeSheet> pair : this.cache.data)
         {
-            pair.b.channel.fromData(pair.a);
+            pair.b.channel.copyKeyframes(pair.a);
             pair.b.selection.clear();
-            pair.b.selection.addAll(selection.get(pair.b).a);
+
+            if (selection.containsKey(pair.b))
+            {
+                pair.b.selection.addAll(selection.get(pair.b).a);
+            }
+
             pair.b.channel.preNotify(IValueListener.FLAG_UNMERGEABLE);
         }
 
-        for (Pair<BaseType, UIKeyframeSheet> pair : cache.data)
+        for (Pair<KeyframeChannel, UIKeyframeSheet> pair : cache.data)
         {
-            pair.b.channel.fromData(pair.a);
+            pair.b.channel.copyKeyframes(pair.a);
             pair.b.selection.clear();
-            pair.b.selection.addAll(selection.get(pair.b).b);
+
+            if (selection.containsKey(pair.b))
+            {
+                pair.b.selection.addAll(selection.get(pair.b).b);
+            }
+
             pair.b.channel.postNotify(IValueListener.FLAG_UNMERGEABLE);
         }
 
@@ -1242,7 +1252,7 @@ public class UIKeyframes extends UIElement
 
     private static class SheetCache
     {
-        public List<Pair<BaseType, UIKeyframeSheet>> data = new ArrayList<>();
+        public List<Pair<KeyframeChannel, UIKeyframeSheet>> data = new ArrayList<>();
 
         public SheetCache(Collection<UIKeyframeSheet> sheets)
         {
@@ -1250,7 +1260,10 @@ public class UIKeyframes extends UIElement
             {
                 if (sheet.selection.hasAny())
                 {
-                    this.data.add(new Pair<>(sheet.channel.toData(), sheet));
+                    KeyframeChannel channel = new KeyframeChannel("", sheet.channel.getFactory());
+
+                    channel.copyKeyframes(sheet.channel);
+                    this.data.add(new Pair<>(channel, sheet));
                 }
             }
         }

@@ -712,7 +712,14 @@ public class UIKeyframeGraph implements IUIKeyframeGraph
         }
 
         RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+        if (keyframes.isEmpty())
+        {
+            return;
+        }
+
         BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
