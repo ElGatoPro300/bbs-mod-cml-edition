@@ -119,6 +119,19 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
                     catch (Throwable ignored) {}
                 }
 
+                if (value == BBSSettings.editorReplayHudPosition)
+                {
+                    if (value instanceof ValueInt)
+                    {
+                        ((ValueInt) value).modes(
+                            L10n.lang("bbs.config.display.replay_hud_position.top_left"),
+                            L10n.lang("bbs.config.display.replay_hud_position.top_right"),
+                            L10n.lang("bbs.config.display.replay_hud_position.bottom_left"),
+                            L10n.lang("bbs.config.display.replay_hud_position.bottom_right")
+                        );
+                    }
+                }
+
                 List<UIElement> elements = UIValueMap.create(value, this);
 
                 for (UIElement element : elements)

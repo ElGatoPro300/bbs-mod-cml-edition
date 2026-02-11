@@ -684,6 +684,11 @@ public abstract class BaseFilmController
             return;
         }
 
+        if (!this.isReplayVisible(replay, ticks))
+        {
+            return;
+        }
+
         if (replay.keyframes.sprinting.interpolate(ticks) <= 0D)
         {
             return;
@@ -718,6 +723,51 @@ public abstract class BaseFilmController
         double z = zPos + (world.random.nextDouble() - 0.5D) * width;
 
         world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(pos)), x, y, z, 0D, 0.1D, 0D);
+    }
+
+    private boolean isReplayVisible(Replay replay, int ticks)
+    {
+        if (!this.isReplayVisibleAt(replay, ticks))
+        {
+            return false;
+        }
+
+        if (!replay.group.get().isEmpty())
+        {
+            String[] groups = replay.group.get().split("/");
+
+            for (String uuid : groups)
+            {
+                Replay groupReplay = this.replayMap.get(uuid);
+
+                if (groupReplay != null)
+                {
+                    int groupTick = groupReplay.getTick(this.getTick());
+
+                    if (!this.isReplayVisibleAt(groupReplay, groupTick))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isReplayVisibleAt(Replay replay, float tick)
+    {
+        BaseValue visibleValue = replay.properties.get("visible");
+
+        if (visibleValue instanceof KeyframeChannel)
+        {
+            @SuppressWarnings("unchecked")
+            KeyframeChannel<Boolean> visible = (KeyframeChannel<Boolean>) visibleValue;
+
+            return visible.isEmpty() || visible.interpolate(tick);
+        }
+
+        return true;
     }
 
 

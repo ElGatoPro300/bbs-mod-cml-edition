@@ -431,7 +431,7 @@ public class KeyframeChannel <T> extends ValueList<Keyframe<T>>
             Keyframe<T> value = new Keyframe<>(keyframe.getId(), keyframe.getFactory());
 
             value.copy(keyframe);
-            this.add(value);
+            this.list.add(value);
         }
 
         this.sort();
