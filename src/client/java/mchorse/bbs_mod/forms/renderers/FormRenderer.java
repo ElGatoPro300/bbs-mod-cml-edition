@@ -20,11 +20,16 @@ import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.LightmapTextureManager;
+import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -119,14 +124,54 @@ public abstract class FormRenderer <T extends Form>
         u = (int) Lerps.lerp(u, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, lf);
         context.light = u | v << 16;
 
-        this.render3D(context);
-
-        if (isPicking)
+        if (context.tasks != null && !isPicking)
         {
-            this.updateStencilMap(context);
-        }
+            Matrix4f position = new Matrix4f(context.stack.peek().getPositionMatrix());
+            Matrix3f normal = new Matrix3f(context.stack.peek().getNormalMatrix());
+            int capturedLight = context.light;
+            int capturedOverlay = context.overlay;
+            int capturedColor = context.color;
 
-        this.renderBodyParts(context);
+            Matrix4f inverted = new Matrix4f(position).invert();
+            Vector3f cameraLocal = new Vector3f(0, 0, 0).mulPosition(inverted);
+            float distance = cameraLocal.lengthSquared();
+
+            context.tasks.add(new RenderTask(() ->
+            {
+                context.stack.push();
+                context.stack.peek().getPositionMatrix().set(position);
+                context.stack.peek().getNormalMatrix().set(normal);
+
+                int oldLight = context.light;
+                int oldOverlay = context.overlay;
+                int oldColor = context.color;
+
+                context.light = capturedLight;
+                context.overlay = capturedOverlay;
+                context.color = capturedColor;
+
+                this.render3D(context);
+
+                context.light = oldLight;
+                context.overlay = oldOverlay;
+                context.color = oldColor;
+
+                context.stack.pop();
+            }, distance, this.form.layer.get()));
+
+            this.renderBodyParts(context);
+        }
+        else
+        {
+            this.render3D(context);
+
+            if (isPicking)
+            {
+                this.updateStencilMap(context);
+            }
+
+            this.renderBodyParts(context);
+        }
 
         context.stack.pop();
 
@@ -212,7 +257,31 @@ public abstract class FormRenderer <T extends Form>
 
     public void renderBodyParts(FormRenderingContext context)
     {
-        for (BodyPart part : this.form.parts.getAllTyped())
+        List<BodyPart> parts = new ArrayList<>(this.form.parts.getAllTyped());
+        Matrix4f modelView = context.stack.peek().getPositionMatrix();
+        Matrix4f inverted = new Matrix4f(modelView).invert();
+        Vector3f cameraLocal = new Vector3f(0, 0, 0).mulPosition(inverted);
+
+        parts.sort((partA, partB) ->
+        {
+            Form formA = partA.getForm();
+            Form formB = partB.getForm();
+
+            int layerA = formA == null ? 0 : formA.layer.get();
+            int layerB = formB == null ? 0 : formB.layer.get();
+
+            if (layerA != layerB)
+            {
+                return Integer.compare(layerA, layerB);
+            }
+
+            float distA = partA.transform.get().translate.distanceSquared(cameraLocal);
+            float distB = partB.transform.get().translate.distanceSquared(cameraLocal);
+
+            return Float.compare(distB, distA);
+        });
+
+        for (BodyPart part : parts)
         {
             this.renderBodyPart(part, context);
         }

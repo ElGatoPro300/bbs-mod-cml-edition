@@ -19,6 +19,7 @@ import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.renderers.FormRenderer;
 import mchorse.bbs_mod.forms.renderers.FormRenderer;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
+import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.texture.TextureFormat;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -54,6 +55,7 @@ import com.mojang.blaze3d.systems.VertexSorter;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -67,6 +69,8 @@ public class BBSRendering
      * Cached rendered model blocks
      */
     public static final Set<ModelBlockEntity> capturedModelBlocks = new HashSet<>();
+
+    public static List<RenderTask> tasks;
 
     public static boolean canRender;
 
@@ -328,6 +332,8 @@ public class BBSRendering
 
     public static void onWorldRenderBegin()
     {
+        tasks = new ArrayList<>();
+
         MinecraftClient mc = MinecraftClient.getInstance();
         BBSModClient.getFilms().startRenderFrame(mc.getTickDelta());
 
@@ -350,6 +356,8 @@ public class BBSRendering
 
     public static void onWorldRenderEnd()
     {
+        executeTasks();
+
         MinecraftClient mc = MinecraftClient.getInstance();
 
         if (BBSModClient.getCameraController().getCurrent() instanceof PlayCameraController controller)
@@ -408,6 +416,36 @@ public class BBSRendering
         texture.unbind();
 
         toggleFramebuffer(false);
+    }
+
+    public static void executeTasks()
+    {
+        if (tasks == null)
+        {
+            return;
+        }
+
+        tasks.sort((a, b) ->
+        {
+            if (a.layer != b.layer)
+            {
+                return Integer.compare(a.layer, b.layer);
+            }
+
+            return Double.compare(b.distance, a.distance);
+        });
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+
+        for (RenderTask task : tasks)
+        {
+            task.run();
+        }
+
+        RenderSystem.disableBlend();
+
+        tasks = null;
     }
 
     public static void onRenderChunkLayer(MatrixStack stack)
