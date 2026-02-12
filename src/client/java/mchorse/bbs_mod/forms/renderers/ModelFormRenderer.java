@@ -52,10 +52,12 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -601,7 +603,46 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     {
         context.stack.push();
 
-        for (BodyPart part : this.form.parts.getAllTyped())
+        List<BodyPart> parts = new ArrayList<>(this.form.parts.getAllTyped());
+        Matrix4f modelView = context.stack.peek().getPositionMatrix();
+        Matrix4f inverted = new Matrix4f(modelView).invert();
+        Vector3f cameraLocal = new Vector3f(0, 0, 0).mulPosition(inverted);
+        Map<BodyPart, Float> distances = new HashMap<>();
+
+        for (BodyPart part : parts)
+        {
+            Vector3f pos = new Vector3f(part.transform.get().translate);
+            Matrix4f matrix = this.bones.get(part.bone.get()).matrix();
+
+            if (matrix != null)
+            {
+                pos.mulPosition(matrix);
+            }
+            else
+            {
+                pos.set(-pos.x, pos.y, -pos.z);
+            }
+
+            distances.put(part, pos.distanceSquared(cameraLocal));
+        }
+
+        parts.sort((partA, partB) ->
+        {
+            Form formA = partA.getForm();
+            Form formB = partB.getForm();
+
+            int layerA = formA == null ? 0 : formA.layer.get();
+            int layerB = formB == null ? 0 : formB.layer.get();
+
+            if (layerA != layerB)
+            {
+                return Integer.compare(layerA, layerB);
+            }
+
+            return Float.compare(distances.get(partB), distances.get(partA));
+        });
+
+        for (BodyPart part : parts)
         {
             Matrix4f matrix = this.bones.get(part.bone.get()).matrix();
 
