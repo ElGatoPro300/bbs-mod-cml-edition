@@ -459,8 +459,12 @@ public class ParticleEmitter
             }
 
             RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             RenderSystem.disableCull();
+            RenderSystem.depthMask(false);
             BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.depthMask(true);
             RenderSystem.enableCull();
         }
     }
@@ -502,9 +506,12 @@ public class ParticleEmitter
             }
 
             RenderSystem.setShader(program);
-            RenderSystem.disableBlend();
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             RenderSystem.disableCull();
+            RenderSystem.depthMask(false);
             BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.depthMask(true);
             RenderSystem.enableCull();
         }
 

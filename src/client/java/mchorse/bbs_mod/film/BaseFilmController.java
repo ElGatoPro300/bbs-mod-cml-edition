@@ -3,6 +3,7 @@ package mchorse.bbs_mod.film;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
+import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.client.renderer.ModelBlockEntityRenderer;
 import mchorse.bbs_mod.entity.ActorEntity;
 import mchorse.bbs_mod.film.replays.Replay;
@@ -35,6 +36,7 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
+import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import mchorse.bbs_mod.utils.joml.Vectors;
@@ -62,6 +64,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -154,6 +158,8 @@ public abstract class BaseFilmController
             .camera(camera)
             .stencilMap(context.map)
             .color(context.color);
+
+        formContext.tasks = context.tasks;
 
         stack.push();
 
@@ -853,10 +859,17 @@ public abstract class BaseFilmController
     {
         RenderSystem.enableDepthTest();
 
-        for (Map.Entry<Integer, IEntity> entry : this.entities.entrySet())
+        List<Integer> sorted = new ArrayList<>(this.entities.keySet());
+        boolean global = BBSRendering.tasks != null;
+
+        if (!global)
         {
-            int i = entry.getKey();
-            IEntity entity = entry.getValue();
+            BBSRendering.tasks = new ArrayList<>();
+        }
+
+        for (int i : sorted)
+        {
+            IEntity entity = this.entities.get(i);
             Replay replay = this.film.replays.getList().get(i);
 
             if (!this.canUpdate(i, replay, entity, UpdateMode.RENDER))
@@ -865,6 +878,11 @@ public abstract class BaseFilmController
             }
 
             this.renderEntity(context, replay, entity);
+        }
+
+        if (!global)
+        {
+            BBSRendering.executeTasks();
         }
     }
 
@@ -1030,7 +1048,8 @@ public abstract class BaseFilmController
             .setup(this.entities, entity, replay, context)
             .shadow(replay.shadow.get(), replay.shadowSize.get())
             .nameTag(replay.nameTag.get())
-            .relative(replay.relative.get());
+            .relative(replay.relative.get())
+            .tasks(BBSRendering.tasks);
     }
 
     public void shutdown()
