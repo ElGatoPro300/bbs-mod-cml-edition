@@ -49,9 +49,9 @@ public abstract class BlockEntityRenderDispatcherMixin
             Matrix4f position = new Matrix4f(matrixStack.peek().getPositionMatrix());
             Matrix3f normal = new Matrix3f(matrixStack.peek().getNormalMatrix());
             double distance = blockEntity.getPos().getSquaredDistance(MinecraftClient.getInstance().gameRenderer.getCamera().getPos());
-            int layer = modelBlock.getProperties().getForm().layer.get();
+            int layer = modelBlock.getProperties().getForm() == null ? 0 : modelBlock.getProperties().getForm().layer.get();
 
-            BBSRendering.tasks.add(new RenderTask(() ->
+            BBSRendering.tasks.add(new RenderTask((vcp) ->
             {
                 MatrixStack stack = new MatrixStack();
 
@@ -63,7 +63,7 @@ public abstract class BlockEntityRenderDispatcherMixin
 
                 try
                 {
-                    this.render(blockEntity, tickDelta, stack, vertexConsumerProvider);
+                    this.render(blockEntity, tickDelta, stack, vcp);
                 }
                 finally
                 {

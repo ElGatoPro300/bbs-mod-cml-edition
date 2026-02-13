@@ -6,6 +6,8 @@ import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class FormRenderingContext
     public int color;
     public boolean modelRenderer;
     public List<RenderTask> tasks;
+    public VertexConsumerProvider vertexConsumers;
 
     public FormRenderingContext()
     {}
@@ -40,6 +43,7 @@ public class FormRenderingContext
         this.ui = false;
         this.color = 0xffffffff;
         this.tasks = null;
+        this.vertexConsumers = null;
 
         return this;
     }

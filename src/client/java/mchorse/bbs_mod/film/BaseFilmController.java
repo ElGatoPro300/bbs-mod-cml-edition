@@ -34,7 +34,6 @@ import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Transform;
-import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
@@ -417,7 +416,7 @@ public abstract class BaseFilmController
         float bodyYaw = Lerps.lerp(entity.getPrevBodyYaw(), entity.getBodyYaw(), tickDelta);
 
         matrix.translate((float) x, (float) y, (float) z);
-        matrix.rotateY(MathUtils.toRad(-bodyYaw));
+        matrix.rotateY(MathUtils.toRad(180 - bodyYaw));
 
         return matrix;
     }

@@ -1,20 +1,23 @@
 package mchorse.bbs_mod.forms.renderers.utils;
 
+import net.minecraft.client.render.VertexConsumerProvider;
+import java.util.function.Consumer;
+
 public class RenderTask
 {
-    public Runnable task;
+    public Consumer<VertexConsumerProvider> task;
     public double distance;
     public int layer;
 
-    public RenderTask(Runnable task, double distance, int layer)
+    public RenderTask(Consumer<VertexConsumerProvider> task, double distance, int layer)
     {
         this.task = task;
         this.distance = distance;
         this.layer = layer;
     }
 
-    public void run()
+    public void run(VertexConsumerProvider vcp)
     {
-        this.task.run();
+        this.task.accept(vcp);
     }
 }
