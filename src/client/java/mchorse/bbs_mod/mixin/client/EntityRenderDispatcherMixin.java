@@ -39,7 +39,7 @@ public abstract class EntityRenderDispatcherMixin
             double distance = x * x + y * y + z * z;
             int layer = 0;
 
-            BBSRendering.tasks.add(new RenderTask((vcp) ->
+            BBSRendering.tasks.add(new RenderTask(() ->
             {
                 MatrixStack stack = new MatrixStack();
                 stack.peek().getPositionMatrix().set(position);
@@ -50,7 +50,7 @@ public abstract class EntityRenderDispatcherMixin
 
                 try
                 {
-                    this.render(entity, x, y, z, yaw, tickDelta, stack, vcp, light);
+                    this.render(entity, x, y, z, yaw, tickDelta, stack, vertexConsumers, light);
                 }
                 finally
                 {

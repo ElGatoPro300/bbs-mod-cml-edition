@@ -20,7 +20,6 @@ import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumerProvider;
 import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
@@ -133,10 +132,11 @@ public abstract class FormRenderer <T extends Form>
             int capturedOverlay = context.overlay;
             int capturedColor = context.color;
 
-            Vector3f translation = position.getTranslation(new Vector3f());
-            float distance = translation.lengthSquared();
+            Matrix4f inverted = new Matrix4f(position).invert();
+            Vector3f cameraLocal = new Vector3f(0, 0, 0).mulPosition(inverted);
+            float distance = cameraLocal.lengthSquared();
 
-            context.tasks.add(new RenderTask((vcp) ->
+            context.tasks.add(new RenderTask(() ->
             {
                 context.stack.push();
                 context.stack.peek().getPositionMatrix().set(position);
@@ -145,19 +145,16 @@ public abstract class FormRenderer <T extends Form>
                 int oldLight = context.light;
                 int oldOverlay = context.overlay;
                 int oldColor = context.color;
-                VertexConsumerProvider oldVcp = context.vertexConsumers;
 
                 context.light = capturedLight;
                 context.overlay = capturedOverlay;
                 context.color = capturedColor;
-                context.vertexConsumers = vcp;
 
                 this.render3D(context);
 
                 context.light = oldLight;
                 context.overlay = oldOverlay;
                 context.color = oldColor;
-                context.vertexConsumers = oldVcp;
 
                 context.stack.pop();
             }, distance, this.form.layer.get()));

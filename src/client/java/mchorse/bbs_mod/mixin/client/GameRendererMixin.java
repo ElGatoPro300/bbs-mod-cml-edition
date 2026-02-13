@@ -88,12 +88,6 @@ public class GameRendererMixin
         BBSRendering.onWorldRenderBegin();
     }
 
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Camera;F)V"), method = "renderWorld")
-    private void onProjectionCapture(CallbackInfo callbackInfo)
-    {
-        BBSRendering.onProjectionCapture();
-    }
-
     @Inject(at = @At("RETURN"), method = "renderWorld")
     private void onWorldRenderEnd(CallbackInfo callbackInfo)
     {

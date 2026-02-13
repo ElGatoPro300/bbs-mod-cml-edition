@@ -17,7 +17,7 @@ import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.renderers.FormRenderer;
-import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
+import mchorse.bbs_mod.forms.renderers.FormRenderer;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
 import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import mchorse.bbs_mod.graphics.texture.Texture;
@@ -38,7 +38,6 @@ import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.iris.IrisUtils;
 import mchorse.bbs_mod.utils.iris.ShaderCurves;
-import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.utils.sodium.SodiumUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
@@ -49,7 +48,6 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -73,7 +71,6 @@ public class BBSRendering
     public static final Set<ModelBlockEntity> capturedModelBlocks = new HashSet<>();
 
     public static List<RenderTask> tasks;
-    public static Matrix4f projectionMatrix;
 
     public static boolean canRender;
 
@@ -357,11 +354,6 @@ public class BBSRendering
         toggleFramebuffer(true);
     }
 
-    public static void onProjectionCapture()
-    {
-        projectionMatrix = new Matrix4f(RenderSystem.getProjectionMatrix());
-    }
-
     public static void onWorldRenderEnd()
     {
         executeTasks();
@@ -443,34 +435,17 @@ public class BBSRendering
             return Double.compare(b.distance, a.distance);
         });
 
-        Matrix4f oldProjection = new Matrix4f(RenderSystem.getProjectionMatrix());
-
-        if (projectionMatrix != null)
-        {
-            RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorter.BY_DISTANCE);
-        }
-
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        RenderSystem.depthMask(true);
-
-        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 
         for (RenderTask task : tasks)
         {
-            task.run(immediate);
+            task.run();
         }
 
-        immediate.draw();
-
         RenderSystem.disableBlend();
-        RenderSystem.disableDepthTest();
-        RenderSystem.setProjectionMatrix(oldProjection, VertexSorter.BY_DISTANCE);
 
         tasks = null;
-        projectionMatrix = null;
     }
 
     public static void onRenderChunkLayer(MatrixStack stack)
