@@ -332,7 +332,10 @@ public class BBSRendering
 
     public static void onWorldRenderBegin()
     {
-        tasks = new ArrayList<>();
+        if (BBSModClient.getCameraController().getCurrent() != null)
+        {
+            tasks = new ArrayList<>();
+        }
 
         MinecraftClient mc = MinecraftClient.getInstance();
         BBSModClient.getFilms().startRenderFrame(mc.getTickDelta());

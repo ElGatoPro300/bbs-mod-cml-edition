@@ -44,7 +44,7 @@ public abstract class BlockEntityRenderDispatcherMixin
             return;
         }
 
-        if (BBSRendering.tasks != null && blockEntity instanceof ModelBlockEntity modelBlock)
+        if (BBSRendering.tasks != null && blockEntity instanceof ModelBlockEntity modelBlock && modelBlock.getProperties().getForm() != null)
         {
             Matrix4f position = new Matrix4f(matrixStack.peek().getPositionMatrix());
             Matrix3f normal = new Matrix3f(matrixStack.peek().getNormalMatrix());
