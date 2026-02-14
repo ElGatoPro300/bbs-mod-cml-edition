@@ -3,7 +3,6 @@ package mchorse.bbs_mod.film;
 import io.netty.util.collection.IntObjectMap;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.forms.renderers.utils.RenderTask;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.colors.Colors;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -11,8 +10,6 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
-
-import java.util.List;
 
 public class FilmControllerContext
 {
@@ -25,7 +22,6 @@ public class FilmControllerContext
     public MatrixStack stack;
     public VertexConsumerProvider consumers;
     public StencilMap map;
-    public List<RenderTask> tasks;
 
     public float transition;
     public int color;
@@ -47,7 +43,6 @@ public class FilmControllerContext
     private void reset()
     {
         this.map = null;
-        this.tasks = null;
         this.shadowRadius = 0F;
         this.color = Colors.WHITE;
         this.bone = null;
@@ -97,13 +92,6 @@ public class FilmControllerContext
     public FilmControllerContext stencil(StencilMap map)
     {
         this.map = map;
-
-        return this;
-    }
-
-    public FilmControllerContext tasks(List<RenderTask> tasks)
-    {
-        this.tasks = tasks;
 
         return this;
     }

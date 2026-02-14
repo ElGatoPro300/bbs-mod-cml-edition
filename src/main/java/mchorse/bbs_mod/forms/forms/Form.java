@@ -32,7 +32,6 @@ public abstract class Form extends ValueGroup
 {
     public final ValueBoolean visible = new ValueBoolean("visible", true);
     public final ValueBoolean animatable = new ValueBoolean("animatable", true);
-    public final ValueInt layer = new ValueInt("layer", 0);
     public final ValueString trackName = new ValueString("track_name", "");
     public final ValueFloat lighting = new ValueFloat("lighting", 1F);
     public final ValueString name = new ValueString("name", "");
