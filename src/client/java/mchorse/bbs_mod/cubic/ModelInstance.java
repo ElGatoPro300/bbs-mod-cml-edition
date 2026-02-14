@@ -565,8 +565,7 @@ public class ModelInstance implements IModelInstance
         else
         {
             RenderSystem.setShader(program);
-            BufferBuilder builder = Tessellator.getInstance().getBuffer();
-            builder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
+            BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
             for (ModelGroup group : sortedGroups)
             {
                 CubicRenderer.processRenderRecursively(renderProcessor, builder, stack, model, group);
