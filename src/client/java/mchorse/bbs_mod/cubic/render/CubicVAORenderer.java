@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.cubic.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.cubic.data.model.Model;
@@ -39,6 +40,23 @@ public class CubicVAORenderer extends CubicCubeRenderer
 
         if (modelVAO != null && group.visible)
         {
+            float a = this.a * group.color.a;
+
+            if (a <= 0F)
+            {
+                return false;
+            }
+
+            final float TRANSP_EPS = 0.999f;
+            if (this.transparentPass)
+            {
+                if (a >= TRANSP_EPS) return false;
+            }
+            else
+            {
+                if (a < TRANSP_EPS) return false;
+            }
+
             if (group.textureOverride != null)
             {
                 BBSModClient.getTextures().bindTexture(group.textureOverride);
@@ -55,7 +73,6 @@ public class CubicVAORenderer extends CubicCubeRenderer
             float r = this.r * group.color.r;
             float g = this.g * group.color.g;
             float b = this.b * group.color.b;
-            float a = this.a * group.color.a;
             int light = this.light;
 
             if (this.stencilMap != null)
