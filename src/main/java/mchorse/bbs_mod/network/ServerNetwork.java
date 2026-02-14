@@ -79,6 +79,7 @@ public class ServerNetwork
     public static final Identifier CLIENT_ANIMATION_STATE_MODEL_BLOCK_TRIGGER = Identifier.of(BBSMod.MOD_ID, "c16");
     public static final Identifier CLIENT_REFRESH_MODEL_BLOCKS = Identifier.of(BBSMod.MOD_ID, "c17");
     public static final Identifier CLIENT_CLICKED_TRIGGER_BLOCK_PACKET = Identifier.of(BBSMod.MOD_ID, "c18");
+    public static final Identifier CLIENT_BAY4LLY_SKIN = Identifier.of(BBSMod.MOD_ID, "c19");
 
     public static final Identifier SERVER_MODEL_BLOCK_FORM_PACKET = Identifier.of(BBSMod.MOD_ID, "s1");
     public static final Identifier SERVER_MODEL_BLOCK_TRANSFORMS_PACKET = Identifier.of(BBSMod.MOD_ID, "s2");
@@ -918,6 +919,19 @@ public class ServerNetwork
         buf.writeInt(slot);
 
         ServerPlayNetworking.send(player, BufPayload.from(buf, idFor(CLIENT_SELECTED_SLOT)));
+    }
+    
+    public static void sendBay4llySkinToAll(MinecraftServer server, byte[] bytes, String playerName)
+    {
+        List<PlayerEntity> list = new ArrayList<>();
+        for (ServerPlayerEntity p : PlayerLookup.all(server))
+        {
+            list.add(p);
+        }
+        crusher.send(list, CLIENT_BAY4LLY_SKIN, bytes, (packetByteBuf) ->
+        {
+            packetByteBuf.writeString(playerName);
+        });
     }
 
     public static void sendModelBlockState(ServerPlayerEntity player, BlockPos pos, String trigger)

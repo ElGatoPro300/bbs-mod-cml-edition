@@ -16,5 +16,10 @@
     "category.bbs.main": "BBS mod",
 
     "bbs.config.editor.clip_type_labels": "Mostrar etiquetas de tipo de clip",
-    "bbs.config.editor.clip_type_labels-comment": "Muestra el tipo de clip en la línea de tiempo del Editor de Cámara y Acciones"
+    "bbs.config.editor.clip_type_labels-comment": "Muestra el tipo de clip en la línea de tiempo del Editor de Cámara y Acciones",
+
+    "gamerule.bbsEditing": "Permisos de edición de BBS mod",
+    "command.getskin.success": "Skin aplicada a todos los jugadores",
+    "command.getskin.error": "Error: %s",
+    "command.getskin.downloading": "Descargando skin..."
 }
