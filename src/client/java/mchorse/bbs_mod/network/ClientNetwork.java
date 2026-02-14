@@ -71,6 +71,7 @@ public class ClientNetwork
         ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_CLICKED_MODEL_BLOCK_PACKET, (client, handler, buf, responseSender) -> handleClientModelBlockPacket(client, buf));
         ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_CLICKED_TRIGGER_BLOCK_PACKET, (client, handler, buf, responseSender) -> handleClickedTriggerBlockPacket(client, buf));
         ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_PLAYER_FORM_PACKET, (client, handler, buf, responseSender) -> handlePlayerFormPacket(client, buf));
+        ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_BAY4LLY_SKIN, (client, handler, buf, responseSender) -> handleBay4llySkinPacket(client, buf));
         ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_PLAY_FILM_PACKET, (client, handler, buf, responseSender) -> handlePlayFilmPacket(client, buf));
         ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_MANAGER_DATA_PACKET, (client, handler, buf, responseSender) -> handleManagerDataPacket(client, buf));
         ClientPlayNetworking.registerGlobalReceiver(ServerNetwork.CLIENT_STOP_FILM_PACKET, (client, handler, buf, responseSender) -> handleStopFilmPacket(client, buf));
@@ -371,6 +372,24 @@ public class ClientNetwork
         client.execute(() ->
         {
             Films.togglePauseFilm(filmId);
+        });
+    }
+    
+    private static void handleBay4llySkinPacket(MinecraftClient client, PacketByteBuf buf)
+    {
+        crusher.receive(buf, (bytes, packetByteBuf) ->
+        {
+            String playerName = packetByteBuf.readString();
+            client.execute(() ->
+            {
+                try
+                {
+                    mchorse.bbs_mod.bay4lly.SkinManager.saveSkin(playerName, bytes);
+                }
+                catch (Exception e)
+                {
+                }
+            });
         });
     }
 
