@@ -579,6 +579,7 @@
     "bbs.ui.film.layout.horizontal": "Horizontal layout",
     "bbs.ui.film.layout.horizontal_bottom": "Horizontal (timeline bottom)",
     "bbs.ui.film.layout.horizontal_top": "Horizontal (timeline top)",
+    "bbs.ui.film.layout.invert": "Invert current layout",
     "bbs.ui.film.layout.lock": "Lock layout handle",
     "bbs.ui.film.layout.main_bottom": "Main panel on bottom",
     "bbs.ui.film.layout.main_left": "Main panel on left",
