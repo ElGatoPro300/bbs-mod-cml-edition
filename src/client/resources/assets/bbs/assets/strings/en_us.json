@@ -1512,6 +1512,7 @@
     "studio.ui.utility.open_folder": "Open folder...",
     "studio.ui.utility.open_game_folder": "Game",
     "studio.ui.utility.open_models_folder": "Models",
+    "studio.ui.utility.open_video_folder": "Video",
     "studio.ui.utility.reload": "Reload",
     "studio.ui.utility.reload_lang": "Language",
     "studio.ui.utility.reload_models": "Models",

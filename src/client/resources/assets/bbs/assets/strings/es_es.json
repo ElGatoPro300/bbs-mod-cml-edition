@@ -1410,6 +1410,7 @@
     "studio.ui.utility.open_folder": "Abrir carpeta...",
     "studio.ui.utility.open_game_folder": "Juego",
     "studio.ui.utility.open_models_folder": "Modelos",
+    "studio.ui.utility.open_video_folder": "Video",
     "studio.ui.utility.reload": "Recargar",
     "studio.ui.utility.reload_lang": "Idioma",
     "studio.ui.utility.reload_models": "Modelos",
