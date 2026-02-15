@@ -30,7 +30,7 @@ public class CubicRenderer
     /**
      * Apply the render processor, recursively
      */
-    private static boolean processRenderRecursively(ICubicRenderer renderProcessor, BufferBuilder builder, MatrixStack stack, Model model, ModelGroup group)
+    public static boolean processRenderRecursively(ICubicRenderer renderProcessor, BufferBuilder builder, MatrixStack stack, Model model, ModelGroup group)
     {
         stack.push();
         renderProcessor.applyGroupTransformations(stack, group);

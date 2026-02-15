@@ -1407,7 +1407,6 @@ public class UIReplayList extends UIList<Replay> {
         panel.confirm.label = UIKeys.GENERAL_CONFIRM;
         panel.confirm.relative(panel.content).x(5).y(1F, -26).w(1F, -10).h(20).anchor(0F, 0F);
 
-        UIOverlay.addOverlay(this.getContext(), panel);
         UIOverlay.addOverlay(this.getContext(), panel, 300, 300);
     }
 

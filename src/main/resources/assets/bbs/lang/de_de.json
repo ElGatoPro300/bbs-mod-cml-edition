@@ -24,5 +24,8 @@
     "key.bbs.zoom": "Zoom (BBS Pistole)",
     "category.bbs.main": "BBS Mod",
 
-    "gamerule.bbsEditing": "BBS Mod's Bearbeitungs Berechtigungen"
+    "gamerule.bbsEditing": "BBS Mod's Bearbeitungs Berechtigungen",
+    "command.getskin.success": "✅ Skin wurde auf alle Spieler angewendet",
+    "command.getskin.error": "❌ Fehler: %s",
+    "command.getskin.downloading": "🔄 Skin wird heruntergeladen..."
 }

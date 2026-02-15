@@ -589,6 +589,7 @@ public class BBSModClient implements ClientModInitializer
         {
             dashboard = null;
             films = new Films();
+            setSelectedReplay(null);
 
             ClientNetwork.resetHandshake();
             films.reset();

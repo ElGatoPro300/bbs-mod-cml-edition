@@ -244,15 +244,15 @@ public class BBSSettings
         builder.register(editorOnionSkin = new ValueOnionSkin("onion_skin"));
         editorSnapToMarkers = builder.getBoolean("snap_to_markers", false);
         editorClipPreview = builder.getBoolean("clip_preview", true);
-        editorClipTypeLabels = builder.getBoolean("clip_type_labels", true);
-        editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", true);
+        editorClipTypeLabels = builder.getBoolean("clip_type_labels", false);
+        editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", false);
         editorReplayEditorTitleLimit = builder.getInt("replay_editor_title_limit", 12, 0, 64);
         editorRewind = builder.getBoolean("rewind", true);
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
 
         builder.category("display");
-        editorReplayHud = builder.getBoolean("replay_hud", true);
+        editorReplayHud = builder.getBoolean("replay_hud", false);
         editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
         editorReplayHudDisplayName = builder.getBoolean("replay_hud_display_name", true);
 
@@ -291,7 +291,7 @@ public class BBSSettings
 
         /* Pose track selection */
         builder.category("pose_track_selection");
-        boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", false);
+        boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", true);
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
         builder.category("cdn");
