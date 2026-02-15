@@ -5,8 +5,11 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.render.FrameGraphBuilder;
+// import net.minecraft.client.render.Fog;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
@@ -16,6 +19,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
@@ -25,8 +29,9 @@ public class WorldRendererMixin
     public Framebuffer entityOutlinesFramebuffer;
 */
 
-    @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true, require = 0)
-    public void onRenderSky(CallbackInfo info)
+    /*
+    @Inject(method = "renderSky(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/Fog;)V", at = @At("HEAD"), cancellable = true, require = 0)
+    public void onRenderSky(FrameGraphBuilder builder, Camera camera, float tickDelta, Fog fog, CallbackInfo info)
     {
         if (BBSSettings.chromaSkyEnabled.get())
         {
@@ -34,13 +39,14 @@ public class WorldRendererMixin
 
             GL11.glClearColor(color.r, color.g, color.b, 1F);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-            /* RenderSystem.setShaderFogColor(color.r, color.g, color.b, 1F); */
+            RenderSystem.setShaderFogColor(color.r, color.g, color.b, 1F);
 
             info.cancel();
         }
     }
+    */
 
-    @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true, require = 0)
     public void onRenderLayer(RenderLayer renderLayer, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info)
     {
         if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyTerrain.get())
@@ -50,19 +56,19 @@ public class WorldRendererMixin
         }
     }
 
-    @Inject(method = "setupFrustum", at = @At("HEAD"))
-    public void onSetupFrustum(Vec3d vec3d, Matrix4f matrix4f, Matrix4f positionMatrix, CallbackInfo info)
+    @Inject(method = "setupFrustum", at = @At("HEAD"), require = 0)
+    public void onSetupFrustum(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Vec3d cameraPos, CallbackInfoReturnable<?> cir)
     {
-        BBSRendering.camera.set(matrix4f);
+        BBSRendering.camera.set(modelViewMatrix);
     }
 
-    @Inject(at = @At("RETURN"), method = "loadEntityOutlinePostProcessor")
+    @Inject(at = @At("RETURN"), method = "loadEntityOutlinePostProcessor", require = 0)
     private void onLoadEntityOutlineShader(CallbackInfo info)
     {
         BBSRendering.resizeExtraFramebuffers();
     }
 
-    @Inject(at = @At("RETURN"), method = "onResized")
+    @Inject(at = @At("RETURN"), method = "onResized", require = 0)
     private void onResized(CallbackInfo info)
     {
         /*

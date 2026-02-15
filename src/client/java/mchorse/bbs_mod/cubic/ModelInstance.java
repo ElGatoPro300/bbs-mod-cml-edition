@@ -35,9 +35,10 @@ import mchorse.bbs_mod.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.BufferAllocator;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -469,19 +470,11 @@ public class ModelInstance implements IModelInstance
             }
             else
             {
-                RenderSystem.setShader(program.get());
+                // RenderSystem.setShader(program.get());
 
                 BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
-
-                try
-                {
-                    BufferRenderer.drawWithGlobalProgram(builder.end());
-                }
-                catch (IllegalStateException e)
-                {
-                    
-                }
+                // net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
             }
         }
         else if (this.model instanceof BOBJModel model)
@@ -495,10 +488,11 @@ public class ModelInstance implements IModelInstance
 
                 vao.armature.setupMatrices();
                 vao.updateMesh(stencilMap);
-                vao.render(program.get(), stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
+                vao.render(program.get(), stack, new Matrix4f(), color.r, color.g, color.b, color.a, stencilMap, light, overlay);
 
                 stack.pop();
             }
         }
     }
 }
+

@@ -39,7 +39,7 @@ import mchorse.bbs_mod.utils.RayTracing;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.utils.MathUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
@@ -54,6 +54,7 @@ import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import com.mojang.blaze3d.opengl.GlStateManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -92,8 +93,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.keyDude.keys().register(Keys.MODEL_BLOCKS_MOVE_TO, () ->
         {
             MinecraftClient mc = MinecraftClient.getInstance();
-            Camera camera = mc.gameRenderer.getCamera();
-            BlockHitResult blockHitResult = RayTracing.rayTrace(mc.world, camera.getPos(), RayTracing.fromVector3f(this.mouseDirection), 512F);
+            Vec3d origin = mc.player != null ? mc.player.getEyePos() : new Vec3d(0, 0, 0);
+            BlockHitResult blockHitResult = RayTracing.rayTrace(mc.world, origin, RayTracing.fromVector3f(this.mouseDirection), 512F);
 
             if (blockHitResult.getType() != HitResult.Type.MISS)
             {
@@ -426,78 +427,12 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         super.render(context);
     }
 
-    @Override
+    /*
     public void renderInWorld(WorldRenderContext context)
     {
-        super.renderInWorld(context);
-
-        Camera camera = context.camera();
-        Vec3d pos = camera.getPos();
-
-        MinecraftClient mc = MinecraftClient.getInstance();
-        double x = mc.mouse.getX();
-        double y = mc.mouse.getY();
-
-        MatrixStack matrixStack = context.matrixStack();
-        Matrix4f positionMatrix = matrixStack != null ? matrixStack.peek().getPositionMatrix() : RenderSystem.getModelViewMatrix();
-        Matrix4f projectionMatrix = RenderSystem.getProjectionMatrix();
-
-        float m11 = projectionMatrix.m11();
-        float tanHalfFov = 1.0f / m11;
-        float aspect = m11 / projectionMatrix.m00();
-
-        float ndcX = ((float) x / mc.getWindow().getWidth()) * 2.0f - 1.0f;
-        float ndcY = -(((float) y / mc.getWindow().getHeight()) * 2.0f - 1.0f);
-
-        float f = MathUtils.toRad(camera.getPitch());
-        float g = MathUtils.toRad(-camera.getYaw());
-        float h = (float) Math.cos(g);
-        float i = (float) Math.sin(g);
-        float j = (float) Math.cos(f);
-        float k = (float) Math.sin(f);
-        Vector3f forward = new Vector3f(i * j, -k, h * j);
-        Vector3f upWorld = new Vector3f(0F, 1F, 0F);
-        Vector3f right = new Vector3f(forward).cross(upWorld).normalize();
-        Vector3f upCam = new Vector3f(right).cross(forward).normalize();
-
-        Vector3f direction = new Vector3f(forward)
-            .add(new Vector3f(right).mul(ndcX * tanHalfFov * aspect))
-            .add(new Vector3f(upCam).mul(ndcY * tanHalfFov))
-            .normalize();
-
-        this.mouseDirection.set(direction);
-        this.hovered = this.getClosestObject(new Vector3d(pos.x, pos.y, pos.z), this.mouseDirection);
-
-        RenderSystem.enableDepthTest();
-
-        for (ModelBlockEntity entity : this.modelBlocks.getList())
-        {
-            BlockPos blockPos = entity.getPos();
-
-            if (!this.isEditing(entity))
-            {
-                MatrixStack renderMatrixStack = context.matrixStack();
-                if (renderMatrixStack != null)
-                {
-                    renderMatrixStack.push();
-                    renderMatrixStack.translate(blockPos.getX() - pos.x, blockPos.getY() - pos.y, blockPos.getZ() - pos.z);
-
-                    if (this.hovered == entity || entity == this.modelBlock)
-                    {
-                        Draw.renderBox(renderMatrixStack, 0D, 0D, 0D, 1D, 1D, 1D, 0, 0.5F, 1F);
-                    }
-                    else
-                    {
-                        Draw.renderBox(renderMatrixStack, 0D, 0D, 0D, 1D, 1D, 1D);
-                    }
-
-                    renderMatrixStack.pop();
-                }
-            }
-        }
-
-        RenderSystem.disableDepthTest();
+        // Disabled
     }
+    */
 
     private ModelBlockEntity getClosestObject(Vector3d finalPosition, Vector3f mouseDirection)
     {

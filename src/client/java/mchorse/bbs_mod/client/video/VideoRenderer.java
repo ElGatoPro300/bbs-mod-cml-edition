@@ -3,7 +3,7 @@ package mchorse.bbs_mod.client.video;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.client.BBSShaders;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -387,30 +387,30 @@ public class VideoRenderer
                 }
             }
 
-            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
-            RenderSystem.setShaderTexture(0, texture);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.disableDepthTest();
-            RenderSystem.depthMask(false);
-            RenderSystem.disableCull();
+            // RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+            // RenderSystem.setShaderTexture(0, texture);
+            // RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
+            com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+            // RenderSystem.defaultBlendFunc();
+            // RenderSystem.disableDepthTest();
+            // RenderSystem.depthMask(false);
+            // RenderSystem.disableCull();
 
-            Tessellator tessellator = Tessellator.getInstance();
-            Matrix4f matrix = stack.peek().getPositionMatrix();
+            // Tessellator tessellator = Tessellator.getInstance();
+            // Matrix4f matrix = new Matrix4f();
 
-            BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-            buffer.vertex(matrix, x, y + h, 0).texture(0, 1);
-            buffer.vertex(matrix, x + w, y + h, 0).texture(1, 1);
-            buffer.vertex(matrix, x + w, y, 0).texture(1, 0);
-            buffer.vertex(matrix, x, y, 0).texture(0, 0);
+            // BufferBuilder buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+            // buffer.vertex(matrix, x, y + h, 0).texture(0, 1);
+            // buffer.vertex(matrix, x + w, y + h, 0).texture(1, 1);
+            // buffer.vertex(matrix, x + w, y, 0).texture(1, 0);
+            // buffer.vertex(matrix, x, y, 0).texture(0, 0);
             
-            BufferRenderer.drawWithGlobalProgram(buffer.end());
+            // BufferRenderer.drawWithGlobalProgram(buffer.end());
             
-            RenderSystem.enableCull();
-            RenderSystem.depthMask(true);
-            RenderSystem.enableDepthTest();
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            // RenderSystem.enableCull();
+            // RenderSystem.depthMask(true);
+            // RenderSystem.enableDepthTest();
+            // RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
@@ -558,3 +558,4 @@ public class VideoRenderer
         }
     }
 }
+

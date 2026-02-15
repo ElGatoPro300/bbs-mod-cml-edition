@@ -1,14 +1,14 @@
 package mchorse.bbs_mod.cubic.render.vao;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJLoader;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -220,7 +220,7 @@ public class BOBJModelVAO
     protected void processData(float[] newVertices, float[] newNormals)
     {}
 
-    public void render(ShaderProgram shader, MatrixStack stack, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
+    public void render(ShaderProgram shader, MatrixStack stack, Matrix4f projectionMatrix, float r, float g, float b, float a, StencilMap stencilMap, int light, int overlay)
     {
         boolean hasShaders = BBSRendering.isIrisShadersEnabled();
 
@@ -231,13 +231,13 @@ public class BOBJModelVAO
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
-        ModelVAORenderer.setupUniforms(stack, shader);
+        ModelVAORenderer.setupUniforms(stack, projectionMatrix, shader);
 
-        shader.bind();
+        // shader.bind();
 
-        int textureID = RenderSystem.getShaderTexture(0);
-        GlStateManager._activeTexture(GL30.GL_TEXTURE0);
-        GlStateManager._bindTexture(textureID);
+        // int textureID = RenderSystem.getShaderTexture(0);
+        // RenderSystem.activeTexture(GL30.GL_TEXTURE0);
+        // RenderSystem.bindTexture(textureID);
 
         GL30.glBindVertexArray(this.vao);
 
@@ -259,9 +259,10 @@ public class BOBJModelVAO
         if (hasShaders) GL30.glDisableVertexAttribArray(Attributes.TANGENTS);
         if (hasShaders) GL30.glDisableVertexAttribArray(Attributes.MID_TEXTURE_UV);
 
-        shader.unbind();
+        // shader.unbind();
 
         GL30.glBindVertexArray(currentVAO);
         GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, currentElementArrayBuffer);
     }
 }
+

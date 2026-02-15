@@ -318,8 +318,14 @@ public class UIFilmPreview extends UIElement
         if (this.panel.getData() != null)
         {
             /* Render global video clips (overlays) */
+            MatrixStack stack = new MatrixStack();
+            // stack.multiply(new org.joml.Matrix4f(context.batcher.getContext().getMatrices().peek()));
+            // stack.multiply(new org.joml.Matrix4f());
+
+            /* Cache the global stuff */
+
             VideoRenderer.renderClips(
-                context.batcher.getContext().getMatrices(),
+                stack,
                 context.batcher,
                 this.panel.getData().camera.getClips(this.panel.getCursor()),
                 this.panel.getCursor(),
@@ -451,13 +457,14 @@ public class UIFilmPreview extends UIElement
 
         stack.pushMatrix();
 
-        stack.mul(context.batcher.getContext().getMatrices().peek().getPositionMatrix());
+        // stack.mul(new org.joml.Matrix4f(context.batcher.getContext().getMatrices().peek()));
+        stack.mul(new org.joml.Matrix4f());
         stack.translate(area.x + 16, area.ey() - 12, 0F);
         stack.rotate(RotationAxis.NEGATIVE_X.rotationDegrees(mcCamera.getPitch()));
         stack.rotate(RotationAxis.POSITIVE_Y.rotationDegrees(mcCamera.getYaw()));
         stack.scale(-1F, -1F, -1F);
         MatrixStackUtils.applyModelViewMatrix();
-        RenderSystem.renderCrosshair(10);
+        // RenderSystem.renderCrosshair(10);
 
         stack.popMatrix();
         MatrixStackUtils.applyModelViewMatrix();

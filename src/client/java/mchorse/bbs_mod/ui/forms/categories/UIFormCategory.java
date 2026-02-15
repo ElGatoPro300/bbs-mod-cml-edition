@@ -31,6 +31,7 @@ import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.colors.Colors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.PlayerListEntry;
+import com.mojang.authlib.GameProfile;
 
 import java.util.ArrayList;
 import java.io.File;
@@ -129,7 +130,7 @@ public class UIFormCategory extends UIElement
                 {
                     MapType data = FormUtils.toData(this.selected);
                     DataStringifier stringifier = new DataStringifier();
-                    String name = MinecraftClient.getInstance().player.getGameProfile().getName();
+                    String name = "Player"; // FIXME: MinecraftClient.getInstance().player.getGameProfile().getName();
 
                     stringifier.jsonLike();
                     stringifier.indent = "";
@@ -147,15 +148,14 @@ public class UIFormCategory extends UIElement
                         {
                             for (PlayerListEntry entry : playerList)
                             {
+                                /* FIXME: GameProfile methods error
                                 if (entry.getProfile().getId().equals(MinecraftClient.getInstance().player.getGameProfile().getId()))
                                 {
                                     continue;
                                 }
 
-                                newMenu.action(Icons.ARROW_RIGHT, IKey.constant(entry.getProfile().getName()), () ->
-                                {
-                                    ClientNetwork.sendSharedForm(this.selected, entry.getProfile().getId());
-                                });
+                                newMenu.action(Icons.ARROW_RIGHT, IKey.constant(entry.getProfile().getName()), () -> ClientNetwork.sendSharedForm(this.selected, entry.getProfile().getId()));
+                                */
                             }
                         });
                     });

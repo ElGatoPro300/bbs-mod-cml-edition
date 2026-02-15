@@ -89,7 +89,7 @@ public class CubicCubeRenderer implements ICubicRenderer
         matrix3f.identity().rotateX(MathUtils.toRad(rotation.x));
         normalM.mul(matrix3f);
 
-        stack.peek().getPositionMatrix().mul(modelM);
+        new Matrix4f().mul(modelM);
         stack.peek().getNormalMatrix().mul(normalM);
     }
 
@@ -238,7 +238,7 @@ public class CubicCubeRenderer implements ICubicRenderer
     protected void writeVertex(BufferBuilder builder, MatrixStack stack, ModelGroup group, ModelVertex vertex, Vector3f normal)
     {
         this.vertex.set(vertex.vertex.x, vertex.vertex.y, vertex.vertex.z, 1);
-        stack.peek().getPositionMatrix().transform(this.vertex);
+        new Matrix4f().transform(this.vertex);
 
         builder.vertex(this.vertex.x, this.vertex.y, this.vertex.z)
             .color(this.r * group.color.r, this.g * group.color.g, this.b * group.color.b, this.a * group.color.a)

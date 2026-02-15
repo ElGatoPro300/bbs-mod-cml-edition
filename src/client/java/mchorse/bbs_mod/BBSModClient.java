@@ -101,18 +101,19 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+// // // import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.util.InputUtil;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
@@ -133,6 +134,7 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.joml.Matrix4f;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 
 import java.io.File;
@@ -399,6 +401,10 @@ public class BBSModClient implements ClientModInitializer
         }
     }
 
+    private static final String CATEGORY_KEY = "category." + BBSMod.MOD_ID + ".main";
+    private static final InputUtil.Type KEYSYM = InputUtil.Type.KEYSYM;
+    private static final InputUtil.Type MOUSE = InputUtil.Type.MOUSE;
+
     @Override
     public void onInitializeClient()
     {
@@ -523,11 +529,12 @@ public class BBSModClient implements ClientModInitializer
         keyZoom = this.createKeyMouse("zoom", 2);
         keyToggleReplayHud = this.createKey("toggle_replay_hud", GLFW.GLFW_KEY_P);
 
+        /*
         WorldRenderEvents.AFTER_ENTITIES.register((context) ->
         {
             BBSRendering.renderCoolStuff(context);
-
-            if (BBSSettings.chromaSkyEnabled.get())
+            
+            if (BBSMod.renderWorldLast)
             {
                 float d = BBSSettings.chromaSkyBillboard.get();
 
@@ -576,14 +583,19 @@ public class BBSModClient implements ClientModInitializer
                 }
             }
         });
+        */
 
-        WorldRenderEvents.LAST.register((context) ->
+/*
+        net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.LAST.register((context) ->
         {
-            if (videoRecorder.isRecording() && BBSRendering.canRender)
+            if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyTerrain.get())
             {
-                videoRecorder.recordFrame();
+                return;
             }
+
+            BBSRendering.onRenderLast(context.matrixStack(), context.projectionMatrix(), context.camera());
         });
+*/
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
         {
@@ -678,11 +690,11 @@ public class BBSModClient implements ClientModInitializer
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) ->
         {
-            BBSRendering.renderHud(drawContext, tickCounter.getTickDelta(false));
+            BBSRendering.renderHud(drawContext, ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) tickCounter).getTickDeltaField());
 
             if (gunZoom != null)
             {
-                gunZoom.update(keyZoom.isPressed(), tickCounter.getLastFrameDuration());
+                gunZoom.update(keyZoom.isPressed(), ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) tickCounter).getTickDeltaField());
 
                 if (gunZoom.canBeRemoved())
                 {
@@ -785,13 +797,15 @@ public class BBSModClient implements ClientModInitializer
         }
     }
 
+    private static final KeyBinding.Category CATEGORY = KeyBinding.Category.create(Identifier.of(BBSMod.MOD_ID, "main"));
+
     private KeyBinding createKey(String id, int key)
     {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key." + BBSMod.MOD_ID + "." + id,
             InputUtil.Type.KEYSYM,
             key,
-            "category." + BBSMod.MOD_ID + ".main"
+            CATEGORY
         ));
     }
 
@@ -801,7 +815,7 @@ public class BBSModClient implements ClientModInitializer
             "key." + BBSMod.MOD_ID + "." + id,
             InputUtil.Type.MOUSE,
             button,
-            "category." + BBSMod.MOD_ID + ".main"
+            CATEGORY
         ));
     }
 
@@ -921,3 +935,5 @@ public class BBSModClient implements ClientModInitializer
         l10n.reload(language, BBSMod.getProvider());
     }
 }
+
+
