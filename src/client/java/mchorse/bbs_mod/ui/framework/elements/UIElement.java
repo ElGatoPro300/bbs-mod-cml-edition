@@ -1390,7 +1390,9 @@ public class UIElement implements IUIElement, IUndoElement
             context.resetTooltip();
         }
 
-        for (IUIElement element : this.children)
+        List<IUIElement> snapshot = new ArrayList<>(this.children);
+
+        for (IUIElement element : snapshot)
         {
             if (element.isVisible() && element.canBeRendered(context.getViewport()))
             {
