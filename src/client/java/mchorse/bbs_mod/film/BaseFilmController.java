@@ -207,12 +207,17 @@ public abstract class BaseFilmController
 
         if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F && form.visible.get())
         {
-            stack.push();
-            stack.translate(position.x - cx, position.y - cy, position.z - cz);
+            float shadowOpacity = MathUtils.clamp(opacity * context.shadowOpacity, 0F, 1F);
 
-            ModelBlockEntityRenderer.renderShadow(context.consumers, stack, transition, position.x, position.y, position.z, 0F, 0F, 0F, context.shadowRadius, opacity);
+            if (shadowOpacity > 0F)
+            {
+                stack.push();
+                stack.translate(position.x - cx, position.y - cy, position.z - cz);
 
-            stack.pop();
+                ModelBlockEntityRenderer.renderShadow(context.consumers, stack, transition, position.x, position.y, position.z, 0F, 0F, 0F, context.shadowRadius, shadowOpacity);
+
+                stack.pop();
+            }
         }
 
         if (!relative && !context.nameTag.isEmpty() && context.map == null)
@@ -1026,9 +1031,27 @@ public abstract class BaseFilmController
 
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
     {
+        float tick = replay.getTick(this.getTick()) + context.tickDelta();
+
+        float shadowSize = replay.shadowSize.get();
+        float shadowOpacity = replay.shadowOpacity.get();
+
+        if (!replay.keyframes.shadowSize.isEmpty())
+        {
+            shadowSize = replay.keyframes.shadowSize.interpolate(tick).floatValue();
+        }
+
+        if (!replay.keyframes.shadowOpacity.isEmpty())
+        {
+            shadowOpacity = replay.keyframes.shadowOpacity.interpolate(tick).floatValue();
+        }
+
+        shadowSize = Math.max(0F, shadowSize);
+        shadowOpacity = MathUtils.clamp(shadowOpacity, 0F, 1F);
+
         return FilmControllerContext.instance
             .setup(this.entities, entity, replay, context)
-            .shadow(replay.shadow.get(), replay.shadowSize.get())
+            .shadow(replay.shadow.get(), shadowSize, shadowOpacity)
             .nameTag(replay.nameTag.get())
             .relative(replay.relative.get());
     }

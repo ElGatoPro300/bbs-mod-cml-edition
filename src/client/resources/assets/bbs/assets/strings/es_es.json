@@ -623,6 +623,7 @@
     "bbs.ui.film.replay.replay": "Reproducción",
     "bbs.ui.film.replay.shadow": "Sombra",
     "bbs.ui.film.replay.shadow_size": "Radio de la sombra",
+    "bbs.ui.film.replay.shadow_opacity": "Opacidad de la sombra",
     "bbs.ui.film.replay.title": "Reproducciones",
     "bbs.ui.film.reset_replays": "Reiniciar reproducciones al grabar",
     "bbs.ui.film.screenshot": "Tomar una captura de pantalla",

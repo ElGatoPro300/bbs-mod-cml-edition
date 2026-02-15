@@ -652,6 +652,7 @@
     "bbs.ui.film.replay.replay": "Replay",
     "bbs.ui.film.replay.shadow": "Shadow",
     "bbs.ui.film.replay.shadow_size": "Shadow radius",
+    "bbs.ui.film.replay.shadow_opacity": "Shadow opacity",
     "bbs.ui.film.replay.title": "Replays",
     "bbs.ui.film.reset_replays": "Reset replays upon recording",
     "bbs.ui.film.screenshot": "Take a screenshot",

@@ -129,6 +129,8 @@ public class UIReplaysEditor extends UIElement
         COLORS.put("extra1_y", Colors.GREEN);
         COLORS.put("extra2_x", Colors.RED);
         COLORS.put("extra2_y", Colors.GREEN);
+        COLORS.put("shadow_size", Colors.MAGENTA);
+        COLORS.put("shadow_opacity", Colors.ORANGE);
 
         COLORS.put("visible", Colors.WHITE & Colors.RGB);
         COLORS.put("pose", Colors.RED);
@@ -183,6 +185,8 @@ public class UIReplaysEditor extends UIElement
         ICONS.put("trigger_l", Icons.TRIGGER);
         ICONS.put("extra1_x", Icons.CURVES);
         ICONS.put("extra2_x", Icons.CURVES);
+        ICONS.put("shadow_size", Icons.SCALE);
+        ICONS.put("shadow_opacity", Icons.VISIBLE);
         ICONS.put("item_main_hand", Icons.LIMB);
 
         ICONS.put("user1", Icons.PARTICLE);
@@ -473,6 +477,42 @@ public class UIReplaysEditor extends UIElement
                     sheets.add(sheet.icon(getIcon(key)));
                 }
             }
+
+            UIKeyframeSheet shadowSizeSheet = null;
+            UIKeyframeSheet shadowOpacitySheet = null;
+
+            for (UIKeyframeSheet sheet : sheets)
+            {
+                String topLevel = StringUtils.fileName(sheet.id);
+
+                if ("shadow_size".equals(topLevel))
+                {
+                    shadowSizeSheet = sheet;
+                }
+                else if ("shadow_opacity".equals(topLevel))
+                {
+                    shadowOpacitySheet = sheet;
+                }
+            }
+
+            if (shadowSizeSheet != null && shadowOpacitySheet != null)
+            {
+                sheets.remove(shadowSizeSheet);
+                sheets.remove(shadowOpacitySheet);
+
+                int insertAt = sheets.size();
+
+                for (int i = 0; i < sheets.size(); i++)
+                {
+                    if ("lighting".equals(StringUtils.fileName(sheets.get(i).id)))
+                    {
+                        insertAt = i + 1;
+                    }
+                }
+
+                sheets.add(insertAt, shadowSizeSheet);
+                sheets.add(insertAt + 1, shadowOpacitySheet);
+            }
         }
 
         /* Reordenar propiedades de StructureForm por grupo de formulario:
@@ -735,6 +775,14 @@ public class UIReplaysEditor extends UIElement
             }
 
             lastForm = form;
+        }
+
+        for (UIKeyframeSheet sheet : sheets)
+        {
+            if ("shadow_size".equals(sheet.id))
+            {
+                sheet.separator = false;
+            }
         }
 
         if (!sheets.isEmpty())

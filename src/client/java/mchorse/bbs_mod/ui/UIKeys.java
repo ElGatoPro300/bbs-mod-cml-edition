@@ -331,6 +331,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_REPLAY = L10n.lang("bbs.ui.film.replay.replay");
     public static final IKey FILM_REPLAY_SHADOW = L10n.lang("bbs.ui.film.replay.shadow");
     public static final IKey FILM_REPLAY_SHADOW_SIZE = L10n.lang("bbs.ui.film.replay.shadow_size");
+    public static final IKey FILM_REPLAY_SHADOW_OPACITY = L10n.lang("bbs.ui.film.replay.shadow_opacity");
     public static final IKey FILM_REPLAY_TITLE = L10n.lang("bbs.ui.film.replay.title");
     public static final IKey FILM_REPLAY_DROP_VELOCITY = L10n.lang("bbs.ui.film.replay.drop_velocity");
     public static final IKey FILM_REPLAY_DROP_VELOCITY_MIN_X = L10n.lang("bbs.ui.film.replay.drop_velocity_min_x");
