@@ -1314,6 +1314,7 @@
     "bbs.ui.texture.pick_texture": "Pick texture",
     "bbs.ui.texture.url_error_ffmpeg": "URL \"%s\" couldn't be downloaded because ffmpeg isn't installed...",
     "bbs.ui.texture.url_error_http": "URL \"%s\" couldn't be downloaded due to HTTP error...",
+    "bbs.ui.textures.brush_size": "Brush size",
     "bbs.ui.textures.copy": "Copy texture's path to copy-paste buffer",
     "bbs.ui.textures.create_mcmeta": "Create .mcmeta file",
     "bbs.ui.textures.download": "Download texture from URL...",

@@ -1255,6 +1255,7 @@
     "bbs.ui.texture.pick_texture": "Elegir textura",
     "bbs.ui.texture.url_error_ffmpeg": "No se pudo descargar la URL \"%s\" porque ffmpeg no está instalado...",
     "bbs.ui.texture.url_error_http": "No se pudo descargar la URL \"%s\" debido a un error HTTP...",
+    "bbs.ui.textures.brush_size": "Tamaño del pincel",
     "bbs.ui.textures.copy": "Copiar la ruta de la textura al búfer de copiar y pegar",
     "bbs.ui.textures.download": "Descargar textura desde URL...",
     "bbs.ui.textures.download-description": "Ingresa la URL de la textura que deseas descargar:",
