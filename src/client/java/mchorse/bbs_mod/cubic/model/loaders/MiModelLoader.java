@@ -344,41 +344,66 @@ public class MiModelLoader implements IModelLoader
                     float dy = Math.abs(to.y - from.y);
                     float dz = Math.abs(to.z - from.z);
 
+                    int thinAxis; // 0=X,1=Y,2=Z
                     float w;
                     float h;
 
                     if (dz < dx && dz < dy)
                     {
+                        thinAxis = 2;
                         w = dx;
                         h = dy;
                     }
                     else if (dx < dy && dx < dz)
                     {
+                        thinAxis = 0;
                         w = dz;
                         h = dy;
                     }
                     else
                     {
+                        thinAxis = 1;
                         w = dx;
                         h = dz;
                     }
 
-                    ModelUV planeUV = new ModelUV();
-                    planeUV.origin.set(uv.x, uv.y);
-                    planeUV.size.set((float) Math.floor(w), (float) Math.floor(h));
+                    ModelUV face = new ModelUV();
+                    face.origin.set(uv.x, uv.y);
+                    face.size.set(w, h);
 
-                    if (is3d && !thinDetail)
+                    if (!is3d || thinDetail)
                     {
-                        cube.front = planeUV;
-                        cube.back = planeUV.copy();
-                        cube.left = planeUV.copy();
-                        cube.right = planeUV.copy();
-                        cube.top = planeUV.copy();
-                        cube.bottom = planeUV.copy();
+                        /* Plano casi 2D:
+                         *  - sin 3D: solo una cara visible
+                         *  - con 3D fino: cara principal y su reverso para evitar caras vacías
+                         */
+                        if (thinAxis == 2)
+                        {
+                            cube.front = face;
+                            if (is3d) cube.back = face.copy();
+                        }
+                        else if (thinAxis == 0)
+                        {
+                            cube.left = face;
+                            if (is3d) cube.right = face.copy();
+                        }
+                        else
+                        {
+                            cube.top = face;
+                            if (is3d) cube.bottom = face.copy();
+                        }
                     }
                     else
                     {
-                        cube.front = planeUV;
+                        /* Plano 3D “gordo”: textura completa en las 6 caras.
+                         * Es más simple y evita que alguna cara quede sin UV.
+                         */
+                        cube.front = face;
+                        cube.back = face.copy();
+                        cube.left = face.copy();
+                        cube.right = face.copy();
+                        cube.top = face.copy();
+                        cube.bottom = face.copy();
                     }
                 }
             }
