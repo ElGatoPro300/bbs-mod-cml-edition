@@ -571,6 +571,7 @@
     "bbs.ui.film.layout.vertical_left": "Vertical (timeline izquierda)",
     "bbs.ui.film.layout.vertical_middle": "Vertical 3 columnas",
     "bbs.ui.film.layout.vertical_right": "Vertical (timeline derecha)",
+    "bbs.ui.film.layout.invert": "Invertir diseño",
     "bbs.ui.film.move-description": "Introduce coordenadas relativas para mover la escena:",
     "bbs.ui.film.move-title": "Mover película",
     "bbs.ui.film.no_camera-description": "Parece que no configuraste la cámara. Esta función no funciona sin cámara. ¡Configura al menos un clip de cámara en el editor de cámara!",

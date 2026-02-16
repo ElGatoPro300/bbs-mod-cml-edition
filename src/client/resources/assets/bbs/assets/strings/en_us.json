@@ -597,6 +597,7 @@
     "bbs.ui.film.layout.vertical_left": "Vertical (timeline left)",
     "bbs.ui.film.layout.vertical_middle": "Vertical 3 columns",
     "bbs.ui.film.layout.vertical_right": "Vertical (timeline right)",
+    "bbs.ui.film.layout.invert": "Invert layout",
     "bbs.ui.film.move-description": "Input relative coordinates to move the scene:",
     "bbs.ui.film.move-title": "Move film",
     "bbs.ui.film.no_camera-description": "It appears like you didn't setup the camera. This feature doesn't work without camera. Please setup at least one camera clip in the camera editor!",
