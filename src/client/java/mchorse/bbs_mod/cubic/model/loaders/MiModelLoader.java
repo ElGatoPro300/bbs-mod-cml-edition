@@ -98,14 +98,36 @@ public class MiModelLoader implements IModelLoader
                 {
                     String textureName = map.getString("texture");
                     System.out.println("[MiModelLoader] Looking for texture: " + textureName);
-                    // Try to find matching png in links
+                    String tnLower = textureName.toLowerCase();
+                    String tnBase = stripExtension(tnLower);
+
+                    // Pass 1: direct endsWith match (keeps current behavior)
                     for (Link l : links)
                     {
-                        if (l.path.endsWith(textureName))
+                        if (l.path.toLowerCase().endsWith(textureName.toLowerCase()))
                         {
                             texture = l;
-                            System.out.println("[MiModelLoader] Found texture: " + l.toString());
+                            System.out.println("[MiModelLoader] Found texture by exact suffix: " + l.toString());
                             break;
+                        }
+                    }
+
+                    // Pass 2: match by basename without extension (common case: "texture" vs "texture.png")
+                    if (texture == null)
+                    {
+                        for (Link l : links)
+                        {
+                            if (l.path.toLowerCase().endsWith(".png"))
+                            {
+                                String base = basename(l.path).toLowerCase();
+                                String baseNoExt = stripExtension(base);
+                                if (base.equals(tnLower) || baseNoExt.equals(tnBase))
+                                {
+                                    texture = l;
+                                    System.out.println("[MiModelLoader] Found texture by basename: " + l.toString());
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -139,6 +161,18 @@ public class MiModelLoader implements IModelLoader
         }
 
         return null;
+    }
+
+    private static String basename(String path)
+    {
+        int slash = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        return slash >= 0 ? path.substring(slash + 1) : path;
+    }
+
+    private static String stripExtension(String name)
+    {
+        int dot = name.lastIndexOf('.');
+        return dot >= 0 ? name.substring(0, dot) : name;
     }
 
     private Vector3f swapYZ(Vector3f v)
@@ -272,6 +306,22 @@ public class MiModelLoader implements IModelLoader
             if (uvList.size() >= 2)
             {
                 Vector2f uv = new Vector2f(uvList.getFloat(0), uvList.getFloat(1));
+
+                float depth = 0F;
+                if (data.has("from") && data.has("to"))
+                {
+                    ListType fromData = data.getList("from");
+                    ListType toData = data.getList("to");
+                    if (fromData.size() >= 3 && toData.size() >= 3)
+                    {
+                        depth = Math.abs(toData.getFloat(2) - fromData.getFloat(2));
+                    }
+                }
+
+                float dPixels = (float) Math.floor(depth);
+                uv.x -= dPixels;
+                uv.y -= dPixels;
+
                 boolean mirror = data.has("texture_mirror") && data.getBool("texture_mirror");
                 cube.setupBoxUV(uv, mirror);
             }
