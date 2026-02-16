@@ -247,6 +247,7 @@ public class MiModelLoader implements IModelLoader
         
         Vector3f from = new Vector3f();
         Vector3f to = new Vector3f();
+        float planeDepthScale = 1F;
         
         if (data.has("from")) from.set(DataStorageUtils.vector3fFromData(data.getList("from")));
         if (data.has("to")) to.set(DataStorageUtils.vector3fFromData(data.getList("to")));
@@ -261,6 +262,12 @@ public class MiModelLoader implements IModelLoader
         if (data.has("scale"))
         {
             Vector3f scale = DataStorageUtils.vector3fFromData(data.getList("scale"));
+
+            if (type.equals("plane"))
+            {
+                planeDepthScale = Math.abs(scale.z);
+            }
+
             from.mul(scale);
             to.mul(scale);
         }
@@ -330,6 +337,9 @@ public class MiModelLoader implements IModelLoader
                 }
                 else
                 {
+                    boolean is3d = data.has("3d") && data.getBool("3d");
+                    boolean thinDetail = is3d && planeDepthScale < 0.2F;
+
                     float dx = Math.abs(to.x - from.x);
                     float dy = Math.abs(to.y - from.y);
                     float dz = Math.abs(to.z - from.z);
@@ -357,9 +367,7 @@ public class MiModelLoader implements IModelLoader
                     planeUV.origin.set(uv.x, uv.y);
                     planeUV.size.set((float) Math.floor(w), (float) Math.floor(h));
 
-                    boolean is3d = data.has("3d") && data.getBool("3d");
-
-                    if (is3d)
+                    if (is3d && !thinDetail)
                     {
                         cube.front = planeUV;
                         cube.back = planeUV.copy();
@@ -381,7 +389,8 @@ public class MiModelLoader implements IModelLoader
         if (type.equals("plane"))
         {
             boolean is3d = data.has("3d") && data.getBool("3d");
-            float thickness = is3d ? 1F : 0.01F;
+            boolean thinDetail = is3d && planeDepthScale < 0.2F;
+            float thickness = (is3d && !thinDetail) ? 1F : 0.01F;
 
             float sx = Math.abs(cube.size.x);
             float sy = Math.abs(cube.size.y);
