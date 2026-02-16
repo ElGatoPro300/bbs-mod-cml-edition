@@ -901,7 +901,7 @@ public class UIReplaysEditor extends UIElement
             UIAnimationToPoseOverlayPanel.IUIAnimationPoseCallback cb = (animationKey, onlyKeyframes, length, step) ->
                 this.animationToPoseKeyframes(modelForm, sheet, animationKey, onlyKeyframes, length, step);
 
-            UIOverlay.addOverlay(this.getContext(), new UIAnimationToPoseOverlayPanel(cb, modelForm, sheet), 200, 197);
+            UIOverlay.addOverlay(this.getContext(), new UIAnimationToPoseOverlayPanel(cb, modelForm, sheet), 260, 260);
         }
     }
 
