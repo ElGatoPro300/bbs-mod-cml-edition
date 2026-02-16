@@ -14,6 +14,8 @@ import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.IOUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.resources.Pixels;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -39,6 +41,18 @@ public class MiModelLoader implements IModelLoader
 
         if (miLink == null)
         {
+            for (Link l : links)
+            {
+                if (l.path.endsWith(".miobject"))
+                {
+                    miLink = l;
+                    break;
+                }
+            }
+        }
+
+        if (miLink == null)
+        {
             System.err.println("[MiModelLoader] No .mimodel file found in links for: " + id);
             return null;
         }
@@ -54,6 +68,8 @@ public class MiModelLoader implements IModelLoader
             {
                 MapType map = data.asMap();
                 Model cubicModel = new Model(models.parser);
+                Link texture = null;
+                Pixels pixels = null;
                 
                 // Parse texture size
                 if (map.has("texture_size"))
@@ -66,35 +82,8 @@ public class MiModelLoader implements IModelLoader
                         System.out.println("[MiModelLoader] Texture size: " + cubicModel.textureWidth + "x" + cubicModel.textureHeight);
                     }
                 }
-                
-                // Parse parts
-                if (map.has("parts"))
-                {
-                    Vector3f rootOrigin = new Vector3f();
 
-                    for (BaseType part : map.getList("parts"))
-                    {
-                        if (part.isMap())
-                        {
-                            ModelGroup group = this.parseGroup(part.asMap(), cubicModel, null, rootOrigin);
-                            if (group != null)
-                            {
-                                cubicModel.topGroups.add(group);
-                            }
-                        }
-                    }
-                }
-
-                if (cubicModel.topGroups.isEmpty()) {
-                    System.err.println("[MiModelLoader] WARNING: No top-level groups loaded! Model will be invisible.");
-                } else {
-                    System.out.println("[MiModelLoader] Loaded " + cubicModel.topGroups.size() + " top-level groups.");
-                }
-                
-                cubicModel.initialize();
-                
                 // Find texture
-                Link texture = null;
                 if (map.has("texture"))
                 {
                     String textureName = map.getString("texture");
@@ -134,19 +123,66 @@ public class MiModelLoader implements IModelLoader
                 }
                 
                 // Fallback: Try to find ANY png if explicit texture is missing
-                if (texture == null) {
+                if (texture == null)
+                {
                     System.out.println("[MiModelLoader] Explicit texture not found. Searching for any PNG...");
-                    for (Link l : links) {
-                        if (l.path.endsWith(".png")) {
+                    for (Link l : links)
+                    {
+                        if (l.path.endsWith(".png"))
+                        {
                             texture = l;
                             System.out.println("[MiModelLoader] Using fallback texture: " + l.toString());
                             break;
                         }
                     }
                 }
+                
+                if (texture == null)
+                {
+                    System.err.println("[MiModelLoader] CRITICAL: No texture found for model " + id + ". It might render black or invisible.");
+                }
+                else if (cubicModel.textureWidth > 0 && cubicModel.textureHeight > 0)
+                {
+                    try (InputStream texStream = models.provider.getAsset(texture))
+                    {
+                        pixels = Pixels.fromPNGStream(texStream);
+                    }
+                    catch (Exception e)
+                    {
+                        System.err.println("[MiModelLoader] Failed to read texture pixels for alpha extrusion: " + texture);
+                        e.printStackTrace();
+                    }
+                }
+                
+                // Parse parts
+                if (map.has("parts"))
+                {
+                    Vector3f rootOrigin = new Vector3f();
 
-                if (texture == null) {
-                     System.err.println("[MiModelLoader] CRITICAL: No texture found for model " + id + ". It might render black or invisible.");
+                    for (BaseType part : map.getList("parts"))
+                    {
+                        if (part.isMap())
+                        {
+                            ModelGroup group = this.parseGroup(part.asMap(), cubicModel, null, rootOrigin, pixels);
+                            if (group != null)
+                            {
+                                cubicModel.topGroups.add(group);
+                            }
+                        }
+                    }
+                }
+
+                if (cubicModel.topGroups.isEmpty()) {
+                    System.err.println("[MiModelLoader] WARNING: No top-level groups loaded! Model will be invisible.");
+                } else {
+                    System.out.println("[MiModelLoader] Loaded " + cubicModel.topGroups.size() + " top-level groups.");
+                }
+                
+                cubicModel.initialize();
+
+                if (pixels != null)
+                {
+                    pixels.delete();
                 }
                 
                 ModelInstance instance = new ModelInstance(id, cubicModel, new Animations(models.parser), texture);
@@ -181,7 +217,7 @@ public class MiModelLoader implements IModelLoader
         return new Vector3f(-v.x, v.y, -v.z);
     }
 
-    private ModelGroup parseGroup(MapType data, Model model, ModelGroup parent, Vector3f parentOrigin)
+    private ModelGroup parseGroup(MapType data, Model model, ModelGroup parent, Vector3f parentOrigin, Pixels pixels)
     {
         String name = data.getString("name");
         System.out.println("[MiModelLoader] Parsing group: " + name);
@@ -211,7 +247,7 @@ public class MiModelLoader implements IModelLoader
             {
                 if (shapeData.isMap())
                 {
-                    ModelCube cube = this.parseCube(shapeData.asMap(), model, groupOriginAbs);
+                    ModelCube cube = this.parseCube(shapeData.asMap(), model, groupOriginAbs, pixels);
                     if (cube != null)
                     {
                         group.cubes.add(cube);
@@ -227,7 +263,7 @@ public class MiModelLoader implements IModelLoader
             {
                 if (part.isMap())
                 {
-                    ModelGroup child = this.parseGroup(part.asMap(), model, group, groupOriginAbs);
+                    ModelGroup child = this.parseGroup(part.asMap(), model, group, groupOriginAbs, pixels);
                     if (child != null)
                     {
                         group.children.add(child);
@@ -239,7 +275,7 @@ public class MiModelLoader implements IModelLoader
         return group;
     }
 
-    private ModelCube parseCube(MapType data, Model model, Vector3f groupOriginAbs)
+    private ModelCube parseCube(MapType data, Model model, Vector3f groupOriginAbs, Pixels pixels)
     {
         String type = data.has("type") ? data.getString("type") : "unknown";
 
@@ -248,6 +284,9 @@ public class MiModelLoader implements IModelLoader
         Vector3f from = new Vector3f();
         Vector3f to = new Vector3f();
         float planeDepthScale = 1F;
+        boolean is3dPlane = false;
+        boolean thinDetailPlane = false;
+        ModelUV planeFace = null;
         
         if (data.has("from")) from.set(DataStorageUtils.vector3fFromData(data.getList("from")));
         if (data.has("to")) to.set(DataStorageUtils.vector3fFromData(data.getList("to")));
@@ -340,6 +379,9 @@ public class MiModelLoader implements IModelLoader
                     boolean is3d = data.has("3d") && data.getBool("3d");
                     boolean thinDetail = is3d && planeDepthScale < 0.2F;
 
+                    is3dPlane = is3d;
+                    thinDetailPlane = thinDetail;
+
                     float dx = Math.abs(to.x - from.x);
                     float dy = Math.abs(to.y - from.y);
                     float dz = Math.abs(to.z - from.z);
@@ -371,12 +413,10 @@ public class MiModelLoader implements IModelLoader
                     face.origin.set(uv.x, uv.y);
                     face.size.set(w, h);
 
+                    planeFace = face;
+
                     if (!is3d || thinDetail)
                     {
-                        /* Plano casi 2D:
-                         *  - sin 3D: solo una cara visible
-                         *  - con 3D fino: cara principal y su reverso para evitar caras vacías
-                         */
                         if (thinAxis == 2)
                         {
                             cube.front = face;
@@ -395,9 +435,6 @@ public class MiModelLoader implements IModelLoader
                     }
                     else
                     {
-                        /* Plano 3D “gordo”: textura completa en las 6 caras.
-                         * Es más simple y evita que alguna cara quede sin UV.
-                         */
                         cube.front = face;
                         cube.back = face.copy();
                         cube.left = face.copy();
@@ -409,6 +446,40 @@ public class MiModelLoader implements IModelLoader
             }
         }
         
+        /* Alpha-based culling for fully transparent 3D planes */
+        if (type.equals("plane") && is3dPlane && !thinDetailPlane && pixels != null && planeFace != null)
+        {
+            int texW = pixels.width;
+            int texH = pixels.height;
+
+            int startX = Math.max(0, (int) planeFace.origin.x);
+            int startY = Math.max(0, (int) planeFace.origin.y);
+            int endX = Math.min(texW, (int) Math.ceil(planeFace.origin.x + planeFace.size.x));
+            int endY = Math.min(texH, (int) Math.ceil(planeFace.origin.y + planeFace.size.y));
+
+            boolean hasOpaque = false;
+
+            for (int x = startX; x < endX && !hasOpaque; x++)
+            {
+                for (int y = startY; y < endY; y++)
+                {
+                    Color c = pixels.getColor(x, y);
+
+                    if (c != null && c.a > 0.01F)
+                    {
+                        hasOpaque = true;
+
+                        break;
+                    }
+                }
+            }
+
+            if (!hasOpaque)
+            {
+                return null;
+            }
+        }
+
         cube.origin.set(min);
 
         if (type.equals("plane"))
