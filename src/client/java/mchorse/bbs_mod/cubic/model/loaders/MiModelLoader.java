@@ -5,6 +5,7 @@ import mchorse.bbs_mod.cubic.data.animation.Animations;
 import mchorse.bbs_mod.cubic.data.model.Model;
 import mchorse.bbs_mod.cubic.data.model.ModelCube;
 import mchorse.bbs_mod.cubic.data.model.ModelGroup;
+import mchorse.bbs_mod.cubic.data.model.ModelUV;
 import mchorse.bbs_mod.cubic.model.ModelManager;
 import mchorse.bbs_mod.data.DataStorageUtils;
 import mchorse.bbs_mod.data.DataToString;
@@ -307,23 +308,71 @@ public class MiModelLoader implements IModelLoader
             {
                 Vector2f uv = new Vector2f(uvList.getFloat(0), uvList.getFloat(1));
 
-                float depth = 0F;
-                if (data.has("from") && data.has("to"))
+                if (!type.equals("plane"))
                 {
-                    ListType fromData = data.getList("from");
-                    ListType toData = data.getList("to");
-                    if (fromData.size() >= 3 && toData.size() >= 3)
+                    float depth = 0F;
+                    if (data.has("from") && data.has("to"))
                     {
-                        depth = Math.abs(toData.getFloat(2) - fromData.getFloat(2));
+                        ListType fromData = data.getList("from");
+                        ListType toData = data.getList("to");
+                        if (fromData.size() >= 3 && toData.size() >= 3)
+                        {
+                            depth = Math.abs(toData.getFloat(2) - fromData.getFloat(2));
+                        }
+                    }
+
+                    float dPixels = (float) Math.floor(depth);
+                    uv.x -= dPixels;
+                    uv.y -= dPixels;
+
+                    boolean mirror = data.has("texture_mirror") && data.getBool("texture_mirror");
+                    cube.setupBoxUV(uv, mirror);
+                }
+                else
+                {
+                    float dx = Math.abs(to.x - from.x);
+                    float dy = Math.abs(to.y - from.y);
+                    float dz = Math.abs(to.z - from.z);
+
+                    float w;
+                    float h;
+
+                    if (dz < dx && dz < dy)
+                    {
+                        w = dx;
+                        h = dy;
+                    }
+                    else if (dx < dy && dx < dz)
+                    {
+                        w = dz;
+                        h = dy;
+                    }
+                    else
+                    {
+                        w = dx;
+                        h = dz;
+                    }
+
+                    ModelUV planeUV = new ModelUV();
+                    planeUV.origin.set(uv.x, uv.y);
+                    planeUV.size.set((float) Math.floor(w), (float) Math.floor(h));
+
+                    boolean is3d = data.has("3d") && data.getBool("3d");
+
+                    if (is3d)
+                    {
+                        cube.front = planeUV;
+                        cube.back = planeUV.copy();
+                        cube.left = planeUV.copy();
+                        cube.right = planeUV.copy();
+                        cube.top = planeUV.copy();
+                        cube.bottom = planeUV.copy();
+                    }
+                    else
+                    {
+                        cube.front = planeUV;
                     }
                 }
-
-                float dPixels = (float) Math.floor(depth);
-                uv.x -= dPixels;
-                uv.y -= dPixels;
-
-                boolean mirror = data.has("texture_mirror") && data.getBool("texture_mirror");
-                cube.setupBoxUV(uv, mirror);
             }
         }
         
@@ -331,10 +380,42 @@ public class MiModelLoader implements IModelLoader
 
         if (type.equals("plane"))
         {
-             float minThickness = 0.01f;
-             if (Math.abs(cube.size.x) < minThickness) cube.size.x = minThickness;
-             if (Math.abs(cube.size.y) < minThickness) cube.size.y = minThickness;
-             if (Math.abs(cube.size.z) < minThickness) cube.size.z = minThickness;
+            boolean is3d = data.has("3d") && data.getBool("3d");
+            float thickness = is3d ? 1F : 0.01F;
+
+            float sx = Math.abs(cube.size.x);
+            float sy = Math.abs(cube.size.y);
+            float sz = Math.abs(cube.size.z);
+
+            int thinAxis = 0;
+            float minSize = sx;
+
+            if (sy < minSize)
+            {
+                thinAxis = 1;
+                minSize = sy;
+            }
+
+            if (sz < minSize)
+            {
+                thinAxis = 2;
+            }
+
+            if (thinAxis == 0)
+            {
+                cube.origin.x -= thickness / 2F;
+                cube.size.x = thickness;
+            }
+            else if (thinAxis == 1)
+            {
+                cube.origin.y -= thickness / 2F;
+                cube.size.y = thickness;
+            }
+            else
+            {
+                cube.origin.z -= thickness / 2F;
+                cube.size.z = thickness;
+            }
         }
         
         cube.pivot.set(cubeOriginAbs);
