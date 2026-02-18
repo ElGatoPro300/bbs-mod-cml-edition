@@ -27,6 +27,7 @@ import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.L10n;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.utils.CollectionUtils;
@@ -1100,9 +1101,11 @@ public class UIPoseEditor extends UIElement
 
             if (context.mouseX >= iconX && context.mouseX < iconX + 16 && context.mouseY >= iconY && context.mouseY < iconY + 16)
             {
-                UIPoseEditor.this.toggleBoneMarked(element);
-
-                return true;
+                if (Window.isShiftPressed())
+                {
+                    UIPoseEditor.this.toggleBoneMarked(element);
+                    return true;
+                }
             }
 
             return super.subMouseClicked(context);
