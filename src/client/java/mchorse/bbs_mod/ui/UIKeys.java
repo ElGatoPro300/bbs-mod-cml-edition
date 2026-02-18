@@ -331,6 +331,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_REPLAY = L10n.lang("bbs.ui.film.replay.replay");
     public static final IKey FILM_REPLAY_SHADOW = L10n.lang("bbs.ui.film.replay.shadow");
     public static final IKey FILM_REPLAY_SHADOW_SIZE = L10n.lang("bbs.ui.film.replay.shadow_size");
+    public static final IKey FILM_REPLAY_SHADOW_OPACITY = L10n.lang("bbs.ui.film.replay.shadow_opacity");
     public static final IKey FILM_REPLAY_TITLE = L10n.lang("bbs.ui.film.replay.title");
     public static final IKey FILM_REPLAY_DROP_VELOCITY = L10n.lang("bbs.ui.film.replay.drop_velocity");
     public static final IKey FILM_REPLAY_DROP_VELOCITY_MIN_X = L10n.lang("bbs.ui.film.replay.drop_velocity_min_x");
@@ -354,6 +355,7 @@ public class UIKeys
     public static final IKey FILM_LAYOUT_VERTICAL_LEFT = L10n.lang("bbs.ui.film.layout.vertical_left");
     public static final IKey FILM_LAYOUT_VERTICAL_RIGHT = L10n.lang("bbs.ui.film.layout.vertical_right");
     public static final IKey FILM_LAYOUT_VERTICAL_MIDDLE = L10n.lang("bbs.ui.film.layout.vertical_middle");
+    public static final IKey FILM_LAYOUT_INVERT = L10n.lang("bbs.ui.film.layout.invert");
     public static final IKey FILM_LAYOUT_LOCK = L10n.lang("bbs.ui.film.layout.lock");
     public static final IKey FILM_LAYOUT_UNLOCK = L10n.lang("bbs.ui.film.layout.unlock");
     public static final IKey FILM_VIDEO_RECORDING = L10n.lang("bbs.ui.film.video_recording");
@@ -1066,6 +1068,7 @@ public class UIKeys
     public static final IKey TEXTURES_KEYS_REDO = L10n.lang("bbs.ui.textures.keys.redo");
     public static final IKey TEXTURES_KEYS_SWAP = L10n.lang("bbs.ui.textures.keys.swap");
     public static final IKey TEXTURES_KEYS_UNDO = L10n.lang("bbs.ui.textures.keys.undo");
+    public static final IKey TEXTURES_BRUSH_SIZE = L10n.lang("bbs.ui.textures.brush_size");
     public static final IKey TEXTURES_LINEAR = L10n.lang("bbs.ui.textures.linear");
     public static final IKey TEXTURES_MIPMAP = L10n.lang("bbs.ui.textures.mipmap");
     public static final IKey TEXTURES_RESIZE = L10n.lang("bbs.ui.textures.resize");
@@ -1129,6 +1132,7 @@ public class UIKeys
     public static final IKey UTILITY_OPEN_FOLDER = L10n.lang("studio.ui.utility.open_folder");
     public static final IKey UTILITY_OPEN_GAME_FOLDER = L10n.lang("studio.ui.utility.open_game_folder");
     public static final IKey UTILITY_OPEN_MODELS_FOLDER = L10n.lang("studio.ui.utility.open_models_folder");
+    public static final IKey UTILITY_OPEN_VIDEO_FOLDER = L10n.lang("studio.ui.utility.open_video_folder");
     public static final IKey UTILITY_RELOAD_LABEL = L10n.lang("studio.ui.utility.reload");
     public static final IKey UTILITY_RELOAD_LANG = L10n.lang("studio.ui.utility.reload_lang");
     public static final IKey UTILITY_RELOAD_MODELS = L10n.lang("studio.ui.utility.reload_models");

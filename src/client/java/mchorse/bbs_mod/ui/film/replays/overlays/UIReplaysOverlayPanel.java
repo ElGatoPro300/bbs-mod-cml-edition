@@ -42,6 +42,7 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
     public UITextbox nameTag;
     public UIToggle shadow;
     public UITrackpad shadowSize;
+    public UITrackpad shadowOpacity;
     public UIElement loopingLabel;
     public UITrackpad looping;
     public UIToggle actor;
@@ -109,6 +110,8 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
         this.shadow = new UIToggle(UIKeys.FILM_REPLAY_SHADOW, (b) -> this.edit((replay) -> replay.shadow.set(b.getValue())));
         this.shadowSize = new UITrackpad((v) -> this.edit((replay) -> replay.shadowSize.set(v.floatValue())));
         this.shadowSize.tooltip(UIKeys.FILM_REPLAY_SHADOW_SIZE);
+        this.shadowOpacity = new UITrackpad((v) -> this.edit((replay) -> replay.shadowOpacity.set(v.floatValue())));
+        this.shadowOpacity.limit(0F, 1F).tooltip(UIKeys.FILM_REPLAY_SHADOW_OPACITY);
         this.looping = new UITrackpad((v) -> this.edit((replay) -> replay.looping.set(v.intValue())));
         this.looping.limit(0).integer().tooltip(UIKeys.FILM_REPLAY_LOOPING_TOOLTIP);
         this.actor = new UIToggle(UIKeys.FILM_REPLAY_ACTOR, (b) -> this.edit((replay) -> replay.actor.set(b.getValue())));
@@ -167,7 +170,7 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
             this.replayLabel,
             this.pickEdit, this.enabled,
             this.label, this.nameTag,
-            this.shadow, this.shadowSize,
+            this.shadow, this.shadowSize, this.shadowOpacity,
             this.loopingLabel,
             this.looping, this.actor, this.fp,
             this.relative, this.relativeRow,
@@ -253,6 +256,7 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
                 this.nameTag.setText(replay.nameTag.get());
                 this.shadow.setValue(replay.shadow.get());
                 this.shadowSize.setValue(replay.shadowSize.get());
+                this.shadowOpacity.setValue(replay.shadowOpacity.get());
                 this.looping.setValue(replay.looping.get());
                 this.actor.setValue(replay.actor.get());
                 this.fp.setValue(replay.fp.get());
