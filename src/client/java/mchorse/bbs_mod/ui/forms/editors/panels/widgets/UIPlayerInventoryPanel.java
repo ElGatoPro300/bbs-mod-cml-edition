@@ -292,7 +292,7 @@ public class UIPlayerInventoryPanel extends UIOverlayPanel
                 int itemY = this.area.y + 1;
 
                 context.batcher.getContext().drawItem(stack, itemX, itemY);
-                context.batcher.getContext().drawItemInSlot(context.batcher.getFont().getRenderer(), stack, itemX, itemY);
+                context.batcher.getContext().drawStackOverlay(context.batcher.getFont().getRenderer(), stack, itemX, itemY);
 
                 if (hovered)
                 {
