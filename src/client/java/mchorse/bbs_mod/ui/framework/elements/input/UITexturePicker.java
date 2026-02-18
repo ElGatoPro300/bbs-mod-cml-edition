@@ -763,6 +763,11 @@ public class UITexturePicker extends UIElement implements IImportPathProvider
         int index = this.picker.getIndex() + factor;
         int length = this.picker.getList().size();
 
+        if (length <= 0)
+        {
+            return true;
+        }
+
         if (index < 0) index = length - 1;
         else if (index >= length) index = 0;
 
@@ -770,6 +775,14 @@ public class UITexturePicker extends UIElement implements IImportPathProvider
 
         this.picker.setIndex(index);
         this.picker.scroll.scrollIntoView(index * this.picker.scroll.scrollItemSize);
+
+        UIFileLinkList.FileLink link = this.picker.getCurrentFirst();
+
+        if (link != null && !link.folder)
+        {
+            this.selectCurrent(link.link);
+        }
+
         this.typed = "";
 
         return true;

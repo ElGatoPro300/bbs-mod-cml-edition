@@ -39,6 +39,7 @@ public class Replay extends ValueGroup
     public final ValueString group = new ValueString("group", "");
     public final ValueBoolean shadow = new ValueBoolean("shadow", true);
     public final ValueFloat shadowSize = new ValueFloat("shadow_size", 0.5F);
+    public final ValueFloat shadowOpacity = new ValueFloat("shadow_opacity", 1F, 0F, 1F);
     public final ValueInt looping = new ValueInt("looping", 0);
 
     public final ValueBoolean actor = new ValueBoolean("actor", false);
@@ -78,6 +79,7 @@ public class Replay extends ValueGroup
         this.add(this.group);
         this.add(this.shadow);
         this.add(this.shadowSize);
+        this.add(this.shadowOpacity);
         this.add(this.looping);
 
         this.add(this.actor);

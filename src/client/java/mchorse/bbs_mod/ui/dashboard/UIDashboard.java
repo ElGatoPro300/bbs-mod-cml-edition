@@ -136,7 +136,7 @@ public class UIDashboard extends UIBaseMenu
                 return;
             }
 
-            UIOverlay.addOverlay(this.context, new UIUtilityOverlayPanel(UIKeys.UTILITY_TITLE, null), 240, 160);
+            UIOverlay.addOverlay(this.context, new UIUtilityOverlayPanel(UIKeys.UTILITY_TITLE, null), 240, 230);
         });
 
         this.showAnnoyingPopups();

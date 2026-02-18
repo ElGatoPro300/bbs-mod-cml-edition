@@ -35,21 +35,7 @@ public class UIItemStack extends UIElement
         {
             menu.action(Icons.SPHERE, UIKeys.ITEM_STACK_CONTEXT_INVENTORY, () ->
             {
-                this.opened = true;
-
-                UIPlayerInventoryPanel panel = new UIPlayerInventoryPanel((i) ->
-                {
-                    if (this.callback != null)
-                    {
-                        this.callback.accept(i);
-                    }
-
-                    this.setStack(i);
-                });
-
-                panel.onClose((a) -> this.opened = false);
-                UIOverlay.addOverlay(this.getContext(), panel, 0.23F, 0.5F);
-                UIUtils.playClick();
+                this.openInventoryPanel();
             });
 
             menu.action(Icons.PASTE, UIKeys.ITEM_STACK_CONTEXT_PASTE, () ->
@@ -105,6 +91,25 @@ public class UIItemStack extends UIElement
     public void setStack(ItemStack stack)
     {
         this.stack = stack == null ? ItemStack.EMPTY : stack.copy();
+    }
+
+    public void openInventoryPanel()
+    {
+        this.opened = true;
+
+        UIPlayerInventoryPanel panel = new UIPlayerInventoryPanel((i) ->
+        {
+            if (this.callback != null)
+            {
+                this.callback.accept(i);
+            }
+
+            this.setStack(i);
+        });
+
+        panel.onClose((a) -> this.opened = false);
+        UIOverlay.addOverlay(this.getContext(), panel, UIPlayerInventoryPanel.PANEL_WIDTH, UIPlayerInventoryPanel.PANEL_HEIGHT);
+        UIUtils.playClick();
     }
 
     protected boolean subMouseClicked(UIContext context)
