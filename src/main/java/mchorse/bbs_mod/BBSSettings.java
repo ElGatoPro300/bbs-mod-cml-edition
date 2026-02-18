@@ -298,6 +298,7 @@ public class BBSSettings
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
         poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
+        poseBonesFilterMarked.invisible();
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");

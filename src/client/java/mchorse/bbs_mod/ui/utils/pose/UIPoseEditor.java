@@ -1,7 +1,11 @@
 package mchorse.bbs_mod.ui.utils.pose;
 
+import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.cubic.IModel;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.resources.Link;
@@ -47,11 +51,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.io.File;
+import java.io.IOException;
 
 public class UIPoseEditor extends UIElement
 {
     private static String lastLimb = "";
     private static final Map<String, Set<String>> MARKED_BONES_CACHE = new HashMap<>();
+    private static final String MARKED_BONES_FILE = "marked_bones.json";
+    private static boolean MARKED_BONES_LOADED = false;
 
     public UISearchList<String> groups;
     public UIElement extra;
@@ -937,6 +945,7 @@ public class UIPoseEditor extends UIElement
 
     private void loadMarkedBonesCache()
     {
+        this.ensureMarkedBonesLoaded();
         this.markedBones.clear();
 
         Set<String> cached = MARKED_BONES_CACHE.get(this.getMarkedBonesCacheKey());
@@ -948,12 +957,94 @@ public class UIPoseEditor extends UIElement
 
     private void saveMarkedBonesCache()
     {
-        MARKED_BONES_CACHE.put(this.getMarkedBonesCacheKey(), new HashSet<>(this.markedBones));
+        this.ensureMarkedBonesLoaded();
+
+        String key = this.getMarkedBonesCacheKey();
+        if (key.isEmpty())
+        {
+            return;
+        }
+
+        if (this.markedBones.isEmpty())
+        {
+            MARKED_BONES_CACHE.remove(key);
+        }
+        else
+        {
+            MARKED_BONES_CACHE.put(key, new HashSet<>(this.markedBones));
+        }
+
+        this.saveMarkedBonesToFile();
     }
 
     private String getMarkedBonesCacheKey()
     {
         return this.group == null ? "" : this.group;
+    }
+
+    private void ensureMarkedBonesLoaded()
+    {
+        if (MARKED_BONES_LOADED)
+        {
+            return;
+        }
+
+        MARKED_BONES_LOADED = true;
+
+        try
+        {
+            BaseType type = DataToString.read(this.getMarkedBonesFile());
+
+            if (type != null && type.isMap())
+            {
+                MapType map = (MapType) type;
+
+                for (String key : map.keys())
+                {
+                    ListType list = map.getList(key);
+                    if (list == null)
+                    {
+                        continue;
+                    }
+
+                    Set<String> bones = new HashSet<>();
+                    for (int i = 0; i < list.size(); i++)
+                    {
+                        bones.add(list.getString(i));
+                    }
+
+                    if (!bones.isEmpty())
+                    {
+                        MARKED_BONES_CACHE.put(key, bones);
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+        }
+    }
+
+    private void saveMarkedBonesToFile()
+    {
+        MapType root = new MapType();
+
+        for (Map.Entry<String, Set<String>> entry : MARKED_BONES_CACHE.entrySet())
+        {
+            ListType list = new ListType();
+            for (String bone : entry.getValue())
+            {
+                list.addString(bone);
+            }
+            root.put(entry.getKey(), list);
+        }
+
+        DataToString.writeSilently(this.getMarkedBonesFile(), root, true);
+    }
+
+    private File getMarkedBonesFile()
+    {
+        return BBSMod.getSettingsPath(MARKED_BONES_FILE);
     }
 
     private class MarkableBoneList extends UIStringList
