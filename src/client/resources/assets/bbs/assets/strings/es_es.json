@@ -14,6 +14,8 @@
     "bbs.config.appearance.freeze_models": "Congelar modelos",
     "bbs.config.appearance.freeze_models-comment": "Cuando está habilitado, los modelos en el selector de formas no seguirán el mouse",
     "bbs.config.appearance.gizmos-comment": "Si están habilitados los elementos de ejes agarrables para la traslación, escala y rotación",
+    "bbs.config.appearance.gizmo_y_axis_horizontal": "Arrastre horizontal del eje Y",
+    "bbs.config.appearance.gizmo_y_axis_horizontal-comment": "Si está activado, al arrastrar el gizmo del eje Y se usará el movimiento horizontal del ratón en lugar del vertical",
     "bbs.config.appearance.hsv_color_picker": "Selector HSV",
     "bbs.config.appearance.hsv_color_picker-comment": "Cuando está habilitada, esta opción cambia todos los selectores de color para usar el modelo de color HSV en lugar de RGB, que es más intuitivo",
     "bbs.config.appearance.language": "Idioma",

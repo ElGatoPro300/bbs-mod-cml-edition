@@ -522,7 +522,20 @@ public class UIPropTransform extends UITransform
 
                     if (this.secondaryAxis == null)
                     {
-                        double delta = this.axis == Axis.Y ? factor * dy : factor * dx;
+                        double delta;
+
+                        if (this.axis == Axis.Y && BBSSettings.gizmoYAxisHorizontal.get())
+                        {
+                            delta = factor * dx;
+                        }
+                        else if (this.axis == Axis.Y)
+                        {
+                            delta = factor * dy;
+                        }
+                        else
+                        {
+                            delta = factor * dx;
+                        }
 
                         local.add(this.calculateLocalVector(delta, this.axis));
                     }
@@ -591,7 +604,14 @@ public class UIPropTransform extends UITransform
                             }
                             else if (this.axis == Axis.Y)
                             {
-                                vector3f.y -= factor * dy;
+                                if (BBSSettings.gizmoYAxisHorizontal.get())
+                                {
+                                    vector3f.y += factor * dx;
+                                }
+                                else
+                                {
+                                    vector3f.y -= factor * dy;
+                                }
                             }
                             else if (this.axis == Axis.Z)
                             {
