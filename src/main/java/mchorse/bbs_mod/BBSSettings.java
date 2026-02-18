@@ -122,6 +122,7 @@ public class BBSSettings
     public static ValueBoolean boneAnchoringEnabled;
     public static ValueBoolean anchorOverrideEnabled;
     public static ValueBoolean autoKeyframe;
+    public static ValueBoolean poseBonesFilterMarked;
     public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
@@ -296,6 +297,7 @@ public class BBSSettings
         boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", true);
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
+        poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");

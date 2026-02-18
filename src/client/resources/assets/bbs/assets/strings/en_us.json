@@ -1062,6 +1062,7 @@
     "bbs.ui.pose.context.paste": "Paste pose",
     "bbs.ui.pose.context.reset": "Reset pose",
     "bbs.ui.pose.context.save": "Save pose",
+    "bbs.ui.pose.bones.filter_marked_tooltip": "Show only marked bones",
     "bbs.ui.presets": "View presets...",
     "bbs.ui.presets.open": "Open presets folder...",
     "bbs.ui.presets.save": "Save as a preset...",

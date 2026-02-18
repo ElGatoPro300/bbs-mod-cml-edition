@@ -1016,6 +1016,7 @@
     "bbs.ui.pose.context.paste": "Pegar pose",
     "bbs.ui.pose.context.reset": "Restablecer pose",
     "bbs.ui.pose.context.save": "Guardar pose",
+    "bbs.ui.pose.bones.filter_marked_tooltip": "Mostrar solo huesos marcados",
     "bbs.ui.presets": "Ver ajustes preestablecidos...",
     "bbs.ui.presets.open": "Abrir carpeta de ajustes preestablecidos...",
     "bbs.ui.presets.save": "Guardar como un ajuste preestablecido...",
