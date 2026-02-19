@@ -194,7 +194,9 @@ public class FBXModelLoader implements IModelLoader
             {
                 for (Link l : links)
                 {
-                    if (l.path.endsWith(".png"))
+                String path = l.path.toLowerCase();
+
+                if (path.endsWith(".png") || path.endsWith(".jpg") || path.endsWith(".jpeg"))
                     {
                         textureLink = l;
                         break;
