@@ -1031,7 +1031,7 @@ public abstract class BaseFilmController
 
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
     {
-        float tick = replay.getTick(this.getTick()) + context.tickDelta();
+        float tick = replay.getTick(this.getTick()) + this.getTransition(entity, context.tickDelta());
 
         float shadowSize = replay.shadowSize.get();
         float shadowOpacity = replay.shadowOpacity.get();
