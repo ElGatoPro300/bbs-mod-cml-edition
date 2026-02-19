@@ -5,6 +5,8 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.option.CloudRenderMode;
+import net.minecraft.client.render.FrameGraphBuilder;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -42,7 +44,7 @@ public class WorldRendererMixin
     }
 
     @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    public void onRenderClouds(MatrixStack matrices, Matrix4f positionMatrix, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info)
+    public void onRenderClouds(FrameGraphBuilder frameGraphBuilder, Matrix4f positionMatrix, Matrix4f projectionMatrix, CloudRenderMode mode, Vec3d cameraPos, float tickDelta, int color, float cloudHeight, CallbackInfo info)
     {
         if (!BBSSettings.chromaSkyClouds.get())
         {
