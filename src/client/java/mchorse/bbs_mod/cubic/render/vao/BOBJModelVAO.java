@@ -3,7 +3,9 @@ package mchorse.bbs_mod.cubic.render.vao;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mchorse.bbs_mod.bobj.BOBJArmature;
+import mchorse.bbs_mod.bobj.BOBJBone;
 import mchorse.bbs_mod.bobj.BOBJLoader;
+import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.joml.Matrices;
@@ -14,6 +16,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
 
@@ -49,6 +52,7 @@ public class BOBJModelVAO
     private int[] tmpLight;
     private float[] tmpTangents;
     private float[] tmpColors;
+    private int[] tmpBones;
 
     public BOBJModelVAO(BOBJLoader.CompiledData data, BOBJArmature armature)
     {
@@ -85,6 +89,7 @@ public class BOBJModelVAO
         this.tmpLight = new int[this.data.posData.length];
         this.tmpTangents = new float[this.count * 4];
         this.tmpColors = new float[this.count * 4];
+        this.tmpBones = new int[this.count];
 
         GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, this.vertexBuffer);
         GL30.glBufferData(GL30.GL_ARRAY_BUFFER, this.data.posData, GL30.GL_DYNAMIC_DRAW);
@@ -232,6 +237,8 @@ public class BOBJModelVAO
                 this.tmpColors[i * 4 + 2] = 1F;
                 this.tmpColors[i * 4 + 3] = 1F;
             }
+
+            this.tmpBones[i] = lightBone;
         }
 
         this.processData(newVertices, newNormals);
@@ -370,9 +377,93 @@ public class BOBJModelVAO
         /* Opaque pass first (only if global alpha is 1) */
         if (!globalTranslucent && this.opaqueIndexCount > 0)
         {
-            org.lwjgl.opengl.GL11.glCullFace(org.lwjgl.opengl.GL11.GL_BACK);
-            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.opaqueIndexBuffer);
-            GL30.glDrawElements(GL30.GL_TRIANGLES, this.opaqueIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+            GL11.glCullFace(GL11.GL_BACK);
+
+            boolean hasBoneTextures = false;
+
+            for (BOBJBone bone : this.armature.orderedBones)
+            {
+                if (bone.texture != null)
+                {
+                    hasBoneTextures = true;
+                    break;
+                }
+            }
+
+            if (!hasBoneTextures)
+            {
+                GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.opaqueIndexBuffer);
+                GL30.glDrawElements(GL30.GL_TRIANGLES, this.opaqueIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+            }
+            else
+            {
+                int triCount = this.opaqueIndexCount / 3;
+                int[] baseIdx = this.cachedOpaqueIdx;
+                int[] indices = new int[this.opaqueIndexCount];
+                int prevTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+
+                for (BOBJBone bone : this.armature.orderedBones)
+                {
+                    if (bone.texture == null)
+                    {
+                        continue;
+                    }
+
+                    int boneIndex = bone.index;
+                    int countIdx = 0;
+
+                    for (int t = 0; t < triCount; t++)
+                    {
+                        int i0 = baseIdx[t * 3];
+                        int i1 = baseIdx[t * 3 + 1];
+                        int i2 = baseIdx[t * 3 + 2];
+                        int triBone = this.getTriangleBone(i0, i1, i2);
+
+                        if (triBone == boneIndex)
+                        {
+                            indices[countIdx++] = i0;
+                            indices[countIdx++] = i1;
+                            indices[countIdx++] = i2;
+                        }
+                    }
+
+                    if (countIdx > 0)
+                    {
+                        BBSModClient.getTextures().bindTexture(bone.texture);
+                        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.opaqueIndexBuffer);
+                        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, java.util.Arrays.copyOf(indices, countIdx), GL15.GL_DYNAMIC_DRAW);
+                        GL30.glDrawElements(GL30.GL_TRIANGLES, countIdx, GL30.GL_UNSIGNED_INT, 0L);
+                    }
+                }
+
+                int defaultCount = 0;
+
+                for (int t = 0; t < triCount; t++)
+                {
+                    int i0 = baseIdx[t * 3];
+                    int i1 = baseIdx[t * 3 + 1];
+                    int i2 = baseIdx[t * 3 + 2];
+                    int triBone = this.getTriangleBone(i0, i1, i2);
+                    BOBJBone bone = triBone >= 0 && triBone < this.armature.orderedBones.size() ? this.armature.orderedBones.get(triBone) : null;
+
+                    if (bone == null || bone.texture == null)
+                    {
+                        indices[defaultCount++] = i0;
+                        indices[defaultCount++] = i1;
+                        indices[defaultCount++] = i2;
+                    }
+                }
+
+                if (defaultCount > 0)
+                {
+                    GL11.glBindTexture(GL11.GL_TEXTURE_2D, prevTexture);
+                    GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.opaqueIndexBuffer);
+                    GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, java.util.Arrays.copyOf(indices, defaultCount), GL15.GL_DYNAMIC_DRAW);
+                    GL30.glDrawElements(GL30.GL_TRIANGLES, defaultCount, GL30.GL_UNSIGNED_INT, 0L);
+                }
+
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, prevTexture);
+            }
         }
 
         /* Translucent pass */
@@ -420,11 +511,11 @@ public class BOBJModelVAO
 
             com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
 
-            org.lwjgl.opengl.GL11.glCullFace(org.lwjgl.opengl.GL11.GL_FRONT);
+            GL11.glCullFace(GL11.GL_FRONT);
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
             GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
 
-            org.lwjgl.opengl.GL11.glCullFace(org.lwjgl.opengl.GL11.GL_BACK);
+            GL11.glCullFace(GL11.GL_BACK);
             GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
 
             com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
@@ -469,5 +560,34 @@ public class BOBJModelVAO
         tmp.set(verts[i2 * 3], verts[i2 * 3 + 1], verts[i2 * 3 + 2], 1f).mul(mv);
         z += tmp.z;
         return z / 3f;
+    }
+
+    private int getTriangleBone(int v0, int v1, int v2)
+    {
+        int b0 = v0 >= 0 && v0 < this.tmpBones.length ? this.tmpBones[v0] : -1;
+        int b1 = v1 >= 0 && v1 < this.tmpBones.length ? this.tmpBones[v1] : -1;
+        int b2 = v2 >= 0 && v2 < this.tmpBones.length ? this.tmpBones[v2] : -1;
+
+        if (b0 == b1 || b0 == b2)
+        {
+            return b0;
+        }
+
+        if (b1 == b2)
+        {
+            return b1;
+        }
+
+        if (b0 != -1)
+        {
+            return b0;
+        }
+
+        if (b1 != -1)
+        {
+            return b1;
+        }
+
+        return b2;
     }
 }

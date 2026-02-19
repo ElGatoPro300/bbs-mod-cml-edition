@@ -128,22 +128,25 @@ public class UITexturePicker extends UIElement implements IImportPathProvider
         for (Link link : BBSMod.getProvider().getLinksFromPath(Link.assets("")))
         {
             String string = link.toString();
+            String lower = string.toLowerCase();
 
-            if (string.endsWith(".png") && !string.contains(":textures/banners/")) list.add(string);
+            if (!string.contains(":textures/banners/") && (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".jpeg"))) list.add(string);
         }
 
         for (Link link : BBSMod.getProvider().getLinksFromPath(new Link("http", "")))
         {
             String string = link.toString();
+            String lower = string.toLowerCase();
 
-            if (string.contains(".png")) list.add(string);
+            if (lower.contains(".png") || lower.contains(".jpg") || lower.contains(".jpeg")) list.add(string);
         }
 
         for (Link link : BBSMod.getProvider().getLinksFromPath(new Link("https", "")))
         {
             String string = link.toString();
+            String lower = string.toLowerCase();
 
-            if (string.contains(".png")) list.add(string);
+            if (lower.contains(".png") || lower.contains(".jpg") || lower.contains(".jpeg")) list.add(string);
         }
 
         UIListOverlayPanel panel = new UIListOverlayPanel(UIKeys.TEXTURE_FIND_TITLE, callback);
@@ -219,7 +222,12 @@ public class UITexturePicker extends UIElement implements IImportPathProvider
                 UITexturePicker.this.updateFolderButton();
             }
         };
-        this.picker.filter((l) -> l.path.endsWith("/") || l.path.endsWith(".png")).cancelScrollEdge();
+        this.picker.filter((l) ->
+        {
+            String path = l.path.toLowerCase();
+
+            return path.endsWith("/") || path.endsWith(".png") || path.endsWith(".jpg") || path.endsWith(".jpeg");
+        }).cancelScrollEdge();
 
         this.linear = new UIToggle(UIKeys.TEXTURES_LINEAR, (b) ->
         {

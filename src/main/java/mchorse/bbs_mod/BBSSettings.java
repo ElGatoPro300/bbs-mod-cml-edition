@@ -53,6 +53,7 @@ public class BBSSettings
     public static ValueBoolean chromaSkyEnabled;
     public static ValueInt chromaSkyColor;
     public static ValueBoolean chromaSkyTerrain;
+    public static ValueBoolean chromaSkyClouds;
     public static ValueFloat chromaSkyBillboard;
 
     public static ValueInt scrollbarShadow;
@@ -122,6 +123,7 @@ public class BBSSettings
     public static ValueBoolean boneAnchoringEnabled;
     public static ValueBoolean anchorOverrideEnabled;
     public static ValueBoolean autoKeyframe;
+    public static ValueBoolean poseBonesFilterMarked;
     public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
@@ -208,6 +210,7 @@ public class BBSSettings
         chromaSkyEnabled = builder.getBoolean("enabled", false);
         chromaSkyColor = builder.getInt("color", Colors.A75).color();
         chromaSkyTerrain = builder.getBoolean("terrain", true);
+        chromaSkyClouds = builder.getBoolean("clouds", true);
         chromaSkyBillboard = builder.getFloat("billboard", 0F, 0F, 256F);
 
         builder.category("scrollbars");
@@ -296,6 +299,8 @@ public class BBSSettings
         boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", true);
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
+        poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
+        poseBonesFilterMarked.invisible();
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
