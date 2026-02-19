@@ -102,14 +102,15 @@ public class MiModelLoader implements IModelLoader
                         }
                     }
 
-                    // Pass 2: match by basename without extension (common case: "texture" vs "texture.png")
                     if (texture == null)
                     {
                         for (Link l : links)
                         {
-                            if (l.path.toLowerCase().endsWith(".png"))
+                            String lowerPath = l.path.toLowerCase();
+
+                            if (lowerPath.endsWith(".png") || lowerPath.endsWith(".jpg") || lowerPath.endsWith(".jpeg"))
                             {
-                                String base = basename(l.path).toLowerCase();
+                                String base = basename(lowerPath);
                                 String baseNoExt = stripExtension(base);
                                 if (base.equals(tnLower) || baseNoExt.equals(tnBase))
                                 {
@@ -122,13 +123,14 @@ public class MiModelLoader implements IModelLoader
                     }
                 }
                 
-                // Fallback: Try to find ANY png if explicit texture is missing
                 if (texture == null)
                 {
-                    System.out.println("[MiModelLoader] Explicit texture not found. Searching for any PNG...");
+                    System.out.println("[MiModelLoader] Explicit texture not found. Searching for any image...");
                     for (Link l : links)
                     {
-                        if (l.path.endsWith(".png"))
+                        String path = l.path.toLowerCase();
+
+                        if (path.endsWith(".png") || path.endsWith(".jpg") || path.endsWith(".jpeg"))
                         {
                             texture = l;
                             System.out.println("[MiModelLoader] Using fallback texture: " + l.toString());

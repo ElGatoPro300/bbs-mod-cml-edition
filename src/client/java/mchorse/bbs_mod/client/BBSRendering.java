@@ -43,6 +43,7 @@ import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.irisshaders.iris.uniforms.custom.cached.CachedUniform;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.DrawContext;
@@ -89,6 +90,8 @@ public class BBSRendering
     private static Framebuffer framebuffer;
     private static Framebuffer clientFramebuffer;
     private static Texture texture;
+    private static CloudRenderMode cachedCloudRenderMode;
+    private static boolean cloudsForced;
 
     public static int getMotionBlur()
     {
@@ -341,6 +344,7 @@ public class BBSRendering
         }
 
         renderingWorld = true;
+        updateCloudRenderMode(mc);
 
         if (!customSize)
         {
@@ -398,6 +402,34 @@ public class BBSRendering
         }
 
         renderingWorld = false;
+    }
+
+    private static void updateCloudRenderMode(MinecraftClient mc)
+    {
+        boolean shouldHideClouds = BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get();
+
+        if (shouldHideClouds)
+        {
+            if (!cloudsForced)
+            {
+                cachedCloudRenderMode = mc.options.getCloudRenderMode().getValue();
+                cloudsForced = true;
+            }
+
+            if (mc.options.getCloudRenderMode().getValue() != CloudRenderMode.OFF)
+            {
+                mc.options.getCloudRenderMode().setValue(CloudRenderMode.OFF);
+            }
+        }
+        else if (cloudsForced)
+        {
+            if (cachedCloudRenderMode != null)
+            {
+                mc.options.getCloudRenderMode().setValue(cachedCloudRenderMode);
+            }
+
+            cloudsForced = false;
+        }
     }
 
     public static void onRenderBeforeScreen()
