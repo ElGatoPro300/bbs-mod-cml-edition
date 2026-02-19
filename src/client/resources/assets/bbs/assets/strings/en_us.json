@@ -71,6 +71,8 @@
     "bbs.config.chroma_sky.enabled-comment": "Enables or disables chroma sky, a mechanism that turns the sky in a solid color",
     "bbs.config.chroma_sky.terrain": "Terrain",
     "bbs.config.chroma_sky.terrain-comment": "Whether terrain is rendering when chroma sky is enabled",
+    "bbs.config.chroma_sky.clouds": "Clouds",
+    "bbs.config.chroma_sky.clouds-comment": "Whether Minecraft clouds should be rendered",
     "bbs.config.chroma_sky.title": "Chroma sky",
     "bbs.config.chroma_sky.tooltip": "Options related to chroma sky",
     "bbs.config.dc.enabled": "Enabled",

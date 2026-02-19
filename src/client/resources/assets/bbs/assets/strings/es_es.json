@@ -64,6 +64,8 @@
     "bbs.config.chroma_sky.enabled-comment": "Activa o desactiva el cielo cromático, un mecanismo que convierte el cielo en un color sólido.",
     "bbs.config.chroma_sky.terrain": "Terreno",
     "bbs.config.chroma_sky.terrain-comment": "Si el terreno se renderiza cuando el cielo cromático está activado",
+    "bbs.config.chroma_sky.clouds": "Nubes",
+    "bbs.config.chroma_sky.clouds-comment": "Si las nubes de Minecraft se renderizan o no",
     "bbs.config.chroma_sky.title": "Cielo cromático",
     "bbs.config.chroma_sky.tooltip": "Opciones relacionadas con el cielo cromático",
     "bbs.config.dc.enabled": "Activado",

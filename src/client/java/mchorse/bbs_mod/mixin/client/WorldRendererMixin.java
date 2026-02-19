@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
@@ -33,6 +34,16 @@ public class WorldRendererMixin
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
             RenderSystem.setShaderFogColor(color.r, color.g, color.b, 1F);
 
+            info.cancel();
+        }
+    }
+
+    @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
+    public void onRenderClouds(CallbackInfoReturnable<Boolean> info)
+    {
+        if (!BBSSettings.chromaSkyClouds.get())
+        {
+            info.setReturnValue(false);
             info.cancel();
         }
     }

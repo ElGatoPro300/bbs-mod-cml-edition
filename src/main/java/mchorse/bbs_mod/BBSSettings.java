@@ -53,6 +53,7 @@ public class BBSSettings
     public static ValueBoolean chromaSkyEnabled;
     public static ValueInt chromaSkyColor;
     public static ValueBoolean chromaSkyTerrain;
+    public static ValueBoolean chromaSkyClouds;
     public static ValueFloat chromaSkyBillboard;
 
     public static ValueInt scrollbarShadow;
@@ -209,6 +210,7 @@ public class BBSSettings
         chromaSkyEnabled = builder.getBoolean("enabled", false);
         chromaSkyColor = builder.getInt("color", Colors.A75).color();
         chromaSkyTerrain = builder.getBoolean("terrain", true);
+        chromaSkyClouds = builder.getBoolean("clouds", true);
         chromaSkyBillboard = builder.getFloat("billboard", 0F, 0F, 256F);
 
         builder.category("scrollbars");
