@@ -40,11 +40,10 @@ public class WorldRendererMixin
     }
 
     @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    public void onRenderClouds(CallbackInfoReturnable<Boolean> info)
+    public void onRenderClouds(MatrixStack matrices, Matrix4f positionMatrix, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info)
     {
         if (!BBSSettings.chromaSkyClouds.get())
         {
-            info.setReturnValue(false);
             info.cancel();
         }
     }
