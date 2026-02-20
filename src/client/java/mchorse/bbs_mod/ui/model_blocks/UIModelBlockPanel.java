@@ -9,7 +9,6 @@ import mchorse.bbs_mod.blocks.ModelBlock;
 import mchorse.bbs_mod.camera.CameraUtils;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.graphics.Draw;
-import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ClientNetwork;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -69,6 +68,12 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UIToggle global;
     public UIToggle lookAt;
     public UITrackpad lightLevel;
+    public UITrackpad hitboxPos1X;
+    public UITrackpad hitboxPos1Y;
+    public UITrackpad hitboxPos1Z;
+    public UITrackpad hitboxPos2X;
+    public UITrackpad hitboxPos2Y;
+    public UITrackpad hitboxPos2Z;
     public UIPropTransform transform;
 
     private ModelBlockEntity modelBlock;
@@ -151,7 +156,13 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         this.enabled = new UIToggle(UIKeys.CAMERA_PANELS_ENABLED, (b) -> this.modelBlock.getProperties().setEnabled(b.getValue()));
         this.shadow = new UIToggle(UIKeys.MODEL_BLOCKS_SHADOW, (b) -> this.modelBlock.getProperties().setShadow(b.getValue()));
-        this.hitbox = new UIToggle(UIKeys.MODEL_BLOCKS_HITBOX, (b) -> this.modelBlock.getProperties().setHitbox(b.getValue()));
+        this.hitbox = new UIToggle(UIKeys.MODEL_BLOCKS_HITBOX, (b) ->
+        {
+            if (this.modelBlock == null) return;
+
+            this.modelBlock.getProperties().setHitbox(b.getValue());
+            this.updateHitboxControls();
+        });
         this.global = new UIToggle(UIKeys.MODEL_BLOCKS_GLOBAL, (b) ->
         {
             this.modelBlock.getProperties().setGlobal(b.getValue());
@@ -189,10 +200,70 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.lightLevel.textbox.setColor(Colors.YELLOW);
         this.lightLevel.w(1F);
 
+        this.hitboxPos1X = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            Vector3f p1 = this.modelBlock.getProperties().getHitboxPos1();
+            this.modelBlock.getProperties().setHitboxPos1(v.floatValue(), p1.y, p1.z);
+        }).limit(0, 1);
+
+        this.hitboxPos1Y = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            Vector3f p1 = this.modelBlock.getProperties().getHitboxPos1();
+            this.modelBlock.getProperties().setHitboxPos1(p1.x, v.floatValue(), p1.z);
+        }).limit(0, 1);
+
+        this.hitboxPos1Z = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            Vector3f p1 = this.modelBlock.getProperties().getHitboxPos1();
+            this.modelBlock.getProperties().setHitboxPos1(p1.x, p1.y, v.floatValue());
+        }).limit(0, 1);
+
+        this.hitboxPos2X = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            Vector3f p2 = this.modelBlock.getProperties().getHitboxPos2();
+            this.modelBlock.getProperties().setHitboxPos2(v.floatValue(), p2.y, p2.z);
+        }).limit(0, 1);
+
+        this.hitboxPos2Y = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            Vector3f p2 = this.modelBlock.getProperties().getHitboxPos2();
+            this.modelBlock.getProperties().setHitboxPos2(p2.x, v.floatValue(), p2.z);
+        }).limit(0, 1);
+
+        this.hitboxPos2Z = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            Vector3f p2 = this.modelBlock.getProperties().getHitboxPos2();
+            this.modelBlock.getProperties().setHitboxPos2(p2.x, p2.y, v.floatValue());
+        }).limit(0, 1);
+
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
-        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, this.transform, UI.row(5, 0, 20, new UIElement()
+        this.editor = UI.column(
+            this.pickEdit,
+            this.enabled,
+            this.shadow,
+            this.global,
+            this.lookAt,
+            this.hitbox,
+            UI.label(UIKeys.MODEL_BLOCKS_HITBOX_POS1),
+            UI.row(this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
+            UI.label(UIKeys.MODEL_BLOCKS_HITBOX_POS2),
+            UI.row(this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z),
+            this.transform,
+            UI.row(5, 0, 20, new UIElement()
             {
                 @Override
                 public void render(UIContext context)
@@ -264,6 +335,28 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public ModelBlockEntity getModelBlock()
     {
         return this.modelBlock;
+    }
+
+    private void updateHitboxControls()
+    {
+        if (this.modelBlock == null)
+        {
+            this.hitboxPos1X.setEnabled(false);
+            this.hitboxPos1Y.setEnabled(false);
+            this.hitboxPos1Z.setEnabled(false);
+            this.hitboxPos2X.setEnabled(false);
+            this.hitboxPos2Y.setEnabled(false);
+            this.hitboxPos2Z.setEnabled(false);
+
+            return;
+        }
+
+        this.hitboxPos1X.setEnabled(true);
+        this.hitboxPos1Y.setEnabled(true);
+        this.hitboxPos1Z.setEnabled(true);
+        this.hitboxPos2X.setEnabled(true);
+        this.hitboxPos2Y.setEnabled(true);
+        this.hitboxPos2Z.setEnabled(true);
     }
 
     private void addCameraController(UIFormPalette palette)
@@ -377,6 +470,19 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
         this.lightLevel.setValue(properties.getLightLevel());
+
+        Vector3f p1 = properties.getHitboxPos1();
+        Vector3f p2 = properties.getHitboxPos2();
+
+        this.hitboxPos1X.setValue(p1.x);
+        this.hitboxPos1Y.setValue(p1.y);
+        this.hitboxPos1Z.setValue(p1.z);
+
+        this.hitboxPos2X.setValue(p2.x);
+        this.hitboxPos2Y.setValue(p2.y);
+        this.hitboxPos2Z.setValue(p2.z);
+
+        this.updateHitboxControls();
     }
 
     private void save(ModelBlockEntity modelBlock)
@@ -445,20 +551,20 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         for (ModelBlockEntity entity : this.modelBlocks.getList())
         {
-            BlockPos blockPos = entity.getPos();
-
             if (!this.isEditing(entity))
             {
+                AABB aabb = this.getHitbox(entity);
+
                 context.matrixStack().push();
-                context.matrixStack().translate(blockPos.getX() - pos.x, blockPos.getY() - pos.y, blockPos.getZ() - pos.z);
+                context.matrixStack().translate(aabb.x - pos.x, aabb.y - pos.y, aabb.z - pos.z);
 
                 if (this.hovered == entity || entity == this.modelBlock)
                 {
-                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, 1D, 1D, 1D, 0, 0.5F, 1F);
+                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, aabb.w, aabb.h, aabb.d, 0, 0.5F, 1F);
                 }
                 else
                 {
-                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, 1D, 1D, 1D);
+                    Draw.renderBox(context.matrixStack(), 0D, 0D, 0D, aabb.w, aabb.h, aabb.d);
                 }
 
                 context.matrixStack().pop();
@@ -507,43 +613,33 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         double h = 1D;
         double d = 1D;
 
-        if (closest.getProperties().isHitbox())
+        ModelProperties properties = closest.getProperties();
+
+        Vector3f p1 = properties.getHitboxPos1();
+        Vector3f p2 = properties.getHitboxPos2();
+
+        double minX = Math.min(p1.x, p2.x);
+        double minY = Math.min(p1.y, p2.y);
+        double minZ = Math.min(p1.z, p2.z);
+        double maxX = Math.max(p1.x, p2.x);
+        double maxY = Math.max(p1.y, p2.y);
+        double maxZ = Math.max(p1.z, p2.z);
+
+        minX = Math.max(0D, minX);
+        minY = Math.max(0D, minY);
+        minZ = Math.max(0D, minZ);
+        maxX = Math.min(1D, maxX);
+        maxY = Math.min(1D, maxY);
+        maxZ = Math.min(1D, maxZ);
+
+        if (minX < maxX && minY < maxY && minZ < maxZ)
         {
-            Form form = closest.getProperties().getForm();
-
-            if (form != null && form.hitbox.get())
-            {
-                float width = form.hitboxWidth.get();
-                float height = form.hitboxHeight.get();
-
-                if (width > 0F && height > 0F)
-                {
-                    float halfWidth = width / 2F;
-
-                    double minX = x + 0.5D - halfWidth;
-                    double maxX = x + 0.5D + halfWidth;
-                    double minZ = z + 0.5D - halfWidth;
-                    double maxZ = z + 0.5D + halfWidth;
-                    double minY = y;
-                    double maxY = y + height;
-
-                    double clampedMinX = Math.max(x, minX);
-                    double clampedMinZ = Math.max(z, minZ);
-                    double clampedMaxX = Math.min(x + 1D, maxX);
-                    double clampedMaxZ = Math.min(z + 1D, maxZ);
-                    double clampedMaxY = Math.min(y + 1D, maxY);
-
-                    if (clampedMinX < clampedMaxX && clampedMinZ < clampedMaxZ && clampedMaxY > minY)
-                    {
-                        x = clampedMinX;
-                        y = minY;
-                        z = clampedMinZ;
-                        w = clampedMaxX - clampedMinX;
-                        h = clampedMaxY - minY;
-                        d = clampedMaxZ - clampedMinZ;
-                    }
-                }
-            }
+            x += minX;
+            y += minY;
+            z += minZ;
+            w = maxX - minX;
+            h = maxY - minY;
+            d = maxZ - minZ;
         }
 
         return new AABB(x, y, z, w, h, d);
