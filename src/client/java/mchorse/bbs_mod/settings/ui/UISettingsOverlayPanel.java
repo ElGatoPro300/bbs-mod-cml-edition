@@ -13,6 +13,7 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
 import mchorse.bbs_mod.ui.utils.ScrollDirection;
@@ -27,6 +28,7 @@ import java.util.List;
 public class UISettingsOverlayPanel extends UIOverlayPanel
 {
     public UIScrollView options;
+    public UITextbox search;
 
     private Settings settings;
     private UIIcon currentButton;
@@ -40,6 +42,10 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
 
         this.options.full(this.content);
         this.options.column().scroll().vertical().stretch().padding(10).height(20);
+
+        this.search = new UITextbox(100, (str) -> this.refresh());
+        this.search.placeholder(UIKeys.GENERAL_SEARCH);
+        this.search.h(20);
 
         for (Settings settings : BBSMod.getSettings().modules.values())
         {
@@ -73,8 +79,10 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
         }
 
         this.options.removeAll();
+        this.options.add(this.search.marginBottom(10));
 
         boolean first = true;
+        String query = this.search.getText().trim().toLowerCase();
 
         for (ValueGroup category : this.settings.categories.values())
         {
@@ -85,16 +93,30 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
 
             String catTitleKey = UIValueFactory.getCategoryTitleKey(category);
             String catTooltipKey = UIValueFactory.getCategoryTooltipKey(category);
+            boolean categoryMatches = query.isEmpty() || this.matchesQuery(query,
+                L10n.lang(catTitleKey).get(),
+                L10n.lang(catTooltipKey).get(),
+                category.getId()
+            );
 
             UILabel label = UI.label(L10n.lang(catTitleKey)).labelAnchor(0, 1).background(() -> BBSSettings.primaryColor(Colors.A50));
             List<UIElement> options = new ArrayList<>();
 
             label.tooltip(L10n.lang(catTooltipKey), Direction.BOTTOM);
-            this.options.add(label);
 
             for (BaseValue value : category.getAll())
             {
                 if (!value.isVisible())
+                {
+                    continue;
+                }
+                boolean valueMatches = categoryMatches || query.isEmpty() || this.matchesQuery(query,
+                    L10n.lang(UIValueFactory.getValueLabelKey(value)).get(),
+                    L10n.lang(UIValueFactory.getValueCommentKey(value)).get(),
+                    value.getId()
+                );
+
+                if (!valueMatches)
                 {
                     continue;
                 }
@@ -140,6 +162,11 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
                 }
             }
 
+            if (options.isEmpty())
+            {
+                continue;
+            }
+
             UIElement firstContainer = UI.column(5, 0, 20, label, options.remove(0)).marginTop(first ? 0 : 24);
 
             this.options.add(firstContainer);
@@ -153,6 +180,24 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
         }
 
         this.resize();
+    }
+
+    private boolean matchesQuery(String query, String... values)
+    {
+        if (query.isEmpty())
+        {
+            return true;
+        }
+
+        for (String value : values)
+        {
+            if (value != null && value.toLowerCase().contains(query))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
