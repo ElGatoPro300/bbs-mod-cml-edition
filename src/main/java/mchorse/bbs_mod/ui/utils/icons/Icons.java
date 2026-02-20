@@ -184,7 +184,6 @@ public class Icons
     public static final Icon SIX_STAR = register(new Icon(ATLAS, "six_star", 192, 144));
     public static final Icon LIKE = register(new Icon(ATLAS, "like", 208, 144));
     public static final Icon DISLIKE = register(new Icon(ATLAS, "dislike", 224, 144));
-    public static final Icon PICKAXE = register(new Icon(ATLAS, "pickaxe", 240, 144));
 
     public static final Icon INTERP_LINEAR = register(new Icon(ATLAS, "interp_linear", 0, 192));
     public static final Icon INTERP_CONST = register(new Icon(ATLAS, "interp_const", 16, 192));
@@ -240,6 +239,8 @@ public class Icons
     public static final Icon KEY_CAP_LEFT = new Icon(ATLAS, "key_cap", 220, 236, 4, 20);
     public static final Icon KEY_CAP_RIGHT = new Icon(ATLAS, "key_cap", 236, 236, 4, 20);
     public static final Icon KEY_CAP_REPEATABLE = new Icon(ATLAS, "key_cap_repeatable", 224, 236, 12, 20);
+
+    public static final Icon PICKAXE = register(new Icon(Link.assets("textures/pickaxe.png"), "pickaxe", 0, 0, 12, 12, 12, 12));
 
     public static Icon register(Icon icon)
     {
