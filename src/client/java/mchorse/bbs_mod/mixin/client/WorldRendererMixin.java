@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
@@ -42,7 +41,7 @@ public class WorldRendererMixin
     @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
     public void onRenderClouds(MatrixStack matrices, Matrix4f positionMatrix, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info)
     {
-        if (!BBSSettings.chromaSkyClouds.get())
+        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
         {
             info.cancel();
         }

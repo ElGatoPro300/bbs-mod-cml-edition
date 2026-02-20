@@ -483,15 +483,16 @@ public class UIReplaysEditor extends UIElement
 
             for (UIKeyframeSheet sheet : sheets)
             {
-                String topLevel = StringUtils.fileName(sheet.id);
-
-                if ("shadow_size".equals(topLevel))
+                if (sheet.property == null)
                 {
-                    shadowSizeSheet = sheet;
-                }
-                else if ("shadow_opacity".equals(topLevel))
-                {
-                    shadowOpacitySheet = sheet;
+                    if ("shadow_size".equals(sheet.id))
+                    {
+                        shadowSizeSheet = sheet;
+                    }
+                    else if ("shadow_opacity".equals(sheet.id))
+                    {
+                        shadowOpacitySheet = sheet;
+                    }
                 }
             }
 
@@ -500,14 +501,41 @@ public class UIReplaysEditor extends UIElement
                 sheets.remove(shadowSizeSheet);
                 sheets.remove(shadowOpacitySheet);
 
-                int insertAt = sheets.size();
+                int insertAt = -1;
+                int insertAfterLighting = -1;
+                String rootPath = null;
+
+                if (this.replay.form.get() != null)
+                {
+                    rootPath = FormUtils.getPath(FormUtils.getRoot(this.replay.form.get()));
+                }
 
                 for (int i = 0; i < sheets.size(); i++)
                 {
-                    if ("lighting".equals(StringUtils.fileName(sheets.get(i).id)))
+                    UIKeyframeSheet candidate = sheets.get(i);
+
+                    if (candidate.property == null)
                     {
                         insertAt = i + 1;
                     }
+                    else if ("lighting".equals(StringUtils.fileName(candidate.id)) && rootPath != null)
+                    {
+                        Form candidateForm = FormUtils.getForm(candidate.property);
+
+                        if (candidateForm != null && FormUtils.getPath(candidateForm).equals(rootPath))
+                        {
+                            insertAfterLighting = i + 1;
+                        }
+                    }
+                }
+
+                if (insertAfterLighting >= 0)
+                {
+                    insertAt = insertAfterLighting;
+                }
+                else if (insertAt < 0)
+                {
+                    insertAt = sheets.size();
                 }
 
                 sheets.add(insertAt, shadowSizeSheet);
@@ -779,7 +807,7 @@ public class UIReplaysEditor extends UIElement
 
         for (UIKeyframeSheet sheet : sheets)
         {
-            if ("shadow_size".equals(sheet.id))
+            if (sheet.property == null && "shadow_size".equals(sheet.id))
             {
                 sheet.separator = false;
             }
