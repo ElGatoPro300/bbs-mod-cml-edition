@@ -325,5 +325,20 @@ public class Replay extends ValueGroup
                 }
             }
         }
+
+        this.ensureShadowKeyframes();
+    }
+
+    private void ensureShadowKeyframes()
+    {
+        if (this.keyframes.shadowSize.isEmpty())
+        {
+            this.keyframes.shadowSize.insert(0, 0.5D);
+        }
+
+        if (this.keyframes.shadowOpacity.isEmpty())
+        {
+            this.keyframes.shadowOpacity.insert(0, 1D);
+        }
     }
 }
