@@ -4,6 +4,7 @@ import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.network.ServerNetwork;
+import mchorse.bbs_mod.utils.AABB;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;
@@ -117,19 +118,43 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
     }
 
     @Override
+    public float calcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos)
+    {
+        BlockEntity entity = world.getBlockEntity(pos);
+
+        if (entity instanceof ModelBlockEntity model)
+        {
+            float hardness = model.getProperties().getHardness();
+
+            if (hardness == -1.0F)
+            {
+                return 0.0F;
+            }
+
+            if (hardness > 0.0F)
+            {
+                int effective = player.canHarvest(state) ? 30 : 100;
+                float speed = player.getBlockBreakingSpeed(state);
+
+                return speed / hardness / (float) effective;
+            }
+        }
+
+        return super.calcBlockBreakingDelta(state, player, world, pos);
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
     {
         try
         {
-            if (world instanceof World w)
+            BlockEntity be = world.getBlockEntity(pos);
+
+            if (be instanceof ModelBlockEntity model && model.getProperties().isHitbox())
             {
-                BlockEntity be = w.getBlockEntity(pos);
+                Form form = model.getProperties().getForm();
 
-                if (be instanceof ModelBlockEntity model && model.getProperties().isHitbox())
-                {
-                    Form form = model.getProperties().getForm();
-
-                    if (form != null && form.hitbox.get())
+                if (form != null && form.hitbox.get())
                     {
                         float width = form.hitboxWidth.get();
                         float height = form.hitboxHeight.get();
@@ -152,14 +177,13 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
                             maxY = Math.min(1D, maxY);
 
                             if (minX < maxX && minZ < maxZ && maxY > minY)
-                            {
-                                return VoxelShapes.cuboid(minX, minY, minZ, maxX, maxY, maxZ);
-                            }
+                        {
+                            return VoxelShapes.cuboid(minX, minY, minZ, maxX, maxY, maxZ);
                         }
                     }
-
-                    return VoxelShapes.fullCube();
                 }
+
+                return VoxelShapes.fullCube();
             }
         }
         catch (Exception e)

@@ -1,10 +1,13 @@
 package mchorse.bbs_mod.blocks.entities;
 
 import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.utils.AABB;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 
@@ -26,6 +29,7 @@ public class ModelProperties implements IMapSerializable
     private boolean hitbox;
     private boolean lookAt;
     private int lightLevel = 0;
+    private float hardness = 0F;
 
     public Form getForm()
     {
@@ -157,6 +161,16 @@ public class ModelProperties implements IMapSerializable
         this.lightLevel = Math.max(0, Math.min(15, level));
     }
 
+    public float getHardness()
+    {
+        return this.hardness;
+    }
+
+    public void setHardness(float hardness)
+    {
+        this.hardness = Math.max(-1, hardness);
+    }
+
     public Form getForm(ModelTransformationMode mode)
     {
         Form form = this.form;
@@ -216,6 +230,7 @@ public class ModelProperties implements IMapSerializable
         this.lookAt = data.getBool("look_at");
         if (data.has("hitbox")) this.hitbox = data.getBool("hitbox");
         if (data.has("light_level")) this.lightLevel = data.getInt("light_level");
+        if (data.has("hardness")) this.hardness = data.getFloat("hardness");
     }
 
     @Override
@@ -237,6 +252,18 @@ public class ModelProperties implements IMapSerializable
         data.putBool("hitbox", this.hitbox);
         data.putBool("look_at", this.lookAt);
         data.putInt("light_level", this.lightLevel);
+        data.putFloat("hardness", this.hardness);
+    }
+
+    public ModelProperties copy()
+    {
+        ModelProperties properties = new ModelProperties();
+        MapType data = new MapType();
+
+        this.toData(data);
+        properties.fromData(data);
+
+        return properties;
     }
 
     public void update(IEntity entity)

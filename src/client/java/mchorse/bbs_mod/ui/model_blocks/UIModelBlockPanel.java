@@ -22,6 +22,9 @@ import mchorse.bbs_mod.ui.forms.UIToggleEditorEvent;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
@@ -67,8 +70,9 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UIToggle shadow;
     public UIToggle hitbox;
     public UIToggle global;
-    public UIToggle lookAt;
+    public UIToggle lookAt; 
     public UITrackpad lightLevel;
+    public UITrackpad hardness;
     public UIPropTransform transform;
 
     private ModelBlockEntity modelBlock;
@@ -159,6 +163,15 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         });
         this.lookAt = new UIToggle(UIKeys.CAMERA_PANELS_LOOK_AT, (b) -> this.modelBlock.getProperties().setLookAt(b.getValue()));
 
+        this.hardness = new UITrackpad((v) ->
+        {
+            if (this.modelBlock != null)
+            {
+                this.modelBlock.getProperties().setHardness(v.floatValue());
+            }
+        }).limit(-1).values(0.05F, 0.1F, 1F);
+        this.hardness.tooltip(UIKeys.MODEL_BLOCKS_HARDNESS);
+
         this.lightLevel = new UITrackpad((v) ->
         {
             if (this.modelBlock == null) return;
@@ -192,7 +205,16 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
-        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, this.transform, UI.row(5, 0, 20, new UIElement()
+        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, UI.row(5, 0, 20, new UIElement()
+            {
+                @Override
+                public void render(UIContext context)
+                {
+                    super.render(context);
+
+                    context.batcher.icon(Icons.PICKAXE, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
+                }
+            }.w(20).h(20), this.hardness), this.transform, UI.row(5, 0, 20, new UIElement()
             {
                 @Override
                 public void render(UIContext context)
@@ -377,6 +399,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
         this.lightLevel.setValue(properties.getLightLevel());
+        this.hardness.setValue(properties.getHardness());
     }
 
     private void save(ModelBlockEntity modelBlock)

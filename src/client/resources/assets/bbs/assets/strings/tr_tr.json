@@ -933,6 +933,7 @@
     "bbs.ui.model_blocks.keys.teleport": "Model bloğuna ışınlan",
     "bbs.ui.model_blocks.keys.toggle_rendering": "Dünya işlemesini aç",
     "bbs.ui.model_blocks.light_level": "Işık Seviyesi",
+    "bbs.ui.model_blocks.hardness": "Sertlik (0 = Anında, -1 = Kırılamaz)",
     "bbs.ui.model_blocks.shadow": "Gölge",
     "bbs.ui.model_blocks.title": "Model blokları",
     "bbs.ui.model_blocks.transform.default": "Varsayılan dönüşümler",
