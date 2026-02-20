@@ -9,6 +9,7 @@ import mchorse.bbs_mod.blocks.ModelBlock;
 import mchorse.bbs_mod.camera.CameraUtils;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.graphics.Draw;
+import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.network.ClientNetwork;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -21,6 +22,7 @@ import mchorse.bbs_mod.ui.forms.UIToggleEditorEvent;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
@@ -200,6 +202,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.lightLevel.textbox.setColor(Colors.YELLOW);
         this.lightLevel.w(1F);
 
+        IKey hitboxTooltip = IKey.constant("%s (%s)");
+
         this.hitboxPos1X = new UITrackpad((v) ->
         {
             if (this.modelBlock == null) return;
@@ -207,6 +211,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             Vector3f p1 = this.modelBlock.getProperties().getHitboxPos1();
             this.modelBlock.getProperties().setHitboxPos1(v.floatValue(), p1.y, p1.z);
         }).limit(0, 1);
+        this.hitboxPos1X.tooltip(hitboxTooltip.format(UIKeys.MODEL_BLOCKS_HITBOX_POS1, UIKeys.GENERAL_X));
+        this.hitboxPos1X.textbox.setColor(Colors.RED);
 
         this.hitboxPos1Y = new UITrackpad((v) ->
         {
@@ -215,6 +221,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             Vector3f p1 = this.modelBlock.getProperties().getHitboxPos1();
             this.modelBlock.getProperties().setHitboxPos1(p1.x, v.floatValue(), p1.z);
         }).limit(0, 1);
+        this.hitboxPos1Y.tooltip(hitboxTooltip.format(UIKeys.MODEL_BLOCKS_HITBOX_POS1, UIKeys.GENERAL_Y));
+        this.hitboxPos1Y.textbox.setColor(Colors.GREEN);
 
         this.hitboxPos1Z = new UITrackpad((v) ->
         {
@@ -223,6 +231,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             Vector3f p1 = this.modelBlock.getProperties().getHitboxPos1();
             this.modelBlock.getProperties().setHitboxPos1(p1.x, p1.y, v.floatValue());
         }).limit(0, 1);
+        this.hitboxPos1Z.tooltip(hitboxTooltip.format(UIKeys.MODEL_BLOCKS_HITBOX_POS1, UIKeys.GENERAL_Z));
+        this.hitboxPos1Z.textbox.setColor(Colors.BLUE);
 
         this.hitboxPos2X = new UITrackpad((v) ->
         {
@@ -231,6 +241,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             Vector3f p2 = this.modelBlock.getProperties().getHitboxPos2();
             this.modelBlock.getProperties().setHitboxPos2(v.floatValue(), p2.y, p2.z);
         }).limit(0, 1);
+        this.hitboxPos2X.tooltip(hitboxTooltip.format(UIKeys.MODEL_BLOCKS_HITBOX_POS2, UIKeys.GENERAL_X));
+        this.hitboxPos2X.textbox.setColor(Colors.RED);
 
         this.hitboxPos2Y = new UITrackpad((v) ->
         {
@@ -239,6 +251,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             Vector3f p2 = this.modelBlock.getProperties().getHitboxPos2();
             this.modelBlock.getProperties().setHitboxPos2(p2.x, v.floatValue(), p2.z);
         }).limit(0, 1);
+        this.hitboxPos2Y.tooltip(hitboxTooltip.format(UIKeys.MODEL_BLOCKS_HITBOX_POS2, UIKeys.GENERAL_Y));
+        this.hitboxPos2Y.textbox.setColor(Colors.GREEN);
 
         this.hitboxPos2Z = new UITrackpad((v) ->
         {
@@ -247,9 +261,16 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             Vector3f p2 = this.modelBlock.getProperties().getHitboxPos2();
             this.modelBlock.getProperties().setHitboxPos2(p2.x, p2.y, v.floatValue());
         }).limit(0, 1);
+        this.hitboxPos2Z.tooltip(hitboxTooltip.format(UIKeys.MODEL_BLOCKS_HITBOX_POS2, UIKeys.GENERAL_Z));
+        this.hitboxPos2Z.textbox.setColor(Colors.BLUE);
 
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
+
+        UIIcon hitboxIcon1 = new UIIcon(Icons.BLOCK, null);
+        UIIcon hitboxIcon2 = new UIIcon(Icons.BLOCK, null);
+        hitboxIcon1.iconColor = hitboxIcon1.hoverColor = hitboxIcon1.activeColor = hitboxIcon1.disabledColor = Colors.WHITE;
+        hitboxIcon2.iconColor = hitboxIcon2.hoverColor = hitboxIcon2.activeColor = hitboxIcon2.disabledColor = Colors.WHITE;
 
         this.editor = UI.column(
             this.pickEdit,
@@ -258,11 +279,9 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             this.global,
             this.lookAt,
             this.hitbox,
-            UI.label(UIKeys.MODEL_BLOCKS_HITBOX_POS1),
-            UI.row(this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
-            UI.label(UIKeys.MODEL_BLOCKS_HITBOX_POS2),
-            UI.row(this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z),
             this.transform,
+            UI.row(hitboxIcon1, this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
+            UI.row(hitboxIcon2, this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z),
             UI.row(5, 0, 20, new UIElement()
             {
                 @Override
