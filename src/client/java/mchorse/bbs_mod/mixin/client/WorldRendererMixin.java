@@ -5,6 +5,7 @@ import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,7 +24,7 @@ public class WorldRendererMixin
     public Framebuffer entityOutlinesFramebuffer;
 
     @Inject(method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FLnet/minecraft/client/render/Camera;ZLjava/lang/Runnable;)V", at = @At("HEAD"), cancellable = true)
-    public void onRenderSky(CallbackInfo info)
+    public void onRenderSky(MatrixStack matrices, Matrix4f matrix4f, float tickDelta, Camera camera, boolean hasSpecialSky, Runnable runnable, CallbackInfo info)
     {
         if (BBSSettings.chromaSkyEnabled.get())
         {
@@ -37,7 +38,7 @@ public class WorldRendererMixin
         }
     }
 
-    @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lorg/joml/Matrix4f;FDDD)V", at = @At("HEAD"), cancellable = true)
     public void onRenderClouds(MatrixStack matrices, Matrix4f positionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info)
     {
         if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())

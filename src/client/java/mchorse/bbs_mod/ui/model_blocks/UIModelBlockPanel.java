@@ -205,7 +205,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.transform = new UIPropTransform();
         this.transform.enableHotkeys();
 
-        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, UI.row(5, 0, 20, new UIElement()
+        this.editor = UI.column(this.pickEdit, this.enabled, this.shadow, this.global, this.lookAt, this.hitbox, this.transform, UI.row(5, 0, 20, new UIElement()
             {
                 @Override
                 public void render(UIContext context)
@@ -214,7 +214,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
                     context.batcher.icon(Icons.PICKAXE, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
                 }
-            }.w(20).h(20), this.hardness), this.transform, UI.row(5, 0, 20, new UIElement()
+            }.w(20).h(20), this.hardness), UI.row(5, 0, 20, new UIElement()
             {
                 @Override
                 public void render(UIContext context)
