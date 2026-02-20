@@ -240,8 +240,6 @@ public class Icons
     public static final Icon KEY_CAP_RIGHT = new Icon(ATLAS, "key_cap", 236, 236, 4, 20);
     public static final Icon KEY_CAP_REPEATABLE = new Icon(ATLAS, "key_cap_repeatable", 224, 236, 12, 20);
 
-    public static final Icon PICKAXE = register(new Icon(Link.assets("textures/pickaxe.png"), "pickaxe", 0, 0, 12, 12, 12, 12));
-
     public static Icon register(Icon icon)
     {
         if (ICONS.containsKey(icon.id))
