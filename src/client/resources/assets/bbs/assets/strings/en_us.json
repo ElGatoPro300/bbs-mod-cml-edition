@@ -980,6 +980,7 @@
     "bbs.ui.model_blocks.keys.teleport": "Teleport to model block",
     "bbs.ui.model_blocks.keys.toggle_rendering": "Toggle world rendering",
     "bbs.ui.model_blocks.light_level": "Light level",
+    "bbs.ui.model_blocks.hardness": "Hardness (0 = Instant, -1 = Unbreakable)",
     "bbs.ui.model_blocks.shadow": "Shadow",
     "bbs.ui.model_blocks.title": "Model blocks",
     "bbs.ui.model_blocks.transform.default": "Default transform",
