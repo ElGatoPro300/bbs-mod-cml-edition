@@ -170,14 +170,16 @@ public class ModelProperties implements IMapSerializable
 
     public void setHardness(float hardness)
     {
-        if (hardness < 0.5F)
+        if (hardness < 0F)
         {
-            this.hardness = 0F;
+            hardness = 0F;
         }
-        else
+        else if (hardness > 50F)
         {
-            this.hardness = 1F;
+            hardness = 50F;
         }
+
+        this.hardness = hardness;
     }
 
     public Vector3f getHitboxPos1()

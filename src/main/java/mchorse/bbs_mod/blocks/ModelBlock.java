@@ -183,37 +183,30 @@ public class ModelBlock extends Block implements BlockEntityProvider, Waterlogga
     @Override
     public float calcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos)
     {
-        float base = super.calcBlockBreakingDelta(state, player, world, pos);
+        BlockEntity be = world.getBlockEntity(pos);
 
-        try
+        if (be instanceof ModelBlockEntity model)
         {
-            BlockEntity be = world.getBlockEntity(pos);
+            float hardness = model.getProperties().getHardness();
 
-            if (be instanceof ModelBlockEntity model)
+            if (hardness <= 0F)
             {
-                float hardness = model.getProperties().getHardness();
-
-                if (hardness <= 0F)
-                {
-                    return base;
-                }
-
-                if (hardness >= 1F)
-                {
-                    return 0F;
-                }
-
-                float factor = 1F - hardness;
-
-                return base * factor;
+                return 1F;
             }
-        }
-        catch (Exception e)
-        {
 
+            float speed = player.getBlockBreakingSpeed(state);
+
+            if (speed <= 0F)
+            {
+                return 0F;
+            }
+
+            int divisor = player.canHarvest(state) ? 30 : 100;
+
+            return speed / hardness / (float) divisor;
         }
 
-        return base;
+        return super.calcBlockBreakingDelta(state, player, world, pos);
     }
 
     private VoxelShape getShape(BlockView world, BlockPos pos)

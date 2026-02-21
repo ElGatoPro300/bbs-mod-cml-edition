@@ -207,8 +207,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         {
             if (this.modelBlock == null) return;
 
-            this.modelBlock.getProperties().setHardness(v.intValue());
-        }).integer().limit(0, 1);
+            this.modelBlock.getProperties().setHardness(v.floatValue());
+        }).limit(0, 50);
         this.hardness.w(1F);
         this.hardness.textbox.setColor(Colors.PINK);
 
@@ -510,7 +510,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
         this.lightLevel.setValue(properties.getLightLevel());
-        this.hardness.setValue((int) properties.getHardness());
+        this.hardness.setValue(properties.getHardness());
 
         Vector3f p1 = properties.getHitboxPos1();
         Vector3f p2 = properties.getHitboxPos2();
