@@ -89,6 +89,8 @@
     "bbs.config.display.replay_hud_position.bottom_right": "Bottom right",
     "bbs.config.display.replay_hud_display_name": "Replay display name",
     "bbs.config.display.replay_hud_display_name-comment": "Show the replay name text on the HUD",
+    "bbs.config.display.model_forms_hierarchy": "Model list hierarchy",
+    "bbs.config.display.model_forms_hierarchy-comment": "Group models by folders in the model list",
     "bbs.config.display.title": "Display",
     "bbs.config.display.tooltip": "Options related to HUD display",
     "bbs.config.editor.angle_speed": "Angle speed",
