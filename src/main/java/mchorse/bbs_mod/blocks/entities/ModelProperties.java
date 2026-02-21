@@ -28,6 +28,7 @@ public class ModelProperties implements IMapSerializable
     private boolean hitbox;
     private boolean lookAt;
     private int lightLevel = 0;
+    private float hardness;
 
     private final Vector3f hitboxPos1 = new Vector3f(0F, 0F, 0F);
     private final Vector3f hitboxPos2 = new Vector3f(1F, 1F, 1F);
@@ -162,6 +163,23 @@ public class ModelProperties implements IMapSerializable
         this.lightLevel = Math.max(0, Math.min(15, level));
     }
 
+    public float getHardness()
+    {
+        return this.hardness;
+    }
+
+    public void setHardness(float hardness)
+    {
+        if (hardness < 0.5F)
+        {
+            this.hardness = 0F;
+        }
+        else
+        {
+            this.hardness = 1F;
+        }
+    }
+
     public Vector3f getHitboxPos1()
     {
         return this.hitboxPos1;
@@ -241,6 +259,7 @@ public class ModelProperties implements IMapSerializable
         this.lookAt = data.getBool("look_at");
         if (data.has("hitbox")) this.hitbox = data.getBool("hitbox");
         if (data.has("light_level")) this.lightLevel = data.getInt("light_level");
+        this.setHardness(data.getFloat("hardness", 0F));
 
         if (data.has("hitbox_pos1"))
         {
@@ -282,6 +301,7 @@ public class ModelProperties implements IMapSerializable
         data.putBool("hitbox", this.hitbox);
         data.putBool("look_at", this.lookAt);
         data.putInt("light_level", this.lightLevel);
+        data.putFloat("hardness", this.hardness);
 
         data.put("hitbox_pos1", DataStorageUtils.vector3fToData(this.hitboxPos1));
         data.put("hitbox_pos2", DataStorageUtils.vector3fToData(this.hitboxPos2));

@@ -70,6 +70,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UIToggle global;
     public UIToggle lookAt;
     public UITrackpad lightLevel;
+    public UITrackpad hardness;
     public UITrackpad hitboxPos1X;
     public UITrackpad hitboxPos1Y;
     public UITrackpad hitboxPos1Z;
@@ -202,6 +203,15 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.lightLevel.textbox.setColor(Colors.YELLOW);
         this.lightLevel.w(1F);
 
+        this.hardness = new UITrackpad((v) ->
+        {
+            if (this.modelBlock == null) return;
+
+            this.modelBlock.getProperties().setHardness(v.intValue());
+        }).integer().limit(0, 1);
+        this.hardness.w(1F);
+        this.hardness.textbox.setColor(Colors.PINK);
+
         IKey hitboxTooltip = IKey.constant("%s (%s)");
 
         this.hitboxPos1X = new UITrackpad((v) ->
@@ -291,9 +301,20 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
                     context.batcher.icon(Icons.LIGHT, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
                 }
-            }.w(20).h(20), this.lightLevel));
+            }.w(20).h(20), this.lightLevel),
+            UI.row(5, 0, 20, new UIElement()
+            {
+                @Override
+                public void render(UIContext context)
+                {
+                    super.render(context);
+
+                    context.batcher.icon(Icons.PICKAXE, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
+                }
+            }.w(20).h(20), this.hardness));
 
         this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, Direction.BOTTOM);
+        this.hardness.tooltip(UIKeys.MODEL_BLOCKS_HARDNESS, Direction.BOTTOM);
 
         this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
         this.scrollView.scroll.opposite().cancelScrolling();
@@ -489,6 +510,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.global.setValue(properties.isGlobal());
         this.lookAt.setValue(properties.isLookAt());
         this.lightLevel.setValue(properties.getLightLevel());
+        this.hardness.setValue((int) properties.getHardness());
 
         Vector3f p1 = properties.getHitboxPos1();
         Vector3f p2 = properties.getHitboxPos2();
