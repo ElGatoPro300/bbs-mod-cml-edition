@@ -44,7 +44,7 @@ public class WorldRendererMixin
     {
         if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
         {
-            info.setReturnValue(false);
+            info.cancel();
         }
     }
 
