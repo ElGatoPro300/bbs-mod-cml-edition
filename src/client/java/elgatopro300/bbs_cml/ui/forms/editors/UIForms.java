@@ -1,12 +1,12 @@
 package elgatopro300.bbs_cml.ui.forms.editors;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.forms.BodyPart;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
-import mchorse.bbs_mod.utils.StringUtils;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.forms.BodyPart;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
+import elgatopro300.bbs_cml.utils.StringUtils;
 import net.minecraft.client.render.DiffuseLighting;
 import org.joml.Vector3f;
 

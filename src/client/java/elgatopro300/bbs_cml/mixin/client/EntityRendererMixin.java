@@ -1,8 +1,8 @@
 package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.bridge.IEntityRenderState;
-import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.forms.MobForm;
+import elgatopro300.bbs_cml.bridge.IEntityRenderState;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.forms.MobForm;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;

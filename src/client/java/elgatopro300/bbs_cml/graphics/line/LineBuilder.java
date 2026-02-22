@@ -1,7 +1,7 @@
 package elgatopro300.bbs_cml.graphics.line;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;

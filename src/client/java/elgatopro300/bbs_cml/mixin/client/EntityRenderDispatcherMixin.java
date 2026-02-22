@@ -3,7 +3,7 @@ package elgatopro300.bbs_cml.mixin.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import mchorse.bbs_mod.client.renderer.MorphRenderer;
+import elgatopro300.bbs_cml.client.renderer.MorphRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;

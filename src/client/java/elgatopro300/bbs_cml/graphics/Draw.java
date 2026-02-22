@@ -1,10 +1,10 @@
 package elgatopro300.bbs_cml.graphics;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.camera.data.Angle;
-import mchorse.bbs_mod.utils.Axis;
-import mchorse.bbs_mod.utils.MathUtils;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.camera.data.Angle;
+import elgatopro300.bbs_cml.utils.Axis;
+import elgatopro300.bbs_cml.utils.MathUtils;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
@@ -19,7 +19,7 @@ import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
+import elgatopro300.bbs_cml.utils.MatrixStackUtils;
 
 public class Draw
 {

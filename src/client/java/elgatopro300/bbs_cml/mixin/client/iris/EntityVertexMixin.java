@@ -1,7 +1,7 @@
 package elgatopro300.bbs_cml.mixin.client.iris;
 
-import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.forms.renderers.utils.RecolorVertexConsumer;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;

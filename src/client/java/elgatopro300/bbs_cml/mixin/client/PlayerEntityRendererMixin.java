@@ -1,10 +1,10 @@
 package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.client.renderer.MorphRenderer;
-import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.renderers.FormRenderer;
-import mchorse.bbs_mod.morphing.Morph;
+import elgatopro300.bbs_cml.client.renderer.MorphRenderer;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.renderers.FormRenderer;
+import elgatopro300.bbs_cml.morphing.Morph;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
