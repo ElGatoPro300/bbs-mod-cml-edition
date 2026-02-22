@@ -1,0 +1,246 @@
+package elgatopro300.bbs_cml.forms.renderers;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.client.BBSShaders;
+import elgatopro300.bbs_cml.forms.ITickable;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.forms.ParticleForm;
+import elgatopro300.bbs_cml.particles.ParticleScheme;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.utils.MatrixStackUtils;
+import elgatopro300.bbs_cml.utils.joml.Vectors;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.world.World;
+import org.joml.Matrix4f;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+
+import java.util.function.Supplier;
+
+public class ParticleFormRenderer extends FormRenderer<ParticleForm> implements ITickable
+{
+    public static long lastUpdate = 0L;
+
+    private ParticleEmitter emitter;
+    private boolean checked;
+    private boolean restart;
+    private long lastParticleUpdate = lastUpdate;
+
+    public ParticleFormRenderer(ParticleForm form)
+    {
+        super(form);
+    }
+
+    public ParticleEmitter getEmitter()
+    {
+        return this.emitter;
+    }
+
+    public void ensureEmitter(World world, float transition)
+    {
+        if (this.lastParticleUpdate < lastUpdate)
+        {
+            this.lastParticleUpdate = lastUpdate;
+            this.checked = false;
+        }
+
+        if (!this.checked)
+        {
+            ParticleScheme scheme = BBSModClient.getParticles().load(this.form.effect.get());
+
+            if (scheme != null)
+            {
+                this.emitter = new ParticleEmitter();
+                this.emitter.setScheme(scheme);
+                this.emitter.setWorld(world);
+            }
+
+            this.checked = true;
+        }
+
+        if (this.emitter != null && !BBSRendering.isIrisShadowPass())
+        {
+            boolean lastPaused = this.emitter.paused;
+
+            this.emitter.paused = this.form.paused.get();
+
+            if (lastPaused != this.emitter.paused && !this.emitter.paused && this.emitter.age > 0 && !this.restart)
+            {
+                this.restart = true;
+            }
+        }
+    }
+
+    @Override
+    public void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
+    {
+        this.ensureEmitter(MinecraftClient.getInstance().world, context.getTransition());
+
+        ParticleEmitter emitter = this.emitter;
+
+        if (emitter != null)
+        {
+            MatrixStack stack = context.batcher.getContext().getMatrices();
+            int scale = (y2 - y1) / 2;
+
+            stack.push();
+            stack.translate((x2 + x1) / 2, (y2 + y1) / 2, 40);
+            MatrixStackUtils.scaleStack(stack, scale, scale, scale);
+
+            this.updateTexture(context.getTransition());
+            emitter.lastGlobal.set(new Vector3f(0, 0, 0));
+            emitter.rotation.identity();
+            emitter.renderUI(stack, context.getTransition());
+
+            stack.pop();
+        }
+    }
+
+    @Override
+    public void render3D(FormRenderingContext context)
+    {
+        this.ensureEmitter(MinecraftClient.getInstance().world, context.transition);
+
+        ParticleEmitter emitter = this.emitter;
+
+        if (emitter != null)
+        {
+            emitter.setUserVariables(
+                this.form.user1.get(),
+                this.form.user2.get(),
+                this.form.user3.get(),
+                this.form.user4.get(),
+                this.form.user5.get(),
+                this.form.user6.get()
+            );
+
+            this.updateTexture(context.getTransition());
+
+            boolean useGameCamera = !context.modelRenderer && context.type != FormRenderType.PREVIEW;
+            
+            if (useGameCamera)
+            {
+                /* For game rendering, use the main camera for emitter properties to ensure
+                 * correct yaw/pitch for billboards (avoiding 180 degree flip in Camera wrapper) */
+                emitter.setupCameraProperties(MinecraftClient.getInstance().gameRenderer.getCamera());
+            }
+            else
+            {
+                if (context.modelRenderer)
+                {
+                    float originalPitch = context.camera.rotation.x;
+                    float originalYaw = context.camera.rotation.y;
+                    double originalX = context.camera.position.x;
+                    double originalY = context.camera.position.y;
+                    double originalZ = context.camera.position.z;
+
+                    context.camera.rotation.set(0, 0, 0);
+                    context.camera.position.set(0, 0, 0);
+
+                    emitter.setupCameraProperties(context.camera);
+
+                    context.camera.rotation.x = originalPitch;
+                    context.camera.rotation.y = originalYaw;
+                    context.camera.position.set(originalX, originalY, originalZ);
+                }
+                else
+                {
+                    emitter.setupCameraProperties(context.camera);
+                }
+            }
+
+            Matrix4f modelMatrix = new Matrix4f(context.stack.peek().getPositionMatrix());
+
+            Vector3d translation = new Vector3d(modelMatrix.getTranslation(Vectors.TEMP_3F));
+            
+            if (!context.modelRenderer)
+            {
+                translation.add(context.camera.position.x, context.camera.position.y, context.camera.position.z);
+            }
+
+            GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
+
+            gameRenderer.getLightmapTextureManager().enable();
+            gameRenderer.getOverlayTexture().setupOverlayColor();
+
+            context.stack.push();
+            context.stack.loadIdentity();
+
+            emitter.lastGlobal.set(translation);
+            emitter.rotation.set(modelMatrix);
+            
+            if (!BBSRendering.isIrisShadowPass())
+            {
+                boolean shadersEnabled = BBSRendering.isIrisShadersEnabled();
+                boolean billboard = shadersEnabled;
+
+                VertexFormat format = billboard ? VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL : VertexFormats.POSITION_TEXTURE_COLOR_LIGHT;
+                Supplier<ShaderProgram> shader = billboard
+                    ? this.getShader(
+                        context,
+                        () ->
+                        {
+                            RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                            return RenderSystem.getShader();
+                        },
+                        BBSShaders::getPickerBillboardProgram
+                    )
+                    : this.getShader(
+                        context,
+                        () ->
+                        {
+                            RenderSystem.setShader(ShaderProgramKeys.PARTICLE);
+                            return RenderSystem.getShader();
+                        },
+                        BBSShaders::getPickerParticlesProgram
+                    );
+
+                emitter.render(format, shader, context.stack, context.overlay, context.getTransition());
+            }
+
+            context.stack.pop();
+
+            gameRenderer.getLightmapTextureManager().disable();
+            gameRenderer.getOverlayTexture().teardownOverlayColor();
+        }
+    }
+
+    private void updateTexture(float transition)
+    {
+        if (this.emitter != null)
+        {
+            this.emitter.texture = this.form.texture.get();
+        }
+    }
+
+    @Override
+    public void tick(IEntity entity)
+    {
+        this.ensureEmitter(entity.getWorld(), 0F);
+
+        if (this.emitter != null)
+        {
+            /* Rewind the emitter if it was paused and resumed in order to make
+             * particle effects with once emitter */
+            if (this.restart)
+            {
+                this.emitter.stop();
+                this.emitter.start();
+
+                this.restart = false;
+            }
+
+            this.emitter.update();
+        }
+    }
+}
