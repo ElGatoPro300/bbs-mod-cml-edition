@@ -1,0 +1,117 @@
+package elgatopro300.bbs_cml.client.renderer.entity;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import elgatopro300.bbs_cml.cubic.render.vanilla.ArmorRenderer;
+import elgatopro300.bbs_cml.entity.ActorEntity;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
+import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLayers;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RotationAxis;
+
+public class ActorEntityRenderer extends EntityRenderer<ActorEntity, ActorEntityRenderer.ActorEntityState>
+{
+    public static class ActorEntityState extends LivingEntityRenderState {
+        public ActorEntity entity;
+        public float tickDelta;
+        public float bodyYaw;
+        public float prevBodyYaw;
+        public float deathTime;
+        public boolean isSleeping;
+    }
+
+    public static ArmorRenderer armorRenderer;
+
+    public ActorEntityRenderer(EntityRendererFactory.Context ctx)
+    {
+        super(ctx);
+
+        armorRenderer = new ArmorRenderer(
+            new BipedEntityModel(ctx.getPart(EntityModelLayers.PLAYER)),
+            new BipedEntityModel(ctx.getPart(EntityModelLayers.PLAYER)),
+            MinecraftClient.getInstance().getBakedModelManager()
+        );
+
+        // this.shadowRadius = 0.5F;
+    }
+
+    @Override
+    public ActorEntityState createRenderState() {
+        return new ActorEntityState();
+    }
+
+    @Override
+    public void updateRenderState(ActorEntity entity, ActorEntityState state, float tickDelta) {
+        super.updateRenderState(entity, state, tickDelta);
+        state.entity = entity;
+        state.tickDelta = tickDelta;
+        state.bodyYaw = entity.bodyYaw;
+        state.prevBodyYaw = entity.bodyYaw; // entity.prevBodyYaw
+        state.deathTime = (float)entity.deathTime;
+        state.isSleeping = entity.isInPose(EntityPose.SLEEPING);
+    }
+
+    public Identifier getTexture(ActorEntityState state)
+    {
+        return Identifier.of("minecraft", "textures/entity/player/wide/steve.png");
+    }
+
+    public void render(ActorEntityState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
+    {
+        ActorEntity livingEntity = state.entity;
+        if (livingEntity == null) return;
+
+        float tickDelta = state.tickDelta;
+        
+        matrices.push();
+
+        float bodyYaw = MathHelper.lerpAngleDegrees(tickDelta, state.prevBodyYaw, state.bodyYaw);
+        int overlay = LivingEntityRenderer.getOverlay(state, 0F);
+
+        this.setupTransforms(livingEntity, matrices, bodyYaw, tickDelta);
+
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // RenderSystem.enableDepthTest();
+        FormUtilsClient.render(livingEntity.getForm(), new FormRenderingContext()
+            .set(FormRenderType.ENTITY, livingEntity.getBbsEntity(), matrices, light, overlay, tickDelta)
+            .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
+        // RenderSystem.disableDepthTest();
+        // RenderSystem.disableBlend();
+
+        matrices.pop();
+
+        // super.render(state, matrices, vertexConsumers, light);
+    }
+
+    protected boolean isVisible(ActorEntity entity)
+    {
+        return !entity.isInvisible();
+    }
+
+    protected void setupTransforms(ActorEntity entity, MatrixStack matrices, float bodyYaw, float tickDelta)
+    {
+        if (!entity.isInPose(EntityPose.SLEEPING))
+        {
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-bodyYaw));
+        }
+
+        if (entity.deathTime > 0)
+        {
+            float deathAngle = (entity.deathTime + tickDelta - 1F) / 20F * 1.6F;
+
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(Math.min(MathHelper.sqrt(deathAngle), 1F) * 90F));
+        }
+    }
+}

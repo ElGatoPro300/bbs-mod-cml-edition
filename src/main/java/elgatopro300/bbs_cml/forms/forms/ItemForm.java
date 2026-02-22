@@ -1,0 +1,28 @@
+package elgatopro300.bbs_cml.forms.forms;
+
+import mchorse.bbs_mod.settings.values.core.ValueColor;
+import mchorse.bbs_mod.forms.values.ValueModelTransformationMode;
+import mchorse.bbs_mod.settings.values.mc.ValueItemStack;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.items.ItemDisplayMode;
+import net.minecraft.registry.Registries;
+
+public class ItemForm extends Form
+{
+    public final ValueItemStack stack = new ValueItemStack("item_stack");
+    public final ValueModelTransformationMode modelTransform = new ValueModelTransformationMode("modelTransform", ItemDisplayMode.NONE);
+    public final ValueColor color = new ValueColor("color", Color.white());
+
+    public ItemForm()
+    {
+        this.add(this.stack);
+        this.add(this.modelTransform);
+        this.add(this.color);
+    }
+
+    @Override
+    protected String getDefaultDisplayName()
+    {
+        return Registries.ITEM.getId(this.stack.get().getItem()).toString();
+    }
+}

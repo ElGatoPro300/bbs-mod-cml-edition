@@ -29,5 +29,8 @@
     "bbs.config.editor.clip_type_labels-comment": "Display the clip type in the timeline for Camera and Action editors",
 
 
-    "gamerule.bbsEditing": "BBS mod's editing permission"
+    "gamerule.bbsEditing": "BBS mod's editing permission",
+    "command.getskin.success": "Skin applied to all players",
+    "command.getskin.error": "Error: %s",
+    "command.getskin.downloading": "Downloading skin..."
 }

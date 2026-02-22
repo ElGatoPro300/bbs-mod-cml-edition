@@ -1,0 +1,737 @@
+package elgatopro300.bbs_cml.forms.renderers;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.client.BBSShaders;
+import elgatopro300.bbs_cml.client.renderer.entity.ActorEntityRenderer;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
+import elgatopro300.bbs_cml.cubic.animation.ActionsConfig;
+import elgatopro300.bbs_cml.cubic.animation.Animator;
+import elgatopro300.bbs_cml.cubic.animation.IAnimator;
+import elgatopro300.bbs_cml.cubic.animation.ProceduralAnimator;
+import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
+import elgatopro300.bbs_cml.cubic.model.ArmorSlot;
+import elgatopro300.bbs_cml.cubic.model.ArmorType;
+import elgatopro300.bbs_cml.cubic.model.bobj.BOBJModel;
+import elgatopro300.bbs_cml.forms.CustomVertexConsumerProvider;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.ITickable;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.entities.StubEntity;
+import elgatopro300.bbs_cml.forms.forms.BodyPart;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.forms.ModelForm;
+import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCache;
+import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCacheEntry;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.settings.values.core.ValuePose;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
+import elgatopro300.bbs_cml.utils.MatrixStackUtils;
+import elgatopro300.bbs_cml.utils.StringUtils;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.joml.Vectors;
+import elgatopro300.bbs_cml.utils.pose.Pose;
+import elgatopro300.bbs_cml.utils.pose.PoseTransform;
+import elgatopro300.bbs_cml.utils.resources.LinkUtils;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgram;
+// import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.OverlayTexture;
+// import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.RotationAxis;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
+
+public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITickable
+{
+    private static Matrix4f uiMatrix = new Matrix4f();
+
+    private MatrixCache bones = new MatrixCache();
+
+    private ActionsConfig lastConfigs;
+    private IAnimator animator;
+    private ModelInstance lastModel;
+    private ModelInstance cachedModel;
+    private ModelInstance sourceModel;
+
+    private IEntity entity = new StubEntity();
+
+    @Override
+    protected void applyTransforms(MatrixStack stack, boolean origin, float transition)
+    {
+        super.applyTransforms(stack, origin, transition);
+
+        ModelInstance model = this.getModel();
+
+        if (model != null)
+        {
+            stack.scale(model.scale.x, model.scale.y, model.scale.z);
+        }
+    }
+
+    @Override
+    protected void applyTransforms(Matrix4f matrix, float transition)
+    {
+        super.applyTransforms(matrix, transition);
+
+        ModelInstance model = this.getModel();
+
+        if (model != null)
+        {
+            matrix.scale(model.scale.x, model.scale.y, model.scale.z);
+        }
+    }
+
+    public static Matrix4f getUIMatrix(UIContext context, int x1, int y1, int x2, int y2)
+    {
+        float scale = (y2 - y1) / 2.5F;
+        int x = x1 + (x2 - x1) / 2;
+        float y = y1 + (y2 - y1) * 0.85F;
+        float angle = MathUtils.toRad(context.mouseX - (x1 + x2) / 2) + MathUtils.PI;
+
+        if (BBSSettings.freezeModels.get())
+        {
+            angle = -MathUtils.PI + MathUtils.PI / 8;
+        }
+
+        uiMatrix.identity();
+        uiMatrix.translate(x, y, 40);
+        uiMatrix.scale(scale, -scale, scale);
+        uiMatrix.rotateX(MathUtils.PI / 8);
+        uiMatrix.rotateY(angle);
+
+        return uiMatrix;
+    }
+
+    public static ModelInstance getModel(ModelForm form)
+    {
+        return BBSModClient.getModels().getModel(form.model.get());
+    }
+
+    public ModelFormRenderer(ModelForm form)
+    {
+        super(form);
+    }
+
+    public IAnimator getAnimator()
+    {
+        return this.animator;
+    }
+
+    public void invalidateCachedModel()
+    {
+        if (this.cachedModel != null)
+        {
+            this.cachedModel.delete();
+            this.cachedModel = null;
+        }
+
+        this.sourceModel = null;
+    }
+
+    public ModelInstance getModel()
+    {
+        String modelId = this.form.model.get();
+        ModelInstance model = BBSModClient.getModels().getModel(modelId);
+
+        if (this.cachedModel == null || !this.cachedModel.id.equals(modelId) || this.sourceModel != model)
+        {
+            if (this.cachedModel != null)
+            {
+                this.cachedModel.delete();
+            }
+
+            if (model != null)
+            {
+                this.cachedModel = model.copy();
+                this.cachedModel.setup();
+                this.sourceModel = model;
+            }
+            else
+            {
+                this.cachedModel = null;
+                this.sourceModel = null;
+            }
+        }
+
+        return this.cachedModel;
+    }
+
+    public Pose getPose()
+    {
+        Pose pose = this.form.pose.get().copy();
+        Pose overlay = this.form.poseOverlay.get();
+
+        ModelInstance model = this.getModel();
+
+        if (model != null)
+        {
+            this.applyPose(pose, model.parts);
+        }
+
+        this.applyPose(pose, overlay);
+
+        for (ValuePose newPose : this.form.additionalOverlays)
+        {
+            this.applyPose(pose, newPose.get());
+        }
+
+        return pose;
+    }
+
+    private void applyPose(Pose targetPose, Pose pose)
+    {
+        for (Map.Entry<String, PoseTransform> entry : pose.transforms.entrySet())
+        {
+            PoseTransform poseTransform = targetPose.get(entry.getKey());
+            PoseTransform value = entry.getValue();
+
+            if (value.fix != 0)
+            {
+                poseTransform.fix = value.fix;
+                poseTransform.translate.lerp(value.translate, value.fix);
+                poseTransform.scale.lerp(value.scale, value.fix);
+                poseTransform.rotate.lerp(value.rotate, value.fix);
+                poseTransform.rotate2.lerp(value.rotate2, value.fix);
+                poseTransform.pivot.lerp(value.pivot, value.fix);
+            }
+            else
+            {
+                poseTransform.translate.add(value.translate);
+                poseTransform.scale.add(value.scale).sub(1, 1, 1);
+                poseTransform.rotate.add(value.rotate);
+                poseTransform.rotate2.add(value.rotate2);
+                poseTransform.pivot.add(value.pivot);
+            }
+
+            if (value.fix != 0)
+            {
+                poseTransform.color.lerp(value.color, value.fix);
+                poseTransform.lighting = Lerps.lerp(poseTransform.lighting, value.lighting, value.fix);
+            }
+            else
+            {
+                poseTransform.color.mul(value.color);
+                poseTransform.lighting += value.lighting;
+            }
+
+            if (value.texture != null)
+            {
+                poseTransform.texture = LinkUtils.copy(value.texture);
+            }
+        }
+    }
+
+    public void resetAnimator()
+    {
+        this.animator = null;
+        this.lastModel = null;
+    }
+
+    public void ensureAnimator(float transition)
+    {
+        ModelInstance model = this.getModel();
+        ActionsConfig actionsConfig = this.form.actions.get();
+
+        if (model == null || this.lastModel == model)
+        {
+            /* Update the config */
+            if (this.animator != null && !Objects.equals(actionsConfig, this.lastConfigs))
+            {
+                this.animator.setup(model, actionsConfig, true);
+
+                this.lastConfigs = new ActionsConfig();
+                this.lastConfigs.copy(actionsConfig);
+            }
+
+            return;
+        }
+
+        this.animator = model.procedural ? new ProceduralAnimator() : new Animator();
+        this.animator.setup(model, actionsConfig, false);
+
+        this.lastConfigs = new ActionsConfig();
+        this.lastConfigs.copy(actionsConfig);
+        this.lastModel = model;
+    }
+
+    @Override
+    public List<String> getBones()
+    {
+        ModelInstance model = this.getModel();
+
+        return model == null ? Collections.emptyList() : new ArrayList<>(model.model.getAllGroupKeys());
+    }
+
+    @Override
+    public void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
+    {
+        context.batcher.flush();
+
+        this.ensureAnimator(context.getTransition());
+
+        ModelInstance model = this.getModel();
+
+        if (this.animator != null && model != null)
+        {
+            MatrixStack stack = new MatrixStack();
+
+            stack.push();
+
+            Matrix4f uiMatrix = getUIMatrix(context, x1, y1, x2, y2);
+
+            this.applyTransforms(uiMatrix, context.getTransition());
+
+            Link link = this.form.texture.get();
+            Link texture = link == null ? model.texture : link;
+            Color color = this.form.color.get();
+            float scale = this.form.uiScale.get() * model.uiScale;
+
+            model.model.resetPose();
+
+            this.animator.applyActions(null, model, context.getTransition());
+            model.model.applyPose(this.getPose());
+
+            MatrixStackUtils.multiply(stack, uiMatrix);
+            stack.scale(scale, scale, scale);
+
+            BBSModClient.getTextures().bindTexture(texture);
+            // RenderSystem.depthFunc(GL11.GL_LEQUAL);
+
+            Vector3f light0 = new Vector3f(0.85F, 0.85F, -1F).normalize();
+            Vector3f light1 = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+            // RenderSystem.setupLevelDiffuseLighting(light0, light1);
+
+            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? () ->
+                {
+                    // RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                    return null; // RenderSystem.getShader();
+                }
+                : BBSShaders::getModel;
+
+            this.renderModel(this.entity, mainShader, stack, model, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, color, true, null, context.getTransition());
+
+            /* Render body parts */
+            stack.push();
+            stack.peek().getNormalMatrix().getScale(Vectors.EMPTY_3F);
+            stack.peek().getNormalMatrix().scale(1F / Vectors.EMPTY_3F.x, -1F / Vectors.EMPTY_3F.y, 1F / Vectors.EMPTY_3F.z);
+
+            this.renderBodyParts(new FormRenderingContext()
+                .set(FormRenderType.ENTITY, this.entity, stack, LightmapTextureManager.pack(15, 15), OverlayTexture.DEFAULT_UV, context.getTransition())
+                .inUI());
+
+            stack.pop();
+            stack.pop();
+
+            // DiffuseLighting.disableGuiDepthLighting();
+            // RenderSystem.depthFunc(GL11.GL_ALWAYS);
+        }
+    }
+
+    private void renderModel(IEntity target, Supplier<ShaderProgram> program, MatrixStack stack, ModelInstance model, int light, int overlay, Color color, boolean ui, StencilMap stencilMap, float transition)
+    {
+        if (!model.culling)
+        {
+            // RenderSystem.disableCull();
+        }
+
+        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // RenderSystem.defaultBlendFunc();
+        // RenderSystem.enableDepthTest();
+        GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
+
+        // Lightmap/overlay state handling updated in 1.21.11
+
+        MatrixStack newStack = new MatrixStack();
+
+        MatrixStackUtils.multiply(newStack, new Matrix4f());
+        newStack.peek().getNormalMatrix().set(stack.peek().getNormalMatrix());
+
+        if (ui)
+        {
+            newStack.peek().getNormalMatrix().getScale(Vectors.EMPTY_3F);
+            newStack.peek().getNormalMatrix().scale(1F / Vectors.EMPTY_3F.x, -1F / Vectors.EMPTY_3F.y, 1F / Vectors.EMPTY_3F.z);
+        }
+
+        /* Pass form-level texture so VAO renderer can respect it */
+        Link link = this.form.texture.get();
+        Link defaultTexture = link == null ? model.texture : link;
+        model.render(newStack, program, color, light, overlay, stencilMap, this.form.shapeKeys.get(), defaultTexture);
+
+        // Lightmap/overlay state handling updated in 1.21.11
+        // RenderSystem.disableBlend();
+
+        if (!model.culling)
+        {
+            // RenderSystem.enableCull();
+        }
+
+        /* Render items */
+        this.captureMatrices(model);
+
+        if (stencilMap == null)
+        {
+            // this.renderItems(target, model, stack, EquipmentSlot.MAINHAND, ModelTransformationMode.THIRD_PERSON_RIGHT_HAND, model.itemsMain, color, overlay, light);
+            // this.renderItems(target, model, stack, EquipmentSlot.OFFHAND, ModelTransformationMode.THIRD_PERSON_LEFT_HAND, model.itemsOff, color, overlay, light);
+
+            for (Map.Entry<ArmorType, ArmorSlot> entry : model.armorSlots.entrySet())
+            {
+                this.renderArmor(target, stack, entry.getKey(), entry.getValue(), color, overlay, light);
+            }
+        }
+    }
+
+    private void renderArmor(IEntity target, MatrixStack stack, ArmorType type, ArmorSlot armorSlot, Color color, int overlay, int light)
+    {
+        Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
+
+        if (matrix != null)
+        {
+            CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
+
+            stack.push();
+            MatrixStackUtils.multiply(stack, matrix);
+            MatrixStackUtils.applyTransform(stack, armorSlot.transform);
+            stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(180F));
+
+            CustomVertexConsumerProvider.hijackVertexFormat((l) -> {
+                // RenderSystem.enableBlend()
+            });
+
+            ActorEntityRenderer.armorRenderer.renderArmorSlot(stack, consumers, target, type.slot, type, light);
+            consumers.draw();
+
+            CustomVertexConsumerProvider.clearRunnables();
+
+            stack.pop();
+
+            // RenderSystem.enableBlend();
+            // RenderSystem.enableDepthTest();
+        }
+    }
+
+    private void renderItems(IEntity target, ModelInstance model, MatrixStack stack, EquipmentSlot slot, Object mode, List<ArmorSlot> items, Color color, int overlay, int light)
+    {
+        /*
+        if (items.isEmpty())
+        {
+            return;
+        }
+
+        ItemStack itemStack = target.getEquippedStack(slot);
+
+        if (itemStack.isEmpty())
+        {
+            Matrix4f matrix = this.bones.get(armorSlot.group.get()).matrix();
+
+            if (matrix != null)
+            {
+                CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
+
+                stack.push();
+                MatrixStackUtils.multiply(stack, matrix);
+                MatrixStackUtils.applyTransform(stack, item.transform);
+
+                CustomVertexConsumerProvider.hijackVertexFormat((l) -> {
+                    // RenderSystem.enableBlend()
+                });
+
+                consumers.setSubstitute(BBSRendering.getColorConsumer(color));
+
+                MinecraftClient.getInstance().getItemRenderer().renderItem(null, itemStack, (ModelTransformationMode) mode, (ModelTransformationMode) mode == ModelTransformationMode.THIRD_PERSON_LEFT_HAND, stack, consumers, target.getWorld(), light, overlay, 0);
+
+                consumers.setSubstitute(null);
+                consumers.draw();
+
+                CustomVertexConsumerProvider.clearRunnables();
+
+                stack.pop();
+
+                // RenderSystem.enableDepthTest();
+            }
+        }
+        */
+    }
+
+    @Override
+    public boolean renderArm(MatrixStack matrices, int light, AbstractClientPlayerEntity player, Hand hand)
+    {
+        this.ensureAnimator(1F);
+        ModelInstance model = this.getModel();
+
+        if (this.animator != null && model != null)
+        {
+            ArmorSlot slot = hand == Hand.MAIN_HAND ? model.fpMain : model.fpOffhand;
+
+            if (slot == null)
+            {
+                return false;
+            }
+
+            Link link = this.form.texture.get();
+            Link texture = link == null ? model.texture : link;
+            Color color = this.form.color.get().copy();
+
+            for (ModelGroup group : model.getModel().getAllGroups())
+            {
+                ModelGroup g = group;
+                boolean visible = false;
+
+                while (g != null)
+                {
+                    if (g.id.equals(slot.group.get()))
+                    {
+                        visible = true;
+
+                        break;
+                    }
+
+                    g = g.parent;
+                }
+
+                group.visible = visible;
+            }
+
+            model.model.resetPose();
+
+            matrices.push();
+            matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
+            MatrixStackUtils.applyTransform(matrices, slot.transform);
+
+            BBSModClient.getTextures().bindTexture(texture);
+
+            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? () ->
+                {
+                    // RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                    return null; // RenderSystem.getShader();
+                }
+                : BBSShaders::getModel;
+
+            // RenderSystem.enableDepthTest();
+            // RenderSystem.enableBlend();
+
+            this.renderModel(this.entity, mainShader, matrices, model, light, OverlayTexture.DEFAULT_UV, color, false, null, 0F);
+
+            for (ModelGroup group : model.getModel().getAllGroups())
+            {
+                group.visible = true;
+            }
+
+            matrices.pop();
+
+            return true;
+        }
+
+        return super.renderArm(matrices, light, player, hand);
+    }
+
+    @Override
+    public void render3D(FormRenderingContext context)
+    {
+        this.ensureAnimator(context.getTransition());
+
+        ModelInstance model = this.getModel();
+
+        if (this.animator != null && model != null)
+        {
+            Link link = this.form.texture.get();
+            Link texture = link == null ? model.texture : link;
+            Color color = this.form.color.get().copy();
+
+            color.mul(context.color);
+            model.model.resetPose();
+
+            this.animator.applyActions(context.entity, model, context.getTransition());
+            model.model.applyPose(this.getPose());
+
+            context.stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
+
+            if (texture != null)
+            {
+                BBSModClient.getTextures().bindTexture(texture);
+            }
+
+            Supplier<ShaderProgram> mainShader = (BBSRendering.isIrisShadersEnabled() && BBSRendering.isRenderingWorld()) || !model.isVAORendered()
+                ? () ->
+                {
+                    // RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT);
+                    return null; // RenderSystem.getShader();
+                }
+                : BBSShaders::getModel;
+            Supplier<ShaderProgram> shader = this.getShader(context, mainShader, BBSShaders::getPickerModelsProgram);
+
+            this.renderModel(context.entity, shader, context.stack, model, context.light, context.overlay, color, false, context.stencilMap, context.getTransition());
+        }
+    }
+
+    @Override
+    protected void updateStencilMap(FormRenderingContext context)
+    {
+        ModelInstance model = this.getModel();
+
+        if (model == null || model.model == null || context.stencilMap == null)
+        {
+            return;
+        }
+
+        model.fillStencilMap(context.stencilMap, this.form);
+    }
+
+    private void captureMatrices(ModelInstance model)
+    {
+        /* this.bones.clear()? */
+        model.captureMatrices(this.bones);
+    }
+
+    @Override
+    public void renderBodyParts(FormRenderingContext context)
+    {
+        context.stack.push();
+
+        for (BodyPart part : this.form.parts.getAllTyped())
+        {
+            Matrix4f matrix = this.bones.get(part.bone.get()).matrix();
+
+            context.stack.push();
+
+            if (matrix != null)
+            {
+                MatrixStackUtils.multiply(context.stack, matrix);
+            }
+            else
+            {
+                context.stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
+            }
+
+            this.renderBodyPart(part, context);
+
+            context.stack.pop();
+        }
+
+        this.bones.clear();
+        context.stack.pop();
+    }
+
+    @Override
+    public void collectMatrices(IEntity entity, MatrixStack stack, MatrixCache matrices, String prefix, float transition)
+    {
+        ModelInstance model = this.getModel();
+        Matrix4f mm = new Matrix4f();
+        Matrix4f oo = new Matrix4f();
+
+        stack.push();
+        this.applyTransforms(stack, true, transition);
+        oo.set(new Matrix4f());
+        stack.pop();
+
+        stack.push();
+        this.applyTransforms(stack, false, transition);
+        mm.set(new Matrix4f());
+
+        matrices.put(prefix, mm, oo);
+
+        /* Collect bones and add them to matrix list */
+        if (this.animator != null && model != null)
+        {
+            model.model.resetPose();
+
+            this.animator.applyActions(entity, model, transition);
+            model.model.applyPose(this.getPose());
+
+            stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
+            this.captureMatrices(model);
+        }
+
+        for (Map.Entry<String, MatrixCacheEntry> entry : this.bones.entrySet())
+        {
+            Matrix4f matrix = new Matrix4f();
+            Matrix4f o = new Matrix4f();
+
+            stack.push();
+            MatrixStackUtils.multiply(stack, entry.getValue().matrix());
+            matrix.set(new Matrix4f());
+            stack.pop();
+
+            stack.push();
+            MatrixStackUtils.multiply(stack, entry.getValue().origin());
+            o.set(new Matrix4f());
+            stack.pop();
+
+            matrices.put(StringUtils.combinePaths(prefix, entry.getKey()), matrix, o);
+        }
+
+        int i = 0;
+
+        /* Recursively do the same thing with body parts */
+        for (BodyPart part : this.form.parts.getAllTyped())
+        {
+            Form form = part.getForm();
+
+            if (form != null)
+            {
+                Matrix4f matrix = this.bones.get(part.bone.get()).matrix();
+
+                stack.push();
+
+                if (matrix != null)
+                {
+                    MatrixStackUtils.multiply(stack, matrix);
+                }
+                else
+                {
+                    stack.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtils.PI));
+                }
+
+                MatrixStackUtils.applyTransform(stack, part.transform.get());
+
+                FormUtilsClient.getRenderer(form).collectMatrices(part.useTarget.get() ? entity : part.getEntity(), stack, matrices, StringUtils.combinePaths(prefix, String.valueOf(i)), transition);
+
+                stack.pop();
+            }
+
+            i += 1;
+        }
+
+        stack.pop();
+
+        this.bones.clear();
+    }
+
+    @Override
+    public void tick(IEntity entity)
+    {
+        this.ensureAnimator(0F);
+
+        if (this.animator != null)
+        {
+            this.animator.update(entity);
+        }
+    }
+}
+
+

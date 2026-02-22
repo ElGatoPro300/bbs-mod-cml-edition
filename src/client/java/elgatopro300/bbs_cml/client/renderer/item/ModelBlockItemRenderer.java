@@ -1,0 +1,226 @@
+package elgatopro300.bbs_cml.client.renderer.item;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
+import mchorse.bbs_mod.blocks.entities.ModelProperties;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.entities.StubEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.renderers.FormRenderType;
+import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
+import mchorse.bbs_mod.utils.pose.Transform;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.entity.model.LoadedEntityModels;
+import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
+// import net.minecraft.client.render.model.BakeContext;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemDisplayContext;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
+import org.joml.Vector3f;
+import mchorse.bbs_mod.items.ItemDisplayMode;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
+import mchorse.bbs_mod.forms.renderers.FormRenderer;
+
+public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
+{
+    private Map<ItemStack, Item> map = new HashMap<>();
+
+    public void update()
+    {
+        Iterator<Item> it = this.map.values().iterator();
+
+        while (it.hasNext())
+        {
+            Item item = it.next();
+
+            if (item.expiration <= 0)
+            {
+                it.remove();
+            }
+
+            item.expiration -= 1;
+            item.entity.getProperties().update(item.formEntity);
+            item.formEntity.update();
+        }
+    }
+
+    @Override
+    public ItemStack getData(ItemStack stack)
+    {
+        return stack;
+    }
+
+    @Override
+    public void render(ItemStack data, ItemDisplayContext mode, MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, int overlay, boolean hasGlint, int glintAlpha)
+    {
+        Item item = this.get(data);
+
+        if (item != null)
+        {
+            ItemDisplayMode displayMode = ItemDisplayMode.NONE;
+
+            ModelProperties properties = item.entity.getProperties();
+            Form form = properties.getForm(displayMode);
+            Transform transform = properties.getTransform(displayMode);
+
+            if (form != null)
+            {
+                item.expiration = 20;
+
+                matrices.push();
+                matrices.translate(0.5F, 0F, 0.5F);
+                MatrixStackUtils.applyTransform(matrices, transform);
+
+                com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
+
+                if (mode == ItemDisplayContext.GUI)
+                {
+                    Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
+                    Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+                    // Lighting setup optional on 1.21.11
+                }
+
+                FormUtilsClient.render(form, new FormRenderingContext()
+                    .set(FormRenderType.fromModelMode(mode), item.formEntity, matrices, light, overlay, 1F)
+                    .camera(MinecraftClient.getInstance().gameRenderer.getCamera()));
+
+                if (mode == ItemDisplayContext.GUI)
+                {
+                    // net.minecraft.client.render.DiffuseLighting.disableGuiDepthLighting();
+                }
+
+                com.mojang.blaze3d.opengl.GlStateManager._disableDepthTest();
+
+                matrices.pop();
+            }
+        }
+    }
+
+    public void collectVertices(java.util.Set<org.joml.Vector3f> vertices)
+    {
+    }
+
+    @Override
+    public void collectVertices(java.util.function.Consumer<org.joml.Vector3fc> consumer)
+    {
+    }
+
+    /*
+    // @Override
+    public void render(ItemStack data, ItemDisplayContext mode, MatrixStack matrices, OrderedRenderCommandQueue commandQueue, int light, int overlay, boolean hasGlint, int glintAlpha)
+    {
+        Item item = this.get(data);
+
+        if (item != null)
+        {
+            ItemDisplayMode displayMode = ItemDisplayMode.NONE;
+
+            ModelProperties properties = item.entity.getProperties();
+            Form form = properties.getForm(displayMode);
+            Transform transform = properties.getTransform(displayMode);
+
+            if (form != null)
+            {
+                item.expiration = 20;
+
+                matrices.push();
+                matrices.translate(0.5F, 0F, 0.5F);
+                MatrixStackUtils.applyTransform(matrices, transform);
+
+                FormRenderingContext context = new FormRenderingContext();
+
+                context.set(FormRenderType.ITEM, item.formEntity, matrices, light, overlay, 1F)
+                    .consumers(null); // commandQueue
+
+                item.formEntity.getForm().getRenderer().render(item.formEntity, context);
+
+                matrices.pop();
+            }
+        }
+    }
+    */
+
+    public Item get(ItemStack stack)
+    {
+        if (stack == null || stack.getItem() != BBSMod.MODEL_BLOCK_ITEM)
+        {
+            return null;
+        }
+
+        if (this.map.containsKey(stack))
+        {
+            return this.map.get(stack);
+        }
+
+        ModelBlockEntity entity = new ModelBlockEntity(BlockPos.ORIGIN, BBSMod.MODEL_BLOCK.getDefaultState());
+        Item item = new Item(entity);
+
+        this.map.put(stack, item);
+
+        NbtComponent nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+        if (nbtComponent == null)
+        {
+            return item;
+        }
+
+        NbtCompound nbt = nbtComponent.copyNbt();
+        var world = MinecraftClient.getInstance().world;
+        if (world != null)
+        {
+            entity.readNbt(nbt);
+        }
+
+        return item;
+    }
+
+    public static class Unbaked implements SpecialModelRenderer.Unbaked
+    {
+        public static final com.mojang.serialization.MapCodec<Unbaked> CODEC = com.mojang.serialization.MapCodec.unit(new Unbaked());
+
+        @Override
+        public MapCodec<Unbaked> getCodec()
+        {
+            return CODEC;
+        }
+
+        @Override
+        public SpecialModelRenderer<?> bake(BakeContext context)
+        {
+            return new ModelBlockItemRenderer();
+        }
+    }
+
+
+
+    public static class Item
+    {
+        public ModelBlockEntity entity;
+        public IEntity formEntity;
+        public int expiration = 20;
+
+        public Item(ModelBlockEntity entity)
+        {
+            this.entity = entity;
+            this.formEntity = new StubEntity(MinecraftClient.getInstance().world);
+        }
+    }
+}

@@ -1,0 +1,177 @@
+package elgatopro300.bbs_cml.ui.addons;
+
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.addons.AddonInfo;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.ui.dashboard.panels.UIDashboardPanel;
+import elgatopro300.bbs_cml.ui.dashboard.panels.UISidebarDashboardPanel;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.resources.packs.InternalAssetsSourcePack;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+public class UIAddonsPanel extends UISidebarDashboardPanel
+{
+    public UIScrollView addons;
+    public UIIcon reload;
+
+    private static boolean registeredIcons = false;
+
+    public UIAddonsPanel(UIDashboard dashboard)
+    {
+        super(dashboard);
+        
+        if (!registeredIcons)
+        {
+            BBSMod.getProvider().register(new InternalAssetsSourcePack("mod_icons", "assets", BBSMod.class));
+            registeredIcons = true;
+        }
+
+        this.addons = new UIScrollView();
+        this.addons.relative(this.editor).w(1F).h(1F);
+        this.addons.column(5).vertical().stretch().scroll().padding(10);
+        
+        this.editor.add(this.addons);
+
+        this.reload = new UIIcon(Icons.REFRESH, (b) -> this.reload());
+        this.reload.tooltip(UIKeys.ADDONS_RELOAD);
+        
+        this.iconBar.add(this.reload);
+
+        this.reload();
+    }
+
+    @Override
+    public void requestNames()
+    {}
+
+    public void reload()
+    {
+        this.addons.removeAll();
+
+        for (AddonInfo info : BBSModClient.registeredAddons)
+        {
+            this.addons.add(new UIAddonEntry(info));
+        }
+
+        if (this.addons.getChildren().isEmpty())
+        {
+             UILabel noAddons = new UILabel(UIKeys.ADDONS_NO_ADDONS);
+             noAddons.color(Colors.LIGHTER_GRAY);
+             noAddons.relative(this.addons).x(0.5F).y(0.5F).anchor(0.5F, 0.5F);
+             this.addons.add(noAddons);
+        }
+        
+        this.addons.resize();
+    }
+
+    public static class UIAddonEntry extends UIElement
+    {
+        public AddonInfo mod;
+        public Texture icon;
+
+        public UIAddonEntry(AddonInfo mod)
+        {
+            this.mod = mod;
+
+            this.h(80);
+            
+            /* Try to load icon */
+            if (mod.icon != null)
+            {
+                this.icon = BBSModClient.getTextures().getTexture(mod.icon);
+            }
+
+            int textX = this.icon != null ? 80 : 10;
+            
+            UILabel version = new UILabel(IKey.raw("v" + mod.version).format(Colors.GRAY));
+            version.relative(this).x(1F, -10).y(10).anchorX(1F);
+            
+            UILabel description = new UILabel(IKey.raw(mod.description).format(Colors.LIGHTER_GRAY));
+            description.relative(this).x(textX).y(30).w(1F, -10 - textX);
+            
+            String authors = String.join(", ", mod.authors);
+            UILabel authorLabel = new UILabel(UIKeys.ADDONS_AUTHOR.format(IKey.raw(authors)).format(Colors.LIGHTER_GRAY));
+            authorLabel.relative(this).x(textX).y(1F, -10).anchorY(1F).w(1F, -10 - textX);
+
+            this.add(version, description, authorLabel);
+            
+            // Buttons
+            int x = 0;
+            
+            if (!mod.website.isEmpty())
+            {
+                UIIcon web = new UIIcon(Icons.GLOBE, (b) -> openLink(mod.website));
+                web.tooltip(UIKeys.ADDONS_WEBSITE);
+                web.relative(this).x(1F, -10 - x).y(1F, -5).anchor(1F, 1F).w(20).h(20);
+                this.add(web);
+                x += 24;
+            }
+            
+            if (!mod.issues.isEmpty())
+            {
+                UIIcon issues = new UIIcon(Icons.EXCLAMATION, (b) -> openLink(mod.issues));
+                issues.tooltip(UIKeys.ADDONS_ISSUES);
+                issues.relative(this).x(1F, -10 - x).y(1F, -5).anchor(1F, 1F).w(20).h(20);
+                this.add(issues);
+                x += 24;
+            }
+            
+            if (!mod.source.isEmpty())
+            {
+                UIIcon source = new UIIcon(Icons.CODE, (b) -> openLink(mod.source));
+                source.tooltip(UIKeys.ADDONS_SOURCE);
+                source.relative(this).x(1F, -10 - x).y(1F, -5).anchor(1F, 1F).w(20).h(20);
+                this.add(source);
+                x += 24;
+            }
+        }
+        
+        private void openLink(String url)
+        {
+             try {
+                net.minecraft.util.Util.getOperatingSystem().open(url);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void render(UIContext context)
+        {
+            // Background
+            context.batcher.box(this.area.x, this.area.y, this.area.ex(), this.area.ey(), Colors.A50);
+            context.batcher.outline(this.area.x, this.area.y, this.area.ex(), this.area.ey(), Colors.A50 | Colors.LIGHTER_GRAY);
+            
+            if (this.icon != null)
+            {
+                context.batcher.fullTexturedBox(this.icon, this.area.x + 10, this.area.y + 10, 60, 60);
+            }
+            
+            /*  Draw Name Scaled */
+            int textX = this.icon != null ? 80 : 10;
+            String name = this.mod.name;
+            
+            // context.batcher.getContext().getMatrices().pushMatrix();
+            // context.batcher.getContext().getMatrices().translate(this.area.x + textX, this.area.y + 10, 0);
+            // context.batcher.getContext().getMatrices().scale(1.5F, 1.5F, 1.5F);
+            context.batcher.text(name, this.area.x + textX, this.area.y + 10, Colors.WHITE);
+            // context.batcher.getContext().getMatrices().popMatrix();
+
+            super.render(context);
+        }
+    }
+}
