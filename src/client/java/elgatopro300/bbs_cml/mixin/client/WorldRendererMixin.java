@@ -46,24 +46,24 @@ public class WorldRendererMixin
     }
     */
 
-    @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    public void onRenderClouds(FrameGraphBuilder frameGraphBuilder, Matrix4f positionMatrix, Matrix4f projectionMatrix, CloudRenderMode mode, Vec3d cameraPos, float tickDelta, int color, float cloudHeight, CallbackInfo info)
-    {
-        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
-        {
-            info.cancel();
-        }
-    }
+    // @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
+    // public void onRenderClouds(FrameGraphBuilder frameGraphBuilder, CloudRenderMode mode, Vec3d cameraPos, long tick, float tickDelta, int color, float cloudHeight, CallbackInfo info)
+    // {
+    //     if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
+    //     {
+    //         info.cancel();
+    //     }
+    // }
 
-    @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true)
-    public void onRenderLayer(RenderLayer renderLayer, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info)
-    {
-        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyTerrain.get())
-        {
-
-            info.cancel();
-        }
-    }
+    // @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true)
+    // public void onRenderLayer(RenderLayer renderLayer, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info)
+    // {
+    //     if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyTerrain.get())
+    //     {
+    //
+    //         info.cancel();
+    //     }
+    // }
 
     @Inject(method = "setupFrustum", at = @At("HEAD"), require = 0)
     public void onSetupFrustum(Matrix4f projectionMatrix, Matrix4f modelViewMatrix, Vec3d cameraPos, CallbackInfoReturnable<?> cir)
