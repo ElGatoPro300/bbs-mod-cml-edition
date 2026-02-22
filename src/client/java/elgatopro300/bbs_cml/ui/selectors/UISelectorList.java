@@ -1,11 +1,14 @@
 package elgatopro300.bbs_cml.ui.selectors;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import elgatopro300.bbs_cml.forms.FormUtilsClient;
 import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.selectors.EntitySelector;
 import elgatopro300.bbs_cml.ui.framework.UIContext;
 import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
 import elgatopro300.bbs_cml.ui.utils.UIDataUtils;
+import net.minecraft.client.render.DiffuseLighting;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -56,7 +59,11 @@ public class UISelectorList extends UIList<EntitySelector>
 
             y -= 10;
 
+            Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
+            Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+            RenderSystem.setupLevelDiffuseLighting(a, b);
             FormUtilsClient.renderUI(form, context, x, y, x + 40, y + 40);
+            DiffuseLighting.disableGuiDepthLighting();
 
             context.batcher.unclip(context);
         }

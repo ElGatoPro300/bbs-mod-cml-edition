@@ -1,5 +1,6 @@
 package elgatopro300.bbs_cml.ui.forms;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import elgatopro300.bbs_cml.BBSModClient;
 import elgatopro300.bbs_cml.forms.FormCategories;
 import elgatopro300.bbs_cml.forms.FormUtils;
@@ -20,7 +21,10 @@ import elgatopro300.bbs_cml.ui.utils.UI;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 import elgatopro300.bbs_cml.utils.Direction;
 import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.joml.Matrices;
 import net.minecraft.client.render.DiffuseLighting;
+import org.joml.Vector3f;
+import org.joml.Matrix3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,7 +246,10 @@ public class UIFormList extends UIElement
             this.setSelected(selected);
         }
 
-        DiffuseLighting.enableGuiDepthLighting();
+        Vector3f a = new Vector3f(0.85F, 0.85F, -1F).normalize();
+        Vector3f b = new Vector3f(-0.85F, 0.85F, 1F).normalize();
+
+        RenderSystem.setupLevelDiffuseLighting(a, b);
 
         super.render(context);
 

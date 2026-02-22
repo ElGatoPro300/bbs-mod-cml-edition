@@ -1,11 +1,14 @@
 package elgatopro300.bbs_cml.ui.forms.editors;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import elgatopro300.bbs_cml.forms.FormUtilsClient;
 import elgatopro300.bbs_cml.forms.forms.BodyPart;
 import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.ui.framework.UIContext;
 import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
 import elgatopro300.bbs_cml.utils.StringUtils;
+import net.minecraft.client.render.DiffuseLighting;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Objects;
@@ -82,7 +85,11 @@ public class UIForms extends UIList<UIForms.FormEntry>
 
             y -= 10;
 
+            org.joml.Vector3f a = new org.joml.Vector3f(0.85F, 0.85F, -1F).normalize();
+            org.joml.Vector3f b = new org.joml.Vector3f(-0.85F, 0.85F, 1F).normalize();
+            RenderSystem.setupLevelDiffuseLighting(a, b);
             FormUtilsClient.renderUI(form, context, x, y, x + 40, y + 40);
+            DiffuseLighting.disableGuiDepthLighting();
 
             context.batcher.unclip(context);
         }

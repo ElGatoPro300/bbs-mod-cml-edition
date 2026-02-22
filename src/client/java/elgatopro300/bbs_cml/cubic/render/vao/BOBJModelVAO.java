@@ -8,6 +8,7 @@ import elgatopro300.bbs_cml.client.BBSRendering;
 import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
 import elgatopro300.bbs_cml.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

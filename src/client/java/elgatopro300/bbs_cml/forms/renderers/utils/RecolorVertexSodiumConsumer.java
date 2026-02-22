@@ -1,9 +1,8 @@
 package elgatopro300.bbs_cml.forms.renderers.utils;
 
-import elgatopro300.bbs_cml.mixin.client.sodium.SodiumBufferBuilderAccessor;
 import elgatopro300.bbs_cml.utils.colors.Color;
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
-import net.caffeinemc.mods.sodium.api.vertex.format.VertexFormatDescription;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexConsumer;
 import org.lwjgl.system.MemoryStack;
 
@@ -17,11 +16,11 @@ public class RecolorVertexSodiumConsumer extends RecolorVertexConsumer implement
     }
 
     @Override
-    public void push(MemoryStack memoryStack, long l, int i, VertexFormatDescription vertexFormatDescription)
+    public void push(MemoryStack memoryStack, long l, int i, VertexFormat vertexFormat)
     {
-        if (this.consumer instanceof SodiumBufferBuilderAccessor accessor)
+        if (this.consumer instanceof VertexBufferWriter writer)
         {
-            accessor.bbs$getBuilder().push(memoryStack, l, i, vertexFormatDescription);
+            writer.push(memoryStack, l, i, vertexFormat);
         }
     }
 }
