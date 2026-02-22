@@ -57,7 +57,7 @@ import java.io.IOException;
 
 public class UIPoseEditor extends UIElement
 {
-    private static String lastLimb = "";
+    private static final Map<String, String> LAST_LIMB_CACHE = new HashMap<>();
     private static final Map<String, Set<String>> MARKED_BONES_CACHE = new HashMap<>();
     private static final String MARKED_BONES_FILE = "marked_bones.json";
     private static boolean MARKED_BONES_LOADED = false;
@@ -523,13 +523,13 @@ public class UIPoseEditor extends UIElement
             this.showOnlyMarkedButton.active(this.showOnlyMarked);
         }
 
-        String preferred = reset ? null : lastLimb;
+        String preferred = this.getLastSelectedBone();
         this.applyMarkedFilter(reset, preferred, scroll);
     }
 
     public void selectBone(String bone)
     {
-        lastLimb = bone;
+        this.cacheLastSelectedBone(bone);
 
         this.groups.list.setCurrentScroll(bone);
         this.pickBone(bone);
@@ -758,7 +758,7 @@ public class UIPoseEditor extends UIElement
             this.pickCallback.accept(bone);
         }
 
-        lastLimb = bone;
+        this.cacheLastSelectedBone(bone);
 
         this.fix.setVisible(true);
         this.color.setVisible(true);
@@ -983,6 +983,38 @@ public class UIPoseEditor extends UIElement
         return this.group == null ? "" : this.group;
     }
 
+    private String getLastSelectedBone()
+    {
+        String key = this.getMarkedBonesCacheKey();
+        String preferred = LAST_LIMB_CACHE.get(key);
+        if (preferred == null || preferred.isEmpty())
+        {
+            preferred = LAST_LIMB_CACHE.get("");
+        }
+
+        if (preferred != null && !preferred.isEmpty())
+        {
+            return preferred;
+        }
+
+        return null;
+    }
+
+    private void cacheLastSelectedBone(String bone)
+    {
+        if (bone == null || bone.isEmpty())
+        {
+            return;
+        }
+
+        String key = this.getMarkedBonesCacheKey();
+        if (!key.isEmpty())
+        {
+            LAST_LIMB_CACHE.put(key, bone);
+        }
+        LAST_LIMB_CACHE.put("", bone);
+    }
+
     private void ensureMarkedBonesLoaded()
     {
         if (MARKED_BONES_LOADED)
@@ -1053,6 +1085,41 @@ public class UIPoseEditor extends UIElement
         public MarkableBoneList(Consumer<List<String>> callback)
         {
             super(callback);
+        }
+
+        @Override
+        public void render(UIContext context)
+        {
+            super.render(context);
+
+            if (!UIPoseEditor.this.showOnlyMarked || !UIPoseEditor.this.markedBones.isEmpty())
+            {
+                return;
+            }
+
+            String line1 = "No hay huesos marcados.";
+            String line2 = "Pulsá este botón";
+            int lineHeight = context.batcher.getFont().getHeight() + 4;
+            int totalHeight = lineHeight * 2 - 4;
+            int y = this.area.my() - totalHeight / 2;
+            int color = Colors.setA(Colors.WHITE, 0.6F);
+
+            context.batcher.clip(this.area, context);
+            int x1 = this.area.mx() - context.batcher.getFont().getWidth(line1) / 2;
+            context.batcher.textShadow(line1, x1, y, color);
+            y += lineHeight;
+
+            int iconSize = 16;
+            int iconSpacing = 4;
+            int line2TextWidth = context.batcher.getFont().getWidth(line2);
+            int totalLine2Width = line2TextWidth + iconSpacing + iconSize;
+            int x2 = this.area.mx() - totalLine2Width / 2;
+            context.batcher.textShadow(line2, x2, y, color);
+            int iconX = x2 + line2TextWidth + iconSpacing;
+            int iconY = y + (context.batcher.getFont().getHeight() - iconSize) / 2;
+            RenderSystem.enableBlend();
+            context.batcher.icon(Icons.VISIBLE, color, iconX, iconY);
+            context.batcher.unclip(context);
         }
 
         @Override
