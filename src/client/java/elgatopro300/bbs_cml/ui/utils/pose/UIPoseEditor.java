@@ -1097,8 +1097,8 @@ public class UIPoseEditor extends UIElement
                 return;
             }
 
-            String line1 = "No hay huesos marcados.";
-            String line2 = "Pulsá este botón";
+            String line1 = L10n.lang("bbs.ui.pose.bones.empty_line1").get();
+            String line2 = L10n.lang("bbs.ui.pose.bones.empty_line2").get();
             int lineHeight = context.batcher.getFont().getHeight() + 4;
             int totalHeight = lineHeight * 2 - 4;
             int y = this.area.my() - totalHeight / 2;
