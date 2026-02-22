@@ -9,6 +9,8 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Vec3d;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,10 +42,9 @@ public class WorldRendererMixin
     }
 
     @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    public void onRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info)
+    public void onRenderClouds(BufferBuilder builder, double x, double y, double z, Vec3d color, CallbackInfoReturnable<Object> info)
     {
-        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
-        {
+        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get()) {
             info.cancel();
         }
     }
