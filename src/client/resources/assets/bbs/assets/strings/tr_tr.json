@@ -928,6 +928,7 @@
     "bbs.ui.language.pick": "Dil seç...",
     "bbs.ui.language.pick.title": "Dil",
     "bbs.ui.model_blocks.global": "Genel",
+    "bbs.ui.model_blocks.hardness": "Blok Sertliği",
     "bbs.ui.model_blocks.hitbox": "Hitbox'ı Etkinleştir",
     "bbs.ui.model_blocks.keys.move_to": "Şuraya ötele",
     "bbs.ui.model_blocks.keys.teleport": "Model bloğuna ışınlan",
