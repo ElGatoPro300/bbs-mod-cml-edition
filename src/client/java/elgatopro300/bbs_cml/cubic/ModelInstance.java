@@ -1,5 +1,6 @@
 package elgatopro300.bbs_cml.cubic;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import elgatopro300.bbs_cml.BBSModClient;
 import elgatopro300.bbs_cml.bobj.BOBJBone;
@@ -35,9 +36,10 @@ import elgatopro300.bbs_cml.utils.resources.LinkUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.util.BufferAllocator;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -497,18 +499,17 @@ public class ModelInstance implements IModelInstance
             }
             else
             {
-                RenderSystem.setShader(program.get());
+                // RenderSystem.setShader(program.get());
 
                 BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
                 org.lwjgl.opengl.GL11.glCullFace(org.lwjgl.opengl.GL11.GL_BACK);
                 CubicRenderer.processRenderModel(renderProcessor, builder, stack, model);
-                try { BufferRenderer.drawWithGlobalProgram(builder.end()); } catch (IllegalStateException e) {}
             }
 
             if (!translucent.isEmpty())
             {
-                RenderSystem.depthMask(false);
-                RenderSystem.enableCull();
+                GlStateManager._depthMask(false);
+                GlStateManager._enableCull();
 
                 List<ModelGroup> sorted = new ArrayList<>(translucent);
                 org.joml.Matrix4f modelView = stack.peek().getPositionMatrix();
@@ -526,7 +527,7 @@ public class ModelInstance implements IModelInstance
                 org.lwjgl.opengl.GL11.glCullFace(org.lwjgl.opengl.GL11.GL_BACK);
                 this.renderSortedGroups(renderProcessor, isVao, stack, model, sorted, program);
 
-                RenderSystem.depthMask(true);
+                GlStateManager._depthMask(true);
             }
         }
         else if (this.model instanceof BOBJModel model)
@@ -565,13 +566,12 @@ public class ModelInstance implements IModelInstance
         }
         else
         {
-            RenderSystem.setShader(program.get());
             BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
             for (ModelGroup group : sortedGroups)
             {
                 CubicRenderer.processRenderRecursively(renderProcessor, builder, stack, model, group);
             }
-            try { BufferRenderer.drawWithGlobalProgram(builder.end()); } catch (IllegalStateException e) {}
         }
     }
 }
+

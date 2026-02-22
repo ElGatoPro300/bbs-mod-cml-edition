@@ -19,8 +19,9 @@ import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
 import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
+import elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor;
 import java.util.List;
 import java.util.Map;
 
@@ -136,6 +137,7 @@ public class FilmEditorController extends BaseFilmController
             || !this.controller.orbit.enabled;
     }
 
+    /*
     @Override
     protected void renderEntity(WorldRenderContext context, Replay replay, IEntity entity)
     {
@@ -175,7 +177,7 @@ public class FilmEditorController extends BaseFilmController
                     this.renderOnion(replay, pose.getKeyframes().indexOf(segment.b), 1, pose, onionSkin.postColor.get(), onionSkin.postFrames.get(), context, isPlaying, entity);
 
                     replay.keyframes.apply(ticks, entity);
-                    float tick = ticks + this.getTransition(entity, context.tickCounter().getTickDelta(false));
+                    float tick = ticks + this.getTransition(entity, ((RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField());
                     Form form = entity.getForm();
                     replay.properties.applyProperties(form, tick);
 
@@ -193,37 +195,16 @@ public class FilmEditorController extends BaseFilmController
             }
         }
     }
+    */
 
+    /*
     private void renderOnion(Replay replay, int index, int direction, KeyframeChannel<?> pose, int color, int frames, WorldRenderContext context, boolean isPlaying, IEntity entity)
     {
-        List<? extends Keyframe<?>> keyframes = pose.getKeyframes();
-        float alpha = Colors.getA(color);
-
-        for (; CollectionUtils.inRange(keyframes, index) && frames > 0; index += direction)
-        {
-            Keyframe<?> keyframe = keyframes.get(index);
-
-            if (keyframe.getTick() == this.getTick())
-            {
-                continue;
-            }
-
-            int tick1 = (int) keyframe.getTick();
-            replay.keyframes.apply(tick1, entity);
-            float tick = (int) keyframe.getTick();
-            Form form = entity.getForm();
-            replay.properties.applyProperties(form, tick);
-
-            BaseFilmController.renderEntity(FilmControllerContext.instance
-                .setup(this.getEntities(), entity, replay, context)
-                .color(Colors.setA(color, alpha))
-                .transition(0F));
-
-            frames -= 1;
-            alpha *= alpha;
-        }
+        // Disabled
     }
+    */
 
+    /*
     @Override
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
     {
@@ -248,10 +229,11 @@ public class FilmEditorController extends BaseFilmController
         }
 
         return super.getFilmControllerContext(context, replay, entity)
-            .transition(this.getTransition(entity, context.tickCounter().getTickDelta(false)))
+            .transition(this.getTransition(entity, ((RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField()))
             .bone(aBone, local)
             .bone2(aBone2, local2);
     }
+    */
 
     private boolean isCurrent(IEntity entity)
     {

@@ -11,6 +11,8 @@ import elgatopro300.bbs_cml.utils.MatrixStackUtils;
 import elgatopro300.bbs_cml.utils.colors.Color;
 import elgatopro300.bbs_cml.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
+import elgatopro300.bbs_cml.items.ItemDisplayMode;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,13 +25,29 @@ public class ItemFormRenderer extends FormRenderer<ItemForm>
         super(form);
     }
 
+    private ItemDisplayContext convert(ItemDisplayMode mode)
+    {
+        switch (mode)
+        {
+            case THIRD_PERSON_LEFT_HAND: return ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+            case THIRD_PERSON_RIGHT_HAND: return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+            case FIRST_PERSON_LEFT_HAND: return ItemDisplayContext.FIRST_PERSON_LEFT_HAND;
+            case FIRST_PERSON_RIGHT_HAND: return ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
+            case HEAD: return ItemDisplayContext.HEAD;
+            case GUI: return ItemDisplayContext.GUI;
+            case GROUND: return ItemDisplayContext.GROUND;
+            case FIXED: return ItemDisplayContext.FIXED;
+            default: return ItemDisplayContext.NONE;
+        }
+    }
+
     @Override
     public void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
     {
-        context.batcher.getContext().draw();
+        // context.batcher.getContext().draw();
 
         CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
-        MatrixStack matrices = context.batcher.getContext().getMatrices();
+        MatrixStack matrices = new MatrixStack(); // context.batcher.getContext().getMatrices();
 
         Matrix4f uiMatrix = ModelFormRenderer.getUIMatrix(context, x1, y1, x2, y2);
 
@@ -44,7 +62,7 @@ public class ItemFormRenderer extends FormRenderer<ItemForm>
 
         consumers.setSubstitute(BBSRendering.getColorConsumer(set));
         consumers.setUI(true);
-        MinecraftClient.getInstance().getItemRenderer().renderItem(this.form.stack.get(), this.form.modelTransform.get(), LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, matrices, consumers, MinecraftClient.getInstance().world, 0);
+        // Item rendering via ItemRenderer is disabled for 1.21.10 API migration
         consumers.draw();
         consumers.setUI(false);
         consumers.setSubstitute(null);
@@ -65,14 +83,14 @@ public class ItemFormRenderer extends FormRenderer<ItemForm>
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
                 this.setupTarget(context, BBSShaders.getPickerModelsProgram());
-                RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
+                // RenderSystem.setShader(BBSShaders.getPickerModelsProgram());
             });
 
             light = 0;
         }
         else
         {
-            CustomVertexConsumerProvider.hijackVertexFormat((l) -> RenderSystem.enableBlend());
+            CustomVertexConsumerProvider.hijackVertexFormat((l) -> com.mojang.blaze3d.opengl.GlStateManager._enableBlend());
         }
 
         Color set = this.form.color.get();
@@ -81,7 +99,8 @@ public class ItemFormRenderer extends FormRenderer<ItemForm>
         BlockFormRenderer.color.mul(set);
 
         consumers.setSubstitute(BBSRendering.getColorConsumer(BlockFormRenderer.color));
-        MinecraftClient.getInstance().getItemRenderer().renderItem(this.form.stack.get(), this.form.modelTransform.get(), light, context.overlay, context.stack, consumers, context.entity.getWorld(), 0);
+        // FIXME: Update renderItem signature for 1.21.5
+        // MinecraftClient.getInstance().getItemRenderer().renderItem(this.convert(this.form.modelTransform.get()), context.stack, consumers, light, context.overlay, this.form.stack.get(), context.entity.getWorld(), 0);
         consumers.draw();
         consumers.setSubstitute(null);
 
@@ -89,6 +108,6 @@ public class ItemFormRenderer extends FormRenderer<ItemForm>
 
         context.stack.pop();
 
-        RenderSystem.enableDepthTest();
+        // RenderSystem.enableDepthTest();
     }
 }

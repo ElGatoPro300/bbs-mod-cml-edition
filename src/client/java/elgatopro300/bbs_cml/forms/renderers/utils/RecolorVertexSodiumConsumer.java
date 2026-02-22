@@ -2,7 +2,7 @@ package elgatopro300.bbs_cml.forms.renderers.utils;
 
 import elgatopro300.bbs_cml.utils.colors.Color;
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexConsumer;
 import org.lwjgl.system.MemoryStack;
 
@@ -24,3 +24,4 @@ public class RecolorVertexSodiumConsumer extends RecolorVertexConsumer implement
         }
     }
 }
+

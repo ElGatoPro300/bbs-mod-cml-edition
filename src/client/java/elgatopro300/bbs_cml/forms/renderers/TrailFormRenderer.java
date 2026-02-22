@@ -11,8 +11,9 @@ import elgatopro300.bbs_cml.forms.forms.TrailForm;
 import elgatopro300.bbs_cml.graphics.Draw;
 import elgatopro300.bbs_cml.graphics.texture.Texture;
 import elgatopro300.bbs_cml.ui.framework.UIContext;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
@@ -71,17 +72,17 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
             float outlineOffset = 0.02F * scale;
 
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+            // BufferBuilder builder = tessellator.begin(VertexFormat.Mode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
 
-            Draw.fillBox(builder, stack, -outlineOffset, -outlineSize, -outlineOffset, outlineOffset, outlineSize, outlineOffset, 0, 0, 0);
-            Draw.fillBox(builder, stack, -axisOffset, -1F, -axisOffset, axisOffset, 1F, axisOffset, 0, 1, 0);
+            // Draw.fillBox(builder, stack, -outlineOffset, -outlineSize, -outlineOffset, outlineOffset, outlineSize, outlineOffset, 0, 0, 0);
+            // Draw.fillBox(builder, stack, -axisOffset, -1F, -axisOffset, axisOffset, 1F, axisOffset, 0, 1, 0);
 
 
-            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
-            RenderSystem.disableDepthTest();
-            BufferRenderer.drawWithGlobalProgram(builder.end());
-            RenderSystem.enableDepthTest();
+            // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
+            // RenderSystem.disableDepthTest();
+            // BufferRenderer.drawWithGlobalProgram(builder.end());
+            // RenderSystem.enableDepthTest();
 
             return;
         }
@@ -104,7 +105,7 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
 
         if (!this.form.paused.get()) 
         {
-            Matrix4f modelPosMatrix = new Matrix4f(stack.peek().getPositionMatrix());
+            Matrix4f modelPosMatrix = new Matrix4f(new Matrix4f());
             Vector4f topVec = new Vector4f(0F, 1F, 0F, 1F);
             Vector4f bottomVec = new Vector4f(0F, -1F, 0F, 1F);
 
@@ -202,11 +203,11 @@ public class TrailFormRenderer extends FormRenderer<TrailForm> implements ITicka
         }
 
 
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-        RenderSystem.enableDepthTest();
+        // RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
+        // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // RenderSystem.defaultBlendFunc();
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
+        // RenderSystem.enableDepthTest();
 
 
         stack.pop();

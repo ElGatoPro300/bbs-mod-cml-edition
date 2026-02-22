@@ -18,9 +18,11 @@ import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
 import elgatopro300.bbs_cml.ui.utils.UI;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 import elgatopro300.bbs_cml.utils.colors.Colors;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.util.Identifier;
-
 import java.util.List;
 
 public class UISelectorsOverlayPanel extends UIOverlayPanel
@@ -91,7 +93,7 @@ public class UISelectorsOverlayPanel extends UIOverlayPanel
                 }
                 else
                 {
-                    this.current.nbt = (new StringNbtReader(new StringReader(t))).parseCompound();
+                    this.current.nbt = NbtCompoundArgumentType.nbtCompound().parse(new StringReader(t));
                 }
 
                 BBSModClient.getSelectors().update();

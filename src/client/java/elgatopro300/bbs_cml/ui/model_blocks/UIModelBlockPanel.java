@@ -9,7 +9,7 @@ import elgatopro300.bbs_cml.blocks.ModelBlock;
 import elgatopro300.bbs_cml.camera.CameraUtils;
 import elgatopro300.bbs_cml.client.BBSRendering;
 import elgatopro300.bbs_cml.graphics.Draw;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.network.ClientNetwork;
 import elgatopro300.bbs_cml.ui.Keys;
 import elgatopro300.bbs_cml.ui.UIKeys;
@@ -22,17 +22,18 @@ import elgatopro300.bbs_cml.ui.forms.UIToggleEditorEvent;
 import elgatopro300.bbs_cml.ui.framework.UIContext;
 import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
 import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
 import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
 import elgatopro300.bbs_cml.ui.framework.elements.events.UIRemovedEvent;
 import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
 import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
 import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
 import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
 import elgatopro300.bbs_cml.ui.model_blocks.camera.ImmersiveModelBlockCameraController;
 import elgatopro300.bbs_cml.ui.utils.UI;
 import elgatopro300.bbs_cml.ui.utils.UIUtils;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
 import elgatopro300.bbs_cml.utils.Direction;
 import elgatopro300.bbs_cml.utils.AABB;
 import elgatopro300.bbs_cml.utils.PlayerUtils;
@@ -40,7 +41,7 @@ import elgatopro300.bbs_cml.utils.RayTracing;
 import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.pose.Transform;
 import elgatopro300.bbs_cml.utils.MathUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.util.math.MatrixStack;
@@ -55,6 +56,7 @@ import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import com.mojang.blaze3d.opengl.GlStateManager;
 
 import java.util.HashSet;
 import java.util.List;
@@ -100,8 +102,8 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.keyDude.keys().register(Keys.MODEL_BLOCKS_MOVE_TO, () ->
         {
             MinecraftClient mc = MinecraftClient.getInstance();
-            Camera camera = mc.gameRenderer.getCamera();
-            BlockHitResult blockHitResult = RayTracing.rayTrace(mc.world, camera.getPos(), RayTracing.fromVector3f(this.mouseDirection), 512F);
+            Vec3d origin = mc.player != null ? mc.player.getEyePos() : new Vec3d(0, 0, 0);
+            BlockHitResult blockHitResult = RayTracing.rayTrace(mc.world, origin, RayTracing.fromVector3f(this.mouseDirection), 512F);
 
             if (blockHitResult.getType() != HitResult.Type.MISS)
             {
@@ -573,7 +575,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         super.render(context);
     }
 
-    @Override
+    /*
     public void renderInWorld(WorldRenderContext context)
     {
         super.renderInWorld(context);
@@ -641,6 +643,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
         RenderSystem.disableDepthTest();
     }
+    */
 
     private ModelBlockEntity getClosestObject(Vector3d finalPosition, Vector3f mouseDirection)
     {

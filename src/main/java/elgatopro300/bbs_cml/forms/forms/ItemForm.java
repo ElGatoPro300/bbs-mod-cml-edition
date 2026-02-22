@@ -4,13 +4,13 @@ import elgatopro300.bbs_cml.settings.values.core.ValueColor;
 import elgatopro300.bbs_cml.forms.values.ValueModelTransformationMode;
 import elgatopro300.bbs_cml.settings.values.mc.ValueItemStack;
 import elgatopro300.bbs_cml.utils.colors.Color;
-import net.minecraft.item.ModelTransformationMode;
+import elgatopro300.bbs_cml.items.ItemDisplayMode;
 import net.minecraft.registry.Registries;
 
 public class ItemForm extends Form
 {
     public final ValueItemStack stack = new ValueItemStack("item_stack");
-    public final ValueModelTransformationMode modelTransform = new ValueModelTransformationMode("modelTransform", ModelTransformationMode.NONE);
+    public final ValueModelTransformationMode modelTransform = new ValueModelTransformationMode("modelTransform", ItemDisplayMode.NONE);
     public final ValueColor color = new ValueColor("color", Color.white());
 
     public ItemForm()

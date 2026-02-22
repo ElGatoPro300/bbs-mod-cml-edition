@@ -1,6 +1,6 @@
 package elgatopro300.bbs_cml.utils;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import elgatopro300.bbs_cml.graphics.texture.Texture;
 import elgatopro300.bbs_cml.ui.utils.UIUtils;
 import elgatopro300.bbs_cml.utils.resources.Pixels;
@@ -55,7 +55,7 @@ public class ScreenshotRecorder
     {
         FloatBuffer pixelData = BufferUtils.createFloatBuffer(width * height * 4);
 
-        GlStateManager._bindTexture(texture);
+        // GlStateManager._bindTexture(texture);
         GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_FLOAT, pixelData);
         pixelData.rewind();
 

@@ -3,6 +3,7 @@ package elgatopro300.bbs_cml.ui.framework.elements.utils;
 import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.ui.utils.Gizmo;
 import elgatopro300.bbs_cml.utils.Pair;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,5 +61,15 @@ public class StencilMap
         {
             this.indexMap.put(this.objectIndex, new Pair<>(form, ""));
         }
+    }
+
+    public boolean hasStencil()
+    {
+        return !this.indexMap.isEmpty();
+    }
+
+    public void render(UIContext context)
+    {
+        // TODO: Implement render
     }
 }

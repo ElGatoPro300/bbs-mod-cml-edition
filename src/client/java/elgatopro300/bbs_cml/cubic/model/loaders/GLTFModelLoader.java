@@ -36,6 +36,7 @@ import java.nio.ByteOrder;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
+import net.minecraft.client.MinecraftClient;
 
 public class GLTFModelLoader implements IModelLoader
 {
@@ -125,7 +126,7 @@ public class GLTFModelLoader implements IModelLoader
                         {
                             Link embeddedLink = new Link(gltfLink.source, gltfLink.path + "/embedded_texture.png");
                             
-                            RenderSystem.recordRenderCall(() -> 
+                            MinecraftClient.getInstance().execute(() -> 
                             {
                                 try
                                 {

@@ -5,7 +5,7 @@ import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
 import elgatopro300.bbs_cml.camera.clips.misc.AudioClientClip;
 import elgatopro300.bbs_cml.camera.data.Position;
 import elgatopro300.bbs_cml.utils.clips.Clip;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 import java.util.List;
 import java.util.Map;
@@ -58,6 +58,7 @@ public class WorldFilmController extends BaseFilmController
         super.update();
     }
 
+    /*
     @Override
     public void render(WorldRenderContext context)
     {
@@ -72,7 +73,7 @@ public class WorldFilmController extends BaseFilmController
         }
 
         this.context.clipData.clear();
-        this.context.setup(tick, context.tickCounter().getTickDelta(false));
+        this.context.setup(tick, ((elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField());
 
         for (Clip clip : clips)
         {
@@ -83,6 +84,7 @@ public class WorldFilmController extends BaseFilmController
 
         AudioClientClip.manageSounds(this.context);
     }
+    */
 
     @Override
     public void shutdown()

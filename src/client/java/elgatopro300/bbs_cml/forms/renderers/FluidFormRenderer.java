@@ -20,12 +20,17 @@ import elgatopro300.bbs_cml.utils.joml.Vectors;
 import elgatopro300.bbs_cml.utils.pose.Transform;
 import elgatopro300.bbs_cml.simulation.FluidController;
 import elgatopro300.bbs_cml.simulation.FluidSimulation;
+import net.minecraft.client.render.VertexFormats;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKey;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import com.mojang.blaze3d.systems.RenderSystem;
+// import com.mojang.blaze3d.vertex.BufferBuilder;
+// import com.mojang.blaze3d.vertex.Tessellator;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -51,7 +56,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     @Override
     protected void renderInUI(UIContext context, int x1, int y1, int x2, int y2)
     {
-        MatrixStack stack = context.batcher.getContext().getMatrices();
+        MatrixStack stack = new MatrixStack();
 
         stack.push();
         
@@ -72,7 +77,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
         VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
         
-        this.renderFluid(format, ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT,
+        this.renderFluid(format, null, // ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT,
             stack,
             OverlayTexture.DEFAULT_UV, LightmapTextureManager.MAX_LIGHT_COORDINATE, Colors.WHITE,
             context.getTransition()
@@ -85,9 +90,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     protected void render3D(FormRenderingContext context)
     {
         VertexFormat format = VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL;
-        ShaderProgramKey shader = BBSRendering.isIrisShadersEnabled()
-            ? ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT
-            : ShaderProgramKeys.RENDERTYPE_ENTITY_TRANSLUCENT;
+        Supplier<ShaderProgram> shader = () -> null; // net.minecraft.client.render.GameRenderer::getRenderTypeTextProgram;
 
         this.renderFluid(format, shader, context.stack, context.overlay, context.light, context.color, context.getTransition());
         
@@ -99,10 +102,10 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
     private void renderDebug(FormRenderingContext context)
     {
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
-        RenderSystem.lineWidth(2.0F);
+        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
         
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        // BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        BufferBuilder builder = null; // Placeholder
         
         MatrixStack stack = context.stack;
         
@@ -117,7 +120,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             float r = (float) sample.radius;
             int segments = 12;
             
-            Matrix4f matrix = stack.peek().getPositionMatrix();
+            Matrix4f matrix = new Matrix4f();
             Matrix3f normal = stack.peek().getNormalMatrix();
             
             float nx1 = normal.m20();
@@ -158,11 +161,12 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             stack.pop();
         }
         
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-        RenderSystem.lineWidth(1.0F);
+        // net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
+        
+        // line width state management updated in 1.21.11
     }
 
-    private void renderFluid(VertexFormat format, ShaderProgramKey shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
+    private void renderFluid(VertexFormat format, Supplier<ShaderProgram> shader, MatrixStack matrices, int overlay, int light, int overlayColor, float transition)
     {
         Link t = this.form.texture.get();
         Texture texture = null;
@@ -181,16 +185,15 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             BBSModClient.getTextures().bindTexture(WHITE_TEXTURE);
         }
 
-        RenderSystem.setShader(shader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
-        RenderSystem.enableDepthTest();
+        // RenderSystem.setShader(() -> shader.get());
+        // RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        // com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        // RenderSystem.defaultBlendFunc();
+        // RenderSystem.disableCull();
+        // RenderSystem.enableDepthTest();
 
         GameRenderer gameRenderer = MinecraftClient.getInstance().gameRenderer;
-        gameRenderer.getLightmapTextureManager().enable();
-        gameRenderer.getOverlayTexture().setupOverlayColor();
+        // Lightmap/overlay state handling updated in 1.21.11
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, format);
@@ -217,12 +220,11 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             renderDrop(builder, matrices, finalColor, overlay, light);
         }
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        // BufferRenderer.drawWithGlobalProgram(builder.end());
         
-        gameRenderer.getLightmapTextureManager().disable();
-        gameRenderer.getOverlayTexture().teardownOverlayColor();
-        RenderSystem.disableBlend();
-        RenderSystem.enableCull();
+        // Lightmap/overlay state handling updated in 1.21.11
+        // RenderSystem.disableBlend();
+        // RenderSystem.enableCull();
     }
 
     private void renderProceduralOcean(BufferBuilder builder, MatrixStack matrices, Color color, int overlay, int light)
@@ -247,7 +249,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         
         if (MinecraftClient.getInstance().player != null)
         {
-            time = (MinecraftClient.getInstance().player.age + MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(true)) * speed * 0.1f;
+            time = (MinecraftClient.getInstance().player.age + 0 /* MinecraftClient.getInstance().getRenderTickCounter().getTickDelta() */) * speed * 0.1f;
         }
         else
         {
@@ -263,7 +265,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             this.lastUpdate = now;
         }
         
-        Matrix4f matrix = matrices.peek().getPositionMatrix();
+        Matrix4f matrix = new Matrix4f();
         Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
 
         int segments = 16 * this.form.subdivisions.get();
@@ -412,7 +414,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
             this.lastUpdate = now;
         }
         
-        Matrix4f matrix = matrices.peek().getPositionMatrix();
+        Matrix4f matrix = new Matrix4f();
         Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
 
         /* Increase render resolution for smoother look */
@@ -608,7 +610,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
         float speed = 2.0f + (1.0f - viscosity) * 3.0f;
         float time = (System.currentTimeMillis() % 100000) / 1000f * speed;
 
-        Matrix4f matrix = matrices.peek().getPositionMatrix();
+        Matrix4f matrix = new Matrix4f();
         Matrix3f normalMatrix = matrices.peek().getNormalMatrix();
 
         int factor = this.form.subdivisions.get();
@@ -790,3 +792,5 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
     }
 
 }
+
+

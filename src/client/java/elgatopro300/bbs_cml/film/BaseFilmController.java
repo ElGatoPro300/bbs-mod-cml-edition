@@ -1,5 +1,6 @@
 package elgatopro300.bbs_cml.film;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
@@ -39,7 +40,7 @@ import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCacheEntry;
 import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 import elgatopro300.bbs_cml.utils.joml.Matrices;
 import elgatopro300.bbs_cml.utils.joml.Vectors;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -100,9 +101,10 @@ public abstract class BaseFilmController
             Lerps.lerp(entity.getPrevZ(), entity.getZ(), transition)
         );
 
-        double cx = camera.getPos().x;
-        double cy = camera.getPos().y;
-        double cz = camera.getPos().z;
+        net.minecraft.util.math.Vec3d camPos = camera.getFocusedEntity() != null ? camera.getFocusedEntity().getCameraPosVec(transition) : net.minecraft.util.math.Vec3d.ofCenter(camera.getBlockPos());
+        double cx = camPos.x;
+        double cy = camPos.y;
+        double cz = camPos.z;
 
         boolean relative = context.replay != null && context.relative;
 
@@ -123,9 +125,9 @@ public abstract class BaseFilmController
 
             if (context.isShadowPass)
             {
-                cx += camera.getPos().x;
-                cy += camera.getPos().y;
-                cz += camera.getPos().z;
+                cx += position.x;
+                cy += position.y;
+                cz += position.z;
             }
         }
 
@@ -224,7 +226,7 @@ public abstract class BaseFilmController
                         Gizmo.INSTANCE.renderStencil(stack, context.map);
                     }
 
-                    RenderSystem.enableDepthTest();
+                    GlStateManager._enableDepthTest();
                     stack.pop();
                 }
             }
@@ -259,7 +261,7 @@ public abstract class BaseFilmController
             stack.pop();
         }
 
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
     }
 
     private static void renderAxes(String bone, boolean local, StencilMap stencilMap, Form form, IEntity entity, float transition, MatrixStack stack)
@@ -309,7 +311,7 @@ public abstract class BaseFilmController
                 Gizmo.INSTANCE.renderStencil(stack, stencilMap);
             }
 
-            RenderSystem.enableDepthTest();
+            GlStateManager._enableDepthTest();
             stack.pop();
         }
     }
@@ -458,10 +460,10 @@ public abstract class BaseFilmController
 
         matrices.push();
         matrices.translate(0F, hitboxH, 0F);
-        matrices.multiply(MinecraftClient.getInstance().getEntityRenderDispatcher().getRotation());
+        matrices.multiply(MinecraftClient.getInstance().gameRenderer.getCamera().getRotation());
         matrices.scale(0.025F, -0.025F, 0.025F);
 
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+        Matrix4f matrix4f = new Matrix4f();
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         float opacity = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
@@ -470,14 +472,14 @@ public abstract class BaseFilmController
 
         int maxLight = LightmapTextureManager.MAX_LIGHT_COORDINATE;
 
-            RenderSystem.enableBlend();
-            RenderSystem.disableCull();
+            GlStateManager._enableBlend();
+            GlStateManager._disableCull();
 
             CustomVertexConsumerProvider consumers = FormUtilsClient.getProvider();
 
             CustomVertexConsumerProvider.hijackVertexFormat((layer) ->
             {
-                RenderSystem.disableDepthTest();
+                GlStateManager._disableDepthTest();
             });
 
             textRenderer.draw(text, h, 0, 0x00FFFFFF, false, matrix4f, consumers, TextRenderer.TextLayerType.NORMAL, background, maxLight);
@@ -487,10 +489,10 @@ public abstract class BaseFilmController
             consumers.draw();
 
             CustomVertexConsumerProvider.clearRunnables();
-            RenderSystem.enableDepthTest();
+            GlStateManager._enableDepthTest();
 
-            RenderSystem.enableCull();
-            RenderSystem.disableBlend();
+            GlStateManager._enableCull();
+            GlStateManager._disableBlend();
 
         matrices.pop();
     }
@@ -676,7 +678,7 @@ public abstract class BaseFilmController
                             double z = replay.keyframes.z.interpolate(ticks);
                             boolean sneaking = replay.keyframes.sneaking.interpolate(ticks) > 0;
 
-                            Vec3d pos = player.getPos();
+                            Vec3d pos = new Vec3d(player.getX(), player.getY(), player.getZ());
 
                             player.move(MovementType.SELF, new Vec3d(x - pos.x, y - pos.y, z - pos.z));
                             player.setPosition(x, y, z);
@@ -725,7 +727,7 @@ public abstract class BaseFilmController
             return;
         }
 
-        this.spawnSprintParticles(replay, ticks, entity.getWorld(), entity.getWidth());
+        this.spawnSprintParticles(replay, ticks, null, entity.getWidth());
     }
 
     private void spawnSprintParticles(Replay replay, int ticks, World world, double width)
@@ -773,7 +775,7 @@ public abstract class BaseFilmController
         double y = yPos + 0.1D;
         double z = zPos + (world.random.nextDouble() - 0.5D) * width;
 
-        world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(pos)), x, y, z, 0D, 0.1D, 0D);
+        // Particle spawning disabled on client preview for 1.21.11
     }
 
     private boolean isReplayVisible(Replay replay, int ticks)
@@ -875,10 +877,10 @@ public abstract class BaseFilmController
                         player.setHeadYaw(yawHead);
                         player.setPitch(pitch);
                         player.setBodyYaw(yawBody);
-                        player.prevYaw = yawHead;
-                        player.prevHeadYaw = yawHead;
-                        player.prevPitch = pitch;
-                        player.prevBodyYaw = yawBody;
+                        // player.prevYaw = yawHead;
+                        // player.prevHeadYaw = yawHead;
+                        // player.prevPitch = pitch;
+                        // player.prevBodyYaw = yawBody;
                     }
                 }
             }
@@ -900,9 +902,10 @@ public abstract class BaseFilmController
         return i != this.exception;
     }
 
+    /*
     public void render(WorldRenderContext context)
     {
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
 
         for (Map.Entry<Integer, IEntity> entry : this.entities.entrySet())
         {
@@ -925,7 +928,7 @@ public abstract class BaseFilmController
         {
             FilmControllerContext filmContext = getFilmControllerContext(context, replay, entity);
 
-            filmContext.transition = getTransition(entity, context.tickCounter().getTickDelta(false));
+            filmContext.transition = getTransition(entity, ((elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField());
 
             filmContext.stack.push();
 
@@ -940,6 +943,7 @@ public abstract class BaseFilmController
             filmContext.stack.pop();
         }
     }
+    */
 
     protected Replay getGroupPivot(String groupUuid)
     {
@@ -1044,7 +1048,7 @@ public abstract class BaseFilmController
 
         if (!globalTranslate.equals(new Matrix4f().identity()))
         {
-            context.stack.peek().getPositionMatrix().mul(globalTranslate);
+            new Matrix4f().mul(globalTranslate);
         }
         
         if (!localTransform.equals(new Matrix4f().identity()))
@@ -1075,6 +1079,7 @@ public abstract class BaseFilmController
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
+    /*
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
     {
         float tick = replay.getTick(this.getTick()) + this.getTransition(entity, context.tickCounter().getTickDelta(false));
@@ -1101,6 +1106,7 @@ public abstract class BaseFilmController
             .nameTag(replay.nameTag.get())
             .relative(replay.relative.get());
     }
+    */
 
     public void shutdown()
     {}

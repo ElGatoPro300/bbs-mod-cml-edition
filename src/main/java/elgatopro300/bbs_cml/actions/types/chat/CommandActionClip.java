@@ -1,5 +1,6 @@
 package elgatopro300.bbs_cml.actions.types.chat;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import elgatopro300.bbs_cml.actions.SuperFakePlayer;
 import elgatopro300.bbs_cml.actions.types.ActionClip;
 import elgatopro300.bbs_cml.film.Film;
@@ -25,12 +26,16 @@ public class CommandActionClip extends ActionClip
         this.applyPositionRotation(player, replay, tick);
 
         String command = this.command.get();
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = (ServerWorld) player.world;
         ServerCommandSource source = actor == null
             ? player.getCommandSource()
             : actor.getCommandSource(world);
 
-        player.getServer().getCommandManager().executeWithPrefix(source, command);
+        try {
+            player.world.getServer().getCommandManager().getDispatcher().execute(command, source);
+        } catch (CommandSyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

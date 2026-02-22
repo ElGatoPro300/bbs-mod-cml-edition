@@ -38,8 +38,9 @@ import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.iris.IrisUtils;
 import elgatopro300.bbs_cml.utils.iris.ShaderCurves;
 import elgatopro300.bbs_cml.utils.sodium.SodiumUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+// import net.fabricmc.fabric.impl.client.rendering.WorldRenderContextImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.irisshaders.iris.uniforms.custom.cached.CachedUniform;
 import net.minecraft.client.MinecraftClient;
@@ -47,6 +48,7 @@ import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.WindowFramebuffer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
@@ -310,7 +312,7 @@ public class BBSRendering
 
             reassignFramebuffer(framebuffer);
 
-            framebuffer.beginWrite(true);
+            // framebuffer.beginWrite(true);
         }
         else
         {
@@ -323,11 +325,11 @@ public class BBSRendering
                 reassignFramebuffer(mc.getFramebuffer());
             }
 
-            mc.getFramebuffer().beginWrite(true);
+            // mc.getFramebuffer().beginWrite(true);
 
             if (width != 0)
             {
-                framebuffer.draw(window.getFramebufferWidth(), window.getFramebufferHeight());
+                // framebuffer.draw(window.getFramebufferWidth(), window.getFramebufferHeight());
             }
         }
     }
@@ -342,13 +344,13 @@ public class BBSRendering
     public static void onWorldRenderBegin()
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        BBSModClient.getFilms().startRenderFrame(mc.getRenderTickCounter().getTickDelta(false));
+        BBSModClient.getFilms().startRenderFrame(((elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor) (Object) mc.getRenderTickCounter()).getTickDeltaField());
 
         UIBaseMenu menu = UIScreen.getCurrentMenu();
 
         if (menu != null)
         {
-            menu.startRenderFrame(mc.getRenderTickCounter().getTickDelta(false));
+            menu.startRenderFrame(((elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor) (Object) mc.getRenderTickCounter()).getTickDeltaField());
         }
 
         renderingWorld = true;
@@ -368,19 +370,19 @@ public class BBSRendering
 
         if (BBSModClient.getCameraController().getCurrent() instanceof PlayCameraController controller)
         {
-            DrawContext drawContext = new DrawContext(mc, mc.getBufferBuilders().getEntityVertexConsumers());
-            Batcher2D batcher = new Batcher2D(drawContext);
+            // DrawContext drawContext = new DrawContext(mc, mc.getBufferBuilders().getEntityVertexConsumers());
+            // Batcher2D batcher = new Batcher2D(drawContext);
 
-            UISubtitleRenderer.renderSubtitles(batcher.getContext().getMatrices(), batcher, SubtitleClip.getSubtitles(controller.getContext()));
+            // UISubtitleRenderer.renderSubtitles(new MatrixStack(), batcher, SubtitleClip.getSubtitles(controller.getContext()));
 
             Window window = mc.getWindow();
             Area area = new Area(0, 0, window.getScaledWidth(), window.getScaledHeight());
-            Matrix4f cache = new Matrix4f(RenderSystem.getProjectionMatrix());
+            // Matrix4f cache = new Matrix4f(RenderSystem.getProjectionMatrix());
             Matrix4f ortho = new Matrix4f().ortho(0, area.w, area.h, 0, -1000, 3000);
 
-            RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
-            VideoRenderer.renderClips(batcher.getContext().getMatrices(), batcher, controller.getContext().clips.getClips(controller.getContext().relativeTick), controller.getContext().relativeTick, true, area, area, null, area.w, area.h, false);
-            RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
+            // RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
+            // VideoRenderer.renderClips(new MatrixStack(), batcher, controller.getContext().clips.getClips(controller.getContext().relativeTick), controller.getContext().relativeTick, true, area, area, null, area.w, area.h, false);
+            // RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
         }
 
         if (!customSize)
@@ -396,16 +398,16 @@ public class BBSRendering
         {
             if (dashboard.getPanels().panel instanceof UIFilmPanel panel && panel.getData() != null)
             {
-                UISubtitleRenderer.renderSubtitles(currentMenu.context.batcher.getContext().getMatrices(), currentMenu.context.batcher, SubtitleClip.getSubtitles(panel.getRunner().getContext()));
+                UISubtitleRenderer.renderSubtitles(new MatrixStack(), currentMenu.context.batcher, SubtitleClip.getSubtitles(panel.getRunner().getContext()));
 
                 Window window = mc.getWindow();
-                Matrix4f cache = new Matrix4f(RenderSystem.getProjectionMatrix());
+                // Matrix4f cache = new Matrix4f(RenderSystem.getProjectionMatrix());
                 Matrix4f ortho = new Matrix4f().ortho(0, window.getScaledWidth(), window.getScaledHeight(), 0, -1000, 3000);
 
-                RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
+                // RenderSystem.setProjectionMatrix(ortho, ProjectionType.ORTHOGRAPHIC);
                 Area fullScreen = new Area(0, 0, window.getScaledWidth(), window.getScaledHeight());
                 VideoRenderer.renderClips(new MatrixStack(), currentMenu.context.batcher, panel.getData().camera.getClips(panel.getCursor()), panel.getCursor(), panel.getRunner().isRunning(), fullScreen, fullScreen, null, window.getScaledWidth(), window.getScaledHeight(), false);
-                RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
+                // RenderSystem.setProjectionMatrix(cache, ProjectionType.ORTHOGRAPHIC);
             }
         }
 
@@ -442,19 +444,20 @@ public class BBSRendering
 
     public static void onRenderBeforeScreen()
     {
-        int lastId = RenderSystem.getShaderTexture(0);
+        // int lastId = RenderSystem.getShaderTexture(0);
         Texture texture = getTexture();
 
         texture.bind();
         texture.setSize(framebuffer.textureWidth, framebuffer.textureHeight);
         GL11.glCopyTexSubImage2D(GL11.GL_TEXTURE_2D, 0, 0, 0, 0, 0, framebuffer.textureWidth, framebuffer.textureHeight);
-        RenderSystem.bindTexture(lastId);
+        // RenderSystem.bindTexture(lastId);
 
         toggleFramebuffer(false);
     }
 
     public static void onRenderChunkLayer(MatrixStack stack)
     {
+        /*
         WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
         MinecraftClient mc = MinecraftClient.getInstance();
 
@@ -468,10 +471,12 @@ public class BBSRendering
         {
             renderCoolStuff(worldRenderContext);
         }
+        */
     }
 
     public static void onRenderChunkLayer(Matrix4f positionMatrix, Matrix4f projectionMatrix)
     {
+        /*
         WorldRenderContextImpl worldRenderContext = new WorldRenderContextImpl();
         MinecraftClient mc = MinecraftClient.getInstance();
 
@@ -485,6 +490,7 @@ public class BBSRendering
         {
             renderCoolStuff(worldRenderContext);
         }
+        */
     }
 
     public static void renderHud(DrawContext drawContext, float tickDelta)
@@ -594,10 +600,7 @@ public class BBSRendering
             int textX = textBoxX + padding;
             int textY = textBoxY + padding;
 
-            drawContext.getMatrices().push();
-            drawContext.getMatrices().scale(textScale, textScale, 1F);
             batcher2D.textShadow(label, textX / textScale, textY / textScale);
-            drawContext.getMatrices().pop();
         }
     }
 
@@ -634,15 +637,20 @@ public class BBSRendering
         return bottom ? screenH - margin - boxH : margin + extraTopLeft;
     }
 
-    public static void renderCoolStuff(WorldRenderContext worldRenderContext)
+    /*
+    public static void renderCoolStuff(WorldRenderContext context)
     {
-        if (MinecraftClient.getInstance().currentScreen instanceof UIScreen screen)
+        MinecraftClient mc = MinecraftClient.getInstance();
+        Camera camera = mc.gameRenderer.getCamera();
+
+        if (mc.currentScreen instanceof UIScreen screen)
         {
-            screen.renderInWorld(worldRenderContext);
+            screen.renderInWorld(context);
         }
 
-        BBSModClient.getFilms().render(worldRenderContext);
+        BBSModClient.getFilms().render(context);
     }
+    */
 
     public static boolean isOptifinePresent()
     {

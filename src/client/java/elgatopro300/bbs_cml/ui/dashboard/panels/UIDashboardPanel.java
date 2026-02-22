@@ -3,7 +3,7 @@ package elgatopro300.bbs_cml.ui.dashboard.panels;
 import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
 import elgatopro300.bbs_cml.ui.framework.UIContext;
 import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public class UIDashboardPanel extends UIElement
 {
@@ -60,8 +60,10 @@ public class UIDashboardPanel extends UIElement
     public void startRenderFrame(float tickDelta)
     {}
 
+    /*
     public void renderInWorld(WorldRenderContext context)
     {}
+    */
 
     public void renderPanelBackground(UIContext context)
     {}

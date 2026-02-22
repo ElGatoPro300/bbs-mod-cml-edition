@@ -2,6 +2,7 @@ package elgatopro300.bbs_cml.forms.entities;
 
 import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.utils.AABB;
+import elgatopro300.bbs_cml.mixin.LimbAnimatorAccessor;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LimbAnimator;
@@ -453,13 +454,13 @@ public class StubEntity implements IEntity
     @Override
     public float getLimbPos(float tickDelta)
     {
-        return this.limbAnimator.getPos(tickDelta);
+        return this.limbAnimator.getAnimationProgress(tickDelta);
     }
 
     @Override
     public float getLimbSpeed(float tickDelta)
     {
-        return this.limbAnimator.getSpeed(tickDelta);
+        return this.limbAnimator.getSpeed();
     }
 
     @Override

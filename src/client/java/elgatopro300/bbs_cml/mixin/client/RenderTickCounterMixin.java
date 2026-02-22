@@ -14,14 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RenderTickCounter.Dynamic.class)
 public class RenderTickCounterMixin
 {
-    @Shadow
-    public float tickDelta;
+    // @Shadow
+    // public float tickDelta;
 
-    @Shadow
-    public float lastFrameDuration;
+    // @Shadow
+    // public float lastFrameDuration;
 
-    @Shadow
-    private long prevTimeMillis;
+    // @Shadow
+    // private long prevTimeMillis;
 
     private int heldFrames;
 
@@ -32,20 +32,25 @@ public class RenderTickCounterMixin
 
         if (videoRecorder.isRecording())
         {
+            RenderTickCounterAccessor accessor = (RenderTickCounterAccessor) (Object) this;
+
             if (videoRecorder.getCounter() == 0)
             {
-                this.tickDelta = 0;
+                accessor.setTickDeltaField(0);
             }
 
             if (this.heldFrames == 0)
             {
-                this.lastFrameDuration = 20F / (float) BBSRendering.getVideoFrameRate();
-                this.prevTimeMillis = timeMillis;
-                this.tickDelta += this.lastFrameDuration;
+                // accessor.setLastFrameDurationField(20F / (float) BBSRendering.getVideoFrameRate());
+                accessor.setPrevTimeMillisField(timeMillis);
+                
+                float tickDelta = accessor.getTickDeltaField();
+                tickDelta += 20F / (float) BBSRendering.getVideoFrameRate(); // accessor.getLastFrameDurationField();
+                accessor.setTickDeltaField(tickDelta);
 
-                int i = (int) this.tickDelta;
+                int i = (int) tickDelta;
 
-                this.tickDelta -= (float) i;
+                accessor.setTickDeltaField(tickDelta - (float) i);
 
                 videoRecorder.serverTicks += i;
                 BBSRendering.canRender = true;

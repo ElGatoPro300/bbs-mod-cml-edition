@@ -3,7 +3,7 @@ package elgatopro300.bbs_cml.particles.components;
 import elgatopro300.bbs_cml.particles.emitter.Particle;
 import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix4f;
 
 public interface IComponentParticleRender extends IComponentBase
