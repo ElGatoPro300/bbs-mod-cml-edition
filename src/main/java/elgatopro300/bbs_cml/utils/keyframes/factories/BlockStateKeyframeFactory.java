@@ -1,0 +1,52 @@
+package elgatopro300.bbs_cml.utils.keyframes.factories;
+
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import elgatopro300.bbs_cml.data.DataStorageUtils;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
+
+import java.util.Optional;
+
+public class BlockStateKeyframeFactory implements IKeyframeFactory<BlockState>
+{
+    @Override
+    public BlockState fromData(BaseType data)
+    {
+        DataResult<Pair<BlockState, NbtElement>> decode = BlockState.CODEC.decode(NbtOps.INSTANCE, DataStorageUtils.toNbt(data));
+        Optional<Pair<BlockState, NbtElement>> result = decode.result();
+
+        return result.map(Pair::getFirst).orElse(null);
+    }
+
+    @Override
+    public BaseType toData(BlockState value)
+    {
+        BlockState safe = value != null ? value : this.createEmpty();
+        Optional<NbtElement> result = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, safe).result();
+
+        return result.map(DataStorageUtils::fromNbt).orElse(null);
+    }
+
+    @Override
+    public BlockState createEmpty()
+    {
+        return Blocks.AIR.getDefaultState();
+    }
+
+    @Override
+    public BlockState copy(BlockState value)
+    {
+        return value;
+    }
+
+    @Override
+    public BlockState interpolate(BlockState preA, BlockState a, BlockState b, BlockState postB, IInterp interpolation, float x)
+    {
+        return a;
+    }
+}

@@ -41,13 +41,13 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "mchorse.bbs_mod.BBSMod"
+            "elgatopro300.bbs_cml.BBSMod"
         ],
         "client": [
-            "mchorse.bbs_mod.BBSModClient"
+            "elgatopro300.bbs_cml.BBSModClient"
         ],
         "dynamiclights": [
-            "mchorse.bbs_mod.integration.LambDynLightsIntegration"
+            "elgatopro300.bbs_cml.integration.LambDynLightsIntegration"
         ]
     },
     "mixins": [

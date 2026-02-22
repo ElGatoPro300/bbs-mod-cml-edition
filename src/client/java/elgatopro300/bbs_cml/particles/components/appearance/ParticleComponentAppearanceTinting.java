@@ -1,0 +1,94 @@
+package elgatopro300.bbs_cml.particles.components.appearance;
+
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.math.molang.MolangException;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.particles.ParticleParser;
+import elgatopro300.bbs_cml.particles.components.IComponentParticleRender;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.particles.components.appearance.colors.Solid;
+import elgatopro300.bbs_cml.particles.components.appearance.colors.Tint;
+import elgatopro300.bbs_cml.particles.emitter.Particle;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexFormat;
+import org.joml.Matrix4f;
+
+public class ParticleComponentAppearanceTinting extends ParticleComponentBase implements IComponentParticleRender
+{
+    public Tint color = new Solid(MolangParser.ONE, MolangParser.ONE, MolangParser.ONE, MolangParser.ONE);
+
+    @Override
+    protected void toData(MapType data)
+    {
+        BaseType color = this.color.toData();
+
+        if (!ParticleParser.isEmpty(color))
+        {
+            data.put("color", color);
+        }
+    }
+
+    @Override
+    public ParticleComponentBase fromData(BaseType data, MolangParser parser) throws MolangException
+    {
+        if (!data.isMap())
+        {
+            return super.fromData(data, parser);
+        }
+
+        MapType map = data.asMap();
+
+        if (map.has("color"))
+        {
+            BaseType color = map.get("color");
+
+            if (color.isList() || BaseType.isPrimitive(color))
+            {
+                this.color = Tint.parseColor(color, parser);
+            }
+            else if (color.isMap())
+            {
+                this.color = Tint.parseGradient(color.asMap(), parser);
+            }
+        }
+
+        return super.fromData(map, parser);
+    }
+
+    /* Interface implementations */
+
+    @Override
+    public void preRender(ParticleEmitter emitter, float transition)
+    {}
+
+    @Override
+    public void render(ParticleEmitter emitter, VertexFormat format, Particle particle, BufferBuilder builder, Matrix4f matrix, int overlay, float transition)
+    {
+        this.renderUI(particle, builder, matrix, transition);
+    }
+
+    @Override
+    public void renderUI(Particle particle, BufferBuilder builder, Matrix4f matrix, float transition)
+    {
+        if (this.color != null)
+        {
+            this.color.compute(particle);
+        }
+        else
+        {
+            particle.r = particle.g = particle.b = particle.a = 1;
+        }
+    }
+
+    @Override
+    public void postRender(ParticleEmitter emitter, float transition)
+    {}
+
+    @Override
+    public int getSortingIndex()
+    {
+        return -10;
+    }
+}

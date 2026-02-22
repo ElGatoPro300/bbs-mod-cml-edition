@@ -1,0 +1,92 @@
+package elgatopro300.bbs_cml.film;
+
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
+import elgatopro300.bbs_cml.camera.clips.misc.AudioClientClip;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+
+import java.util.List;
+import java.util.Map;
+
+public class WorldFilmController extends BaseFilmController
+{
+    protected CameraClipContext context;
+    protected Position position = new Position();
+
+    public int tick;
+    public int duration;
+
+    public WorldFilmController(Film film)
+    {
+        super(film);
+
+        this.createEntities();
+
+        this.duration = film.camera.calculateDuration();
+        this.context = new CameraClipContext();
+        this.context.clips = film.camera;
+    }
+
+    @Override
+    public Map<String, Integer> getActors()
+    {
+        return BBSModClient.getFilms().actors.get(this.film.getId());
+    }
+
+    @Override
+    public int getTick()
+    {
+        return this.tick;
+    }
+
+    @Override
+    public boolean hasFinished()
+    {
+        return this.tick >= this.duration;
+    }
+
+    @Override
+    public void update()
+    {
+        if (!this.paused)
+        {
+            this.tick += 1;
+        }
+
+        super.update();
+    }
+
+    @Override
+    public void render(WorldRenderContext context)
+    {
+        super.render(context);
+
+        int tick = Math.max(this.tick, 0);
+        List<Clip> clips = this.context.clips.getClips(tick);
+
+        if (clips.isEmpty())
+        {
+            return;
+        }
+
+        this.context.clipData.clear();
+        this.context.setup(tick, context.tickCounter().getTickDelta(false));
+
+        for (Clip clip : clips)
+        {
+            this.context.apply(clip, this.position);
+        }
+
+        this.context.currentLayer = 0;
+
+        AudioClientClip.manageSounds(this.context);
+    }
+
+    @Override
+    public void shutdown()
+    {
+        this.context.shutdown();
+    }
+}
