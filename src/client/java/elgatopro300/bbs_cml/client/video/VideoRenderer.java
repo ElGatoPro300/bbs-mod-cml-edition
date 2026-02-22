@@ -1,7 +1,9 @@
 package elgatopro300.bbs_cml.client.video;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import elgatopro300.bbs_cml.client.BBSShaders;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -417,7 +419,7 @@ public class VideoRenderer
                 return;
             }
 
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX);
             RenderSystem.setShaderTexture(0, texture);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
             RenderSystem.enableBlend();

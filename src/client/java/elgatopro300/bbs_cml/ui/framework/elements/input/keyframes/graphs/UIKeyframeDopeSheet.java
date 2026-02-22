@@ -25,6 +25,7 @@ import elgatopro300.bbs_cml.utils.Pair;
 import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
 import elgatopro300.bbs_cml.utils.keyframes.KeyframeShape;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -723,7 +724,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             }
 
             RenderSystem.enableBlend();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
             BufferRenderer.drawWithGlobalProgram(builder.end());
 
             FontRenderer font = context.batcher.getFont();

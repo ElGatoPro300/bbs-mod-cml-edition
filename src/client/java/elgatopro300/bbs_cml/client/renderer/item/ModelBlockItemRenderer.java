@@ -2,6 +2,7 @@ package elgatopro300.bbs_cml.client.renderer.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSModClient;
 import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
 import elgatopro300.bbs_cml.blocks.entities.ModelProperties;
 import elgatopro300.bbs_cml.forms.FormUtilsClient;
@@ -12,16 +13,17 @@ import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
 import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
 import elgatopro300.bbs_cml.utils.MatrixStackUtils;
 import elgatopro300.bbs_cml.utils.pose.Transform;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.client.render.entity.model.LoadedEntityModels;
+import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3f;
@@ -30,7 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer
+public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
 {
     private Map<ItemStack, Item> map = new HashMap<>();
 
@@ -54,7 +56,13 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
     }
 
     @Override
-    public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
+    public ItemStack getData(ItemStack stack)
+    {
+        return stack;
+    }
+
+    @Override
+    public void render(ItemStack stack, ModelTransformationMode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, boolean hasGlint)
     {
         Item item = this.get(stack);
 
@@ -129,6 +137,23 @@ public class ModelBlockItemRenderer implements BuiltinItemRendererRegistry.Dynam
         }
 
         return item;
+    }
+
+    public static class Unbaked implements SpecialModelRenderer.Unbaked
+    {
+        public static final com.mojang.serialization.MapCodec<Unbaked> CODEC = com.mojang.serialization.MapCodec.unit(new Unbaked());
+
+        @Override
+        public com.mojang.serialization.MapCodec<Unbaked> getCodec()
+        {
+            return CODEC;
+        }
+
+        @Override
+        public SpecialModelRenderer<?> bake(net.minecraft.client.render.entity.model.LoadedEntityModels config)
+        {
+            return BBSModClient.getModelBlockItemRenderer();
+        }
     }
 
     public static class Item

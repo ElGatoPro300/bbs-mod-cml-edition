@@ -2,6 +2,7 @@ package elgatopro300.bbs_cml.graphics.line;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.BufferRenderer;
@@ -87,7 +88,7 @@ public class LineBuilder <T>
         {
             BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
             RenderSystem.enableBlend();
 
             for (LinePoint<T> point : points)

@@ -13,6 +13,7 @@ import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
 import elgatopro300.bbs_cml.utils.MathUtils;
 import elgatopro300.bbs_cml.utils.interps.Lerps;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexFormats;

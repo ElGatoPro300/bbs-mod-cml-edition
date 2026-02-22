@@ -10,7 +10,7 @@ import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
 import elgatopro300.bbs_cml.ui.utils.UI;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 import elgatopro300.bbs_cml.utils.colors.Color;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
 
 public class UIItemFormPanel extends UIFormPanel<ItemForm>
 {

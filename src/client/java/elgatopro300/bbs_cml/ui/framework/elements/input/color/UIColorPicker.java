@@ -14,6 +14,7 @@ import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 import elgatopro300.bbs_cml.utils.colors.Color;
 import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.MathUtils;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -59,7 +60,7 @@ public class UIColorPicker extends UIElement
         Matrix4f matrix4f = batcher.getContext().getMatrices().peek().getPositionMatrix();
         BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         RenderSystem.enableBlend();
 
         builder.vertex(matrix4f, x1, y1, 0F).color(color.r, color.g, color.b, 1);

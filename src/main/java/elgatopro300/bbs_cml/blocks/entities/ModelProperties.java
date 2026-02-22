@@ -7,7 +7,7 @@ import elgatopro300.bbs_cml.forms.FormUtils;
 import elgatopro300.bbs_cml.forms.entities.IEntity;
 import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.utils.pose.Transform;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
 import org.joml.Vector3f;
 
 public class ModelProperties implements IMapSerializable

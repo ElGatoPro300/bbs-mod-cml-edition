@@ -4,7 +4,7 @@ import elgatopro300.bbs_cml.settings.values.core.ValueColor;
 import elgatopro300.bbs_cml.forms.values.ValueModelTransformationMode;
 import elgatopro300.bbs_cml.settings.values.mc.ValueItemStack;
 import elgatopro300.bbs_cml.utils.colors.Color;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
+import net.minecraft.item.ModelTransformationMode;
 import net.minecraft.registry.Registries;
 
 public class ItemForm extends Form
