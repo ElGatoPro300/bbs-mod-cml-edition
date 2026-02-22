@@ -93,6 +93,7 @@ public class BBSSettings
     public static ValueBoolean editorReplayHud;
     public static ValueInt editorReplayHudPosition;
     public static ValueBoolean editorReplayHudDisplayName;
+    public static ValueBoolean modelFormsHierarchy;
     public static ValueBoolean editorRewind;
     public static ValueBoolean editorHorizontalClipEditor;
     public static ValueBoolean editorMinutesBackup;
@@ -260,6 +261,7 @@ public class BBSSettings
         editorReplayHud = builder.getBoolean("replay_hud", false);
         editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
         editorReplayHudDisplayName = builder.getBoolean("replay_hud_display_name", true);
+        modelFormsHierarchy = builder.getBoolean("model_forms_hierarchy", false);
 
         builder.category("recording");
         recordingCountdown = builder.getFloat("countdown", 1.5F, 0F, 30F);

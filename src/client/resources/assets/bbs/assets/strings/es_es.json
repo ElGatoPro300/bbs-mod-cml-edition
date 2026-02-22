@@ -82,6 +82,8 @@
     "bbs.config.display.replay_hud_position.bottom_right": "Abajo derecha",
     "bbs.config.display.replay_hud_display_name": "Nombre del replay",
     "bbs.config.display.replay_hud_display_name-comment": "Mostrar el texto del nombre del replay en el HUD",
+    "bbs.config.display.model_forms_hierarchy": "Jerarquía de lista de modelos",
+    "bbs.config.display.model_forms_hierarchy-comment": "Agrupa modelos por carpetas en la lista de modelos",
     "bbs.config.display.title": "Pantalla",
     "bbs.config.display.tooltip": "Opciones relacionadas con la visualizacion del HUD",
     "bbs.config.editor.angle_speed": "Velocidad angular",
