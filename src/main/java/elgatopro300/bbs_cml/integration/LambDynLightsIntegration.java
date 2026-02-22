@@ -3,12 +3,12 @@ package elgatopro300.bbs_cml.integration;
 import dev.lambdaurora.lambdynlights.api.DynamicLightHandlers;
 import dev.lambdaurora.lambdynlights.api.DynamicLightsInitializer;
 import dev.lambdaurora.lambdynlights.api.item.ItemLightSourceManager;
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.entity.ActorEntity;
-import mchorse.bbs_mod.entity.GunProjectileEntity;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.forms.LightForm;
-import mchorse.bbs_mod.morphing.Morph;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.entity.ActorEntity;
+import elgatopro300.bbs_cml.entity.GunProjectileEntity;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.forms.LightForm;
+import elgatopro300.bbs_cml.morphing.Morph;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 

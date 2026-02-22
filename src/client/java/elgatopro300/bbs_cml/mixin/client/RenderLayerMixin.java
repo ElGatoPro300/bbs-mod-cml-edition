@@ -1,6 +1,6 @@
 package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.forms.CustomVertexConsumerProvider;
+import elgatopro300.bbs_cml.forms.CustomVertexConsumerProvider;
 import net.minecraft.client.render.BuiltBuffer;
 import net.minecraft.client.render.RenderLayer;
 import org.spongepowered.asm.mixin.Mixin;

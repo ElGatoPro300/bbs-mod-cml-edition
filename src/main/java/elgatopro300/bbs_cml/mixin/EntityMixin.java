@@ -1,9 +1,9 @@
 package elgatopro300.bbs_cml.mixin;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.morphing.IMorphProvider;
-import mchorse.bbs_mod.morphing.Morph;
-import mchorse.bbs_mod.entity.IEntityFormProvider;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.morphing.IMorphProvider;
+import elgatopro300.bbs_cml.morphing.Morph;
+import elgatopro300.bbs_cml.entity.IEntityFormProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerEntity;

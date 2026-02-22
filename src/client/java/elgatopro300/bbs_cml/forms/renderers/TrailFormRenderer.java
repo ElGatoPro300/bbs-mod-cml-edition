@@ -1,16 +1,16 @@
 package elgatopro300.bbs_cml.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.camera.Camera;
-import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.forms.ITickable;
-import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.forms.forms.TrailForm;
-import mchorse.bbs_mod.graphics.Draw;
-import mchorse.bbs_mod.graphics.texture.Texture;
-import mchorse.bbs_mod.ui.framework.UIContext;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.camera.Camera;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.forms.ITickable;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.forms.TrailForm;
+import elgatopro300.bbs_cml.graphics.Draw;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
