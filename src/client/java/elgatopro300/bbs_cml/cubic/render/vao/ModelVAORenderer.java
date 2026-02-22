@@ -57,11 +57,6 @@ public class ModelVAORenderer
             // normalUniform.set(stack.peek().getNormalMatrix());
         }
 
-        // if (shader.colorModulator != null)
-        {
-            shader.colorModulator.set(r, g, b, a);
-        }
-
         // if (shader.gameTime != null)
         {
             // shader.gameTime.set((float) (System.currentTimeMillis() / 1000.0));

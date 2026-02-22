@@ -10,6 +10,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
+import elgatopro300.bbs_cml.bay4lly.SkinCommands;
 import elgatopro300.bbs_cml.data.DataToString;
 import elgatopro300.bbs_cml.data.types.BaseType;
 import elgatopro300.bbs_cml.forms.FormUtils;

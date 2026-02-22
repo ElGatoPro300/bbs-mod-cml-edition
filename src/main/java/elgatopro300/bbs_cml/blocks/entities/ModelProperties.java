@@ -1,12 +1,14 @@
 package elgatopro300.bbs_cml.blocks.entities;
 
+import elgatopro300.bbs_cml.data.DataStorageUtils;
 import elgatopro300.bbs_cml.data.IMapSerializable;
 import elgatopro300.bbs_cml.data.types.MapType;
 import elgatopro300.bbs_cml.forms.FormUtils;
 import elgatopro300.bbs_cml.forms.entities.IEntity;
 import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.utils.pose.Transform;
 import elgatopro300.bbs_cml.items.ItemDisplayMode;
+import elgatopro300.bbs_cml.utils.pose.Transform;
+import org.joml.Vector3f;
 
 public class ModelProperties implements IMapSerializable
 {
@@ -200,7 +202,7 @@ public class ModelProperties implements IMapSerializable
         this.hitboxPos2.set(x, y, z);
     }
 
-    public Form getForm(ModelTransformationMode mode)
+    public Form getForm(ItemDisplayMode mode)
     {
         Form form = this.form;
 

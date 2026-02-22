@@ -40,7 +40,7 @@ import elgatopro300.bbs_cml.utils.resources.LinkUtils;
 import elgatopro300.bbs_cml.utils.pose.Transform;
 import elgatopro300.bbs_cml.utils.Axis;
 import elgatopro300.bbs_cml.utils.MathUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -1063,7 +1063,7 @@ public class UIPoseEditor extends UIElement
             boolean marked = UIPoseEditor.this.markedBones.contains(element);
             int iconColor = marked ? Colors.WHITE : Colors.setA(Colors.WHITE, 0.35F);
 
-            RenderSystem.enableBlend();
+            GlStateManager._enableBlend();
             context.batcher.icon(Icons.CHECKMARK, iconColor, iconX, iconY);
 
             int textX = x + 22;
