@@ -1,0 +1,159 @@
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes;
+
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
+import elgatopro300.bbs_cml.ui.utils.icons.Icon;
+import elgatopro300.bbs_cml.utils.interps.Interpolation;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UIKeyframeSheet
+{
+    /* Meta data */
+    public final String id;
+    public final IKey title;
+    public final int color;
+    public boolean separator;
+
+    private Icon icon;
+
+    public final KeyframeChannel channel;
+    public final KeyframeSelection selection;
+    public final BaseValueBasic property;
+    public String anchoredBone;
+
+    public boolean groupHeader;
+    public boolean groupExpanded = true;
+    public String groupKey;
+    public Runnable toggleGroup;
+
+    public UIKeyframeSheet(int color, boolean separator, KeyframeChannel channel, BaseValueBasic property)
+    {
+        this(channel.getId(), IKey.constant(property != null ? FormUtils.getForm(property).getTrackName(channel.getId()) : channel.getId()), color, separator, channel, property);
+    }
+
+    public UIKeyframeSheet(String id, IKey title, int color, boolean separator, KeyframeChannel channel, BaseValueBasic property)
+    {
+        this.id = id;
+        this.title = title;
+        this.color = color;
+        this.separator = separator;
+
+        this.channel = channel;
+        this.selection = new KeyframeSelection(channel);
+        this.property = property;
+        this.anchoredBone = null;
+
+        this.groupHeader = false;
+        this.groupExpanded = true;
+        this.groupKey = null;
+        this.toggleGroup = null;
+    }
+
+    public static UIKeyframeSheet groupHeader(String id, IKey title, int color, String groupKey, boolean expanded, Runnable toggleGroup)
+    {
+        UIKeyframeSheet sheet = new UIKeyframeSheet(id, title, color, false, new KeyframeChannel<>(id, KeyframeFactories.DOUBLE), null);
+
+        sheet.groupHeader = true;
+        sheet.groupExpanded = expanded;
+        sheet.groupKey = groupKey;
+        sheet.toggleGroup = toggleGroup;
+
+        return sheet;
+    }
+
+    public UIKeyframeSheet icon(Icon icon)
+    {
+        this.icon = icon;
+
+        return this;
+    }
+
+    public Icon getIcon()
+    {
+        return this.icon;
+    }
+
+    public List<Integer> sort()
+    {
+        List<Keyframe> selected = this.selection.getSelected();
+        List<Integer> lastSelection = new ArrayList<>(this.selection.getIndices());
+
+        this.channel.sort();
+        this.selection.clear();
+
+        List keyframes = this.channel.getKeyframes();
+
+        for (Keyframe keyframe : selected)
+        {
+            this.selection.add(keyframes.indexOf(keyframe));
+        }
+
+        return lastSelection;
+    }
+
+    public void setTickBy(float diff, boolean dirty)
+    {
+        for (Keyframe keyframe : this.selection.getSelected())
+        {
+            keyframe.setTick(keyframe.getTick() + diff, dirty);
+        }
+    }
+
+    public void setDuration(float duration)
+    {
+        for (Keyframe keyframe : this.selection.getSelected())
+        {
+            keyframe.setDuration(duration);
+        }
+    }
+
+    public void setValue(Object value, Object selectedValue, boolean dirty)
+    {
+        Number valueNumber = value instanceof Number ? (Number) value : 0D;
+
+        for (Keyframe keyframe : this.selection.getSelected())
+        {
+            if (selectedValue instanceof Double)
+            {
+                keyframe.setValue((double) keyframe.getValue() + valueNumber.doubleValue() - (double) selectedValue, dirty);
+            }
+            else if (selectedValue instanceof Float)
+            {
+                keyframe.setValue((float) keyframe.getValue() + valueNumber.floatValue() - (float) selectedValue, dirty);
+            }
+            else if (selectedValue instanceof Integer)
+            {
+                keyframe.setValue((int) keyframe.getValue() + valueNumber.intValue() - (int) selectedValue, dirty);
+            }
+            else
+            {
+                keyframe.setValue(this.channel.getFactory().copy(value), dirty);
+            }
+        }
+    }
+
+    public void setInterpolation(Interpolation interpolation)
+    {
+        for (Keyframe keyframe : this.selection.getSelected())
+        {
+            keyframe.getInterpolation().copy(interpolation);
+        }
+    }
+
+    public void remove(Keyframe keyframe)
+    {
+        int index = this.channel.getKeyframes().indexOf(keyframe);
+
+        if (index >= 0)
+        {
+            this.selection.remove(index);
+            this.channel.remove(index);
+        }
+    }
+}
