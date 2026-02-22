@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin
@@ -47,7 +48,7 @@ public class WorldRendererMixin
     {
         if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
         {
-            info.cancel();
+            info.setReturnValue(false);
         }
     }
 
