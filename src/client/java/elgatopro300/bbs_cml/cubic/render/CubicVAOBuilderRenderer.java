@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.cubic.render;
+package elgatopro300.bbs_cml.cubic.render;
 import org.joml.Matrix4f;
 
 import elgatopro300.bbs_cml.client.BBSRendering;

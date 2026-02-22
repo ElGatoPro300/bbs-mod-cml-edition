@@ -14,8 +14,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import mchorse.bbs_mod.mixin.EntityAccessor;
-import mchorse.bbs_mod.mixin.LimbAnimatorAccessor;
+import elgatopro300.bbs_cml.mixin.EntityAccessor;
+import elgatopro300.bbs_cml.mixin.LimbAnimatorAccessor;
 
 public class MCEntity implements IEntity
 {

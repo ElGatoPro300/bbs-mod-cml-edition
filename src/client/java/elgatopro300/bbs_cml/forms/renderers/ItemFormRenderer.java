@@ -11,7 +11,7 @@ import elgatopro300.bbs_cml.utils.MatrixStackUtils;
 import elgatopro300.bbs_cml.utils.colors.Color;
 import elgatopro300.bbs_cml.utils.joml.Vectors;
 import net.minecraft.client.MinecraftClient;
-import mchorse.bbs_mod.items.ItemDisplayMode;
+import elgatopro300.bbs_cml.items.ItemDisplayMode;
 import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;

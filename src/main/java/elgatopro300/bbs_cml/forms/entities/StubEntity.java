@@ -1,8 +1,8 @@
 package elgatopro300.bbs_cml.forms.entities;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.utils.AABB;
-import mchorse.bbs_mod.mixin.LimbAnimatorAccessor;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.utils.AABB;
+import elgatopro300.bbs_cml.mixin.LimbAnimatorAccessor;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LimbAnimator;

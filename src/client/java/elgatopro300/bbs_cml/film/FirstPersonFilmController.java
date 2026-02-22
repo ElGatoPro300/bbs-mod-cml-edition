@@ -1,7 +1,7 @@
 package elgatopro300.bbs_cml.film;
 
-import mchorse.bbs_mod.film.replays.Replay;
-import mchorse.bbs_mod.forms.entities.IEntity;
+import elgatopro300.bbs_cml.film.replays.Replay;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
 // import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public class FirstPersonFilmController extends WorldFilmController

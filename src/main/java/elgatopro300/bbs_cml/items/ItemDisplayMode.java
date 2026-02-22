@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.items;
+package elgatopro300.bbs_cml.items;
 
 import net.minecraft.util.StringIdentifiable;
 

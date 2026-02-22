@@ -1,9 +1,9 @@
 package elgatopro300.bbs_cml.items;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.entity.GunProjectileEntity;
-import mchorse.bbs_mod.forms.FormUtils;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.entity.GunProjectileEntity;
+import elgatopro300.bbs_cml.forms.FormUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

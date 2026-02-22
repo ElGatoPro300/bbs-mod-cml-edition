@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.cubic.render.vao;
+package elgatopro300.bbs_cml.cubic.render.vao;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.opengl.GlStateManager;
-import mchorse.bbs_mod.bobj.BOBJArmature;
-import mchorse.bbs_mod.bobj.BOBJLoader;
-import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
-import mchorse.bbs_mod.utils.joml.Matrices;
+import elgatopro300.bbs_cml.bobj.BOBJArmature;
+import elgatopro300.bbs_cml.bobj.BOBJLoader;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
+import elgatopro300.bbs_cml.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
 // import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;

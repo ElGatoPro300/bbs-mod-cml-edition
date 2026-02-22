@@ -1,12 +1,12 @@
 package elgatopro300.bbs_cml.actions.types.chat;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import mchorse.bbs_mod.actions.SuperFakePlayer;
-import mchorse.bbs_mod.actions.types.ActionClip;
-import mchorse.bbs_mod.film.Film;
-import mchorse.bbs_mod.film.replays.Replay;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.utils.clips.Clip;
+import elgatopro300.bbs_cml.actions.SuperFakePlayer;
+import elgatopro300.bbs_cml.actions.types.ActionClip;
+import elgatopro300.bbs_cml.film.Film;
+import elgatopro300.bbs_cml.film.replays.Replay;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.utils.clips.Clip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;

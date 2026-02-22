@@ -1,7 +1,7 @@
 package elgatopro300.bbs_cml.graphics;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
-import mchorse.bbs_mod.graphics.texture.Texture;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 

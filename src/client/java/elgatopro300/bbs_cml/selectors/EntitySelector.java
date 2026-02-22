@@ -2,11 +2,11 @@ package elgatopro300.bbs_cml.selectors;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.utils.StringUtils;
+import elgatopro300.bbs_cml.data.IMapSerializable;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.utils.StringUtils;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;

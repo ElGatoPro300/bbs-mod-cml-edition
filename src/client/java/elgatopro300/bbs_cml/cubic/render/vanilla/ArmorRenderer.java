@@ -2,10 +2,10 @@ package elgatopro300.bbs_cml.cubic.render.vanilla;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.cubic.model.ArmorType;
-import mchorse.bbs_mod.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.renderers.utils.RecolorVertexConsumer;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.cubic.model.ArmorType;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;

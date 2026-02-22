@@ -1,12 +1,12 @@
 package elgatopro300.bbs_cml.blocks.entities;
 
-import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.utils.pose.Transform;
-import mchorse.bbs_mod.items.ItemDisplayMode;
+import elgatopro300.bbs_cml.data.IMapSerializable;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.utils.pose.Transform;
+import elgatopro300.bbs_cml.items.ItemDisplayMode;
 
 public class ModelProperties implements IMapSerializable
 {

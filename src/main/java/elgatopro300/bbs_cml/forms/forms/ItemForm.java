@@ -1,10 +1,10 @@
 package elgatopro300.bbs_cml.forms.forms;
 
-import mchorse.bbs_mod.settings.values.core.ValueColor;
-import mchorse.bbs_mod.forms.values.ValueModelTransformationMode;
-import mchorse.bbs_mod.settings.values.mc.ValueItemStack;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.items.ItemDisplayMode;
+import elgatopro300.bbs_cml.settings.values.core.ValueColor;
+import elgatopro300.bbs_cml.forms.values.ValueModelTransformationMode;
+import elgatopro300.bbs_cml.settings.values.mc.ValueItemStack;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.items.ItemDisplayMode;
 import net.minecraft.registry.Registries;
 
 public class ItemForm extends Form

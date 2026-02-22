@@ -18,7 +18,7 @@ public class MapType extends BaseType implements Iterable<Map.Entry<String, Base
 
     public net.minecraft.nbt.NbtCompound toNbt()
     {
-        return (net.minecraft.nbt.NbtCompound) mchorse.bbs_mod.data.DataStorageUtils.toNbt(this);
+        return (net.minecraft.nbt.NbtCompound) elgatopro300.bbs_cml.data.DataStorageUtils.toNbt(this);
     }
 
     public MapType()

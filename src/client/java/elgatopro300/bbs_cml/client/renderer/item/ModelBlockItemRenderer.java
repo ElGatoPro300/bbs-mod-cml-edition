@@ -2,18 +2,18 @@ package elgatopro300.bbs_cml.client.renderer.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.opengl.GlStateManager;
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
-import mchorse.bbs_mod.blocks.entities.ModelProperties;
-import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.forms.entities.StubEntity;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.renderers.FormRenderType;
-import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
-import mchorse.bbs_mod.utils.pose.Transform;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
+import elgatopro300.bbs_cml.blocks.entities.ModelProperties;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.entities.StubEntity;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
+import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
+import elgatopro300.bbs_cml.utils.MatrixStackUtils;
+import elgatopro300.bbs_cml.utils.pose.Transform;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.client.MinecraftClient;
@@ -31,14 +31,14 @@ import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3f;
-import mchorse.bbs_mod.items.ItemDisplayMode;
+import elgatopro300.bbs_cml.items.ItemDisplayMode;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.item.model.special.SpecialModelRenderer;
-import mchorse.bbs_mod.forms.renderers.FormRenderer;
+import elgatopro300.bbs_cml.forms.renderers.FormRenderer;
 
 public class ModelBlockItemRenderer implements SpecialModelRenderer<ItemStack>
 {

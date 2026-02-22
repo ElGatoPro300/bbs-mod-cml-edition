@@ -1,6 +1,6 @@
 package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.BBSSettings;
+import elgatopro300.bbs_cml.BBSSettings;
 // import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
