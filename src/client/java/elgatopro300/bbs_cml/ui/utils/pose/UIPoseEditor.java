@@ -85,6 +85,7 @@ public class UIPoseEditor extends UIElement
     private final Set<String> markedBones = new HashSet<>();
     private boolean showOnlyMarked;
     private UIIcon showOnlyMarkedButton;
+    private String currentBone;
 
     public UIPoseEditor()
     {
@@ -531,10 +532,29 @@ public class UIPoseEditor extends UIElement
     {
         this.cacheLastSelectedBone(bone);
 
-        this.groups.list.setCurrentScroll(bone);
-        this.pickBone(bone);
+        if (this.showOnlyMarked && bone != null && !bone.isEmpty() && !this.markedBones.contains(bone))
+        {
+            this.showOnlyMarked = false;
+            this.showOnlyMarkedButton.active(false);
+            if (BBSSettings.poseBonesFilterMarked != null)
+            {
+                BBSSettings.poseBonesFilterMarked.set(false);
+            }
 
-        /* Si el hueso pertenece a alguna categoría del grupo actual, seleccionarla automáticamente */
+            double scroll = this.groups.list.scroll.getScroll();
+            this.applyMarkedFilter(false, bone, scroll);
+        }
+        else
+        {
+            this.groups.list.setCurrentScroll(bone);
+            this.pickBone(bone);
+        }
+
+        this.selectCategoryForBone(bone);
+    }
+
+    private void selectCategoryForBone(String bone)
+    {
         if (this.categories != null && this.model != null)
         {
             List<String> cats = this.boneCategories.getCategories(this.group);
@@ -753,6 +773,8 @@ public class UIPoseEditor extends UIElement
 
     protected void pickBone(String bone)
     {
+        this.currentBone = bone;
+
         if (this.pickCallback != null)
         {
             this.pickCallback.accept(bone);
@@ -1002,6 +1024,11 @@ public class UIPoseEditor extends UIElement
 
         Set<String> cached = MARKED_BONES_CACHE.get(groupKey);
         return cached == null ? Collections.emptySet() : new HashSet<>(cached);
+    }
+
+    public String getCurrentBone()
+    {
+        return this.currentBone;
     }
 
     public static boolean isMarkedBone(String groupKey, String bone)

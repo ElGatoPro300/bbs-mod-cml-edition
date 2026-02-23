@@ -132,7 +132,12 @@ public class UIKeyframeEditor extends UIElement
         if (editor instanceof UIPoseKeyframeFactory pose)
         {
             UIKeyframeSheet sheet = this.getSheet(editor.getKeyframe());
-            String currentFirst = pose.poseEditor.groups.list.getCurrentFirst();
+            String currentFirst = pose.poseEditor.getCurrentBone();
+
+            if (currentFirst == null || currentFirst.isEmpty())
+            {
+                currentFirst = pose.poseEditor.groups.list.getCurrentFirst();
+            }
 
             if (sheet != null)
             {
