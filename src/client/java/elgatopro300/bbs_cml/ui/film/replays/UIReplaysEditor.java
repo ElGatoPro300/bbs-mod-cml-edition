@@ -1226,7 +1226,7 @@ public class UIReplaysEditor extends UIElement
             {
                 boolean allowPick = true;
 
-                if (BBSSettings.replayMarkedBonesOnly.get() && pair.a instanceof ModelForm modelForm)
+                if (BBSSettings.replayMarkedBonesOnly.get() && !Window.isShiftPressed() && pair.a instanceof ModelForm modelForm)
                 {
                     ModelInstance model = ModelFormRenderer.getModel(modelForm);
                     String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;

@@ -1132,7 +1132,7 @@ public class UIFilmController extends UIElement
         int w = texture.width;
         int h = texture.height;
 
-        if (BBSSettings.replayMarkedBonesOnly.get() && !altPressed && pair != null && pair.a instanceof ModelForm modelForm)
+        if (BBSSettings.replayMarkedBonesOnly.get() && !altPressed && !Window.isShiftPressed() && pair != null && pair.a instanceof ModelForm modelForm)
         {
             ModelInstance model = ModelFormRenderer.getModel(modelForm);
             String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;
@@ -1301,7 +1301,7 @@ public class UIFilmController extends UIElement
 
             if (replay != null)
             {
-                if (BBSSettings.replayMarkedBonesOnly.get())
+                if (BBSSettings.replayMarkedBonesOnly.get() && !Window.isShiftPressed())
                 {
                     Form form = replay.form.get();
 
