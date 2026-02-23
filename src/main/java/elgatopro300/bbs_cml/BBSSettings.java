@@ -125,6 +125,7 @@ public class BBSSettings
     public static ValueBoolean anchorOverrideEnabled;
     public static ValueBoolean autoKeyframe;
     public static ValueBoolean poseBonesFilterMarked;
+    public static ValueBoolean replayMarkedBonesOnly;
     public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
@@ -303,6 +304,7 @@ public class BBSSettings
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
         poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
         poseBonesFilterMarked.invisible();
+        replayMarkedBonesOnly = builder.getBoolean("replay_marked_bones_only", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");

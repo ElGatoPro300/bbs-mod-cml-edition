@@ -173,6 +173,8 @@
     "bbs.config.pose_track_selection.auto_keyframe-comment": "Generate new keyframe when moving last selected keyframe and cursor is on different tick (requires bone anchoring to be active)",
     "bbs.config.pose_track_selection.bone_anchoring_enabled": "Bone anchoring",
     "bbs.config.pose_track_selection.bone_anchoring_enabled-comment": "Allows anchoring specific bones to individual pose tracks",
+    "bbs.config.pose_track_selection.replay_marked_bones_only": "Marked bones only in replays",
+    "bbs.config.pose_track_selection.replay_marked_bones_only-comment": "When enabled, only marked bones can be selected and hovered in replay preview",
     "bbs.config.pose_track_selection.title": "Pose track selection",
     "bbs.config.pose_track_selection.tooltip": "Options for bone anchoring in pose tracks",
     "bbs.config.recording.camera_preview": "Camera preview",

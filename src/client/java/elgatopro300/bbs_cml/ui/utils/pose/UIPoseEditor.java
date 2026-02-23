@@ -978,6 +978,45 @@ public class UIPoseEditor extends UIElement
         this.saveMarkedBonesToFile();
     }
 
+    public static boolean hasMarkedBones(String groupKey)
+    {
+        if (groupKey == null || groupKey.isEmpty())
+        {
+            return false;
+        }
+
+        ensureMarkedBonesLoadedStatic();
+
+        Set<String> cached = MARKED_BONES_CACHE.get(groupKey);
+        return cached != null && !cached.isEmpty();
+    }
+
+    public static Set<String> getMarkedBones(String groupKey)
+    {
+        if (groupKey == null || groupKey.isEmpty())
+        {
+            return Collections.emptySet();
+        }
+
+        ensureMarkedBonesLoadedStatic();
+
+        Set<String> cached = MARKED_BONES_CACHE.get(groupKey);
+        return cached == null ? Collections.emptySet() : new HashSet<>(cached);
+    }
+
+    public static boolean isMarkedBone(String groupKey, String bone)
+    {
+        if (bone == null || bone.isEmpty())
+        {
+            return false;
+        }
+
+        ensureMarkedBonesLoadedStatic();
+
+        Set<String> cached = groupKey == null ? null : MARKED_BONES_CACHE.get(groupKey);
+        return cached != null && cached.contains(bone);
+    }
+
     private String getMarkedBonesCacheKey()
     {
         return this.group == null ? "" : this.group;
@@ -1017,6 +1056,11 @@ public class UIPoseEditor extends UIElement
 
     private void ensureMarkedBonesLoaded()
     {
+        ensureMarkedBonesLoadedStatic();
+    }
+
+    private static void ensureMarkedBonesLoadedStatic()
+    {
         if (MARKED_BONES_LOADED)
         {
             return;
@@ -1026,7 +1070,7 @@ public class UIPoseEditor extends UIElement
 
         try
         {
-            BaseType type = DataToString.read(this.getMarkedBonesFile());
+            BaseType type = DataToString.read(getMarkedBonesFileStatic());
 
             if (type != null && type.isMap())
             {
@@ -1076,6 +1120,11 @@ public class UIPoseEditor extends UIElement
     }
 
     private File getMarkedBonesFile()
+    {
+        return getMarkedBonesFileStatic();
+    }
+
+    private static File getMarkedBonesFileStatic()
     {
         return BBSMod.getSettingsPath(MARKED_BONES_FILE);
     }
