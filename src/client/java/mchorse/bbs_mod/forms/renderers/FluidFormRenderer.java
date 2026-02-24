@@ -12,11 +12,12 @@ import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.forms.ITickable;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.film.UIFilmPanel;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
+import mchorse.bbs_mod.utils.joml.Vectors;
+import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.simulation.FluidController;
 import mchorse.bbs_mod.simulation.FluidSimulation;
 import net.minecraft.client.util.math.MatrixStack;
@@ -710,7 +711,7 @@ public class FluidFormRenderer extends FormRenderer<FluidForm> implements ITicka
 
         List<BaseFilmController> controllers = new ArrayList<>(BBSModClient.getFilms().getControllers());
 
-        if (BBSModClient.getDashboard().getPanels() != null && BBSModClient.getDashboard().getPanels().panel instanceof UIFilmPanel panel)
+        if (BBSModClient.getDashboard().getPanels() != null && BBSModClient.getDashboard().getPanels().panel instanceof mchorse.bbs_mod.ui.film.UIFilmPanel panel)
         {
             controllers.add(panel.getController().editorController);
         }

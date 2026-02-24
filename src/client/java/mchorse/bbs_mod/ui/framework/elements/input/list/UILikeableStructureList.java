@@ -7,6 +7,7 @@ import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.colors.Colors;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 

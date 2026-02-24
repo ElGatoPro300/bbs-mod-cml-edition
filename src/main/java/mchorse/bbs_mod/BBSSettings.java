@@ -16,6 +16,8 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSSettings
 {
@@ -36,7 +38,6 @@ public class BBSSettings
     public static ValueBoolean clickSound;
     public static ValueBoolean disablePivotTransform;
     public static ValueBoolean gizmos;
-    public static ValueBoolean gizmoYAxisHorizontal;
     public static ValueInt defaultInterpolation;
 
     public static ValueBoolean enableCursorRendering;
@@ -51,7 +52,6 @@ public class BBSSettings
     public static ValueBoolean chromaSkyEnabled;
     public static ValueInt chromaSkyColor;
     public static ValueBoolean chromaSkyTerrain;
-    public static ValueBoolean chromaSkyClouds;
     public static ValueFloat chromaSkyBillboard;
 
     public static ValueInt scrollbarShadow;
@@ -72,27 +72,16 @@ public class BBSSettings
     public static ValueBoolean editorLoop;
     public static ValueInt editorJump;
     public static ValueInt editorGuidesColor;
-    public static ValueInt editorSafeMarginsColor;
     public static ValueBoolean editorRuleOfThirds;
-    public static ValueBoolean editorSafeMargins;
     public static ValueBoolean editorCenterLines;
     public static ValueBoolean editorCrosshair;
     public static ValueBoolean editorSeconds;
-    public static ValueBoolean editorFrames;
     public static ValueInt editorPeriodicSave;
     public static ValueBoolean editorHorizontalFlight;
-    public static ValueBoolean editorFlightFreeLook;
     public static ValueEditorLayout editorLayoutSettings;
     public static ValueOnionSkin editorOnionSkin;
     public static ValueBoolean editorSnapToMarkers;
     public static ValueBoolean editorClipPreview;
-    public static ValueBoolean editorClipTypeLabels;
-    public static ValueBoolean editorReplaySprintParticles;
-    public static ValueInt editorReplayEditorTitleLimit;
-    public static ValueBoolean editorReplayHud;
-    public static ValueInt editorReplayHudPosition;
-    public static ValueBoolean editorReplayHudDisplayName;
-    public static ValueBoolean modelFormsHierarchy;
     public static ValueBoolean editorRewind;
     public static ValueBoolean editorHorizontalClipEditor;
     public static ValueBoolean editorMinutesBackup;
@@ -101,6 +90,8 @@ public class BBSSettings
     public static ValueBoolean recordingSwipeDamage;
     public static ValueBoolean recordingOverlays;
     public static ValueInt recordingPoseTransformOverlays;
+    public static ValueInt recordingPoseOverlays;
+    public static ValueBoolean recordingPoseOverlaysMigrated;
     public static ValueBoolean recordingCameraPreview;
 
     public static ValueBoolean renderAllModelBlocks;
@@ -123,8 +114,6 @@ public class BBSSettings
     public static ValueBoolean boneAnchoringEnabled;
     public static ValueBoolean anchorOverrideEnabled;
     public static ValueBoolean autoKeyframe;
-    public static ValueBoolean poseBonesFilterMarked;
-    public static ValueBoolean replayMarkedBonesOnly;
     public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
@@ -143,6 +132,27 @@ public class BBSSettings
     public static int getDefaultDuration()
     {
         return duration == null ? 30 : duration.get();
+    }
+
+    public static void migrate()
+    {
+        if (recordingPoseOverlaysMigrated == null)
+        {
+            return;
+        }
+
+        if (!recordingPoseOverlaysMigrated.get())
+        {
+            int transformOverlays = recordingPoseTransformOverlays == null ? 0 : recordingPoseTransformOverlays.get();
+            int poseOverlays = recordingPoseOverlays == null ? 0 : recordingPoseOverlays.get();
+
+            if (poseOverlays == 0 && transformOverlays > 0)
+            {
+                recordingPoseOverlays.set(transformOverlays);
+            }
+
+            recordingPoseOverlaysMigrated.set(true);
+        }
     }
 
     public static float getFov()
@@ -188,7 +198,6 @@ public class BBSSettings
         clickSound = builder.getBoolean("click_sound", false);
         disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
         gizmos = builder.getBoolean("gizmos", true);
-        gizmoYAxisHorizontal = builder.getBoolean("gizmo_y_axis_horizontal", true);
         defaultInterpolation = builder.getInt("default_interpolation", 0);
         favoriteColors = new ValueColors("favorite_colors");
         disabledSheets = new ValueStringKeys("disabled_sheets");
@@ -211,7 +220,6 @@ public class BBSSettings
         chromaSkyEnabled = builder.getBoolean("enabled", false);
         chromaSkyColor = builder.getInt("color", Colors.A75).color();
         chromaSkyTerrain = builder.getBoolean("terrain", true);
-        chromaSkyClouds = builder.getBoolean("clouds", true);
         chromaSkyBillboard = builder.getFloat("billboard", 0F, 0F, 256F);
 
         builder.category("scrollbars");
@@ -237,38 +245,30 @@ public class BBSSettings
         editorJump = builder.getInt("jump", 5, 1, 1000);
         editorLoop = builder.getBoolean("loop", false);
         editorGuidesColor = builder.getInt("guides_color", 0xcccc0000).colorAlpha();
-        editorSafeMarginsColor = builder.getInt("safe_margins_color", 0xcccc0000).colorAlpha();
         editorRuleOfThirds = builder.getBoolean("rule_of_thirds", false);
-        editorSafeMargins = builder.getBoolean("safe_margins", false);
         editorCenterLines = builder.getBoolean("center_lines", false);
         editorCrosshair = builder.getBoolean("crosshair", false);
         editorSeconds = builder.getBoolean("seconds", false);
-        editorFrames = builder.getBoolean("frames", false);
         editorPeriodicSave = builder.getInt("periodic_save", 60, 0, 3600);
         editorHorizontalFlight = builder.getBoolean("horizontal_flight", false);
-        editorFlightFreeLook = builder.getBoolean("flight_free_look", false);
         builder.register(editorLayoutSettings = new ValueEditorLayout("layout"));
         builder.register(editorOnionSkin = new ValueOnionSkin("onion_skin"));
         editorSnapToMarkers = builder.getBoolean("snap_to_markers", false);
         editorClipPreview = builder.getBoolean("clip_preview", true);
-        editorClipTypeLabels = builder.getBoolean("clip_type_labels", false);
-        editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", false);
-        editorReplayEditorTitleLimit = builder.getInt("replay_editor_title_limit", 12, 0, 64);
         editorRewind = builder.getBoolean("rewind", true);
         editorHorizontalClipEditor = builder.getBoolean("horizontal_clip_editor", true);
         editorMinutesBackup = builder.getBoolean("minutes_backup", true);
-
-        builder.category("display");
-        editorReplayHud = builder.getBoolean("replay_hud", false);
-        editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
-        editorReplayHudDisplayName = builder.getBoolean("replay_hud_display_name", true);
-        modelFormsHierarchy = builder.getBoolean("model_forms_hierarchy", false);
 
         builder.category("recording");
         recordingCountdown = builder.getFloat("countdown", 1.5F, 0F, 30F);
         recordingSwipeDamage = builder.getBoolean("swipe_damage", false);
         recordingOverlays = builder.getBoolean("overlays", true);
         recordingPoseTransformOverlays = builder.getInt("pose_transform_overlays", 0, 0, 42);
+        recordingPoseOverlays = builder.getInt("pose_overlays", 0, 0, 42);
+        recordingPoseOverlays.invisible();
+        recordingPoseOverlaysMigrated = builder.getBoolean("pose_overlays_migrated", false);
+        recordingPoseOverlaysMigrated.invisible();
+
         recordingCameraPreview = builder.getBoolean("camera_preview", true);
 
         builder.category("model_blocks");
@@ -285,9 +285,6 @@ public class BBSSettings
         builder.category("shader_curves");
         shaderCurvesEnabled = builder.getBoolean("enabled", true);
 
-        builder.category("fluid_simulation");
-        fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
-
         builder.category("audio");
         audioWaveformVisible = builder.getBoolean("waveform_visible", true);
         audioWaveformDensity = builder.getInt("waveform_density", 20, 10, 100);
@@ -299,14 +296,14 @@ public class BBSSettings
 
         /* Pose track selection */
         builder.category("pose_track_selection");
-        boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", true);
+        boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", false);
         anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
-        poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
-        poseBonesFilterMarked.invisible();
-        replayMarkedBonesOnly = builder.getBoolean("replay_marked_bones_only", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");
+
+        builder.category("fluid_simulation");
+        fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
     }
 }

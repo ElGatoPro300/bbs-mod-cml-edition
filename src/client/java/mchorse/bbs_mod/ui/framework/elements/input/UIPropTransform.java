@@ -9,7 +9,6 @@ import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.ui.utils.context.ContextMenuManager;
 import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.ui.utils.UIUtils;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
@@ -23,15 +22,10 @@ import org.joml.Matrix3f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class UIPropTransform extends UITransform
 {
-    public static final List<BiConsumer<UIPropTransform, ContextMenuManager>> contextMenuExtensions = new ArrayList<>();
-
     private static final double[] CURSOR_X = new double[1];
     private static final double[] CURSOR_Y = new double[1];
 
@@ -67,11 +61,6 @@ public class UIPropTransform extends UITransform
             );
 
             menu.actions.add(0, menu.actions.remove(menu.actions.size() - 1));
-
-            for (BiConsumer<UIPropTransform, ContextMenuManager> consumer : contextMenuExtensions)
-            {
-                consumer.accept(this, menu);
-            }
         });
 
         this.iconT.callback = (b) -> this.toggleLocal();
@@ -185,11 +174,6 @@ public class UIPropTransform extends UITransform
 
     public void setTransform(Transform transform)
     {
-        if (transform == null)
-        {
-            return;
-        }
-
         this.transform = transform;
 
         float minScale = Math.min(transform.scale.x, Math.min(transform.scale.y, transform.scale.z));
@@ -522,20 +506,7 @@ public class UIPropTransform extends UITransform
 
                     if (this.secondaryAxis == null)
                     {
-                        double delta;
-
-                        if (this.axis == Axis.Y && BBSSettings.gizmoYAxisHorizontal.get())
-                        {
-                            delta = factor * dx;
-                        }
-                        else if (this.axis == Axis.Y)
-                        {
-                            delta = factor * dy;
-                        }
-                        else
-                        {
-                            delta = factor * dx;
-                        }
+                        double delta = this.axis == Axis.Y ? factor * dy : factor * dx;
 
                         local.add(this.calculateLocalVector(delta, this.axis));
                     }
@@ -604,14 +575,7 @@ public class UIPropTransform extends UITransform
                             }
                             else if (this.axis == Axis.Y)
                             {
-                                if (BBSSettings.gizmoYAxisHorizontal.get())
-                                {
-                                    vector3f.y += factor * dx;
-                                }
-                                else
-                                {
-                                    vector3f.y -= factor * dy;
-                                }
+                                vector3f.y -= factor * dy;
                             }
                             else if (this.axis == Axis.Z)
                             {

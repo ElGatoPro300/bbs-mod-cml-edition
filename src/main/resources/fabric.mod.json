@@ -7,10 +7,8 @@
     "authors": [
         "McHorse",
         "ElGatoPro300",
-        "seb0lla",
         "Diobede",
-        "Fanyel",
-        "Mattux"
+        "Fanyel"
     ],
     "contributors": [
         "Chryfi (tracker clip)",
@@ -41,13 +39,13 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "mchorse.bbs_mod.BBSMod"
+            "mchorse.bbs_mod.BBSMod"
         ],
         "client": [
-          "mchorse.bbs_mod.BBSModClient"
+            "mchorse.bbs_mod.BBSModClient"
         ],
         "dynamiclights": [
-          "mchorse.bbs_mod.integration.LambDynLightsIntegration"
+            "mchorse.bbs_mod.integration.LambDynLightsIntegration"
         ]
     },
     "mixins": [

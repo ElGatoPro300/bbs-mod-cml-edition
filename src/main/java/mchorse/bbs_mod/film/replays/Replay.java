@@ -8,8 +8,6 @@ import mchorse.bbs_mod.camera.values.ValuePoint;
 import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.film.Film;
-import mchorse.bbs_mod.data.types.IntType;
-import mchorse.bbs_mod.data.types.StringType;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.settings.values.core.ValueForm;
@@ -33,7 +31,6 @@ public class Replay extends ValueGroup
     public final ReplayKeyframes keyframes = new ReplayKeyframes("keyframes");
     public final FormProperties properties = new FormProperties("properties");
     public final Clips actions = new Clips("actions", BBSMod.getFactoryActionClips());
-    public final Inventory inventory = new Inventory("inventory");
 
     public final ValueBoolean enabled = new ValueBoolean("enabled", true);
     public final ValueString label = new ValueString("label", "");
@@ -41,7 +38,6 @@ public class Replay extends ValueGroup
     public final ValueString group = new ValueString("group", "");
     public final ValueBoolean shadow = new ValueBoolean("shadow", true);
     public final ValueFloat shadowSize = new ValueFloat("shadow_size", 0.5F);
-    public final ValueFloat shadowOpacity = new ValueFloat("shadow_opacity", 1F, 0F, 1F);
     public final ValueInt looping = new ValueInt("looping", 0);
 
     public final ValueBoolean actor = new ValueBoolean("actor", false);
@@ -57,14 +53,6 @@ public class Replay extends ValueGroup
     public final ValueBoolean isGroup = new ValueBoolean("is_group", false);
     public final ValueString uuid = new ValueString("uuid", "");
 
-    /* Item drop velocity configuration */
-    public final ValueFloat dropVelocityMinX = new ValueFloat("drop_velocity_min_x", -0.1F);
-    public final ValueFloat dropVelocityMaxX = new ValueFloat("drop_velocity_max_x", 0.1F);
-    public final ValueFloat dropVelocityMinY = new ValueFloat("drop_velocity_min_y", 0.1F);
-    public final ValueFloat dropVelocityMaxY = new ValueFloat("drop_velocity_max_y", 0.25F);
-    public final ValueFloat dropVelocityMinZ = new ValueFloat("drop_velocity_min_z", -0.1F);
-    public final ValueFloat dropVelocityMaxZ = new ValueFloat("drop_velocity_max_z", 0.1F);
-
     public Replay(String id)
     {
         super(id);
@@ -73,7 +61,6 @@ public class Replay extends ValueGroup
         this.add(this.keyframes);
         this.add(this.properties);
         this.add(this.actions);
-        this.add(this.inventory);
 
         this.add(this.enabled);
         this.add(this.label);
@@ -81,7 +68,6 @@ public class Replay extends ValueGroup
         this.add(this.group);
         this.add(this.shadow);
         this.add(this.shadowSize);
-        this.add(this.shadowOpacity);
         this.add(this.looping);
 
         this.add(this.actor);
@@ -91,12 +77,6 @@ public class Replay extends ValueGroup
 
         this.add(this.axesPreview);
         this.add(this.axesPreviewBone);
-        this.add(this.dropVelocityMinX);
-        this.add(this.dropVelocityMaxX);
-        this.add(this.dropVelocityMinY);
-        this.add(this.dropVelocityMaxY);
-        this.add(this.dropVelocityMinZ);
-        this.add(this.dropVelocityMaxZ);
         this.add(this.isGroup);
         this.add(this.uuid);
         
@@ -242,7 +222,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, String> entry : this.customSheetTitles.entrySet())
             {
-                titles.put(entry.getKey(), new StringType(entry.getValue()));
+                titles.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
             }
 
             map.put("custom_sheet_titles", titles);
@@ -254,7 +234,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, String> entry : this.anchoredBones.entrySet())
             {
-                anchored.put(entry.getKey(), new StringType(entry.getValue()));
+                anchored.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
             }
 
             map.put("anchored_bones", anchored);
@@ -266,7 +246,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, Integer> entry : this.sheetColors.entrySet())
             {
-                colors.put(entry.getKey(), new IntType(entry.getValue()));
+                colors.put(entry.getKey(), new mchorse.bbs_mod.data.types.IntType(entry.getValue()));
             }
 
             map.put("sheet_colors", colors);
@@ -326,21 +306,6 @@ public class Replay extends ValueGroup
                     }
                 }
             }
-        }
-
-        this.ensureShadowKeyframes();
-    }
-
-    private void ensureShadowKeyframes()
-    {
-        if (this.keyframes.shadowSize.isEmpty())
-        {
-            this.keyframes.shadowSize.insert(0, 0.5D);
-        }
-
-        if (this.keyframes.shadowOpacity.isEmpty())
-        {
-            this.keyframes.shadowOpacity.insert(0, 1D);
         }
     }
 }

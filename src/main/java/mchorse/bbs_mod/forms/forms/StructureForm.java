@@ -8,6 +8,7 @@ import mchorse.bbs_mod.settings.values.core.ValueString;
 import mchorse.bbs_mod.settings.values.misc.ValueStructureLightSettings;
 import mchorse.bbs_mod.forms.forms.utils.StructureLightSettings;
 import mchorse.bbs_mod.utils.colors.Color;
+import org.joml.Vector4f;
 
 /**
  * StructureForm

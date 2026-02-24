@@ -80,17 +80,8 @@ public class VideoRenderer
                     }
                 }
 
-                float widthPercent = video.width.get() / 100F;
-                float heightPercent = video.height.get() / 100F;
-
-                if (video.width.get() == 0 && video.height.get() == 0)
-                {
-                    widthPercent = 1F;
-                    heightPercent = 1F;
-                }
-
-                int vw = widthPercent == 0F ? 0 : Math.max(1, Math.round(baseW * Math.abs(widthPercent))) * (widthPercent < 0F ? -1 : 1);
-                int vh = heightPercent == 0F ? 0 : Math.max(1, Math.round(baseH * Math.abs(heightPercent))) * (heightPercent < 0F ? -1 : 1);
+                int vw = Math.max(1, baseW + video.width.get());
+                int vh = Math.max(1, baseH + video.height.get());
 
                 int vx = baseArea.x + (baseArea.w - vw) / 2 + video.x.get();
                 int vy = baseArea.y + (baseArea.h - vh) / 2 + video.y.get();
@@ -117,7 +108,6 @@ public class VideoRenderer
                     isRunning,
                     video.volume.get(),
                     vx, vy, vw, vh, video.opacity.get(),
-                    video.cropX.get(), video.cropY.get(), video.cropWidth.get(), video.cropHeight.get(),
                     video.loops.get());
 
                 if (!video.global.get())
@@ -177,21 +167,7 @@ public class VideoRenderer
         return path;
     }
 
-    public static File getResolvedVideoFile(String path)
-    {
-        String resolved = resolveVideoPath(path);
-
-        if (resolved == null || resolved.isEmpty())
-        {
-            return null;
-        }
-
-        File file = new File(resolved);
-
-        return file.exists() ? file : null;
-    }
-
-    public static void render(MatrixStack stack, String path, long position, boolean playing, int volume, int x, int y, int w, int h, float opacity, int cropX, int cropY, int cropWidth, int cropHeight, boolean loops)
+    public static void render(MatrixStack stack, String path, long position, boolean playing, int volume, int x, int y, int w, int h, float opacity, boolean loops)
     {
         String resolved = resolveVideoPath(path);
 
@@ -386,37 +362,6 @@ public class VideoRenderer
                 }
             }
 
-            /* Recorte por lados (izq/arr/der/abajo) y ajuste de tamaño para evitar estirar. */
-            float left = Math.max(0F, Math.min(1F, cropX / 100F));
-            float top = Math.max(0F, Math.min(1F, cropY / 100F));
-            float right = Math.max(0F, Math.min(1F, cropWidth / 100F));
-            float bottom = Math.max(0F, Math.min(1F, cropHeight / 100F));
-
-            float u0 = left;
-            float v0 = top;
-            float u1 = 1F - right;
-            float v1 = 1F - bottom;
-
-            float cropWidthPercent = u1 - u0;
-            float cropHeightPercent = v1 - v0;
-
-            if (cropWidthPercent <= 0F || cropHeightPercent <= 0F)
-            {
-                return;
-            }
-
-            int wSign = w < 0 ? -1 : 1;
-            int hSign = h < 0 ? -1 : 1;
-            int absW = Math.abs(w);
-            int absH = Math.abs(h);
-            int drawW = Math.round(absW * cropWidthPercent) * wSign;
-            int drawH = Math.round(absH * cropHeightPercent) * hSign;
-
-            if (drawW == 0 || drawH == 0)
-            {
-                return;
-            }
-
             RenderSystem.setShader(GameRenderer::getPositionTexProgram);
             RenderSystem.setShaderTexture(0, texture);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
@@ -430,15 +375,11 @@ public class VideoRenderer
             BufferBuilder buffer = tessellator.getBuffer();
             Matrix4f matrix = stack.peek().getPositionMatrix();
 
-            /* Desplazar por recorte de izquierda/arriba para mantener el contenido en su lugar. */
-            int drawX = x + Math.round(absW * left) * wSign;
-            int drawY = y + Math.round(absH * top) * hSign;
-
             buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-            buffer.vertex(matrix, drawX, drawY + drawH, 0).texture(u0, v1).next();
-            buffer.vertex(matrix, drawX + drawW, drawY + drawH, 0).texture(u1, v1).next();
-            buffer.vertex(matrix, drawX + drawW, drawY, 0).texture(u1, v0).next();
-            buffer.vertex(matrix, drawX, drawY, 0).texture(u0, v0).next();
+            buffer.vertex(matrix, x, y + h, 0).texture(0, 1).next();
+            buffer.vertex(matrix, x + w, y + h, 0).texture(1, 1).next();
+            buffer.vertex(matrix, x + w, y, 0).texture(1, 0).next();
+            buffer.vertex(matrix, x, y, 0).texture(0, 0).next();
             tessellator.draw();
             
             RenderSystem.enableCull();
@@ -460,61 +401,6 @@ public class VideoRenderer
         String resolved = resolveVideoPath(path);
         PlayerWrapper wrapper = resolved == null ? null : PLAYERS.get(resolved);
         return wrapper != null && wrapper.player != null ? wrapper.player.height() : 0;
-    }
-
-    public static long getVideoDuration(String path)
-    {
-        String resolved = resolveVideoPath(path);
-
-        if (resolved == null || resolved.isEmpty())
-        {
-            return 0L;
-        }
-
-        PlayerWrapper wrapper = PLAYERS.get(resolved);
-
-        if (wrapper != null && wrapper.player != null)
-        {
-            return wrapper.player.getDuration();
-        }
-
-        if (factoryFailed)
-        {
-            return 0L;
-        }
-
-        if (FACTORY == null)
-        {
-            try
-            {
-                FACTORY = new MediaPlayerFactory(new String[] {"--avcodec-hw=none"});
-            }
-            catch (Throwable t)
-            {
-                t.printStackTrace();
-                factoryFailed = true;
-                return 0L;
-            }
-        }
-
-        try
-        {
-            VideoPlayer player = new VideoPlayer(FACTORY, MinecraftClient.getInstance());
-            player.start(new File(resolved).toURI());
-            player.pause();
-
-            wrapper = new PlayerWrapper(player);
-            wrapper.lastRenderTime = System.currentTimeMillis();
-            wrapper.wasPlaying = false;
-            PLAYERS.put(resolved, wrapper);
-
-            return player.getDuration();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return 0L;
-        }
     }
 
     public static void releaseVideo(String path)

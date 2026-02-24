@@ -14,6 +14,7 @@ import mchorse.bbs_mod.utils.interps.Lerps;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CubicVAORenderer extends CubicCubeRenderer
@@ -34,32 +35,10 @@ public class CubicVAORenderer extends CubicCubeRenderer
     @Override
     public boolean renderGroup(BufferBuilder builder, MatrixStack stack, ModelGroup group, Model model)
     {
-        if (this.stencilMap != null && !this.stencilMap.isBoneAllowed(group.id))
-        {
-            return false;
-        }
-
         ModelVAO modelVAO = this.model.getVaos().get(group);
 
         if (modelVAO != null && group.visible)
         {
-            float a = this.a * group.color.a;
-
-            if (a <= 0F)
-            {
-                return false;
-            }
-
-            final float TRANSP_EPS = 0.999f;
-            if (this.transparentPass)
-            {
-                if (a >= TRANSP_EPS) return false;
-            }
-            else
-            {
-                if (a < TRANSP_EPS) return false;
-            }
-
             if (group.textureOverride != null)
             {
                 BBSModClient.getTextures().bindTexture(group.textureOverride);
@@ -76,6 +55,7 @@ public class CubicVAORenderer extends CubicCubeRenderer
             float r = this.r * group.color.r;
             float g = this.g * group.color.g;
             float b = this.b * group.color.b;
+            float a = this.a * group.color.a;
             int light = this.light;
 
             if (this.stencilMap != null)

@@ -33,7 +33,7 @@ The simulation uses a 2D wave equation solved via finite difference method on a 
 
 ## API Documentation
 
-### `simulation.mchorse.bbs_mod.FluidSimulation`
+### `mchorse.bbs_mod.simulation.FluidSimulation`
 
 #### Constructor
 ```java

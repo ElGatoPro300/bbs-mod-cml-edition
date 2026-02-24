@@ -15,6 +15,7 @@ import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.forms.renderers.FormRenderType;
 import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.graphics.Draw;
 import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
@@ -32,6 +33,7 @@ import mchorse.bbs_mod.utils.interps.Lerps;
 import mchorse.bbs_mod.utils.colors.Color;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.pose.Transform;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.joml.Matrices;
@@ -48,8 +50,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -205,17 +205,12 @@ public abstract class BaseFilmController
 
         if (!relative && context.map == null && opacity > 0F && context.shadowRadius > 0F && form.visible.get())
         {
-            float shadowOpacity = MathUtils.clamp(opacity * context.shadowOpacity, 0F, 1F);
+            stack.push();
+            stack.translate(position.x - cx, position.y - cy, position.z - cz);
 
-            if (shadowOpacity > 0F)
-            {
-                stack.push();
-                stack.translate(position.x - cx, position.y - cy, position.z - cz);
+            ModelBlockEntityRenderer.renderShadow(context.consumers, stack, transition, position.x, position.y, position.z, 0F, 0F, 0F, context.shadowRadius, opacity);
 
-                ModelBlockEntityRenderer.renderShadow(context.consumers, stack, transition, position.x, position.y, position.z, 0F, 0F, 0F, context.shadowRadius, shadowOpacity);
-
-                stack.pop();
-            }
+            stack.pop();
         }
 
         if (!relative && !context.nameTag.isEmpty() && context.map == null)
@@ -422,8 +417,7 @@ public abstract class BaseFilmController
     private static void renderNameTag(IEntity entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light)
     {
         boolean sneaking = !entity.isSneaking();
-        float hitboxH = (float) entity.getPickingHitbox().h + (entity.isSneaking() ? 0.25F : 0.5F);
-
+        float hitboxH = (float) entity.getPickingHitbox().h + 0.5F;
 
         matrices.push();
         matrices.translate(0F, hitboxH, 0F);
@@ -539,8 +533,6 @@ public abstract class BaseFilmController
                 this.updateEntityAndForm(entity, ticks);
                 this.applyReplay(replay, ticks, entity);
 
-                boolean spawned = false;
-
                 Map<String, Integer> actors = this.getActors();
 
                 if (actors != null)
@@ -559,8 +551,6 @@ public abstract class BaseFilmController
                             actor.setBodyYaw(replay.keyframes.bodyYaw.interpolate(ticks).floatValue());
                             actor.setPitch(replay.keyframes.pitch.interpolate(ticks).floatValue());
                             replay.applyClientActions(ticks, new MCEntity(anEntity), this.film);
-
-                            spawned = true;
                         }
                         else if (anEntity instanceof PlayerEntity player)
                         {
@@ -572,20 +562,8 @@ public abstract class BaseFilmController
                             double prevZ = replay.keyframes.z.interpolate(ticks - 1);
 
                             player.setVelocity(x - prevX, y - prevY, z - prevZ);
-
-                            this.spawnSprintParticles(replay, ticks, player);
-                            spawned = true;
                         }
                     }
-                }
-
-                if (!spawned)
-                {
-                    World world = MinecraftClient.getInstance().world;
-                    Form form = replay.form.get();
-                    double width = form != null ? form.hitboxWidth.get() : 0.6D;
-
-                    this.spawnSprintParticles(replay, ticks, world, width);
                 }
             }
         }
@@ -669,110 +647,6 @@ public abstract class BaseFilmController
         replay.keyframes.apply(ticks, entity);
         replay.applyClientActions(ticks, entity, this.film);
     }
-
-      private void spawnSprintParticles(Replay replay, int ticks, Entity entity)
-    {
-        if (entity == null)
-        {
-            return;
-        }
-
-        this.spawnSprintParticles(replay, ticks, entity.getWorld(), entity.getWidth());
-    }
-
-    private void spawnSprintParticles(Replay replay, int ticks, World world, double width)
-    {
-        if (!BBSSettings.editorReplaySprintParticles.get() || replay == null || world == null)
-        {
-            return;
-        }
-
-        if (!this.isReplayVisible(replay, ticks))
-        {
-            return;
-        }
-
-        if (replay.keyframes.sprinting.interpolate(ticks) <= 0D)
-        {
-            return;
-        }
-
-        if (replay.keyframes.grounded.interpolate(ticks) <= 0D)
-        {
-            return;
-        }
-
-        double vX = replay.keyframes.vX.interpolate(ticks);
-        double vZ = replay.keyframes.vZ.interpolate(ticks);
-
-        if ((vX * vX + vZ * vZ) < 0.001D)
-        {
-            return;
-        }
-
-        double xPos = replay.keyframes.x.interpolate(ticks);
-        double yPos = replay.keyframes.y.interpolate(ticks);
-        double zPos = replay.keyframes.z.interpolate(ticks);
-
-        BlockPos pos = BlockPos.ofFloored(xPos, yPos - 0.2D, zPos);
-
-        if (world.isAir(pos))
-        {
-            return;
-        }
-
-        double x = xPos + (world.random.nextDouble() - 0.5D) * width;
-        double y = yPos + 0.1D;
-        double z = zPos + (world.random.nextDouble() - 0.5D) * width;
-
-        world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, world.getBlockState(pos)), x, y, z, 0D, 0.1D, 0D);
-    }
-
-    private boolean isReplayVisible(Replay replay, int ticks)
-    {
-        if (!this.isReplayVisibleAt(replay, ticks))
-        {
-            return false;
-        }
-
-        if (!replay.group.get().isEmpty())
-        {
-            String[] groups = replay.group.get().split("/");
-
-            for (String uuid : groups)
-            {
-                Replay groupReplay = this.replayMap.get(uuid);
-
-                if (groupReplay != null)
-                {
-                    int groupTick = groupReplay.getTick(this.getTick());
-
-                    if (!this.isReplayVisibleAt(groupReplay, groupTick))
-                    {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private boolean isReplayVisibleAt(Replay replay, float tick)
-    {
-        BaseValue visibleValue = replay.properties.get("visible");
-
-        if (visibleValue instanceof KeyframeChannel)
-        {
-            @SuppressWarnings("unchecked")
-            KeyframeChannel<Boolean> visible = (KeyframeChannel<Boolean>) visibleValue;
-
-            return visible.isEmpty() || visible.interpolate(tick);
-        }
-
-        return true;
-    }
-
 
     public void startRenderFrame(float transition)
     {
@@ -1029,27 +903,9 @@ public abstract class BaseFilmController
 
     protected FilmControllerContext getFilmControllerContext(WorldRenderContext context, Replay replay, IEntity entity)
     {
-        float tick = replay.getTick(this.getTick()) + this.getTransition(entity, context.tickDelta());
-
-        float shadowSize = replay.shadowSize.get();
-        float shadowOpacity = replay.shadowOpacity.get();
-
-        if (!replay.keyframes.shadowSize.isEmpty())
-        {
-            shadowSize = replay.keyframes.shadowSize.interpolate(tick).floatValue();
-        }
-
-        if (!replay.keyframes.shadowOpacity.isEmpty())
-        {
-            shadowOpacity = replay.keyframes.shadowOpacity.interpolate(tick).floatValue();
-        }
-
-        shadowSize = Math.max(0F, shadowSize);
-        shadowOpacity = MathUtils.clamp(shadowOpacity, 0F, 1F);
-
         return FilmControllerContext.instance
             .setup(this.entities, entity, replay, context)
-            .shadow(replay.shadow.get(), shadowSize, shadowOpacity)
+            .shadow(replay.shadow.get(), replay.shadowSize.get())
             .nameTag(replay.nameTag.get())
             .relative(replay.relative.get());
     }

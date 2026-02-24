@@ -7,28 +7,39 @@ import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
+import mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UICustomInterpolationKeyframes;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.UIKeyframeGraph;
 import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
+import mchorse.bbs_mod.ui.utils.InterpolationUtils;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.context.ContextAction;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.interps.CustomInterpolation;
 import mchorse.bbs_mod.utils.interps.CustomInterpolationManager;
 import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.InterpContext;
 import mchorse.bbs_mod.utils.interps.Interpolation;
 import mchorse.bbs_mod.utils.interps.Interpolations;
 import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import mchorse.bbs_mod.utils.undo.IUndo;
 import mchorse.bbs_mod.utils.undo.UndoManager;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class UICustomInterpolationPanel extends UIOverlayPanel
@@ -78,7 +89,7 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
         channel.insert(0, 0D);
         channel.insert(1, 1D);
 
-        for (Keyframe keyframe : channel.getKeyframes())
+        for (mchorse.bbs_mod.utils.keyframes.Keyframe keyframe : channel.getKeyframes())
         {
             keyframe.getInterpolation().setInterp(Interpolations.BEZIER);
             keyframe.lx = 0.15f;
@@ -204,7 +215,7 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
 
         for (int i = 0; i <= samples; i++)
         {
-            Keyframe<Double> k = channel.get(i);
+            mchorse.bbs_mod.utils.keyframes.Keyframe<Double> k = channel.get(i);
             double x = k.getTick();
             double y = k.getValue();
 

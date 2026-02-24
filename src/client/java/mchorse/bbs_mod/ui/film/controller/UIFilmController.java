@@ -22,9 +22,6 @@ import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.entities.MCEntity;
 import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.forms.ModelForm;
-import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
-import mchorse.bbs_mod.cubic.ModelInstance;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
@@ -52,7 +49,6 @@ import mchorse.bbs_mod.ui.utils.UIUtils;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.ui.utils.keys.KeyAction;
-import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
 import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
@@ -67,7 +63,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -116,11 +111,6 @@ public class UIFilmController extends UIElement
     private List<String> recordingGroups;
     private BaseType recordingOld;
     private boolean instantKeyframes;
-    private boolean countdownControl;
-
-    private boolean wasFlying;
-    private boolean wasAllowFlying;
-    private boolean flightModified;
 
     /* Replay and group picking */
     private IEntity hoveredEntity;
@@ -212,16 +202,6 @@ public class UIFilmController extends UIElement
         this.instantKeyframes = !this.instantKeyframes;
     }
 
-    public boolean isCountdownControlEnabled()
-    {
-        return this.countdownControl;
-    }
-
-    public void toggleCountdownControl()
-    {
-        this.countdownControl = !this.countdownControl;
-    }
-
     public boolean isPaused()
     {
         return this.paused;
@@ -268,16 +248,7 @@ public class UIFilmController extends UIElement
 
     public IEntity getCurrentEntity()
     {
-        Replay replay = this.panel.replayEditor.getReplay();
-
-        if (replay == null)
-        {
-            return null;
-        }
-
-        int index = this.panel.getData().replays.getList().indexOf(replay);
-
-        return this.getEntities().get(index);
+        return this.getEntities().get(this.panel.replayEditor.replays.replays.getIndex());
     }
 
     public int getPovMode()
@@ -422,7 +393,7 @@ public class UIFilmController extends UIElement
     {
         UIContext context = this.getContext();
 
-        return this.controlled != null && context != null && !this.hasBlockingOverlay();
+        return this.controlled != null && context != null && this.panel.isRunning() && !this.hasBlockingOverlay();
     }
 
     /* Recording */
@@ -533,18 +504,6 @@ public class UIFilmController extends UIElement
             this.toggleControl();
         }
 
-        if (groups != null && !groups.contains(ReplayKeyframes.GROUP_POSITION))
-        {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-
-            this.wasAllowFlying = player.getAbilities().allowFlying;
-            this.wasFlying = player.getAbilities().flying;
-            this.flightModified = true;
-
-            player.getAbilities().allowFlying = true;
-            player.getAbilities().flying = true;
-        }
-
         this.toggleMousePointer(this.controlled != null);
     }
 
@@ -561,15 +520,6 @@ public class UIFilmController extends UIElement
         if (this.controlled != null)
         {
             this.toggleControl();
-        }
-
-        if (this.flightModified)
-        {
-            ClientPlayerEntity player = MinecraftClient.getInstance().player;
-
-            player.getAbilities().allowFlying = this.wasAllowFlying;
-            player.getAbilities().flying = this.wasFlying;
-            this.flightModified = false;
         }
 
         this.panel.setCursor(this.recordingTick);
@@ -677,7 +627,7 @@ public class UIFilmController extends UIElement
 
             InputUtil.Key utilKey = InputUtil.fromKeyCode(context.getKeyCode(), context.getScanCode());
 
-            if (this.canControlWithKeyboard(utilKey) && !(this.recording && this.recordingCountdown > 0 && !this.countdownControl))
+            if (this.canControlWithKeyboard(utilKey))
             {
                 return true;
             }
@@ -972,7 +922,7 @@ public class UIFilmController extends UIElement
             extraVariables[index * 2 + 1] = this.mouseStick.x;
         }
 
-        if (this.instantKeyframes && this.panel.isRunning())
+        if (this.instantKeyframes)
         {
             this.insertFrame();
         }
@@ -1132,22 +1082,6 @@ public class UIFilmController extends UIElement
         int w = texture.width;
         int h = texture.height;
 
-        if (BBSSettings.replayMarkedBonesOnly.get() && !altPressed && !Window.isShiftPressed() && pair != null && pair.a instanceof ModelForm modelForm)
-        {
-            ModelInstance model = ModelFormRenderer.getModel(modelForm);
-            String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;
-
-            if (poseGroup == null || poseGroup.isEmpty())
-            {
-                poseGroup = model == null ? modelForm.model.get() : model.id;
-            }
-
-            if (UIPoseEditor.hasMarkedBones(poseGroup) && !UIPoseEditor.isMarkedBone(poseGroup, pair.b))
-            {
-                return;
-            }
-        }
-
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
         Supplier<ShaderProgram> getPickerPreviewProgram = BBSShaders::getPickerPreviewProgram;
         GlUniform target = previewProgram.getUniform("Target");
@@ -1276,7 +1210,6 @@ public class UIFilmController extends UIElement
 
         this.stencilMap.setup();
         this.stencilMap.setIncrement(!altPressed);
-        this.stencilMap.allowedBones = null;
         this.stencil.apply();
 
         if (altPressed)
@@ -1299,36 +1232,12 @@ public class UIFilmController extends UIElement
             Replay replay = CollectionUtils.getSafe(this.panel.getData().replays.getList(), this.panel.replayEditor.replays.replays.getIndex());
             Pair<String, Boolean> bone = this.getBone();
 
-            if (replay != null)
-            {
-                if (BBSSettings.replayMarkedBonesOnly.get() && !Window.isShiftPressed())
-                {
-                    Form form = replay.form.get();
-
-                    if (form instanceof ModelForm modelForm)
-                    {
-                        ModelInstance model = ModelFormRenderer.getModel(modelForm);
-                        String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;
-
-                        if (poseGroup == null || poseGroup.isEmpty())
-                        {
-                            poseGroup = model == null ? modelForm.model.get() : model.id;
-                        }
-
-                        if (UIPoseEditor.hasMarkedBones(poseGroup))
-                        {
-                            this.stencilMap.allowedBones = UIPoseEditor.getMarkedBones(poseGroup);
-                        }
-                    }
-                }
-
-                BaseFilmController.renderEntity(FilmControllerContext.instance
-                    .setup(this.getEntities(), entity, replay, renderContext)
-                    .transition(isPlaying ? renderContext.tickDelta() : 0)
-                    .stencil(this.stencilMap)
-                    .relative(replay.relative.get())
-                    .bone(bone == null ? null : bone.a, bone != null && bone.b));
-            }
+            BaseFilmController.renderEntity(FilmControllerContext.instance
+                .setup(this.getEntities(), entity, replay, renderContext)
+                .transition(isPlaying ? renderContext.tickDelta() : 0)
+                .stencil(this.stencilMap)
+                .relative(replay.relative.get())
+                .bone(bone == null ? null : bone.a, bone != null && bone.b));
         }
 
         int x = (int) ((context.mouseX - viewport.x) / (float) viewport.w * mainTexture.width);
