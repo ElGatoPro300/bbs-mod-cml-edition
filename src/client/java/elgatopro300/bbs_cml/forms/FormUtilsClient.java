@@ -16,6 +16,7 @@ import elgatopro300.bbs_cml.forms.forms.ParticleForm;
 import elgatopro300.bbs_cml.forms.forms.TrailForm;
 import elgatopro300.bbs_cml.forms.forms.VanillaParticleForm;
 import elgatopro300.bbs_cml.forms.forms.StructureForm;
+import elgatopro300.bbs_cml.forms.forms.ShapeForm;
 import elgatopro300.bbs_cml.forms.forms.LightForm;
 import elgatopro300.bbs_cml.forms.renderers.AnchorFormRenderer;
 import elgatopro300.bbs_cml.forms.renderers.BillboardFormRenderer;
