@@ -26,6 +26,7 @@ import elgatopro300.bbs_cml.forms.FormUtils;
 import elgatopro300.bbs_cml.forms.forms.Form;
 import elgatopro300.bbs_cml.graphics.texture.Texture;
 import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.l10n.L10n;
 import elgatopro300.bbs_cml.l10n.keys.IKey;
 import elgatopro300.bbs_cml.network.ClientNetwork;
 import elgatopro300.bbs_cml.settings.values.IValueListener;
@@ -108,6 +109,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
     /* Icon bar buttons */
     public UIIcon openHistory;
+    public UIIcon toggleTimeMode;
     public UIIcon toggleHorizontal;
     public UIIcon layoutLock;
     public UIIcon invertLayout;
@@ -295,6 +297,11 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
             UIOverlay.addOverlay(this.getContext(), new UIUndoHistoryOverlay(this), 200, 0.6F);
         });
         this.openHistory.tooltip(UIKeys.FILM_OPEN_HISTORY, Direction.LEFT);
+
+        this.toggleTimeMode = new UIIcon(this::getTimeModeIcon, (b) -> this.cycleTimeMode());
+
+        this.updateTimeTooltips();
+
         this.toggleHorizontal = new UIIcon(this::getLayoutIcon, (b) -> this.openLayoutSelector());
         this.toggleHorizontal.tooltip(UIKeys.FILM_TOGGLE_LAYOUT, Direction.LEFT);
         this.layoutLock = new UIIcon(this::getLayoutLockIcon, (b) -> this.toggleLayoutLock());
@@ -309,7 +316,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.openActionEditor.tooltip(UIKeys.FILM_OPEN_ACTION_EDITOR, Direction.LEFT);
 
         /* Setup elements */
-        this.iconBar.add(this.openHistory, this.toggleHorizontal.marginTop(9), this.layoutLock, this.invertLayout, this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
+        this.iconBar.add(this.openHistory, this.toggleTimeMode.marginTop(9), this.toggleHorizontal, this.layoutLock, this.invertLayout, this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
 
         this.editor.add(this.main, new UIRenderable(this::renderIcons));
         this.main.add(this.cameraEditor, this.replayEditor, this.actionEditor, this.editArea, this.preview, this.draggableMain, this.draggableEditor);
@@ -864,6 +871,68 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         }
     }
 
+    private int getTimeMode()
+    {
+        if (BBSSettings.editorSeconds.get())
+        {
+            return 1;
+        }
+
+        if (BBSSettings.editorFrames.get())
+        {
+            return 2;
+        }
+
+        return 0;
+    }
+
+    private Icon getTimeModeIcon()
+    {
+        int mode = this.getTimeMode();
+
+        if (mode == 1)
+        {
+            return Icons.TIME;
+        }
+
+        if (mode == 2)
+        {
+            return Icons.FILM;
+        }
+
+        return Icons.STOPWATCH;
+    }
+
+    private void cycleTimeMode()
+    {
+        int mode = this.getTimeMode();
+
+        mode = MathUtils.cycler(mode + 1, 0, 2);
+
+        if (mode == 0)
+        {
+            BBSSettings.editorSeconds.set(false);
+            BBSSettings.editorFrames.set(false);
+        }
+        else if (mode == 1)
+        {
+            BBSSettings.editorSeconds.set(true);
+            BBSSettings.editorFrames.set(false);
+        }
+        else
+        {
+            BBSSettings.editorSeconds.set(false);
+            BBSSettings.editorFrames.set(true);
+        }
+
+        this.updateTimeTooltips();
+    }
+
+    private void updateTimeTooltips()
+    {
+        this.toggleTimeMode.tooltip(UIKeys.FILM_TIME_MODE, Direction.LEFT);
+    }
+
     private void invertSelectedLayout()
     {
         ValueEditorLayout layout = BBSSettings.editorLayoutSettings;
@@ -1133,6 +1202,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
         this.preview.replays.setEnabled(data != null);
         this.openHistory.setEnabled(data != null);
+        this.toggleTimeMode.setEnabled(data != null);
         this.toggleHorizontal.setEnabled(data != null);
         this.layoutLock.setEnabled(data != null);
         this.openCameraEditor.setEnabled(data != null);

@@ -435,6 +435,10 @@ public class UIKeys
     public static final IKey FLUID_SIZE_X = L10n.lang("bbs.fluid.size_x");
     public static final IKey FLUID_SIZE_Y = L10n.lang("bbs.fluid.size_y");
     public static final IKey FLUID_SIZE_Z = L10n.lang("bbs.fluid.size_z");
+    public static final IKey FILM_TIME_MODE = L10n.lang("bbs.film.time_mode");
+    public static final IKey CONFIG_EDITOR_TICKS = L10n.lang("bbs.config.editor.ticks");
+    public static final IKey CONFIG_EDITOR_SECONDS = L10n.lang("bbs.config.editor.seconds");
+    public static final IKey CONFIG_EDITOR_FRAMES = L10n.lang("bbs.config.editor.frames");
     public static final IKey FORMS_EDITORS_BILLBOARD_PICK_TEXTURE = L10n.lang("bbs.ui.forms.editors.billboard.pick_texture");
     public static final IKey FORMS_EDITORS_BILLBOARD_RESIZE_CROP = L10n.lang("bbs.ui.forms.editors.billboard.resize_crop");
     public static final IKey FORMS_EDITORS_BILLBOARD_ROTATION = L10n.lang("bbs.ui.forms.editors.billboard.rotation");
