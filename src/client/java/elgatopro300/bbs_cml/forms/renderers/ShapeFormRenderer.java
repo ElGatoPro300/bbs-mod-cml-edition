@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.forms.renderers;
+package elgatopro300.bbs_cml.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.client.BBSShaders;
-import mchorse.bbs_mod.forms.forms.ShapeForm;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.utils.MatrixStackUtils;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.client.BBSShaders;
+import elgatopro300.bbs_cml.forms.forms.ShapeForm;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.utils.MatrixStackUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -21,16 +21,16 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.forms.forms.shape.ShapeGraphEvaluator;
-import mchorse.bbs_mod.utils.colors.Color;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.forms.forms.shape.ShapeGraphEvaluator;
+import elgatopro300.bbs_cml.utils.colors.Color;
 import net.minecraft.client.render.BufferRenderer;
 
 import net.minecraft.client.gl.ShaderProgram;
 import java.util.function.Supplier;
 
-import mchorse.bbs_mod.utils.math.Noise;
+import elgatopro300.bbs_cml.utils.math.Noise;
 import java.util.Random;
 
 public class ShapeFormRenderer extends FormRenderer<ShapeForm>
@@ -113,7 +113,7 @@ public class ShapeFormRenderer extends FormRenderer<ShapeForm>
         }
         else
         {
-            BBSModClient.getTextures().bindTexture(mchorse.bbs_mod.particles.ParticleScheme.DEFAULT_TEXTURE);
+            BBSModClient.getTextures().bindTexture(elgatopro300.bbs_cml.particles.ParticleScheme.DEFAULT_TEXTURE);
         }
 
         // Apply Color
