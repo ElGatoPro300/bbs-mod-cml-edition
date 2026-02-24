@@ -1,5 +1,6 @@
 package mchorse.bbs_mod.simulation;
 
+import mchorse.bbs_mod.BBSSettings;
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJBone;
 import mchorse.bbs_mod.bobj.BOBJLoader;
@@ -23,10 +24,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -188,7 +187,7 @@ public class FluidController
         }
 
         /* Check for realistic interaction setting */
-        if (!mchorse.bbs_mod.BBSSettings.fluidRealisticModelInteraction.get())
+        if (!BBSSettings.fluidRealisticModelInteraction.get())
         {
             /* Entity-like interaction: Use just the root bone/transform */
             Matrix4f transform = new Matrix4f(entityMatrix);

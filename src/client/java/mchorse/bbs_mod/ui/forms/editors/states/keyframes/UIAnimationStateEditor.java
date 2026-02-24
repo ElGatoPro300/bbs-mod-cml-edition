@@ -213,7 +213,7 @@ public class UIAnimationStateEditor extends UIElement
                                     IEntity entity = this.editor.renderer.getTargetEntity();
 
                                     UIReplaysEditorUtils.animationToPoseKeyframes(this.keyframeEditor, sheet, modelForm, entity, current, animationKey, onlyKeyframes, length, step);
-                                }, modelForm, sheet), 200, 197);
+                                }, modelForm, sheet), 260, 260);
                             }
                         });
                     }

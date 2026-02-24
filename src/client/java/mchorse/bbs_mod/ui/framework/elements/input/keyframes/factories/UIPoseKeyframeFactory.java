@@ -7,8 +7,10 @@ import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
 import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.film.UIFilmPanel;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
@@ -31,6 +33,7 @@ import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.utils.pose.Pose;
 import mchorse.bbs_mod.utils.pose.PoseTransform;
 import mchorse.bbs_mod.utils.pose.Transform;
+import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
 import org.joml.Vector3d;
 
 import java.util.List;
@@ -76,6 +79,8 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 {
                     this.poseEditor.selectBone(sheet.anchoredBone);
                 }
+
+                this.poseEditor.refreshCurrentBone();
             }
         }
         else if (FormUtils.getForm(sheet.property) instanceof MobForm mobForm)
@@ -92,6 +97,18 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         }
 
         this.scroll.add(this.poseEditor);
+    }
+
+    @Override
+    public void update()
+    {
+        super.update();
+
+        if (this.poseEditor != null)
+        {
+            this.poseEditor.setPose(this.keyframe.getValue(), this.poseEditor.getPoseGroupKey());
+            this.poseEditor.refreshCurrentBone();
+        }
     }
 
     @Override
@@ -222,11 +239,18 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         private Keyframe<Pose> keyframe;
         public UIButton anchorBone;
         public UIButton unanchorBone;
-        public mchorse.bbs_mod.ui.framework.elements.utils.UILabel anchoredLegend;
+        public UILabel anchoredLegend;
 
         public void refreshCurrentBone()
         {
-            this.pickBone(this.groups.getCurrentFirst());
+            String currentBone = this.getCurrentBone();
+
+            if (currentBone == null || currentBone.isEmpty())
+            {
+                currentBone = this.groups.list.getCurrentFirst();
+            }
+
+            this.pickBone(currentBone);
         }
 
         public static void apply(UIKeyframes editor, Keyframe keyframe, Consumer<Pose> consumer)
@@ -275,7 +299,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 if (sheet == null) return;
 
                 /* Overlay para elegir el hueso */
-                java.util.List<String> bones = this.groups.getList();
+                java.util.List<String> bones = this.groups.list.getList();
                 UISearchList<String> search = new UISearchList<>(new UIStringList(null));
                 UIList<String> list = search.list;
                 UIConfirmOverlayPanel panel = new UIConfirmOverlayPanel(
@@ -286,7 +310,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                         if (confirm)
                         {
                             int index = list.getIndex();
-                            String bone = mchorse.bbs_mod.utils.CollectionUtils.getSafe(bones, index);
+                            String bone = CollectionUtils.getSafe(bones, index);
 
                             if (bone != null)
                             {
@@ -298,10 +322,10 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                                 UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);
                                 if (factory != null) { factory.resize(); }
 
-                                mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
+                                UIFilmPanel filmPanel = this.getParent(UIFilmPanel.class);
                                 if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                                 {
-                                    mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                                    Replay replay = filmPanel.replayEditor.getReplay();
                                     replay.setAnchoredBone(sheet.id, bone);
                                     replay.setCustomSheetTitle(sheet.id, bone);
                                 }
@@ -313,7 +337,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 for (String g : bones) { list.add(g); }
 
                 /* Preseleccionar */
-                String current = sheet.anchoredBone != null ? sheet.anchoredBone : this.groups.getCurrentFirst();
+                String current = sheet.anchoredBone != null ? sheet.anchoredBone : this.getCurrentBone();
+
+                if (current == null || current.isEmpty())
+                {
+                    current = this.groups.list.getCurrentFirst();
+                }
                 int idx = bones.indexOf(current);
                 list.setIndex(Math.max(idx, 0));
 
@@ -332,10 +361,10 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                     sheet.anchoredBone = null;
                     this.anchoredLegend.setVisible(false);
 
-                    mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
+                    UIFilmPanel filmPanel = this.getParent(UIFilmPanel.class);
                     if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                     {
-                        mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                        Replay replay = filmPanel.replayEditor.getReplay();
                         replay.setAnchoredBone(sheet.id, null);
                         replay.setCustomSheetTitle(sheet.id, null);
                     }
@@ -375,7 +404,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         protected void pastePose(MapType data)
         {
-            String current = this.groups.getCurrentFirst();
+            String current = this.getCurrentBone();
+
+            if (current == null || current.isEmpty())
+            {
+                current = this.groups.list.getCurrentFirst();
+            }
 
             apply(this.editor, this.keyframe, (pose) -> pose.fromData(data));
             this.pickBone(current);
@@ -384,7 +418,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         protected void flipPose()
         {
-            String current = this.groups.getCurrentFirst();
+            String current = this.getCurrentBone();
+
+            if (current == null || current.isEmpty())
+            {
+                current = this.groups.list.getCurrentFirst();
+            }
 
             apply(this.editor, this.keyframe, (pose) -> pose.flip(this.flippedParts));
             this.pickBone(current);
@@ -422,7 +461,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         {
             if (BBSSettings.autoKeyframe.get() && BBSSettings.boneAnchoringEnabled.get())
             {
-                mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.editor.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
+                UIFilmPanel filmPanel = this.editor.getParent(UIFilmPanel.class);
 
                 if (filmPanel != null)
                 {
@@ -436,7 +475,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                         {
                             // Use interpolated pose at current cursor position instead of copying previous keyframe
                             Pose pose = (Pose) sheet.channel.interpolate(cursor);
-                            String currentBone = this.editor.groups.getCurrentFirst();
+                            String currentBone = this.editor.getCurrentBone();
+
+                            if (currentBone == null || currentBone.isEmpty())
+                            {
+                                currentBone = this.editor.groups.list.getCurrentFirst();
+                            }
                             int index = sheet.channel.insert(cursor, pose);
                             Keyframe<Pose> newKeyframe = sheet.channel.get(index);
 
@@ -445,7 +489,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
 
                             if (currentBone != null)
                             {
-                                this.editor.groups.setCurrentScroll(currentBone);
+                                this.editor.groups.list.setCurrentScroll(currentBone);
                             }
 
                             this.editor.refreshCurrentBone();
@@ -472,7 +516,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
 
         private void ensureTransformSync()
         {
-            String currentBone = this.editor.groups.getCurrentFirst();
+            String currentBone = this.editor.getCurrentBone();
+
+            if (currentBone == null || currentBone.isEmpty())
+            {
+                currentBone = this.editor.groups.list.getCurrentFirst();
+            }
 
             if (currentBone != null)
             {
@@ -495,7 +544,14 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
             String selectedCategory = categoriesEnabled && this.editor.categories != null ? this.editor.categories.getCurrentFirst() : null;
             if (selectedCategory == null || selectedCategory.isEmpty())
             {
-                return java.util.Collections.singletonList(this.editor.getGroup());
+                String currentBone = this.editor.getCurrentBone();
+
+                if (currentBone == null || currentBone.isEmpty())
+                {
+                    currentBone = this.editor.getGroup();
+                }
+
+                return java.util.Collections.singletonList(currentBone);
             }
 
             return this.editor.getCategoryBones(selectedCategory);

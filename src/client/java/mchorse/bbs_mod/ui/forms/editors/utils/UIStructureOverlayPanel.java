@@ -20,7 +20,6 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.WorldSavePath;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

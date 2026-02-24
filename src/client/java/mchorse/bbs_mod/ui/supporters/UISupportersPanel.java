@@ -23,6 +23,8 @@ public class UISupportersPanel extends UIDashboardPanel
     public UIElement superSupporters;
     public UIElement bbsEarlyAccessSupporters;
     public UIElement cmlSupporters;
+    public UIElement cmlDevelopers;
+    public UIElement specialThanksSupporters;
 
     private Supporters supporters = new Supporters();
 
@@ -40,6 +42,10 @@ public class UISupportersPanel extends UIDashboardPanel
         this.bbsEarlyAccessSupporters.grid(5).items(3);
         this.cmlSupporters = new UIElement();
         this.cmlSupporters.grid(5).items(3);
+        this.cmlDevelopers = new UIElement();
+        this.cmlDevelopers.grid(5).items(3);
+        this.specialThanksSupporters = new UIElement();
+        this.specialThanksSupporters.grid(5).items(3);
 
         UIScrollView scrollView = UI.scrollView(0, 0);
         UIElement column = UI.column(5, 10);
@@ -49,11 +55,17 @@ public class UISupportersPanel extends UIDashboardPanel
         /* Resources */
         Supplier<Integer> color = () -> BBSSettings.primaryColor(Colors.A50);
         Supplier<Integer> orangeColor = () -> 0xFF_FF8C00; // Orange color for CML section
+        Supplier<Integer> purpleColor = () -> 0xFF_9932CC; // Purple color for Developers section
+        Supplier<Integer> blueColor = () -> 0xFF_1E90FF; // Blue color for Special Thanks section
 
-        column.add(UI.label(UIKeys.SUPPORTERS_GRATITUDE));
+        /* column.add(UI.label(UIKeys.SUPPORTERS_GRATITUDE)); */
         column.add(UI.label(UIKeys.SUPPORTERS_CML_INTRO).marginTop(6));
+        column.add(UI.label(UIKeys.SUPPORTERS_CML_DEVELOPERS).background(purpleColor).marginTop(12).marginBottom(6));
+        column.add(this.cmlDevelopers);
         column.add(UI.label(UIKeys.SUPPORTERS_CML_ANIMATORS).background(orangeColor).marginTop(6).marginBottom(6));
         column.add(this.cmlSupporters);
+        column.add(UI.label(UIKeys.SUPPORTERS_SPECIAL_THANKS).background(blueColor).marginTop(12).marginBottom(6));
+        column.add(this.specialThanksSupporters);
         column.add(UI.label(UIKeys.SUPPORTERS_CC).background(color).marginTop(12).marginBottom(6));
         column.add(this.ccSupporters);
         column.add(UI.label(UIKeys.SUPPORTERS_SUPER_SUPPORTERS).background(color).marginTop(12).marginBottom(6));
@@ -66,9 +78,19 @@ public class UISupportersPanel extends UIDashboardPanel
 
         /* Fill in */
 
+        for (Supporter supporter : this.supporters.getCMLDevelopers())
+        {
+            this.cmlDevelopers.add(this.createSupporter(supporter));
+        }
+
         for (Supporter supporter : this.supporters.getCMLSupporters())
         {
             this.cmlSupporters.add(this.createSupporter(supporter));
+        }
+
+        for (Supporter supporter : this.supporters.getSpecialThanksSupporters())
+        {
+            this.specialThanksSupporters.add(this.createSupporter(supporter));
         }
 
         for (Supporter supporter : this.supporters.getCCSupporters())

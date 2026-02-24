@@ -122,7 +122,15 @@ public interface IUIKeyframeGraph
 
         if (value == null)
         {
-            if (segment != null)
+            if ("shadow_size".equals(sheet.id))
+            {
+                value = 0.5D;
+            }
+            else if ("shadow_opacity".equals(sheet.id))
+            {
+                value = 1D;
+            }
+            else if (segment != null)
             {
                 value = segment.createInterpolated();
                 extra = segment.a;

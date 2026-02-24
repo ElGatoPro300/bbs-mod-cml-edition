@@ -8,11 +8,11 @@ import mchorse.bbs_mod.forms.forms.BillboardForm;
 import mchorse.bbs_mod.forms.forms.BlockForm;
 import mchorse.bbs_mod.forms.forms.ExtrudedForm;
 import mchorse.bbs_mod.forms.forms.FluidForm;
-import mchorse.bbs_mod.forms.forms.FramebufferForm;
 import mchorse.bbs_mod.forms.forms.ItemForm;
 import mchorse.bbs_mod.forms.forms.LabelForm;
 import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.StructureForm;
+import mchorse.bbs_mod.forms.forms.ShapeForm;
 import mchorse.bbs_mod.forms.forms.TrailForm;
 import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
 import mchorse.bbs_mod.forms.forms.LightForm;
@@ -59,6 +59,7 @@ public class ExtraFormSection extends FormSection
         StructureForm structure = new StructureForm();
         FluidForm fluid = new FluidForm();
         LightForm light = new LightForm();
+        ShapeForm shape = new ShapeForm();
         try
         {
             String preferred = "structures/tree.nbt";
@@ -102,6 +103,7 @@ public class ExtraFormSection extends FormSection
         extra.addForm(vanillaParticle);
         extra.addForm(trail);
         extra.addForm(structure);
+        extra.addForm(shape);
         extra.addForm(fluid);
         extra.addForm(light);
 
@@ -134,5 +136,10 @@ public class ExtraFormSection extends FormSection
     public List<FormCategory> getCategories()
     {
         return this.categories;
+    }
+
+    public FormCategory getExtraCategory()
+    {
+        return this.extra;
     }
 }

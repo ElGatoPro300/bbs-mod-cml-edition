@@ -1,6 +1,5 @@
 package mchorse.bbs_mod.ui.film.clips.modules;
 
-import mchorse.bbs_mod.camera.data.Angle;
 import mchorse.bbs_mod.camera.values.ValueAngle;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.ui.UIKeys;
