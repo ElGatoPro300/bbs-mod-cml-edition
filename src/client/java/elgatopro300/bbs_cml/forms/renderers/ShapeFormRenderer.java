@@ -21,13 +21,13 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.forms.forms.shape.ShapeGraphEvaluator;
-import mchorse.bbs_mod.forms.forms.shape.nodes.IrisAttributeNode;
-import mchorse.bbs_mod.forms.forms.shape.nodes.IrisShaderNode;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.iris.ShaderCurves;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.forms.forms.shape.ShapeGraphEvaluator;
+import elgatopro300.bbs_cml.forms.forms.shape.nodes.IrisAttributeNode;
+import elgatopro300.bbs_cml.forms.forms.shape.nodes.IrisShaderNode;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.iris.ShaderCurves;
 import net.minecraft.client.render.BufferRenderer;
 
 import net.minecraft.client.gl.ShaderProgram;
