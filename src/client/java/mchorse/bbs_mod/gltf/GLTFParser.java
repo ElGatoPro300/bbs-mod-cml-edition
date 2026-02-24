@@ -3,7 +3,9 @@ package mchorse.bbs_mod.gltf;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import mchorse.bbs_mod.gltf.data.GLTF;
+import mchorse.bbs_mod.utils.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;

@@ -5,14 +5,13 @@ import mchorse.bbs_mod.film.Film;
 import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.items.GunItem;
 import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
 public class UseItemActionClip extends ItemActionClip
 {
-    public final ValueInt useTicks = new ValueInt("use_ticks", 0, 0, Integer.MAX_VALUE);
+    public final mchorse.bbs_mod.settings.values.numeric.ValueInt useTicks = new mchorse.bbs_mod.settings.values.numeric.ValueInt("use_ticks", 0, 0, Integer.MAX_VALUE);
 
     public UseItemActionClip()
     {

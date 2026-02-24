@@ -42,6 +42,7 @@ import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKey
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.IUIKeyframeGraph;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.UIKeyframeDopeSheet;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIKeyframeSheetFilterOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIRenameSheetOverlayPanel;
@@ -67,14 +68,17 @@ import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -551,7 +555,7 @@ public class UIReplaysEditor extends UIElement
             UIKeyframeSheet sheet = sheets.get(i);
             Object form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
 
-            if (form instanceof StructureForm)
+            if (form instanceof mchorse.bbs_mod.forms.forms.StructureForm)
             {
                 groupIndices.computeIfAbsent(form, k -> new ArrayList<>()).add(i);
                 groupSheets.computeIfAbsent(form, k -> new ArrayList<>()).add(sheet);

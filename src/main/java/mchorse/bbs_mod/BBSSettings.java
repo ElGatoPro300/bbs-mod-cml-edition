@@ -16,6 +16,8 @@ import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BBSSettings
 {

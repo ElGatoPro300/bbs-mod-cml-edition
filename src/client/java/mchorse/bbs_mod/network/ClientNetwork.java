@@ -2,7 +2,6 @@ package mchorse.bbs_mod.network;
 
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.actions.ActionState;
-import mchorse.bbs_mod.bay4lly.SkinManager;
 import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
 import mchorse.bbs_mod.client.BBSRendering;
@@ -385,7 +384,7 @@ public class ClientNetwork
             {
                 try
                 {
-                    SkinManager.saveSkin(playerName, bytes);
+                    mchorse.bbs_mod.bay4lly.SkinManager.saveSkin(playerName, bytes);
                 }
                 catch (Exception e)
                 {

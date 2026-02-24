@@ -3,6 +3,7 @@ package mchorse.bbs_mod.forms.forms;
 import mchorse.bbs_mod.settings.values.mc.ValueBlockState;
 import mchorse.bbs_mod.settings.values.core.ValueColor;
 import mchorse.bbs_mod.utils.colors.Color;
+import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registries;
 
 public class BlockForm extends Form

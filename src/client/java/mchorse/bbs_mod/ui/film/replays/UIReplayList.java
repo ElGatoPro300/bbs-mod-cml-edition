@@ -5,6 +5,7 @@ import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
 import mchorse.bbs_mod.blocks.entities.ModelProperties;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.clips.CameraClipContext;
+import mchorse.bbs_mod.camera.clips.modifiers.EntityClip;
 import mchorse.bbs_mod.camera.data.Position;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.BBSModClient;
@@ -13,6 +14,7 @@ import mchorse.bbs_mod.data.types.ListType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.film.Film;
 import mchorse.bbs_mod.film.replays.Replay;
+import mchorse.bbs_mod.film.replays.Replays;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.FormUtilsClient;
@@ -21,6 +23,7 @@ import mchorse.bbs_mod.forms.forms.BodyPart;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.MobForm;
 import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.forms.utils.Anchor;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.math.IExpression;
 import mchorse.bbs_mod.math.MathBuilder;
@@ -83,6 +86,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Path;
 
 /**
  * This GUI is responsible for drawing replays available in the
