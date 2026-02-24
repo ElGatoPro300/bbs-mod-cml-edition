@@ -80,6 +80,7 @@ public class BBSSettings
     public static ValueBoolean editorCenterLines;
     public static ValueBoolean editorCrosshair;
     public static ValueBoolean editorSeconds;
+    public static ValueBoolean editorFrames;
     public static ValueInt editorPeriodicSave;
     public static ValueBoolean editorHorizontalFlight;
     public static ValueBoolean editorFlightFreeLook;
@@ -125,6 +126,7 @@ public class BBSSettings
     public static ValueBoolean anchorOverrideEnabled;
     public static ValueBoolean autoKeyframe;
     public static ValueBoolean poseBonesFilterMarked;
+    public static ValueBoolean replayMarkedBonesOnly;
     public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;
@@ -243,6 +245,7 @@ public class BBSSettings
         editorCenterLines = builder.getBoolean("center_lines", false);
         editorCrosshair = builder.getBoolean("crosshair", false);
         editorSeconds = builder.getBoolean("seconds", false);
+        editorFrames = builder.getBoolean("frames", false);
         editorPeriodicSave = builder.getInt("periodic_save", 60, 0, 3600);
         editorHorizontalFlight = builder.getBoolean("horizontal_flight", false);
         editorFlightFreeLook = builder.getBoolean("flight_free_look", false);
@@ -303,6 +306,7 @@ public class BBSSettings
         autoKeyframe = builder.getBoolean("auto_keyframe", false);
         poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
         poseBonesFilterMarked.invisible();
+        replayMarkedBonesOnly = builder.getBoolean("replay_marked_bones_only", false);
         builder.category("cdn");
         cdnUrl = builder.getString("url", "");
         cdnToken = builder.getString("token", "");

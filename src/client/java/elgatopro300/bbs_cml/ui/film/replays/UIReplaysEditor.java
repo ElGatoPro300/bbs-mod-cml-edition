@@ -54,6 +54,7 @@ import elgatopro300.bbs_cml.ui.utils.StencilFormFramebuffer;
 import elgatopro300.bbs_cml.ui.utils.context.ContextMenuManager;
 import elgatopro300.bbs_cml.ui.utils.icons.Icon;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.ui.utils.pose.UIPoseEditor;
 import elgatopro300.bbs_cml.utils.CollectionUtils;
 import elgatopro300.bbs_cml.utils.MathUtils;
 import elgatopro300.bbs_cml.utils.Pair;
@@ -1223,29 +1224,50 @@ public class UIReplaysEditor extends UIElement
 
             if (pair != null && context.mouseButton < 2)
             {
-                if (!this.isVisible())
+                boolean allowPick = true;
+
+                if (BBSSettings.replayMarkedBonesOnly.get() && !Window.isShiftPressed() && pair.a instanceof ModelForm modelForm)
                 {
-                    this.filmPanel.showPanel(this);
+                    ModelInstance model = ModelFormRenderer.getModel(modelForm);
+                    String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;
+
+                    if (poseGroup == null || poseGroup.isEmpty())
+                    {
+                        poseGroup = model == null ? modelForm.model.get() : model.id;
+                    }
+
+                    if (UIPoseEditor.hasMarkedBones(poseGroup) && !UIPoseEditor.isMarkedBone(poseGroup, pair.b))
+                    {
+                        allowPick = false;
+                    }
                 }
 
-                if (Gizmo.INSTANCE.start(stencil.getIndex(), context.mouseX, context.mouseY, UIReplaysEditorUtils.getEditableTransform(this.keyframeEditor)))
+                if (allowPick)
                 {
-                    return true;
-                }
+                    if (!this.isVisible())
+                    {
+                        this.filmPanel.showPanel(this);
+                    }
 
-                if (context.mouseButton == 0)
-                {
-                    if (Window.isCtrlPressed()) offerAdjacent(this.getContext(), pair.a, pair.b, (bone) -> this.pickForm(pair.a, bone));
-                    else if (Window.isShiftPressed()) offerHierarchy(this.getContext(), pair.a, pair.b, (bone) -> this.pickForm(pair.a, bone));
-                    else this.pickForm(pair.a, pair.b);
+                    if (Gizmo.INSTANCE.start(stencil.getIndex(), context.mouseX, context.mouseY, UIReplaysEditorUtils.getEditableTransform(this.keyframeEditor)))
+                    {
+                        return true;
+                    }
 
-                    return true;
-                }
-                else if (context.mouseButton == 1)
-                {
-                    this.pickFormProperty(pair.a, pair.b);
+                    if (context.mouseButton == 0)
+                    {
+                        if (Window.isCtrlPressed()) offerAdjacent(this.getContext(), pair.a, pair.b, (bone) -> this.pickForm(pair.a, bone));
+                        else if (Window.isShiftPressed()) offerHierarchy(this.getContext(), pair.a, pair.b, (bone) -> this.pickForm(pair.a, bone));
+                        else this.pickForm(pair.a, pair.b);
 
-                    return true;
+                        return true;
+                    }
+                    else if (context.mouseButton == 1)
+                    {
+                        this.pickFormProperty(pair.a, pair.b);
+
+                        return true;
+                    }
                 }
             }
         }

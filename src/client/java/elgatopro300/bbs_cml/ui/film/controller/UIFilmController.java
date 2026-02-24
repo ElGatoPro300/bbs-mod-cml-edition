@@ -22,6 +22,9 @@ import elgatopro300.bbs_cml.forms.FormUtilsClient;
 import elgatopro300.bbs_cml.forms.entities.IEntity;
 import elgatopro300.bbs_cml.forms.entities.MCEntity;
 import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.forms.ModelForm;
+import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
 import elgatopro300.bbs_cml.graphics.texture.Texture;
 import elgatopro300.bbs_cml.graphics.window.Window;
 import elgatopro300.bbs_cml.l10n.keys.IKey;
@@ -49,6 +52,7 @@ import elgatopro300.bbs_cml.ui.utils.UIUtils;
 import elgatopro300.bbs_cml.ui.utils.icons.Icon;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 import elgatopro300.bbs_cml.ui.utils.keys.KeyAction;
+import elgatopro300.bbs_cml.ui.utils.pose.UIPoseEditor;
 import elgatopro300.bbs_cml.utils.CollectionUtils;
 import elgatopro300.bbs_cml.utils.MathUtils;
 import elgatopro300.bbs_cml.utils.MatrixStackUtils;
@@ -1128,6 +1132,22 @@ public class UIFilmController extends UIElement
         int w = texture.width;
         int h = texture.height;
 
+        if (BBSSettings.replayMarkedBonesOnly.get() && !altPressed && !Window.isShiftPressed() && pair != null && pair.a instanceof ModelForm modelForm)
+        {
+            ModelInstance model = ModelFormRenderer.getModel(modelForm);
+            String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;
+
+            if (poseGroup == null || poseGroup.isEmpty())
+            {
+                poseGroup = model == null ? modelForm.model.get() : model.id;
+            }
+
+            if (UIPoseEditor.hasMarkedBones(poseGroup) && !UIPoseEditor.isMarkedBone(poseGroup, pair.b))
+            {
+                return;
+            }
+        }
+
         ShaderProgram previewProgram = BBSShaders.getPickerPreviewProgram();
         Supplier<ShaderProgram> getPickerPreviewProgram = BBSShaders::getPickerPreviewProgram;
         GlUniform target = previewProgram.getUniform("Target");
@@ -1256,6 +1276,7 @@ public class UIFilmController extends UIElement
 
         this.stencilMap.setup();
         this.stencilMap.setIncrement(!altPressed);
+        this.stencilMap.allowedBones = null;
         this.stencil.apply();
 
         if (altPressed)
@@ -1280,6 +1301,27 @@ public class UIFilmController extends UIElement
 
             if (replay != null)
             {
+                if (BBSSettings.replayMarkedBonesOnly.get() && !Window.isShiftPressed())
+                {
+                    Form form = replay.form.get();
+
+                    if (form instanceof ModelForm modelForm)
+                    {
+                        ModelInstance model = ModelFormRenderer.getModel(modelForm);
+                        String poseGroup = model == null ? modelForm.model.get() : model.poseGroup;
+
+                        if (poseGroup == null || poseGroup.isEmpty())
+                        {
+                            poseGroup = model == null ? modelForm.model.get() : model.id;
+                        }
+
+                        if (UIPoseEditor.hasMarkedBones(poseGroup))
+                        {
+                            this.stencilMap.allowedBones = UIPoseEditor.getMarkedBones(poseGroup);
+                        }
+                    }
+                }
+
                 BaseFilmController.renderEntity(FilmControllerContext.instance
                     .setup(this.getEntities(), entity, replay, renderContext)
                     .transition(isPlaying ? renderContext.tickDelta() : 0)

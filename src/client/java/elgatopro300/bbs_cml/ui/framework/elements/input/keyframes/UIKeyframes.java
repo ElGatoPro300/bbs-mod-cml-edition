@@ -31,6 +31,11 @@ import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
 import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
 import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import elgatopro300.bbs_cml.utils.keyframes.factories.PoseKeyframeFactory;
+import elgatopro300.bbs_cml.utils.keyframes.factories.TransformKeyframeFactory;
+import elgatopro300.bbs_cml.utils.pose.Pose;
+import elgatopro300.bbs_cml.utils.pose.PoseTransform;
+import elgatopro300.bbs_cml.utils.pose.Transform;
 import elgatopro300.bbs_cml.utils.presets.PresetManager;
 import org.lwjgl.glfw.GLFW;
 
@@ -134,6 +139,7 @@ public class UIKeyframes extends UIElement
 
             if (hasSelected)
             {
+                menu.action(Icons.EXCHANGE, UIKeys.KEYFRAMES_CONTEXT_INVERT, this::invertKeyframesMenu);
                 menu.action(Icons.CONVERT, UIKeys.KEYFRAMES_CONTEXT_SPREAD, this::spreadKeyframes);
                 menu.action(Icons.OUTLINE_SPHERE, UIKeys.KEYFRAMES_CONTEXT_ROUND, () ->
                 {
@@ -225,6 +231,18 @@ public class UIKeyframes extends UIElement
         });
     }
 
+    private void invertKeyframesMenu()
+    {
+        this.getContext().replaceContextMenu((menu2) ->
+        {
+            menu2.autoKeys();
+            menu2.action(Icons.ALL_DIRECTIONS, UIKeys.KEYFRAMES_CONTEXT_INVERT_TRANSLATION, () -> this.invertKeyframes(InvertMode.TRANSLATION));
+            menu2.action(Icons.MAXIMIZE, UIKeys.KEYFRAMES_CONTEXT_INVERT_SCALE, () -> this.invertKeyframes(InvertMode.SCALE));
+            menu2.action(Icons.REFRESH, UIKeys.KEYFRAMES_CONTEXT_INVERT_ROTATION, () -> this.invertKeyframes(InvertMode.ROTATION));
+            menu2.action(Icons.REFRESH, UIKeys.KEYFRAMES_CONTEXT_INVERT_ROTATION2, () -> this.invertKeyframes(InvertMode.ROTATION2));
+        });
+    }
+
     private void adjustValues(boolean last)
     {
         for (UIKeyframeSheet sheet : this.getGraph().getSheets())
@@ -256,6 +274,87 @@ public class UIKeyframes extends UIElement
 
             sheet.channel.postNotify();
         }
+    }
+
+    private void invertKeyframes(InvertMode mode)
+    {
+        for (UIKeyframeSheet sheet : this.getGraph().getSheets())
+        {
+            List<Keyframe> selected = sheet.selection.getSelected();
+            IKeyframeFactory factory = sheet.channel.getFactory();
+
+            if (selected.isEmpty())
+            {
+                continue;
+            }
+
+            if (factory instanceof TransformKeyframeFactory)
+            {
+                sheet.channel.preNotify();
+
+                for (Keyframe keyframe : selected)
+                {
+                    Transform transform = (Transform) keyframe.getValue();
+                    Transform copy = transform == null ? new Transform() : transform.copy();
+
+                    this.invertTransform(copy, mode);
+
+                    keyframe.setValue(copy);
+                }
+
+                sheet.channel.postNotify();
+            }
+            else if (factory instanceof PoseKeyframeFactory)
+            {
+                sheet.channel.preNotify();
+
+                for (Keyframe keyframe : selected)
+                {
+                    Pose pose = (Pose) keyframe.getValue();
+                    Pose copy = pose == null ? new Pose() : pose.copy();
+
+                    for (PoseTransform transform : copy.transforms.values())
+                    {
+                        this.invertTransform(transform, mode);
+                    }
+
+                    keyframe.setValue(copy);
+                }
+
+                sheet.channel.postNotify();
+            }
+        }
+    }
+
+    private void invertTransform(Transform transform, InvertMode mode)
+    {
+        if (mode == InvertMode.TRANSLATION)
+        {
+            transform.translate.mul(-1F);
+        }
+
+        if (mode == InvertMode.SCALE)
+        {
+            transform.scale.mul(-1F);
+        }
+
+        if (mode == InvertMode.ROTATION)
+        {
+            transform.rotate.mul(-1F);
+        }
+
+        if (mode == InvertMode.ROTATION2)
+        {
+            transform.rotate2.mul(-1F);
+        }
+    }
+
+    private enum InvertMode
+    {
+        TRANSLATION,
+        SCALE,
+        ROTATION,
+        ROTATION2
     }
 
     public UIKeyframes changed(Runnable runnable)

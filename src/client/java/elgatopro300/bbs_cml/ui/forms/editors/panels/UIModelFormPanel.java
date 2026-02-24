@@ -100,9 +100,14 @@ public class UIModelFormPanel extends UIFormPanel<ModelForm>
         super.startEdit(form);
 
         ModelInstance model = ModelFormRenderer.getModel(this.form);
+        String poseGroup = model == null ? this.form.model.get() : model.poseGroup;
+        if (poseGroup == null || poseGroup.isEmpty())
+        {
+            poseGroup = model == null ? this.form.model.get() : model.id;
+        }
 
         this.poseEditor.setValuePose(form.pose);
-        this.poseEditor.setPose(form.pose.get(), model == null ? this.form.model.get() : model.poseGroup);
+        this.poseEditor.setPose(form.pose.get(), poseGroup);
         this.poseEditor.fillGroups(model == null ? null : model.model, model == null ? null : model.flippedParts, true);
         this.color.setColor(form.color.get().getARGBColor());
 
@@ -115,7 +120,7 @@ public class UIModelFormPanel extends UIFormPanel<ModelForm>
             if (!modelShapeKeys.isEmpty())
             {
                 this.options.add(this.shapeKeys);
-                this.shapeKeys.setShapeKeys(model.poseGroup, modelShapeKeys, this.form.shapeKeys.get());
+                this.shapeKeys.setShapeKeys(poseGroup, modelShapeKeys, this.form.shapeKeys.get());
             }
         }
 

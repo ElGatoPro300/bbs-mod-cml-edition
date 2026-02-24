@@ -126,6 +126,11 @@ public class CubicCubeRenderer implements ICubicRenderer
     @Override
     public boolean renderGroup(BufferBuilder builder, MatrixStack stack, ModelGroup group, Model model)
     {
+        if (this.stencilMap != null && !this.stencilMap.isBoneAllowed(group.id))
+        {
+            return false;
+        }
+
         float a = this.a * group.color.a;
 
         if (a <= 0F)

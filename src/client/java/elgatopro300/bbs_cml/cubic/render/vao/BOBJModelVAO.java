@@ -211,9 +211,16 @@ public class BOBJModelVAO
             if (resultNormal.lengthSquared() > 0F) resultNormal.normalize();
             resultNormal.set(0F, 0F, 0F);
 
+            boolean allowBone = true;
+            if (stencilMap != null && stencilMap.allowedBones != null && lightBone >= 0)
+            {
+                String boneName = this.armature.orderedBones.get(lightBone).name;
+                allowBone = stencilMap.allowedBones.contains(boneName);
+            }
+
             if (stencilMap != null)
             {
-                this.tmpLight[i * 2] = Math.max(0, stencilMap.increment ? lightBone : 0);
+                this.tmpLight[i * 2] = Math.max(0, stencilMap.increment ? (allowBone ? lightBone : 0) : 0);
                 this.tmpLight[i * 2 + 1] = 0;
             }
 
@@ -232,6 +239,11 @@ public class BOBJModelVAO
                 this.tmpColors[i * 4 + 1] = 1F;
                 this.tmpColors[i * 4 + 2] = 1F;
                 this.tmpColors[i * 4 + 3] = 1F;
+            }
+
+            if (!allowBone)
+            {
+                this.tmpColors[i * 4 + 3] = 0F;
             }
 
             this.tmpBones[i] = lightBone;

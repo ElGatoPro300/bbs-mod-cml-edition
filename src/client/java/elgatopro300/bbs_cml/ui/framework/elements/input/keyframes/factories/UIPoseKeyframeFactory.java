@@ -240,7 +240,14 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
 
         public void refreshCurrentBone()
         {
-            this.pickBone(this.groups.list.getCurrentFirst());
+            String currentBone = this.getCurrentBone();
+
+            if (currentBone == null || currentBone.isEmpty())
+            {
+                currentBone = this.groups.list.getCurrentFirst();
+            }
+
+            this.pickBone(currentBone);
         }
 
         public static void apply(UIKeyframes editor, Keyframe keyframe, Consumer<Pose> consumer)
@@ -327,7 +334,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                 for (String g : bones) { list.add(g); }
 
                 /* Preseleccionar */
-                String current = sheet.anchoredBone != null ? sheet.anchoredBone : this.groups.list.getCurrentFirst();
+                String current = sheet.anchoredBone != null ? sheet.anchoredBone : this.getCurrentBone();
+
+                if (current == null || current.isEmpty())
+                {
+                    current = this.groups.list.getCurrentFirst();
+                }
                 int idx = bones.indexOf(current);
                 list.setIndex(Math.max(idx, 0));
 
@@ -389,7 +401,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         protected void pastePose(MapType data)
         {
-            String current = this.groups.list.getCurrentFirst();
+            String current = this.getCurrentBone();
+
+            if (current == null || current.isEmpty())
+            {
+                current = this.groups.list.getCurrentFirst();
+            }
 
             apply(this.editor, this.keyframe, (pose) -> pose.fromData(data));
             this.pickBone(current);
@@ -398,7 +415,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         @Override
         protected void flipPose()
         {
-            String current = this.groups.list.getCurrentFirst();
+            String current = this.getCurrentBone();
+
+            if (current == null || current.isEmpty())
+            {
+                current = this.groups.list.getCurrentFirst();
+            }
 
             apply(this.editor, this.keyframe, (pose) -> pose.flip(this.flippedParts));
             this.pickBone(current);
@@ -450,7 +472,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                         {
                             // Use interpolated pose at current cursor position instead of copying previous keyframe
                             Pose pose = (Pose) sheet.channel.interpolate(cursor);
-                            String currentBone = this.editor.groups.list.getCurrentFirst();
+                            String currentBone = this.editor.getCurrentBone();
+
+                            if (currentBone == null || currentBone.isEmpty())
+                            {
+                                currentBone = this.editor.groups.list.getCurrentFirst();
+                            }
                             int index = sheet.channel.insert(cursor, pose);
                             Keyframe<Pose> newKeyframe = sheet.channel.get(index);
 
@@ -486,7 +513,12 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
 
         private void ensureTransformSync()
         {
-            String currentBone = this.editor.groups.list.getCurrentFirst();
+            String currentBone = this.editor.getCurrentBone();
+
+            if (currentBone == null || currentBone.isEmpty())
+            {
+                currentBone = this.editor.groups.list.getCurrentFirst();
+            }
 
             if (currentBone != null)
             {
@@ -509,7 +541,14 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
             String selectedCategory = categoriesEnabled && this.editor.categories != null ? this.editor.categories.getCurrentFirst() : null;
             if (selectedCategory == null || selectedCategory.isEmpty())
             {
-                return java.util.Collections.singletonList(this.editor.getGroup());
+                String currentBone = this.editor.getCurrentBone();
+
+                if (currentBone == null || currentBone.isEmpty())
+                {
+                    currentBone = this.editor.getGroup();
+                }
+
+                return java.util.Collections.singletonList(currentBone);
             }
 
             return this.editor.getCategoryBones(selectedCategory);
