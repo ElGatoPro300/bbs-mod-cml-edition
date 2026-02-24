@@ -9,14 +9,14 @@ This comprehensive guide explains how to create addons for the BBS Mod. The addo
 3. [Addon Structure](#addon-structure)
 4. [Core Concepts](#core-concepts)
    - [Forms and Data](#forms-and-data)
-   - [UI System (Flex & Widgets)](#ui-system-flex--widgets)
+   - [UI System (Flex &amp; Widgets)](#ui-system-flex--widgets)
    - [Settings and Values](#settings-and-values)
    - [Event Bus](#event-bus)
 5. [Server-Side Registration (BBSAddon)](#server-side-registration-bbsaddon)
 6. [Client-Side Registration (BBSClientAddon)](#client-side-registration-bbsclientaddon)
 7. [Advanced Topics](#advanced-topics)
    - [Custom UI Components](#custom-ui-components)
-   - [Networking & PacketCrusher](#networking--packetcrusher)
+   - [Networking &amp; PacketCrusher](#networking--packetcrusher)
    - [Localization (L10n)](#localization-l10n)
    - [Undo/Redo System](#undoredo-system)
 8. [Utility Classes](#utility-classes)
@@ -84,17 +84,20 @@ To register your addon, you need to add specific entrypoints to your `fabric.mod
 The BBS Mod addon system is divided into two main parts: the common/server side and the client side.
 
 ### BBSAddon (Common/Server)
-Extend `mchorse.bbs_mod.addons.BBSAddon`. Handles logical registration: Forms, Clips, Settings, Molang functions.
+
+Extend `addons.mchorse.bbs_mod.BBSAddon`. Handles logical registration: Forms, Clips, Settings, Molang functions.
 
 ### BBSClientAddon (Client)
-Extend `mchorse.bbs_mod.addons.BBSClientAddon`. Handles visual registration: UI Panels, Renderers, Keyframe Editors.
+
+Extend `addons.mchorse.bbs_mod.BBSClientAddon`. Handles visual registration: UI Panels, Renderers, Keyframe Editors.
 
 ## Core Concepts
 
 ### Forms and Data
 
 **Forms** are the data structures for actors, blocks, and effects.
-- **Inheritance**: All forms extend `mchorse.bbs_mod.forms.forms.Form`, which inherits from `ValueGroup`.
+
+- **Inheritance**: All forms extend `forms.forms.mchorse.bbs_mod.Form`, which inherits from `ValueGroup`.
 - **Serialization**: Forms automatically serialize to NBT/JSON via their `Value` fields.
 - **Standard Fields**:
   - `visible` (ValueBoolean)
@@ -102,10 +105,11 @@ Extend `mchorse.bbs_mod.addons.BBSClientAddon`. Handles visual registration: UI 
   - `color` (ValueInt)
 
 To create a custom form:
+
 ```java
 public class MyForm extends Form {
     public final ValueInt power = new ValueInt("power", 10);
-    
+  
     public MyForm() {
         super();
         this.register(this.power); // Important: Register value to be saved
@@ -118,7 +122,9 @@ public class MyForm extends Form {
 BBS Mod uses a powerful **Flexbox-like** immediate mode UI system.
 
 #### The Flex Layout
+
 Every `UIElement` has a `flex` field (`this.flex`) to control positioning.
+
 - **Size**: `.w(100)`, `.h(20)`, `.w(1F)` (100% width), `.wh(100, 20)`
 - **Position**: `.x(10)`, `.y(50)`, `.xy(0.5F, 0.5F)` (center relative)
 - **Anchors**: `.anchor(0.5F)` (center pivot point), `.anchor(1F)` (right/bottom pivot)
@@ -126,6 +132,7 @@ Every `UIElement` has a `flex` field (`this.flex`) to control positioning.
 - **Layouts**: `.column(5)` (vertical stack), `.row(5)` (horizontal stack), `.grid(5)`
 
 Example:
+
 ```java
 UIElement container = new UIElement();
 container.relative(parent).full(); // Fill parent
@@ -137,6 +144,7 @@ container.add(button);
 ```
 
 #### Common Widgets
+
 - **UIButton**: Simple clickable button.
 - **UIToggle**: Checkbox/Switch.
 - **UIText**: Text input field.
@@ -148,6 +156,7 @@ container.add(button);
 ### Settings and Values
 
 The `BaseValue` system is used for settings and data.
+
 - **ValueBoolean**: `true` / `false`
 - **ValueInt / ValueFloat / ValueDouble**: Numbers.
 - **ValueString**: Text.
@@ -156,6 +165,7 @@ The `BaseValue` system is used for settings and data.
 - **ValueGroup**: A map of name -> value (like a JSON object).
 
 **Reactive Changes**:
+
 ```java
 ValueBoolean toggle = new ValueBoolean("toggle", false);
 toggle.postCallback((v) -> System.out.println("Changed to: " + v.get()));
@@ -180,19 +190,25 @@ public void onFormRegister(RegisterFormsEvent event) {
 Override these methods in your `BBSAddon` subclass.
 
 ### `registerForms(RegisterFormsEvent event)`
+
 Registers actor forms.
+
 ```java
 event.getForms().register("my_form", MyForm.class);
 ```
 
 ### `registerMolangFunctions(RegisterMolangFunctionsEvent event)`
+
 Registers custom math functions for Molang.
+
 ```java
 event.register("math.double", (ctx, args) -> args[0].get() * 2);
 ```
 
 ### `registerSettings(RegisterSettingsEvent event)`
+
 Registers global config settings (appearing in the config panel).
+
 ```java
 event.register(Icons.GEAR, "my_addon", (builder) -> {
     builder.category("general").register(new ValueBoolean("enabled", true));
@@ -200,9 +216,11 @@ event.register(Icons.GEAR, "my_addon", (builder) -> {
 ```
 
 ### `registerCameraClips(RegisterCameraClipsEvent event)`
+
 Registers camera clips.
 
 ### `registerActionClips(RegisterActionClipsEvent event)`
+
 Registers action clips (Timeline).
 
 ## Client-Side Registration (BBSClientAddon)
@@ -210,50 +228,66 @@ Registers action clips (Timeline).
 Override these methods in your `BBSClientAddon` subclass.
 
 ### `registerDashboardPanels(RegisterDashboardPanelsEvent event)`
+
 Adds tabs to the main dashboard.
+
 ```java
 event.getDashboard().addPanel(new MyCustomPanel(event.getDashboard()));
 ```
 
 ### `registerFormsRenderers(RegisterFormsRenderersEvent event)`
+
 Links a Form to its Renderer and Editor UI.
+
 ```java
 event.registerRenderer(MyForm.class, MyFormRenderer::new);
 event.registerPanel(MyForm.class, UIMyFormPanel::new);
 ```
 
 ### `registerL10n(RegisterL10nEvent event)`
+
 Registers translation files.
+
 ```java
 event.getL10n().register((lang) -> Link.create("my_addon", "strings/" + lang + ".json"));
 ```
+
 *Note: See Advanced Topics for L10n reloading.*
 
 ### `registerIcons(RegisterIconsEvent event)`
+
 Registers custom icons for use in UI.
 
 ### `registerGizmos(RegisterGizmoEvent event)`
+
 Registers custom 3D gizmos for the scene editor.
 
 ### `registerPropTransforms(RegisterPropTransformEvent event)`
+
 Registers custom property transformations.
 
 ### `registerFilmEditorFactories(RegisterFilmEditorFactoriesEvent event)`
+
 Registers factories for custom film editor components.
 
 ### `registerReplayPanel(RegisterReplayPanelEvent event)`
+
 Allows customization or extension of the Replay Panel.
 
 ### `registerReplayListContextMenu(RegisterReplayListContextMenuEvent event)`
+
 Add custom actions to the Replay List context menu.
 
 ### `registerFilmPreview(RegisterFilmPreviewEvent event)`
+
 Registers custom preview rendering logic for films.
 
 ### `registerRayTracing(RegisterRayTracingEvent event)`
+
 Registers ray tracing extensions.
 
 ### `registerStencilMap(RegisterStencilMapEvent event)`
+
 Registers stencil effects.
 
 ## Advanced Topics
@@ -268,13 +302,13 @@ public class MyWidget extends UIElement {
     public void render(UIContext context) {
         // Render background
         context.batcher.box(this.area.x, this.area.y, this.area.ex(), this.area.ey(), 0xFF000000);
-        
+    
         // Render text
         context.batcher.text("Hello", this.area.x + 5, this.area.y + 5, 0xFFFFFFFF);
-        
+    
         super.render(context); // Render children
     }
-    
+  
     @Override
     public boolean mouseClicked(UIContext context) {
         if (this.area.isInside(context)) {
@@ -310,7 +344,7 @@ The main mod loads translations before addons are fully registered. To ensure yo
 @Override
 protected void registerL10n(RegisterL10nEvent event) {
     event.getL10n().register((lang) -> Link.create("my_addon", "strings/" + lang + ".json"));
-    
+  
     // Force reload to apply immediately
     event.getL10n().reload(); 
 }
@@ -328,8 +362,8 @@ In your client-side initialization (e.g., `onInitializeClient` or `BBSClientAddo
 
 ```java
 import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.addons.AddonInfo;
-import mchorse.bbs_mod.resources.Link;
+import addons.mchorse.bbs_mod.AddonInfo;
+import resources.mchorse.bbs_mod.Link;
 
 // ...
 
@@ -357,7 +391,7 @@ This ensures that even if the mod loader fails to scrape the metadata from `fabr
 If your addon is running in a hybrid environment (Sinytra Connector), standard asset loading from the mod JAR might not work for the icon. You need to manually register an asset source pack to ensure the icon (and other assets) can be found.
 
 ```java
-import mchorse.bbs_mod.resources.packs.InternalAssetsSourcePack;
+import packs.resources.mchorse.bbs_mod.InternalAssetsSourcePack;
 import mchorse.bbs_mod.BBSMod;
 
 // ...
@@ -377,6 +411,7 @@ When modifying values, use `BaseValue.edit()`:
 ```java
 BaseValue.edit(this.myValue, (v) -> v.set(newValue));
 ```
+
 This wraps the change in a transaction that the editor can undo.
 
 ## Utility Classes
@@ -389,22 +424,25 @@ This wraps the change in a transaction that the editor can undo.
 
 ## Best Practices
 
-1.  **Use `Link`**: Always use `Link` (ResourceLocation) for IDs to avoid collisions.
-2.  **Separate Client/Server**: Strict separation prevents `ClassNotFoundException` on servers.
-3.  **Prefix Keys**: Prefix translation keys (`my_addon.key`) and NBT keys to avoid conflicts.
-4.  **Use `UIOverlayPanel`**: For popups/selectors, extend `UIOverlayPanel` or `UIListOverlayPanel` for a native look.
+1. **Use `Link`**: Always use `Link` (ResourceLocation) for IDs to avoid collisions.
+2. **Separate Client/Server**: Strict separation prevents `ClassNotFoundException` on servers.
+3. **Prefix Keys**: Prefix translation keys (`my_addon.key`) and NBT keys to avoid conflicts.
+4. **Use `UIOverlayPanel`**: For popups/selectors, extend `UIOverlayPanel` or `UIListOverlayPanel` for a native look.
 
 ## Troubleshooting
 
 ### "Class not found" on Server
+
 **Cause**: Using client classes (`UIElement`, `MinecraftClient`) in `BBSAddon`.
 **Fix**: Move code to `BBSClientAddon` or safe-guard with `FabricLoader`.
 
 ### Assets not loading
+
 **Cause**: Wrong folder structure.
 **Fix**: Must be `src/main/resources/assets/<namespace>/...`.
 
 ### Events not firing
+
 **Cause**: Missing entrypoints in `fabric.mod.json`.
 **Fix**: Verify `bbs-addon` and `bbs-addon-client` entries.
 
@@ -417,9 +455,9 @@ Here is a comprehensive example of an addon that registers a custom form, a Mola
 ```java
 package com.example.addon;
 
-import mchorse.bbs_mod.addons.BBSAddon;
-import mchorse.bbs_mod.events.register.RegisterFormsEvent;
-import mchorse.bbs_mod.events.register.RegisterMolangFunctionsEvent;
+import addons.mchorse.bbs_mod.BBSAddon;
+import register.events.mchorse.bbs_mod.RegisterFormsEvent;
+import register.events.mchorse.bbs_mod.RegisterMolangFunctionsEvent;
 
 public class MyBBSAddon extends BBSAddon
 {
@@ -445,10 +483,10 @@ public class MyBBSAddon extends BBSAddon
 ```java
 package com.example.addon.client;
 
-import mchorse.bbs_mod.addons.BBSClientAddon;
-import mchorse.bbs_mod.events.register.RegisterDashboardPanelsEvent;
-import mchorse.bbs_mod.events.register.RegisterFormsRenderersEvent;
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import addons.mchorse.bbs_mod.BBSClientAddon;
+import register.events.mchorse.bbs_mod.RegisterDashboardPanelsEvent;
+import register.events.mchorse.bbs_mod.RegisterFormsRenderersEvent;
+import dashboard.ui.mchorse.bbs_mod.UIDashboard;
 
 public class MyBBSClientAddon extends BBSClientAddon
 {
@@ -475,8 +513,8 @@ public class MyBBSClientAddon extends BBSClientAddon
 ```java
 package com.example.addon;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.settings.values.ValueInt;
+import forms.forms.mchorse.bbs_mod.Form;
+import elgatopro300.bbs_cml.settings.values.ValueInt;
 
 public class MyCubeForm extends Form
 {
@@ -495,10 +533,10 @@ public class MyCubeForm extends Form
 ```java
 package com.example.addon.client;
 
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.forms.UIFormPanel;
+import elements.framework.ui.mchorse.bbs_mod.UIElement;
+import input.elements.framework.ui.mchorse.bbs_mod.UITrackpad;
+import utils.ui.mchorse.bbs_mod.UI;
+import elgatopro300.bbs_cml.ui.forms.UIFormPanel;
 import com.example.addon.MyCubeForm;
 
 public class UIMyCubeFormPanel extends UIFormPanel<MyCubeForm>

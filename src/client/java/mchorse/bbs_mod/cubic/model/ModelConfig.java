@@ -1,8 +1,6 @@
 package mchorse.bbs_mod.cubic.model;
 
-import mchorse.bbs_mod.cubic.model.ArmorConfig;
 import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.core.ValueGroup;
 import mchorse.bbs_mod.settings.values.core.ValueLink;
 import mchorse.bbs_mod.settings.values.core.ValueList;

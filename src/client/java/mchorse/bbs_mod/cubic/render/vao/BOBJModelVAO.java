@@ -7,6 +7,7 @@ import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.client.BBSRendering;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.utils.joml.Matrices;
+import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -226,7 +227,7 @@ public class BOBJModelVAO
 
             if (lightBone != -1)
             {
-                mchorse.bbs_mod.utils.colors.Color color = this.armature.orderedBones.get(lightBone).color;
+                Color color = this.armature.orderedBones.get(lightBone).color;
 
                 this.tmpColors[i * 4] = color.r;
                 this.tmpColors[i * 4 + 1] = color.g;

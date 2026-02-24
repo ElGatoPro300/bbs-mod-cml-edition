@@ -10,7 +10,6 @@ import mchorse.bbs_mod.forms.forms.shape.nodes.ColorNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.CommentNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.CoordinateNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.MathNode;
-import mchorse.bbs_mod.forms.forms.shape.nodes.MixColorNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.NoiseNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.FlowNoiseNode;
 import mchorse.bbs_mod.forms.forms.shape.nodes.IrisAttributeNode;
@@ -52,7 +51,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

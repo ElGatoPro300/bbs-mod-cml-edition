@@ -8,6 +8,8 @@ import mchorse.bbs_mod.camera.values.ValuePoint;
 import mchorse.bbs_mod.data.types.BaseType;
 import mchorse.bbs_mod.data.types.MapType;
 import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.data.types.IntType;
+import mchorse.bbs_mod.data.types.StringType;
 import mchorse.bbs_mod.forms.entities.IEntity;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.settings.values.core.ValueForm;
@@ -240,7 +242,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, String> entry : this.customSheetTitles.entrySet())
             {
-                titles.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
+                titles.put(entry.getKey(), new StringType(entry.getValue()));
             }
 
             map.put("custom_sheet_titles", titles);
@@ -252,7 +254,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, String> entry : this.anchoredBones.entrySet())
             {
-                anchored.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
+                anchored.put(entry.getKey(), new StringType(entry.getValue()));
             }
 
             map.put("anchored_bones", anchored);
@@ -264,7 +266,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, Integer> entry : this.sheetColors.entrySet())
             {
-                colors.put(entry.getKey(), new mchorse.bbs_mod.data.types.IntType(entry.getValue()));
+                colors.put(entry.getKey(), new IntType(entry.getValue()));
             }
 
             map.put("sheet_colors", colors);

@@ -222,7 +222,7 @@ public class ModelBlockEntity extends BlockEntity
 
                 if (state.getBlock() instanceof net.minecraft.block.Block)
                 {
-                    this.world.setBlockState(pos, state.with(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
+                    this.world.setBlockState(pos, state.with(ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
                 }
             }
             catch (Exception e) {}
@@ -240,7 +240,7 @@ public class ModelBlockEntity extends BlockEntity
         {
             int level = this.properties.getLightLevel();
 
-            world.setBlockState(pos, blockState.with(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
+            world.setBlockState(pos, blockState.with(ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
         }
         catch (Exception e)
         {

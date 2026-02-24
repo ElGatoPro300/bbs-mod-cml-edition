@@ -2,8 +2,8 @@ package mchorse.bbs_mod.forms.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.client.BBSShaders;
 import mchorse.bbs_mod.forms.forms.ShapeForm;
+import mchorse.bbs_mod.particles.ParticleScheme;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import net.minecraft.client.MinecraftClient;
@@ -34,7 +34,6 @@ import net.minecraft.client.gl.ShaderProgram;
 import java.util.function.Supplier;
 
 import mchorse.bbs_mod.utils.math.Noise;
-import java.util.Random;
 
 public class ShapeFormRenderer extends FormRenderer<ShapeForm>
 {
@@ -131,7 +130,7 @@ public class ShapeFormRenderer extends FormRenderer<ShapeForm>
         }
         else
         {
-            BBSModClient.getTextures().bindTexture(mchorse.bbs_mod.particles.ParticleScheme.DEFAULT_TEXTURE);
+            BBSModClient.getTextures().bindTexture(ParticleScheme.DEFAULT_TEXTURE);
         }
 
         Color finalColor = new Color(this.form.color.get().r, this.form.color.get().g, this.form.color.get().b, this.form.color.get().a);

@@ -3,7 +3,6 @@ package mchorse.bbs_mod.gltf;
 import mchorse.bbs_mod.bobj.BOBJAction;
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.bobj.BOBJLoader;
 import mchorse.bbs_mod.bobj.BOBJGroup;
 import mchorse.bbs_mod.bobj.BOBJChannel;
 import mchorse.bbs_mod.bobj.BOBJKeyframe;
@@ -18,7 +17,6 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
