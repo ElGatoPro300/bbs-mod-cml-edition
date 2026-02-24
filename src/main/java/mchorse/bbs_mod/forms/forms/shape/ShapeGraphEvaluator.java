@@ -1,6 +1,6 @@
 package mchorse.bbs_mod.forms.forms.shape;
 
-import mchorse.bbs_mod.forms.forms.shape.nodes.*;
+import elgatopro300.bbs_cml.forms.forms.shape.nodes.*;
 import mchorse.bbs_mod.forms.forms.shape.nodes.*;
 import mchorse.bbs_mod.utils.math.Noise;
 import mchorse.bbs_mod.utils.colors.Color;
