@@ -1,0 +1,73 @@
+package elgatopro300.bbs_cml.ui.framework.elements.input.text;
+
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.IFocusedUIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.utils.Textbox;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+
+public abstract class UIBaseTextbox extends UIElement implements IFocusedUIElement
+{
+    public final Textbox textbox;
+
+    public UIBaseTextbox()
+    {
+        super();
+
+        this.textbox = new Textbox(this::userInput);
+        this.textbox.setFont(Batcher2D.getDefaultTextRenderer());
+    }
+
+    protected void userInput(String string)
+    {}
+
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        super.setEnabled(enabled);
+        this.textbox.setEnabled(enabled);
+    }
+
+    @Override
+    public void setVisible(boolean visible)
+    {
+        super.setVisible(visible);
+        this.textbox.setVisible(visible);
+    }
+
+    @Override
+    public boolean isFocused()
+    {
+        return this.textbox.isFocused();
+    }
+
+    @Override
+    public void focus(UIContext context)
+    {
+        this.textbox.setFocused(true);
+    }
+
+    @Override
+    public void unfocus(UIContext context)
+    {
+        this.textbox.setFocused(false);
+    }
+
+    @Override
+    public void selectAll(UIContext context)
+    {
+        this.textbox.moveCursorToStart();
+        this.textbox.setSelection(this.textbox.getText().length());
+    }
+
+    @Override
+    public void unselect(UIContext context)
+    {
+        this.textbox.deselect();
+    }
+
+    public String getText()
+    {
+        return this.textbox.getText();
+    }
+}

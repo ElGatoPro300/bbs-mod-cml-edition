@@ -1,0 +1,31 @@
+package elgatopro300.bbs_cml.ui.forms.editors.utils;
+
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
+import org.joml.Vector4f;
+
+public class UICropOverlayPanel extends UIOverlayPanel
+{
+    public UICropEditor cropEditor;
+
+    public UICropOverlayPanel(Link texture, Vector4f crop)
+    {
+        super(UIKeys.FORMS_CROP_TITLE);
+
+        Texture t = BBSModClient.getTextures().getTexture(texture);
+
+        int w = t.width;
+        int h = t.height;
+
+        this.cropEditor = new UICropEditor();
+        this.cropEditor.fill(texture, crop);
+        this.cropEditor.setSize(w, h);
+        this.cropEditor.full(this.content);
+        this.cropEditor.scaleX.setZoom(1F / (Math.max(w, h) / 128F));
+        this.cropEditor.scaleY.setZoom(1F / (Math.max(w, h) / 128F));
+        this.content.add(this.cropEditor);
+    }
+}
