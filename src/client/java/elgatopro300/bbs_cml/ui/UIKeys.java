@@ -686,6 +686,11 @@ public class UIKeys
     public static final IKey KEYFRAMES_CONTEXT_COPY = L10n.lang("bbs.ui.keyframes.context.copy");
     public static final IKey KEYFRAMES_CONTEXT_EDIT_TRACK = L10n.lang("bbs.ui.keyframes.context.edit_track");
     public static final IKey KEYFRAMES_CONTEXT_EXIT_TRACK = L10n.lang("bbs.ui.keyframes.context.exit_track");
+    public static final IKey KEYFRAMES_CONTEXT_INVERT = L10n.lang("bbs.ui.keyframes.context.invert");
+    public static final IKey KEYFRAMES_CONTEXT_INVERT_TRANSLATION = L10n.lang("bbs.ui.keyframes.context.invert_translation");
+    public static final IKey KEYFRAMES_CONTEXT_INVERT_SCALE = L10n.lang("bbs.ui.keyframes.context.invert_scale");
+    public static final IKey KEYFRAMES_CONTEXT_INVERT_ROTATION = L10n.lang("bbs.ui.keyframes.context.invert_rotation");
+    public static final IKey KEYFRAMES_CONTEXT_INVERT_ROTATION2 = L10n.lang("bbs.ui.keyframes.context.invert_rotation2");
     public static final IKey KEYFRAMES_CONTEXT_MAXIMIZE = L10n.lang("bbs.ui.keyframes.context.maximize");
     public static final IKey KEYFRAMES_CONTEXT_PASTE = L10n.lang("bbs.ui.keyframes.context.paste");
     public static final IKey KEYFRAMES_CONTEXT_REMOVE = L10n.lang("bbs.ui.keyframes.context.remove");
