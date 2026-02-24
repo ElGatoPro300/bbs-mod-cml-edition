@@ -84,17 +84,17 @@ To register your addon, you need to add specific entrypoints to your `fabric.mod
 The BBS Mod addon system is divided into two main parts: the common/server side and the client side.
 
 ### BBSAddon (Common/Server)
-Extend `mchorse.bbs_mod.addons.BBSAddon`. Handles logical registration: Forms, Clips, Settings, Molang functions.
+Extend `elgatopro300.bbs_cml.addons.BBSAddon`. Handles logical registration: Forms, Clips, Settings, Molang functions.
 
 ### BBSClientAddon (Client)
-Extend `mchorse.bbs_mod.addons.BBSClientAddon`. Handles visual registration: UI Panels, Renderers, Keyframe Editors.
+Extend `elgatopro300.bbs_cml.addons.BBSClientAddon`. Handles visual registration: UI Panels, Renderers, Keyframe Editors.
 
 ## Core Concepts
 
 ### Forms and Data
 
 **Forms** are the data structures for actors, blocks, and effects.
-- **Inheritance**: All forms extend `mchorse.bbs_mod.forms.forms.Form`, which inherits from `ValueGroup`.
+- **Inheritance**: All forms extend `elgatopro300.bbs_cml.forms.forms.Form`, which inherits from `ValueGroup`.
 - **Serialization**: Forms automatically serialize to NBT/JSON via their `Value` fields.
 - **Standard Fields**:
   - `visible` (ValueBoolean)
@@ -327,9 +327,9 @@ To ensure your addon is correctly displayed in the Addons Panel across all platf
 In your client-side initialization (e.g., `onInitializeClient` or `BBSClientAddon` constructor), you can register your addon info directly:
 
 ```java
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.addons.AddonInfo;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.addons.AddonInfo;
+import elgatopro300.bbs_cml.resources.Link;
 
 // ...
 
@@ -357,8 +357,8 @@ This ensures that even if the mod loader fails to scrape the metadata from `fabr
 If your addon is running in a hybrid environment (Sinytra Connector), standard asset loading from the mod JAR might not work for the icon. You need to manually register an asset source pack to ensure the icon (and other assets) can be found.
 
 ```java
-import mchorse.bbs_mod.resources.packs.InternalAssetsSourcePack;
-import mchorse.bbs_mod.BBSMod;
+import elgatopro300.bbs_cml.resources.packs.InternalAssetsSourcePack;
+import elgatopro300.bbs_cml.BBSMod;
 
 // ...
 
@@ -417,9 +417,9 @@ Here is a comprehensive example of an addon that registers a custom form, a Mola
 ```java
 package com.example.addon;
 
-import mchorse.bbs_mod.addons.BBSAddon;
-import mchorse.bbs_mod.events.register.RegisterFormsEvent;
-import mchorse.bbs_mod.events.register.RegisterMolangFunctionsEvent;
+import elgatopro300.bbs_cml.addons.BBSAddon;
+import elgatopro300.bbs_cml.events.register.RegisterFormsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterMolangFunctionsEvent;
 
 public class MyBBSAddon extends BBSAddon
 {
@@ -445,10 +445,10 @@ public class MyBBSAddon extends BBSAddon
 ```java
 package com.example.addon.client;
 
-import mchorse.bbs_mod.addons.BBSClientAddon;
-import mchorse.bbs_mod.events.register.RegisterDashboardPanelsEvent;
-import mchorse.bbs_mod.events.register.RegisterFormsRenderersEvent;
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.addons.BBSClientAddon;
+import elgatopro300.bbs_cml.events.register.RegisterDashboardPanelsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFormsRenderersEvent;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
 
 public class MyBBSClientAddon extends BBSClientAddon
 {
@@ -475,8 +475,8 @@ public class MyBBSClientAddon extends BBSClientAddon
 ```java
 package com.example.addon;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.settings.values.ValueInt;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.settings.values.ValueInt;
 
 public class MyCubeForm extends Form
 {
@@ -495,10 +495,10 @@ public class MyCubeForm extends Form
 ```java
 package com.example.addon.client;
 
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.forms.UIFormPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.forms.UIFormPanel;
 import com.example.addon.MyCubeForm;
 
 public class UIMyCubeFormPanel extends UIFormPanel<MyCubeForm>

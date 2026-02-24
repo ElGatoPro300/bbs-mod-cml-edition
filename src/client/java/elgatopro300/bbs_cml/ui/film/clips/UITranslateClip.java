@@ -1,0 +1,43 @@
+package elgatopro300.bbs_cml.ui.film.clips;
+
+import elgatopro300.bbs_cml.camera.clips.modifiers.TranslateClip;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointModule;
+import elgatopro300.bbs_cml.ui.film.clips.widgets.UIBitToggle;
+
+public class UITranslateClip extends UIClip<TranslateClip>
+{
+    public UIPointModule point;
+    public UIBitToggle active;
+
+    public UITranslateClip(TranslateClip clip, IUIClipsDelegate editor)
+    {
+        super(clip, editor);
+    }
+
+    @Override
+    protected void registerUI()
+    {
+        super.registerUI();
+
+        this.point = new UIPointModule(this.editor);
+        this.active = new UIBitToggle((value) -> this.clip.active.set(value)).point();
+    }
+
+    @Override
+    protected void registerPanels()
+    {
+        super.registerPanels();
+
+        this.panels.add(this.point.marginTop(12), this.active);
+    }
+
+    @Override
+    public void fillData()
+    {
+        super.fillData();
+
+        this.point.fill(this.clip.translate);
+        this.active.setValue(this.clip.active.get());
+    }
+}

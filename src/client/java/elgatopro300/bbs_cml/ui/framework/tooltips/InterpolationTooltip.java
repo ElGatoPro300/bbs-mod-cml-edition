@@ -1,0 +1,59 @@
+package elgatopro300.bbs_cml.ui.framework.tooltips;
+
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.utils.renderers.InterpolationRenderer;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+
+import java.util.function.Supplier;
+
+public class InterpolationTooltip implements ITooltip
+{
+    public float ax;
+    public float ay;
+    public Supplier<IInterp> interpolation;
+    public Supplier<Integer> duration;
+    public int margin = 10;
+
+    public InterpolationTooltip(float ax, float ay, Supplier<IInterp> interpolation)
+    {
+        this(ax, ay, interpolation, null);
+    }
+
+    public InterpolationTooltip(float ax, float ay, Supplier<IInterp> interpolation, Supplier<Integer> duration)
+    {
+        this.ax = ax;
+        this.ay = ay;
+        this.interpolation = interpolation;
+        this.duration = duration;
+    }
+
+    public InterpolationTooltip margin(int margin)
+    {
+        this.margin = margin;
+
+        return this;
+    }
+
+    @Override
+    public IKey getLabel()
+    {
+        return IKey.EMPTY;
+    }
+
+    @Override
+    public void renderTooltip(UIContext context)
+    {
+        Area area = context.tooltip.area;
+        IInterp interpolation = this.interpolation == null ? null : this.interpolation.get();
+        int duration = this.duration == null ? 40 : this.duration.get();
+
+        float fx = (this.ax - 0.5F) * 2;
+
+        int x = area.x(this.ax) + (int) (this.margin * fx);
+        int y = area.y(this.ay);
+
+        InterpolationRenderer.renderInterpolationPreview(interpolation, context, x, y, 1 - this.ax, this.ay, duration);
+    }
+}
