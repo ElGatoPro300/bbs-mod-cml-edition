@@ -1537,7 +1537,7 @@
     "bbs.ui.camera.panels.video.volume": "Video Sesi",
     "bbs.ui.camera.panels.yaw": "Sapma",
     "bbs.ui.ffmpeg.find": "ffmpeg.exe Bul...",
-    "bbs.ui.ffmpeg.error-guide_link": "https://github.com/mchorse/bbs-mod-wiki/wiki/Setting-up-ffmpeg",
+    "bbs.ui.ffmpeg.error-guide_link": "https://github.com/ElGatoPro300/bbs-cml-edition/wiki/Setting-up-ffmpeg",
     "bbs.ui.importer.png": "PNG",
     "bbs.ui.importer.wav": "WAV",
     "bbs.ui.snowstorm.appearance.mapping": "UV Harita Oluşturma",
