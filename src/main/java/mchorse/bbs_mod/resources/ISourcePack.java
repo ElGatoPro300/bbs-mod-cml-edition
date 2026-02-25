@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.resources;
+package mchorse.bbs_mod.resources;
 
 import java.io.File;
 import java.io.IOException;

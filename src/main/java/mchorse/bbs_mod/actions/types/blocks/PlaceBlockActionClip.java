@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.actions.types.blocks;
+package mchorse.bbs_mod.actions.types.blocks;
 
-import elgatopro300.bbs_cml.actions.SuperFakePlayer;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.film.replays.Replay;
-import elgatopro300.bbs_cml.settings.values.mc.ValueBlockState;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.utils.clips.Clip;
+import mchorse.bbs_mod.actions.SuperFakePlayer;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.film.replays.Replay;
+import mchorse.bbs_mod.settings.values.mc.ValueBlockState;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.utils.clips.Clip;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;

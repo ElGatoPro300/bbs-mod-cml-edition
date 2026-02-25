@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.ui.forms.editors.forms;
+package mchorse.bbs_mod.ui.forms.editors.forms;
 
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.forms.ModelForm;
-import elgatopro300.bbs_cml.ui.Keys;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.forms.editors.panels.UIActionsFormPanel;
-import elgatopro300.bbs_cml.ui.forms.editors.panels.UIModelFormPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.ui.utils.pose.UIPoseEditor;
-import elgatopro300.bbs_cml.utils.StringUtils;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.ui.Keys;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.forms.editors.panels.UIActionsFormPanel;
+import mchorse.bbs_mod.ui.forms.editors.panels.UIModelFormPanel;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
+import mchorse.bbs_mod.utils.StringUtils;
 import org.joml.Matrix4f;
 
 public class UIModelForm extends UIForm<ModelForm>

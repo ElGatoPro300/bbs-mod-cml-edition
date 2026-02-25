@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.text;
+package mchorse.bbs_mod.ui.framework.elements.input.text;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.IFocusedUIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.utils.Textbox;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.IFocusedUIElement;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.text.utils.Textbox;
+import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
 
 public abstract class UIBaseTextbox extends UIElement implements IFocusedUIElement
 {

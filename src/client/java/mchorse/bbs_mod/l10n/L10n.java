@@ -1,20 +1,20 @@
-package elgatopro300.bbs_cml.l10n;
+package mchorse.bbs_mod.l10n;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.data.DataToString;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.events.L10nReloadEvent;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.l10n.keys.LangKey;
-import elgatopro300.bbs_cml.resources.AssetProvider;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.utility.UILanguageEditorOverlayPanel;
-import elgatopro300.bbs_cml.ui.utils.Label;
-import elgatopro300.bbs_cml.utils.IOUtils;
-import elgatopro300.bbs_cml.utils.Pair;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.events.L10nReloadEvent;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.l10n.keys.LangKey;
+import mchorse.bbs_mod.resources.AssetProvider;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.utility.UILanguageEditorOverlayPanel;
+import mchorse.bbs_mod.ui.utils.Label;
+import mchorse.bbs_mod.utils.IOUtils;
+import mchorse.bbs_mod.utils.Pair;
 
 import java.io.File;
 import java.io.InputStream;

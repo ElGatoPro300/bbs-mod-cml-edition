@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils.resources;
+package mchorse.bbs_mod.utils.resources;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.Objects;
 

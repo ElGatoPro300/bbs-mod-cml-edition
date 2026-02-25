@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.importers.Importers;
-import elgatopro300.bbs_cml.importers.types.IImporter;
+import mchorse.bbs_mod.importers.Importers;
+import mchorse.bbs_mod.importers.types.IImporter;
 
 public class RegisterImportersEvent
 {

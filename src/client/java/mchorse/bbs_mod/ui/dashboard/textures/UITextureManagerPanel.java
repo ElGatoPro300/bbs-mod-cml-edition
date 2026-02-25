@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.dashboard.textures;
+package mchorse.bbs_mod.ui.dashboard.textures;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
-import elgatopro300.bbs_cml.ui.dashboard.panels.UIDashboardPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITexturePicker;
-import elgatopro300.bbs_cml.utils.PNGEncoder;
-import elgatopro300.bbs_cml.utils.StringUtils;
-import elgatopro300.bbs_cml.utils.resources.Pixels;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanel;
+import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
+import mchorse.bbs_mod.utils.PNGEncoder;
+import mchorse.bbs_mod.utils.StringUtils;
+import mchorse.bbs_mod.utils.resources.Pixels;
 
 import java.io.File;
 import java.io.IOException;

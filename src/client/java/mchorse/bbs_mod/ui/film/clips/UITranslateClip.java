@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.film.clips;
+package mchorse.bbs_mod.ui.film.clips;
 
-import elgatopro300.bbs_cml.camera.clips.modifiers.TranslateClip;
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointModule;
-import elgatopro300.bbs_cml.ui.film.clips.widgets.UIBitToggle;
+import mchorse.bbs_mod.camera.clips.modifiers.TranslateClip;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.film.clips.modules.UIPointModule;
+import mchorse.bbs_mod.ui.film.clips.widgets.UIBitToggle;
 
 public class UITranslateClip extends UIClip<TranslateClip>
 {

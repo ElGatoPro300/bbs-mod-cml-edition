@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.shapes;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.shapes;
 
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeShape;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.keyframes.KeyframeShape;
 
 import java.util.HashMap;
 import java.util.Map;

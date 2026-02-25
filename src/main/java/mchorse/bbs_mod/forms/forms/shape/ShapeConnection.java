@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.forms.forms.shape;
+package mchorse.bbs_mod.forms.forms.shape;
 
-import elgatopro300.bbs_cml.data.types.MapType;
+import mchorse.bbs_mod.data.types.MapType;
 
 public class ShapeConnection
 {

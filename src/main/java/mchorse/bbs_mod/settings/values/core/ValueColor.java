@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.settings.values.core;
+package mchorse.bbs_mod.settings.values.core;
 
-import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
 public class ValueColor extends BaseKeyframeFactoryValue<Color>
 {

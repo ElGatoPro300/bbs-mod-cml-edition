@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.film.clips.renderer;
+package mchorse.bbs_mod.ui.film.clips.renderer;
 
-import elgatopro300.bbs_cml.ui.film.UIClips;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.utils.clips.Clip;
+import mchorse.bbs_mod.ui.film.UIClips;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.utils.clips.Clip;
 
 public interface IUIClipRenderer <T extends Clip>
 {

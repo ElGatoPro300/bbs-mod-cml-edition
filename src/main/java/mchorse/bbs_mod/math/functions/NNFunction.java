@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.math.functions;
+package mchorse.bbs_mod.math.functions;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.Operation;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.Operation;
 
 /**
  * Function that expects number input arguments and outputs a number

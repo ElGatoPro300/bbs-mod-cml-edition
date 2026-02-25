@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.utils.keyframes.factories;
+package mchorse.bbs_mod.utils.keyframes.factories;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.IntType;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.IntType;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.interps.IInterp;
 
 public class ColorKeyframeFactory implements IKeyframeFactory<Color>
 {

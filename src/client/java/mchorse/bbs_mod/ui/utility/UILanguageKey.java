@@ -1,21 +1,21 @@
-package elgatopro300.bbs_cml.ui.utility;
+package mchorse.bbs_mod.ui.utility;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.l10n.keys.LangKey;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextarea;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.utils.TextLine;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIText;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.Direction;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.l10n.keys.LangKey;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.text.UITextarea;
+import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
+import mchorse.bbs_mod.ui.framework.elements.input.text.utils.TextLine;
+import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIText;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.Direction;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 public class UILanguageKey extends UIElement
 {

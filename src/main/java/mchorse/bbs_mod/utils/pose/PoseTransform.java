@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.utils.pose;
+package mchorse.bbs_mod.utils.pose;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.interps.Interpolation;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
-import elgatopro300.bbs_cml.utils.interps.easings.EasingArgs;
-import elgatopro300.bbs_cml.utils.resources.LinkUtils;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.Interpolation;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
+import mchorse.bbs_mod.utils.resources.LinkUtils;
 
 public class PoseTransform extends Transform
 {

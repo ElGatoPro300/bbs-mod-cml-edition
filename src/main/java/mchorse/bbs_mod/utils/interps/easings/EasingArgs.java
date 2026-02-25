@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.interps.easings;
+package mchorse.bbs_mod.utils.interps.easings;
 
 public class EasingArgs
 {

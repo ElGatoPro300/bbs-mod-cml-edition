@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.settings.values.core;
+package mchorse.bbs_mod.settings.values.core;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.StringType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.StringType;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
 
 public class ValueEnum<E extends Enum<E>> extends BaseValueBasic<E>
 {

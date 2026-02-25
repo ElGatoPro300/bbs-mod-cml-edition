@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.forms.renderers;
+package mchorse.bbs_mod.forms.renderers;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
+import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;

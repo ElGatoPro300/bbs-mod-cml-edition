@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.triggers;
+package mchorse.bbs_mod.ui.triggers;
 
-import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;

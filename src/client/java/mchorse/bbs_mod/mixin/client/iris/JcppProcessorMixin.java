@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.mixin.client.iris;
+package mchorse.bbs_mod.mixin.client.iris;
 
-import elgatopro300.bbs_cml.utils.iris.ShaderCurves;
+import mchorse.bbs_mod.utils.iris.ShaderCurves;
 import net.irisshaders.iris.shaderpack.preprocessor.JcppProcessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

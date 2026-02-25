@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.graphics.line;
+package mchorse.bbs_mod.graphics.line;
 
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.Matrix4f;

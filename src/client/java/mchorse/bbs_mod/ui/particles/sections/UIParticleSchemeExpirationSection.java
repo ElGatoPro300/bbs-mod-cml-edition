@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.ui.particles.sections;
+package mchorse.bbs_mod.ui.particles.sections;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.particles.ParticleScheme;
-import elgatopro300.bbs_cml.particles.components.expiration.ParticleComponentExpireInBlocks;
-import elgatopro300.bbs_cml.particles.components.expiration.ParticleComponentExpireNotInBlocks;
-import elgatopro300.bbs_cml.particles.components.expiration.ParticleComponentKillPlane;
-import elgatopro300.bbs_cml.particles.components.expiration.ParticleComponentParticleLifetime;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UICirculate;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.particles.UIParticleSchemePanel;
-import elgatopro300.bbs_cml.ui.utils.UI;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.particles.ParticleScheme;
+import mchorse.bbs_mod.particles.components.expiration.ParticleComponentExpireInBlocks;
+import mchorse.bbs_mod.particles.components.expiration.ParticleComponentExpireNotInBlocks;
+import mchorse.bbs_mod.particles.components.expiration.ParticleComponentKillPlane;
+import mchorse.bbs_mod.particles.components.expiration.ParticleComponentParticleLifetime;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.particles.UIParticleSchemePanel;
+import mchorse.bbs_mod.ui.utils.UI;
 
 public class UIParticleSchemeExpirationSection extends UIParticleSchemeSection
 {

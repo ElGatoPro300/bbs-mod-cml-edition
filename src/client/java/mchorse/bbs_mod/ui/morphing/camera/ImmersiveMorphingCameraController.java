@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.morphing.camera;
+package mchorse.bbs_mod.ui.morphing.camera;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.controller.ICameraController;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
-import elgatopro300.bbs_cml.utils.joml.Matrices;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.controller.ICameraController;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
+import mchorse.bbs_mod.utils.joml.Matrices;
+import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.joml.Vector3d;

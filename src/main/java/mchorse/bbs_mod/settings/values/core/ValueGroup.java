@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.settings.values.core;
+package mchorse.bbs_mod.settings.values.core;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueGroup;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.settings.values.base.BaseValueGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;

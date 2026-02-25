@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.mixin;
+package mchorse.bbs_mod.mixin;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;

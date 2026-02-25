@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.settings.values.mc;
+package mchorse.bbs_mod.settings.values.mc;
 
-import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 

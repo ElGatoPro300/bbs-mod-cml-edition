@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.blocks.entities;
+package mchorse.bbs_mod.blocks.entities;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.blocks.ModelBlock;
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.events.ModelBlockEntityUpdateCallback;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.forms.entities.StubEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.forms.forms.BillboardForm;
-import elgatopro300.bbs_cml.forms.forms.LightForm;
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.blocks.ModelBlock;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.events.ModelBlockEntityUpdateCallback;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.entities.StubEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.BillboardForm;
+import mchorse.bbs_mod.forms.forms.LightForm;
+import mchorse.bbs_mod.resources.Link;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -235,7 +235,7 @@ public class ModelBlockEntity extends BlockEntity
 
                 if (state.getBlock() instanceof net.minecraft.block.Block)
                 {
-                    this.world.setBlockState(pos, state.with(elgatopro300.bbs_cml.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
+                    this.world.setBlockState(pos, state.with(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
                 }
             }
             catch (Exception e)
@@ -258,7 +258,7 @@ public class ModelBlockEntity extends BlockEntity
         {
             int level = this.properties.getLightLevel();
 
-            world.setBlockState(pos, blockState.with(elgatopro300.bbs_cml.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
+            world.setBlockState(pos, blockState.with(mchorse.bbs_mod.blocks.ModelBlock.LIGHT_LEVEL, level), Block.NOTIFY_LISTENERS);
         }
         catch (Exception e)
         {

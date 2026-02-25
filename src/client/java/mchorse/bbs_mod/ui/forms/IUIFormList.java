@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.forms;
+package mchorse.bbs_mod.ui.forms;
 
-import elgatopro300.bbs_cml.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.Form;
 
 public interface IUIFormList
 {

@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.graphics.Draw;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
-import elgatopro300.bbs_cml.utils.Axis;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.graphics.Draw;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
+import mchorse.bbs_mod.utils.Axis;
 // import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
 // import net.minecraft.client.render.BufferRenderer;

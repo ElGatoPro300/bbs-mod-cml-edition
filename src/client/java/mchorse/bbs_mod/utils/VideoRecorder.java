@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils;
+package mchorse.bbs_mod.utils;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.ui.utils.UIUtils;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.ui.utils.UIUtils;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 import sun.misc.Unsafe;

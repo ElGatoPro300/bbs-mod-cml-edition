@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.math.functions.Function;
+import mchorse.bbs_mod.math.functions.Function;
 import java.util.Map;
 
 public class RegisterMolangFunctionsEvent

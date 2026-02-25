@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.film.clips.renderer;
+package mchorse.bbs_mod.ui.film.clips.renderer;
 
-import elgatopro300.bbs_cml.camera.clips.misc.AudioClientClip;
-import elgatopro300.bbs_cml.camera.clips.misc.VideoClip;
-import elgatopro300.bbs_cml.utils.clips.Clip;
+import mchorse.bbs_mod.camera.clips.misc.AudioClientClip;
+import mchorse.bbs_mod.camera.clips.misc.VideoClip;
+import mchorse.bbs_mod.utils.clips.Clip;
 
 import java.util.HashMap;
 import java.util.Map;

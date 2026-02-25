@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.mixin;
+package mchorse.bbs_mod.mixin;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.actions.types.item.UseBlockItemActionClip;
-import elgatopro300.bbs_cml.actions.types.item.UseItemActionClip;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.actions.types.item.UseBlockItemActionClip;
+import mchorse.bbs_mod.actions.types.item.UseItemActionClip;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;

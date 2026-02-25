@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.triggers;
+package mchorse.bbs_mod.triggers;
 
-import elgatopro300.bbs_cml.settings.values.core.ValueForm;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.settings.values.core.ValueString;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.settings.values.core.ValueForm;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.settings.values.core.ValueString;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 
 public class Trigger extends ValueGroup
 {

@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.utils.factory;
+package mchorse.bbs_mod.utils.factory;
 
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.Link;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.mixin;
+package mchorse.bbs_mod.mixin;
 
-import elgatopro300.bbs_cml.morphing.IMorphProvider;
-import elgatopro300.bbs_cml.morphing.Morph;
+import mchorse.bbs_mod.morphing.IMorphProvider;
+import mchorse.bbs_mod.morphing.Morph;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;

@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.dashboard.utils;
+package mchorse.bbs_mod.ui.dashboard.utils;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.UIContext;
 
 public interface IUIOrbitKeysHandler
 {

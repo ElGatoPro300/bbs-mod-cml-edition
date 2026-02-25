@@ -1,19 +1,19 @@
-package elgatopro300.bbs_cml;
+package mchorse.bbs_mod;
 
-import elgatopro300.bbs_cml.settings.SettingsBuilder;
-import elgatopro300.bbs_cml.settings.values.core.ValueLink;
-import elgatopro300.bbs_cml.settings.values.core.ValueString;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.settings.values.ui.ValueColors;
-import elgatopro300.bbs_cml.settings.values.ui.ValueEditorLayout;
-import elgatopro300.bbs_cml.settings.values.ui.ValueLanguage;
-import elgatopro300.bbs_cml.settings.values.ui.ValueOnionSkin;
-import elgatopro300.bbs_cml.settings.values.ui.ValueStringKeys;
-import elgatopro300.bbs_cml.settings.values.ui.ValueVideoSettings;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.settings.SettingsBuilder;
+import mchorse.bbs_mod.settings.values.core.ValueLink;
+import mchorse.bbs_mod.settings.values.core.ValueString;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.settings.values.ui.ValueColors;
+import mchorse.bbs_mod.settings.values.ui.ValueEditorLayout;
+import mchorse.bbs_mod.settings.values.ui.ValueLanguage;
+import mchorse.bbs_mod.settings.values.ui.ValueOnionSkin;
+import mchorse.bbs_mod.settings.values.ui.ValueStringKeys;
+import mchorse.bbs_mod.settings.values.ui.ValueVideoSettings;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.HashSet;
 import java.util.ArrayList;

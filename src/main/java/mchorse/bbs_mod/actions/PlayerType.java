@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.actions;
+package mchorse.bbs_mod.actions;
 
 public enum PlayerType
 {

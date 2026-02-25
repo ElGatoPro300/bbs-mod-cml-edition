@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.fbx;
+package mchorse.bbs_mod.fbx;
 
-import elgatopro300.bbs_cml.bobj.BOBJArmature;
-import elgatopro300.bbs_cml.bobj.BOBJBone;
+import mchorse.bbs_mod.bobj.BOBJArmature;
+import mchorse.bbs_mod.bobj.BOBJBone;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;

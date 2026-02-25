@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.vox.data;
+package mchorse.bbs_mod.vox.data;
 
-import elgatopro300.bbs_cml.audio.BinaryChunk;
+import mchorse.bbs_mod.audio.BinaryChunk;
 
 /**
  * This represents a data chunk information in the VOX file

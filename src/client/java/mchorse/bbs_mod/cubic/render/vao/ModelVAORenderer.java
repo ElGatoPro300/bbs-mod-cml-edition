@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.cubic.render.vao;
+package mchorse.bbs_mod.cubic.render.vao;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.opengl.GlStateManager;

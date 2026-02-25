@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms.forms.shape.nodes;
+package mchorse.bbs_mod.forms.forms.shape.nodes;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.colors.Color;
 
 import java.util.Collections;
 import java.util.List;

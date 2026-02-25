@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.cubic.render;
+package mchorse.bbs_mod.cubic.render;
 
-import elgatopro300.bbs_cml.cubic.data.model.Model;
-import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
-import elgatopro300.bbs_cml.utils.MatrixStackUtils;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.cubic.data.model.ModelGroup;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
+import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;

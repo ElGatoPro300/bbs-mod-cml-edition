@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.shapes;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.shapes;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.Matrix4f;
 

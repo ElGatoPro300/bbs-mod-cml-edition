@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.ui.film.replays.overlays;
+package mchorse.bbs_mod.ui.film.replays.overlays;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.film.replays.UIReplaysEditor;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.film.replays.UIReplaysEditor;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.Set;
 import java.util.function.Consumer;

@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.utils.manager;
+package mchorse.bbs_mod.utils.manager;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.utils.StringUtils;
-import elgatopro300.bbs_cml.utils.manager.storage.IDataStorage;
-import elgatopro300.bbs_cml.utils.manager.storage.JSONLikeStorage;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.utils.StringUtils;
+import mchorse.bbs_mod.utils.manager.storage.IDataStorage;
+import mchorse.bbs_mod.utils.manager.storage.JSONLikeStorage;
 
 import java.io.File;
 import java.nio.file.Files;

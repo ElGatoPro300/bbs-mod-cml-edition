@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.cubic.render.vao;
+package mchorse.bbs_mod.cubic.render.vao;
 
-import elgatopro300.bbs_cml.client.BBSRendering;
+import mchorse.bbs_mod.client.BBSRendering;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import org.lwjgl.opengl.GL30;

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.resources.packs;
+package mchorse.bbs_mod.resources.packs;
 
 public enum URLError
 {

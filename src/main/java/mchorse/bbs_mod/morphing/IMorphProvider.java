@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.morphing;
+package mchorse.bbs_mod.morphing;
 
 public interface IMorphProvider
 {

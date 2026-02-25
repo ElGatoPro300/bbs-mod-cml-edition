@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.option.CloudRenderMode;
 import net.minecraft.client.render.FrameGraphBuilder;

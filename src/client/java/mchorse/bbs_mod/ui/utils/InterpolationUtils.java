@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.utils.context.ContextAction;
-import elgatopro300.bbs_cml.utils.interps.CustomInterpolation;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.interps.Interpolation;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.utils.context.ContextAction;
+import mchorse.bbs_mod.utils.interps.CustomInterpolation;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.Interpolation;
 import org.lwjgl.glfw.GLFW;
 
 public class InterpolationUtils

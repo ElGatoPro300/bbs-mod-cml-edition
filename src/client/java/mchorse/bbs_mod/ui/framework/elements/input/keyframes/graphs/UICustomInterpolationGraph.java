@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.graphs;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs;
 
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.utils.Pair;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
-import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.Pair;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -38,7 +38,7 @@ public class UICustomInterpolationGraph extends UIKeyframeGraph
     {
         Keyframe keyframe = super.addKeyframe(sheet, tick, value);
         
-        keyframe.getInterpolation().setInterp(elgatopro300.bbs_cml.utils.interps.Interpolations.BEZIER);
+        keyframe.getInterpolation().setInterp(mchorse.bbs_mod.utils.interps.Interpolations.BEZIER);
         keyframe.lx = 0.15f;
         keyframe.rx = 0.15f;
         

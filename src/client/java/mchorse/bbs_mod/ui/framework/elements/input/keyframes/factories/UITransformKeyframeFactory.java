@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
 
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.utils.Axis;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.joml.Vectors;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.utils.Axis;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.joml.Vectors;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Vector3d;
 
 import java.util.function.Consumer;

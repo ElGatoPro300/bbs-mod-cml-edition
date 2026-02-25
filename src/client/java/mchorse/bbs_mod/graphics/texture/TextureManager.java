@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.graphics.texture;
+package mchorse.bbs_mod.graphics.texture;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.resources.AssetProvider;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.StringUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.resources.MultiLink;
-import elgatopro300.bbs_cml.utils.resources.MultiLinkThread;
-import elgatopro300.bbs_cml.utils.resources.Pixels;
-import elgatopro300.bbs_cml.utils.watchdog.IWatchDogListener;
-import elgatopro300.bbs_cml.utils.watchdog.WatchDogEvent;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.resources.AssetProvider;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.StringUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.resources.MultiLink;
+import mchorse.bbs_mod.utils.resources.MultiLinkThread;
+import mchorse.bbs_mod.utils.resources.Pixels;
+import mchorse.bbs_mod.utils.watchdog.IWatchDogListener;
+import mchorse.bbs_mod.utils.watchdog.WatchDogEvent;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 

@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.l10n.keys;
+package mchorse.bbs_mod.l10n.keys;
 
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.Link;
 
 public class LangKey implements IKey
 {

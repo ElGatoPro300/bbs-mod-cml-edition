@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.list;
+package mchorse.bbs_mod.ui.framework.elements.input.list;
 
-import elgatopro300.bbs_cml.utils.NaturalOrderComparator;
-import elgatopro300.bbs_cml.utils.resources.FilteredLink;
+import mchorse.bbs_mod.utils.NaturalOrderComparator;
+import mchorse.bbs_mod.utils.resources.FilteredLink;
 
 import java.util.List;
 import java.util.function.Consumer;

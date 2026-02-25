@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.utils.shapes;
+package mchorse.bbs_mod.ui.utils.shapes;
 
-import elgatopro300.bbs_cml.obj.shapes.ShapeKeys;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.presets.UIDataContextMenu;
-import elgatopro300.bbs_cml.utils.pose.ShapeKeysManager;
+import mchorse.bbs_mod.obj.shapes.ShapeKeys;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.presets.UIDataContextMenu;
+import mchorse.bbs_mod.utils.pose.ShapeKeysManager;
 
 import java.util.Set;
 
