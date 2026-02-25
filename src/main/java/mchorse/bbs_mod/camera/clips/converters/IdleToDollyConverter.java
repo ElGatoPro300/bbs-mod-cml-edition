@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.camera.clips.converters;
+package mchorse.bbs_mod.camera.clips.converters;
 
-import elgatopro300.bbs_cml.camera.clips.overwrite.DollyClip;
-import elgatopro300.bbs_cml.camera.clips.overwrite.IdleClip;
-import elgatopro300.bbs_cml.camera.data.Position;
+import mchorse.bbs_mod.camera.clips.overwrite.DollyClip;
+import mchorse.bbs_mod.camera.clips.overwrite.IdleClip;
+import mchorse.bbs_mod.camera.data.Position;
 
 public class IdleToDollyConverter implements IClipConverter<IdleClip, DollyClip>
 {

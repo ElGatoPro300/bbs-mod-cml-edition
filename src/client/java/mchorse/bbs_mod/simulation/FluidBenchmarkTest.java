@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.simulation;
+package mchorse.bbs_mod.simulation;
 
 public class FluidBenchmarkTest
 {

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.settings.ui.UIValueMap.IUIValueFactory;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import mchorse.bbs_mod.settings.ui.UIValueMap.IUIValueFactory;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
 import java.util.Map;
 
 public class RegisterUIValueFactoriesEvent

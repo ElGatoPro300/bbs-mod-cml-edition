@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.client.renderer.entity;
+package mchorse.bbs_mod.client.renderer.entity;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.cubic.render.vanilla.ArmorRenderer;
-import elgatopro300.bbs_cml.entity.ActorEntity;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.cubic.render.vanilla.ArmorRenderer;
+import mchorse.bbs_mod.entity.ActorEntity;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.renderers.FormRenderType;
+import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.state.EntityRenderState;

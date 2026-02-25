@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.film.replays;
+package mchorse.bbs_mod.film.replays;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 

@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.dashboard.panels;
+package mchorse.bbs_mod.ui.dashboard.panels;
 
-import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
 // import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 public class UIDashboardPanel extends UIElement

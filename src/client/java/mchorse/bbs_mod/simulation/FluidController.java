@@ -1,24 +1,24 @@
-package elgatopro300.bbs_cml.simulation;
+package mchorse.bbs_mod.simulation;
 
-import elgatopro300.bbs_cml.bobj.BOBJArmature;
-import elgatopro300.bbs_cml.bobj.BOBJBone;
-import elgatopro300.bbs_cml.bobj.BOBJLoader;
-import elgatopro300.bbs_cml.cubic.IModel;
-import elgatopro300.bbs_cml.cubic.ModelInstance;
-import elgatopro300.bbs_cml.cubic.data.model.Model;
-import elgatopro300.bbs_cml.cubic.data.model.ModelCube;
-import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
-import elgatopro300.bbs_cml.cubic.data.model.ModelMesh;
-import elgatopro300.bbs_cml.cubic.model.bobj.BOBJModel;
-import elgatopro300.bbs_cml.film.BaseFilmController;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.forms.entities.MCEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.forms.forms.ModelForm;
-import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
-import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCache;
-import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCacheEntry;
+import mchorse.bbs_mod.bobj.BOBJArmature;
+import mchorse.bbs_mod.bobj.BOBJBone;
+import mchorse.bbs_mod.bobj.BOBJLoader;
+import mchorse.bbs_mod.cubic.IModel;
+import mchorse.bbs_mod.cubic.ModelInstance;
+import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.cubic.data.model.ModelCube;
+import mchorse.bbs_mod.cubic.data.model.ModelGroup;
+import mchorse.bbs_mod.cubic.data.model.ModelMesh;
+import mchorse.bbs_mod.cubic.model.bobj.BOBJModel;
+import mchorse.bbs_mod.film.BaseFilmController;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.entities.MCEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -188,7 +188,7 @@ public class FluidController
         }
 
         /* Check for realistic interaction setting */
-        if (!elgatopro300.bbs_cml.BBSSettings.fluidRealisticModelInteraction.get())
+        if (!mchorse.bbs_mod.BBSSettings.fluidRealisticModelInteraction.get())
         {
             /* Entity-like interaction: Use just the root bone/transform */
             Matrix4f transform = new Matrix4f(entityMatrix);

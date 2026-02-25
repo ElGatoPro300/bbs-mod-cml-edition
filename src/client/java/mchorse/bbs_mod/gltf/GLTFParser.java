@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.gltf;
+package mchorse.bbs_mod.gltf;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import elgatopro300.bbs_cml.gltf.data.GLTF;
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.gltf.data.GLTF;
+import mchorse.bbs_mod.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;

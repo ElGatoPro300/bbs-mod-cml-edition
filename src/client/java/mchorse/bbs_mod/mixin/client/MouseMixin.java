@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
-import elgatopro300.bbs_cml.graphics.window.Window;
+import mchorse.bbs_mod.graphics.window.Window;
 import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

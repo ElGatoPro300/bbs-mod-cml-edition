@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms;
+package mchorse.bbs_mod.forms;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.forms.renderers.utils.RecolorVertexConsumer;
+import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;

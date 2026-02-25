@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.client;
+package mchorse.bbs_mod.client;
 
 import net.minecraft.client.MinecraftClient;
 

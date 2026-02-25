@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.ui.framework.tooltips;
+package mchorse.bbs_mod.ui.framework.tooltips;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
-import elgatopro300.bbs_cml.ui.framework.tooltips.styles.TooltipStyle;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.utils.Direction;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
+import mchorse.bbs_mod.ui.framework.tooltips.styles.TooltipStyle;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.utils.Direction;
+import mchorse.bbs_mod.utils.MathUtils;
 
 import java.util.List;
 

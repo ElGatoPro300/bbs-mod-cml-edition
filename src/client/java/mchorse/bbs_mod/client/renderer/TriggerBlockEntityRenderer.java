@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.client.renderer;
+package mchorse.bbs_mod.client.renderer;
 
-import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
-import elgatopro300.bbs_cml.graphics.Draw;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
+import mchorse.bbs_mod.graphics.Draw;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
-import elgatopro300.bbs_cml.bridge.IEntityRenderState;
-import elgatopro300.bbs_cml.client.renderer.MorphRenderer;
+import mchorse.bbs_mod.bridge.IEntityRenderState;
+import mchorse.bbs_mod.client.renderer.MorphRenderer;
 import net.minecraft.client.MinecraftClient;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;

@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.utils.VideoRecorder;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.utils.VideoRecorder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import org.spongepowered.asm.mixin.Mixin;

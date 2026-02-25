@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events;
+package mchorse.bbs_mod.events;
 
-import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 

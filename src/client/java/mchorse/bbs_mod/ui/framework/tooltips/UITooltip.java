@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.framework.tooltips;
+package mchorse.bbs_mod.ui.framework.tooltips;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.utils.Area;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.utils.Area;
 
 public class UITooltip
 {

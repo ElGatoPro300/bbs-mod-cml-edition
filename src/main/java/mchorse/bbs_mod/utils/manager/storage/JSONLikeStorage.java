@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.utils.manager.storage;
+package mchorse.bbs_mod.utils.manager.storage;
 
-import elgatopro300.bbs_cml.data.DataToString;
-import elgatopro300.bbs_cml.data.types.MapType;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.types.MapType;
 
 import java.io.File;
 import java.io.IOException;

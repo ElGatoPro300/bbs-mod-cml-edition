@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.forms.editors.utils;
+package mchorse.bbs_mod.ui.forms.editors.utils;
 
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.renderers.FormRenderType;
+import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.util.math.MatrixStack;

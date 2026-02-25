@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.camera.clips.misc;
+package mchorse.bbs_mod.camera.clips.misc;
 
-import elgatopro300.bbs_cml.camera.clips.CameraClip;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.settings.values.core.ValueLink;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import mchorse.bbs_mod.camera.clips.CameraClip;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.settings.values.core.ValueLink;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.ClipContext;
 
 import java.util.function.Predicate;
 

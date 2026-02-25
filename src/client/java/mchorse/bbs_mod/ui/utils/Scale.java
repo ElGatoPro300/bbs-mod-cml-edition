@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.interps.Lerps;
 
 /**
  * This class represents a scale of an axis

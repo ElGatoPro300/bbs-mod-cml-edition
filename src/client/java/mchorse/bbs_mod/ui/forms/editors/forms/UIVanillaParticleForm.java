@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.forms.editors.forms;
+package mchorse.bbs_mod.ui.forms.editors.forms;
 
-import elgatopro300.bbs_cml.forms.forms.VanillaParticleForm;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.forms.editors.panels.UIVanillaParticleFormPanel;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.forms.forms.VanillaParticleForm;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.forms.editors.panels.UIVanillaParticleFormPanel;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class UIVanillaParticleForm extends UIForm<VanillaParticleForm>
 {

@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.ui.particles.sections;
+package mchorse.bbs_mod.ui.particles.sections;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.particles.components.lifetime.ParticleComponentLifetime;
-import elgatopro300.bbs_cml.particles.components.lifetime.ParticleComponentLifetimeExpression;
-import elgatopro300.bbs_cml.particles.components.lifetime.ParticleComponentLifetimeLooping;
-import elgatopro300.bbs_cml.particles.components.lifetime.ParticleComponentLifetimeOnce;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UICirculate;
-import elgatopro300.bbs_cml.ui.particles.UIParticleSchemePanel;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.particles.components.lifetime.ParticleComponentLifetime;
+import mchorse.bbs_mod.particles.components.lifetime.ParticleComponentLifetimeExpression;
+import mchorse.bbs_mod.particles.components.lifetime.ParticleComponentLifetimeLooping;
+import mchorse.bbs_mod.particles.components.lifetime.ParticleComponentLifetimeOnce;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
+import mchorse.bbs_mod.ui.particles.UIParticleSchemePanel;
 
 public class UIParticleSchemeLifetimeSection extends UIParticleSchemeModeSection<ParticleComponentLifetime>
 {

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.ui.dashboard.panels;
+package mchorse.bbs_mod.ui.dashboard.panels;
 
 public interface IFlightSupported
 {

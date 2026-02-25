@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.settings.values.core.ValueColor;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.core.ValueLink;
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.settings.values.core.ValueColor;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.core.ValueLink;
+import mchorse.bbs_mod.utils.colors.Color;
 
 public class ExtrudedForm extends Form
 {

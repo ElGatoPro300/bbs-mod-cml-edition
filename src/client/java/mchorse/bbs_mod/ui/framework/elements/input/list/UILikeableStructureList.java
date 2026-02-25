@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.list;
+package mchorse.bbs_mod.ui.framework.elements.input.list;
 
-import elgatopro300.bbs_cml.forms.StructureLikeManager;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.forms.StructureLikeManager;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.ArrayList;
 import java.util.List;

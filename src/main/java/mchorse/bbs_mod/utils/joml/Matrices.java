@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.joml;
+package mchorse.bbs_mod.utils.joml;
 
 import org.joml.Matrix3d;
 import org.joml.Matrix3f;

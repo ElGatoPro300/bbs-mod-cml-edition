@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.math.functions.limit;
+package mchorse.bbs_mod.math.functions.limit;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.functions.NNFunction;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.functions.NNFunction;
+import mchorse.bbs_mod.utils.MathUtils;
 
 public class Clamp extends NNFunction
 {

@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.cubic.animation;
+package mchorse.bbs_mod.cubic.animation;
 
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
 
 import java.util.HashMap;
 import java.util.Iterator;

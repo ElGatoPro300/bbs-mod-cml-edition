@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.math.functions.string;
+package mchorse.bbs_mod.math.functions.string;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.functions.SNFunction;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.functions.SNFunction;
 
 public class StringEndsWith extends SNFunction
 {

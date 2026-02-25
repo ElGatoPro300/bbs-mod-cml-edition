@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.resources.packs;
+package mchorse.bbs_mod.resources.packs;
 
-import elgatopro300.bbs_cml.resources.ISourcePack;
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.ISourcePack;
+import mchorse.bbs_mod.resources.Link;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
 
-import elgatopro300.bbs_cml.camera.utils.TimeUtils;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories.utils.UIBezierHandles;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.camera.utils.TimeUtils;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.utils.UIBezierHandles;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 
 public class UIFloatKeyframeFactory extends UIKeyframeFactory<Float>
 {

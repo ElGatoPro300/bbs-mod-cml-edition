@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.cubic.animation.ActionsConfig;
-import elgatopro300.bbs_cml.forms.values.ValueActionsConfig;
-import elgatopro300.bbs_cml.forms.values.ValueShapeKeys;
-import elgatopro300.bbs_cml.obj.shapes.ShapeKeys;
-import elgatopro300.bbs_cml.settings.values.core.ValueColor;
-import elgatopro300.bbs_cml.settings.values.core.ValueLink;
-import elgatopro300.bbs_cml.settings.values.core.ValuePose;
-import elgatopro300.bbs_cml.settings.values.core.ValueString;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.pose.Pose;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.cubic.animation.ActionsConfig;
+import mchorse.bbs_mod.forms.values.ValueActionsConfig;
+import mchorse.bbs_mod.forms.values.ValueShapeKeys;
+import mchorse.bbs_mod.obj.shapes.ShapeKeys;
+import mchorse.bbs_mod.settings.values.core.ValueColor;
+import mchorse.bbs_mod.settings.values.core.ValueLink;
+import mchorse.bbs_mod.settings.values.core.ValuePose;
+import mchorse.bbs_mod.settings.values.core.ValueString;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.pose.Pose;
 
 import java.util.ArrayList;
 import java.util.List;

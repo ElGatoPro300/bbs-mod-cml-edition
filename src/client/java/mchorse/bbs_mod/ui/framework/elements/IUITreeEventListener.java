@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.ui.framework.elements;
+package mchorse.bbs_mod.ui.framework.elements;
 
 public interface IUITreeEventListener
 {

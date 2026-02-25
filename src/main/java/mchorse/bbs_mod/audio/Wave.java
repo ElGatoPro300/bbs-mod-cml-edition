@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.audio;
+package mchorse.bbs_mod.audio;
 
-import elgatopro300.bbs_cml.audio.wav.WaveCue;
-import elgatopro300.bbs_cml.audio.wav.WaveList;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.audio.wav.WaveCue;
+import mchorse.bbs_mod.audio.wav.WaveList;
+import mchorse.bbs_mod.utils.MathUtils;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.system.MemoryUtil;
 

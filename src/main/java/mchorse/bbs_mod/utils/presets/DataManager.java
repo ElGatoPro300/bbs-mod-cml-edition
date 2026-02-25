@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.utils.presets;
+package mchorse.bbs_mod.utils.presets;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.data.DataToString;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.IOUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

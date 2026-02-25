@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.camera.controller.CameraController;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.camera.controller.CameraController;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

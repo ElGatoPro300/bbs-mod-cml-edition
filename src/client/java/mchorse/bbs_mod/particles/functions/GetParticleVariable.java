@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.particles.functions;
+package mchorse.bbs_mod.particles.functions;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.functions.SNFunction;
-import elgatopro300.bbs_cml.particles.ParticleMolangParser;
-import elgatopro300.bbs_cml.particles.emitter.Particle;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.functions.SNFunction;
+import mchorse.bbs_mod.particles.ParticleMolangParser;
+import mchorse.bbs_mod.particles.emitter.Particle;
 
 public class GetParticleVariable extends SNFunction
 {

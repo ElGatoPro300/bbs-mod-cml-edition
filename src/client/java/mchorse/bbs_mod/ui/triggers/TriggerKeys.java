@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.triggers;
+package mchorse.bbs_mod.ui.triggers;
 
-import elgatopro300.bbs_cml.l10n.L10n;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
+import mchorse.bbs_mod.l10n.L10n;
+import mchorse.bbs_mod.l10n.keys.IKey;
 
 public class TriggerKeys
 {

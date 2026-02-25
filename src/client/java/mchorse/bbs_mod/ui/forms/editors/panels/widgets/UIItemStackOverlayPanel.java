@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.ui.forms.editors.panels.widgets;
+package mchorse.bbs_mod.ui.forms.editors.panels.widgets;
 
 import com.mojang.brigadier.StringReader;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UISearchList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextarea;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
-import elgatopro300.bbs_cml.ui.utils.UI;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
+import mchorse.bbs_mod.ui.framework.elements.input.text.UITextarea;
+import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
+import mchorse.bbs_mod.ui.utils.UI;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;

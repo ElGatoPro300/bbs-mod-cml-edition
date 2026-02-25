@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.math;
+package mchorse.bbs_mod.utils.math;
 
 import java.util.Random;
 

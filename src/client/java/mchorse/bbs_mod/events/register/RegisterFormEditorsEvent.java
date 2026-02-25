@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.ui.forms.editors.forms.UIForm;
+import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
 
 import java.util.Map;
 import java.util.function.Supplier;

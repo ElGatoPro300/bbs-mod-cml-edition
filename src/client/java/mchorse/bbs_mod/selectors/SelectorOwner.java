@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.selectors;
+package mchorse.bbs_mod.selectors;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.forms.entities.MCEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.entities.MCEntity;
+import mchorse.bbs_mod.forms.forms.Form;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;

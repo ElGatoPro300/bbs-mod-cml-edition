@@ -1,20 +1,20 @@
-package elgatopro300.bbs_cml.ui.dashboard.textures;
+package mchorse.bbs_mod.ui.dashboard.textures;
 
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.Keys;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITexturePicker;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.Direction;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.Keys;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
+import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.Direction;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
 import org.joml.Vector2i;
 
 import java.util.function.Consumer;

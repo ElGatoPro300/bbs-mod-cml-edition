@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.undo;
+package mchorse.bbs_mod.utils.undo;
 
 public interface IUndoListener<T>
 {

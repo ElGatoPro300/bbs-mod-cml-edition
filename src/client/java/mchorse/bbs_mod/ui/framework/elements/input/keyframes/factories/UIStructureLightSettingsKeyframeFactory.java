@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
 
-import elgatopro300.bbs_cml.forms.forms.utils.StructureLightSettings;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.forms.forms.utils.StructureLightSettings;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 
 public class UIStructureLightSettingsKeyframeFactory extends UIKeyframeFactory<StructureLightSettings>
 {

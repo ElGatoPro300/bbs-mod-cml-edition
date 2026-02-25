@@ -1,19 +1,19 @@
-package elgatopro300.bbs_cml.ui.forms.editors;
+package mchorse.bbs_mod.ui.forms.editors;
 
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.BodyPart;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.ui.Keys;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UISearchList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.utils.Pair;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.BodyPart;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.ui.Keys;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.utils.Pair;
 
 public class UIBodyPartEditor extends UIScrollView
 {

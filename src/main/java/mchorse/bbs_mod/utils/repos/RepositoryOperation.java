@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.repos;
+package mchorse.bbs_mod.utils.repos;
 
 public enum RepositoryOperation
 {

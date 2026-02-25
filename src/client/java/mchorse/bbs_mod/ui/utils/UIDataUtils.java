@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.ui.ContentType;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.utils.renderers.InputRenderer;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.ui.ContentType;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.utils.renderers.InputRenderer;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.interps.Lerps;
 
 import java.util.Collection;
 import java.util.function.Consumer;

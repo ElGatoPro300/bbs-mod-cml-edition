@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.particles.components.shape;
+package mchorse.bbs_mod.particles.components.shape;
 
-import elgatopro300.bbs_cml.particles.emitter.Particle;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.particles.emitter.Particle;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 import net.minecraft.util.math.Box;
 
 public class ParticleComponentShapeEntityAABB extends ParticleComponentShapeBase

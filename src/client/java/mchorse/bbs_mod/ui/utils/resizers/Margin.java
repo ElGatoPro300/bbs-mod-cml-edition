@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.ui.utils.resizers;
+package mchorse.bbs_mod.ui.utils.resizers;
 
 public class Margin
 {

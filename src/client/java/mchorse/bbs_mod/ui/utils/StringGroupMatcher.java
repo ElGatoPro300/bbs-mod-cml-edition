@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
-import elgatopro300.bbs_cml.utils.Pair;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.utils.Pair;
+import mchorse.bbs_mod.utils.MathUtils;
 
 public class StringGroupMatcher
 {

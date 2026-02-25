@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.math;
+package mchorse.bbs_mod.math;
 
 /**
  * Negative operator class

@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.text.utils;
+package mchorse.bbs_mod.ui.framework.elements.input.text.utils;
 
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.utils.MathUtils;
 
 public class Cursor
 {

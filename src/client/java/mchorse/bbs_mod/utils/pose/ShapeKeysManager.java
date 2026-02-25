@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.utils.pose;
+package mchorse.bbs_mod.utils.pose;
 
-import elgatopro300.bbs_cml.cubic.model.ModelManager;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.presets.DataManager;
+import mchorse.bbs_mod.cubic.model.ModelManager;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.presets.DataManager;
 
 public class ShapeKeysManager extends DataManager
 {

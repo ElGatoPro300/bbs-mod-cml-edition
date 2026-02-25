@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import java.util.function.Consumer;
 
 public class RegisterStencilMapEvent

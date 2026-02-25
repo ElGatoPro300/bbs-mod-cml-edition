@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.forms.editors.panels;
+package mchorse.bbs_mod.ui.forms.editors.panels;
 
-import elgatopro300.bbs_cml.cubic.animation.ActionsConfig;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.ModelForm;
-import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
-import elgatopro300.bbs_cml.ui.forms.editors.forms.UIForm;
-import elgatopro300.bbs_cml.ui.utils.pose.UIActionsConfigEditor;
+import mchorse.bbs_mod.cubic.animation.ActionsConfig;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
+import mchorse.bbs_mod.ui.utils.pose.UIActionsConfigEditor;
 
 public class UIActionsFormPanel extends UIFormPanel<ModelForm>
 {

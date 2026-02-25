@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.ui.film.UIFilmPreview;
+import mchorse.bbs_mod.ui.film.UIFilmPreview;
 import java.util.function.Consumer;
 
 public class RegisterFilmPreviewEvent

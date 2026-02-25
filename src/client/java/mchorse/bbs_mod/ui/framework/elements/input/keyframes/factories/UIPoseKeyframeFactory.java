@@ -1,36 +1,36 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
 
-import elgatopro300.bbs_cml.cubic.ModelInstance;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.MobForm;
-import elgatopro300.bbs_cml.forms.forms.ModelForm;
-import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UISearchList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIConfirmOverlayPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.pose.UIPoseEditor;
-import elgatopro300.bbs_cml.utils.Axis;
-import elgatopro300.bbs_cml.utils.CollectionUtils;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.joml.Vectors;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.pose.Pose;
-import elgatopro300.bbs_cml.utils.pose.PoseTransform;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.cubic.ModelInstance;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.MobForm;
+import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
+import mchorse.bbs_mod.utils.Axis;
+import mchorse.bbs_mod.utils.CollectionUtils;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.joml.Vectors;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Vector3d;
 
 import java.util.List;
@@ -236,7 +236,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         private Keyframe<Pose> keyframe;
         public UIButton anchorBone;
         public UIButton unanchorBone;
-        public elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel anchoredLegend;
+        public mchorse.bbs_mod.ui.framework.elements.utils.UILabel anchoredLegend;
 
         public void refreshCurrentBone()
         {
@@ -307,7 +307,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                         if (confirm)
                         {
                             int index = list.getIndex();
-                            String bone = elgatopro300.bbs_cml.utils.CollectionUtils.getSafe(bones, index);
+                            String bone = mchorse.bbs_mod.utils.CollectionUtils.getSafe(bones, index);
 
                             if (bone != null)
                             {
@@ -319,10 +319,10 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                                 UIPoseKeyframeFactory factory = this.getParent(UIPoseKeyframeFactory.class);
                                 if (factory != null) { factory.resize(); }
 
-                                elgatopro300.bbs_cml.ui.film.UIFilmPanel filmPanel = this.getParent(elgatopro300.bbs_cml.ui.film.UIFilmPanel.class);
+                                mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
                                 if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                                 {
-                                    elgatopro300.bbs_cml.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                                    mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
                                     replay.setAnchoredBone(sheet.id, bone);
                                     replay.setCustomSheetTitle(sheet.id, bone);
                                 }
@@ -358,10 +358,10 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
                     sheet.anchoredBone = null;
                     this.anchoredLegend.setVisible(false);
 
-                    elgatopro300.bbs_cml.ui.film.UIFilmPanel filmPanel = this.getParent(elgatopro300.bbs_cml.ui.film.UIFilmPanel.class);
+                    mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
                     if (filmPanel != null && filmPanel.replayEditor != null && filmPanel.replayEditor.getReplay() != null)
                     {
-                        elgatopro300.bbs_cml.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
+                        mchorse.bbs_mod.film.replays.Replay replay = filmPanel.replayEditor.getReplay();
                         replay.setAnchoredBone(sheet.id, null);
                         replay.setCustomSheetTitle(sheet.id, null);
                     }
@@ -458,7 +458,7 @@ public class UIPoseKeyframeFactory extends UIKeyframeFactory<Pose>
         {
             if (BBSSettings.autoKeyframe.get() && BBSSettings.boneAnchoringEnabled.get())
             {
-                elgatopro300.bbs_cml.ui.film.UIFilmPanel filmPanel = this.editor.getParent(elgatopro300.bbs_cml.ui.film.UIFilmPanel.class);
+                mchorse.bbs_mod.ui.film.UIFilmPanel filmPanel = this.editor.getParent(mchorse.bbs_mod.ui.film.UIFilmPanel.class);
 
                 if (filmPanel != null)
                 {
