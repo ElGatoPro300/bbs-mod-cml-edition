@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.forms.editors.forms;
+package mchorse.bbs_mod.ui.forms.editors.forms;
 
-import elgatopro300.bbs_cml.forms.forms.LightForm;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.forms.editors.panels.UILightFormPanel;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.forms.forms.LightForm;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.forms.editors.panels.UILightFormPanel;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class UILightForm extends UIForm<LightForm>
 {

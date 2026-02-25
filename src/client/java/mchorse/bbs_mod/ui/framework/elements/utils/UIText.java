@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.framework.elements.utils;
+package mchorse.bbs_mod.ui.framework.elements.utils;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.List;
 

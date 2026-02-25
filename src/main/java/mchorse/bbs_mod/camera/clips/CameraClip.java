@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.camera.clips;
+package mchorse.bbs_mod.camera.clips;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.ClipContext;
+import mchorse.bbs_mod.utils.interps.Lerps;
 
 public abstract class CameraClip extends Clip
 {

@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.particles.sections;
+package mchorse.bbs_mod.ui.particles.sections;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.particles.components.rate.ParticleComponentRate;
-import elgatopro300.bbs_cml.particles.components.rate.ParticleComponentRateInstant;
-import elgatopro300.bbs_cml.particles.components.rate.ParticleComponentRateSteady;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UICirculate;
-import elgatopro300.bbs_cml.ui.particles.UIParticleSchemePanel;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.particles.components.rate.ParticleComponentRate;
+import mchorse.bbs_mod.particles.components.rate.ParticleComponentRateInstant;
+import mchorse.bbs_mod.particles.components.rate.ParticleComponentRateSteady;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
+import mchorse.bbs_mod.ui.particles.UIParticleSchemePanel;
 
 public class UIParticleSchemeRateSection extends UIParticleSchemeModeSection<ParticleComponentRate>
 {

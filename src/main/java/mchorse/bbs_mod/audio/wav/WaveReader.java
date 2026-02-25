@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.audio.wav;
+package mchorse.bbs_mod.audio.wav;
 
-import elgatopro300.bbs_cml.audio.BinaryChunk;
-import elgatopro300.bbs_cml.audio.BinaryReader;
-import elgatopro300.bbs_cml.audio.Wave;
-import elgatopro300.bbs_cml.utils.Pair;
+import mchorse.bbs_mod.audio.BinaryChunk;
+import mchorse.bbs_mod.audio.BinaryReader;
+import mchorse.bbs_mod.audio.Wave;
+import mchorse.bbs_mod.utils.Pair;
 
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;

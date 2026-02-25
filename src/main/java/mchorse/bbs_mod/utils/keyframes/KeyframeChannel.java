@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.utils.keyframes;
+package mchorse.bbs_mod.utils.keyframes;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.settings.values.core.ValueList;
-import elgatopro300.bbs_cml.utils.CollectionUtils;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.settings.values.core.ValueList;
+import mchorse.bbs_mod.utils.CollectionUtils;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.particles;
+package mchorse.bbs_mod.particles;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.manager.BaseManager;
-import elgatopro300.bbs_cml.utils.manager.storage.JSONLikeStorage;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.manager.BaseManager;
+import mchorse.bbs_mod.utils.manager.storage.JSONLikeStorage;
 
 import java.io.File;
 import java.util.function.Supplier;

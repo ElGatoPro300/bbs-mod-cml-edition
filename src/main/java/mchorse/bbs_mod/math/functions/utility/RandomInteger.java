@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.math.functions.utility;
+package mchorse.bbs_mod.math.functions.utility;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
 
 public class RandomInteger extends Random
 {

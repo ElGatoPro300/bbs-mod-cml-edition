@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.camera.clips.converters;
+package mchorse.bbs_mod.camera.clips.converters;
 
-import elgatopro300.bbs_cml.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.Clip;
 
 public interface IClipConverter <A extends Clip, B extends Clip>
 {

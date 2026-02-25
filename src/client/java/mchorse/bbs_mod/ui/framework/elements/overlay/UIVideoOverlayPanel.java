@@ -1,25 +1,25 @@
-package elgatopro300.bbs_cml.ui.framework.elements.overlay;
+package mchorse.bbs_mod.ui.framework.elements.overlay;
 
 import com.mojang.logging.LogUtils;
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.data.storage.DataFileStorage;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.StringType;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UILikeableVideoList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UISearchList;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIStringOverlayPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIPromptOverlayPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIConfirmOverlayPanel;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.video.VideoLikeManager;
-import elgatopro300.bbs_cml.client.video.VideoRenderer;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.data.storage.DataFileStorage;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.StringType;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UILikeableVideoList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIStringOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.video.VideoLikeManager;
+import mchorse.bbs_mod.client.video.VideoRenderer;
 
 import org.slf4j.Logger;
 

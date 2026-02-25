@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.events;
+package mchorse.bbs_mod.events;
 
 /**
  * An addon event subscribers container.

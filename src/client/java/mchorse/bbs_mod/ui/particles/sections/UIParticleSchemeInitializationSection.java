@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.ui.particles.sections;
+package mchorse.bbs_mod.ui.particles.sections;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.particles.ParticleScheme;
-import elgatopro300.bbs_cml.particles.components.meta.ParticleComponentInitialization;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.particles.UIParticleSchemePanel;
-import elgatopro300.bbs_cml.ui.utils.UI;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.particles.ParticleScheme;
+import mchorse.bbs_mod.particles.components.meta.ParticleComponentInitialization;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.particles.UIParticleSchemePanel;
+import mchorse.bbs_mod.ui.utils.UI;
 
 public class UIParticleSchemeInitializationSection extends UIParticleSchemeComponentSection<ParticleComponentInitialization>
 {

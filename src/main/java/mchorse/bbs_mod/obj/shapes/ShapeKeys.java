@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.obj.shapes;
+package mchorse.bbs_mod.obj.shapes;
 
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.MapType;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.MapType;
 
 import java.util.HashMap;
 import java.util.Map;

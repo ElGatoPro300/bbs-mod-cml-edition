@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.client;
+package mchorse.bbs_mod.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import elgatopro300.bbs_cml.BBSMod;
+import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Defines;
 import net.minecraft.client.gl.ShaderLoader;

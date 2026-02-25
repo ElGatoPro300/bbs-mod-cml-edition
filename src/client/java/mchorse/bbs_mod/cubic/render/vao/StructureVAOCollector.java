@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.cubic.render.vao;
+package mchorse.bbs_mod.cubic.render.vao;
 
 import net.minecraft.client.render.VertexConsumer;
 import org.joml.Matrix4f;

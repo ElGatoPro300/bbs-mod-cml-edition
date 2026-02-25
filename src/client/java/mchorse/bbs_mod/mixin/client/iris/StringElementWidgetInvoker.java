@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.mixin.client.iris;
+package mchorse.bbs_mod.mixin.client.iris;
 
 import net.irisshaders.iris.gui.element.widget.StringElementWidget;
 import org.spongepowered.asm.mixin.Mixin;

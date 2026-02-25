@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.ui.forms.editors.panels;
+package mchorse.bbs_mod.ui.forms.editors.panels;
 
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.ui.forms.editors.forms.UIForm;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIDraggable;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIDraggable;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.utils.MathUtils;
 
 import java.util.HashMap;
 import java.util.Map;

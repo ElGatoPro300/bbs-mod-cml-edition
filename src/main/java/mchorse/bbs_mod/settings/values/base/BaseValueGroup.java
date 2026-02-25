@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.settings.values.base;
+package mchorse.bbs_mod.settings.values.base;
 
-import elgatopro300.bbs_cml.utils.DataPath;
+import mchorse.bbs_mod.utils.DataPath;
 
 import java.util.List;
 

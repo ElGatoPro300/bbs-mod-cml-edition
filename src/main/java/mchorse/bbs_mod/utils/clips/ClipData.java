@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.clips;
+package mchorse.bbs_mod.utils.clips;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

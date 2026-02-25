@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils.iris;
+package mchorse.bbs_mod.utils.iris;
 
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.StringUtils;
-import elgatopro300.bbs_cml.utils.resources.FilteredLink;
-import elgatopro300.bbs_cml.utils.resources.MultiLink;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.StringUtils;
+import mchorse.bbs_mod.utils.resources.FilteredLink;
+import mchorse.bbs_mod.utils.resources.MultiLink;
 
 public class IrisTextureWrapperLoader
 {

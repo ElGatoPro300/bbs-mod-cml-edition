@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.cubic.data.model;
+package mchorse.bbs_mod.cubic.data.model;
 
 import org.joml.Vector3f;
 

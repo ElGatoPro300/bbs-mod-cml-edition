@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.ui.utils.resizers.layout;
+package mchorse.bbs_mod.ui.utils.resizers.layout;
 
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.ui.utils.resizers.AutomaticResizer;
-import elgatopro300.bbs_cml.ui.utils.resizers.ChildResizer;
-import elgatopro300.bbs_cml.ui.utils.resizers.IResizer;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.ui.utils.resizers.AutomaticResizer;
+import mchorse.bbs_mod.ui.utils.resizers.ChildResizer;
+import mchorse.bbs_mod.ui.utils.resizers.IResizer;
 
 public class GridResizer extends AutomaticResizer
 {

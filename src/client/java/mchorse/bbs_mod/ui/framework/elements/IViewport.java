@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.framework.elements;
+package mchorse.bbs_mod.ui.framework.elements;
 
-import elgatopro300.bbs_cml.ui.framework.elements.utils.IViewportStack;
+import mchorse.bbs_mod.ui.framework.elements.utils.IViewportStack;
 
 public interface IViewport
 {

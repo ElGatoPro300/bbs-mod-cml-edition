@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.particles.components.appearance.colors;
+package mchorse.bbs_mod.particles.components.appearance.colors;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.math.Constant;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangValue;
-import elgatopro300.bbs_cml.particles.ParticleParser;
-import elgatopro300.bbs_cml.particles.emitter.Particle;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.math.Constant;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
+import mchorse.bbs_mod.math.molang.expressions.MolangValue;
+import mchorse.bbs_mod.particles.ParticleParser;
+import mchorse.bbs_mod.particles.emitter.Particle;
+import mchorse.bbs_mod.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;

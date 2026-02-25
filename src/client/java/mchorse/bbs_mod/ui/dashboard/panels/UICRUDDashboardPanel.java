@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.ui.dashboard.panels;
+package mchorse.bbs_mod.ui.dashboard.panels;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.Keys;
-import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
-import elgatopro300.bbs_cml.ui.dashboard.panels.overlay.UICRUDOverlayPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.Keys;
+import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import mchorse.bbs_mod.ui.dashboard.panels.overlay.UICRUDOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public abstract class UICRUDDashboardPanel extends UISidebarDashboardPanel
 {

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.obj;
+package mchorse.bbs_mod.obj;
 
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.IOUtils;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

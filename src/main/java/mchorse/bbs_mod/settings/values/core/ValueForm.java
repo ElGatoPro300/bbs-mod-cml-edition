@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.settings.values.core;
+package mchorse.bbs_mod.settings.values.core;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
 
 public class ValueForm extends BaseValueBasic<Form>
 {

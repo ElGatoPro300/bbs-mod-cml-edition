@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.utils.clips;
+package mchorse.bbs_mod.utils.clips;
 
-import elgatopro300.bbs_cml.camera.clips.ClipFactoryData;
-import elgatopro300.bbs_cml.camera.clips.overwrite.KeyframeClip;
-import elgatopro300.bbs_cml.camera.data.Point;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.factory.IFactory;
+import mchorse.bbs_mod.camera.clips.ClipFactoryData;
+import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
+import mchorse.bbs_mod.camera.data.Point;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.factory.IFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;

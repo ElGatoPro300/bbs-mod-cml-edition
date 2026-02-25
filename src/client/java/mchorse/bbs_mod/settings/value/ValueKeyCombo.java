@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.settings.value;
+package mchorse.bbs_mod.settings.value;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
-import elgatopro300.bbs_cml.ui.utils.keys.KeyCombo;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
 
 public class ValueKeyCombo extends BaseValueBasic<KeyCombo>
 {

@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.utils.keyframes;
+package mchorse.bbs_mod.utils.keyframes;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.interps.Interpolation;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.interps.Interpolation;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 
 import java.util.Objects;
 

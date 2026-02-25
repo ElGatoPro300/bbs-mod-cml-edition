@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.camera;
+package mchorse.bbs_mod.camera;
 
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.joml.Matrices;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;

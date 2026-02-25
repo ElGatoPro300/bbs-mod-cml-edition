@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.ui.film.clips.modules;
+package mchorse.bbs_mod.ui.film.clips.modules;
 
-import elgatopro300.bbs_cml.camera.clips.overwrite.PathClip;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.utils.Scroll;
-import elgatopro300.bbs_cml.ui.utils.ScrollDirection;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.camera.clips.overwrite.PathClip;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.utils.Scroll;
+import mchorse.bbs_mod.ui.utils.ScrollDirection;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 import java.util.function.Consumer;
 

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.graphics.texture;
+package mchorse.bbs_mod.graphics.texture;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;

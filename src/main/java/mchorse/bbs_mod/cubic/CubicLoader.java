@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.cubic;
+package mchorse.bbs_mod.cubic;
 
-import elgatopro300.bbs_cml.cubic.data.animation.Animations;
-import elgatopro300.bbs_cml.cubic.data.model.Model;
-import elgatopro300.bbs_cml.data.DataToString;
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.cubic.data.animation.Animations;
+import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.utils.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

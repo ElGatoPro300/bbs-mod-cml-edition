@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.actions.types.blocks;
+package mchorse.bbs_mod.actions.types.blocks;
 
-import elgatopro300.bbs_cml.actions.types.ActionClip;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.actions.types.ActionClip;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 
 public abstract class BlockActionClip extends ActionClip
 {

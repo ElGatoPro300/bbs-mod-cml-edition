@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils.iris;
+package mchorse.bbs_mod.utils.iris;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.graphics.texture.Texture;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.CollectionUtils;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.CollectionUtils;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.resource.ResourceManager;
 import org.lwjgl.opengl.GL11;

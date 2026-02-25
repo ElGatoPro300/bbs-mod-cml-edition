@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.framework.elements;
+package mchorse.bbs_mod.ui.framework.elements;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.IViewportStack;
-import elgatopro300.bbs_cml.ui.utils.Scroll;
-import elgatopro300.bbs_cml.ui.utils.ScrollDirection;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.IViewportStack;
+import mchorse.bbs_mod.ui.utils.Scroll;
+import mchorse.bbs_mod.ui.utils.ScrollDirection;
 
 import java.util.function.Consumer;
 

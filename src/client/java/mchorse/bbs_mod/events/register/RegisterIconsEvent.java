@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class RegisterIconsEvent
 {

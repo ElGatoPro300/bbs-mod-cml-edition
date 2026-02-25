@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.film.audio;
+package mchorse.bbs_mod.ui.film.audio;
 
-import elgatopro300.bbs_cml.audio.Wave;
+import mchorse.bbs_mod.audio.Wave;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC10;

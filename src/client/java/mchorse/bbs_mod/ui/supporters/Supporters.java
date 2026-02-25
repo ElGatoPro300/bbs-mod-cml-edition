@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.supporters;
+package mchorse.bbs_mod.ui.supporters;
 
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.Link;
 
 import java.util.ArrayList;
 import java.util.Comparator;

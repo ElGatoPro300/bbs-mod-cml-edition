@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.data;
+package mchorse.bbs_mod.data;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

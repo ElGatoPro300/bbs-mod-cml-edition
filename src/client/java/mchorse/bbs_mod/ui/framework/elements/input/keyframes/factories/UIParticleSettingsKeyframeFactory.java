@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
 
-import elgatopro300.bbs_cml.forms.forms.utils.ParticleSettings;
-import elgatopro300.bbs_cml.ui.forms.editors.utils.UIParticleSettings;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.forms.forms.utils.ParticleSettings;
+import mchorse.bbs_mod.ui.forms.editors.utils.UIParticleSettings;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import net.minecraft.util.Identifier;
 
 public class UIParticleSettingsKeyframeFactory extends UIKeyframeFactory<ParticleSettings>

@@ -1,20 +1,20 @@
-package elgatopro300.bbs_cml.film.replays;
+package mchorse.bbs_mod.film.replays;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
-import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -216,8 +216,8 @@ public class FormProperties extends ValueGroup
             {
                 KeyframeChannel<?> mergedAny = this.properties.get("structure_light");
                 @SuppressWarnings("unchecked")
-                KeyframeChannel<elgatopro300.bbs_cml.forms.forms.utils.StructureLightSettings> merged = mergedAny != null
-                    ? (KeyframeChannel<elgatopro300.bbs_cml.forms.forms.utils.StructureLightSettings>) mergedAny
+                KeyframeChannel<mchorse.bbs_mod.forms.forms.utils.StructureLightSettings> merged = mergedAny != null
+                    ? (KeyframeChannel<mchorse.bbs_mod.forms.forms.utils.StructureLightSettings>) mergedAny
                     : new KeyframeChannel<>("structure_light", KeyframeFactories.STRUCTURE_LIGHT_SETTINGS);
 
                 if (mergedAny == null)
@@ -256,7 +256,7 @@ public class FormProperties extends ValueGroup
                         }
                     }
 
-                    elgatopro300.bbs_cml.forms.forms.utils.StructureLightSettings payload = new elgatopro300.bbs_cml.forms.forms.utils.StructureLightSettings(
+                    mchorse.bbs_mod.forms.forms.utils.StructureLightSettings payload = new mchorse.bbs_mod.forms.forms.utils.StructureLightSettings(
                         enabled,
                         Math.max(0, Math.min(15, value))
                     );

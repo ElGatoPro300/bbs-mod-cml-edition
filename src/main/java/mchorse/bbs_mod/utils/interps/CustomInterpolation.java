@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils.interps;
+package mchorse.bbs_mod.utils.interps;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.interps.types.BaseInterp;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.interps.types.BaseInterp;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import org.lwjgl.glfw.GLFW;
 
 public class CustomInterpolation extends BaseInterp

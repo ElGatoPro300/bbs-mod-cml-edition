@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.graphics.Framebuffer;
-import elgatopro300.bbs_cml.graphics.Renderbuffer;
-import elgatopro300.bbs_cml.graphics.texture.Texture;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
-import elgatopro300.bbs_cml.utils.Pair;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.graphics.Framebuffer;
+import mchorse.bbs_mod.graphics.Renderbuffer;
+import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
+import mchorse.bbs_mod.utils.Pair;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;

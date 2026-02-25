@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.client.video;
+package mchorse.bbs_mod.client.video;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.client.BBSShaders;
+import mchorse.bbs_mod.client.BBSShaders;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.camera.clips.misc.VideoClip;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.camera.clips.misc.VideoClip;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
+import mchorse.bbs_mod.ui.framework.UIContext;
 
 public class VideoRenderer
 {

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.bridge;
+package mchorse.bbs_mod.bridge;
 
 import net.minecraft.entity.Entity;
 

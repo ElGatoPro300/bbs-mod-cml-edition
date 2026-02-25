@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.ui.supporters;
+package mchorse.bbs_mod.ui.supporters;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.graphics.texture.Texture;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.UIUtils;
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.colors.Colors;
 import org.lwjgl.opengl.GL11;
 
 public class UISupporterBanner extends UIElement

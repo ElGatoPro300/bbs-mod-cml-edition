@@ -1,18 +1,18 @@
-package elgatopro300.bbs_cml.ui.forms.editors.panels;
+package mchorse.bbs_mod.ui.forms.editors.panels;
 
-import elgatopro300.bbs_cml.forms.forms.BillboardForm;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.forms.editors.forms.UIForm;
-import elgatopro300.bbs_cml.ui.forms.editors.utils.UICropOverlayPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITexturePicker;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.utils.Direction;
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.forms.forms.BillboardForm;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
+import mchorse.bbs_mod.ui.forms.editors.utils.UICropOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
+import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.utils.Direction;
+import mchorse.bbs_mod.utils.colors.Color;
 
 public class UIBillboardFormPanel extends UIFormPanel<BillboardForm>
 {

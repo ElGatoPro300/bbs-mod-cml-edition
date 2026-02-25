@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.utils;
+package mchorse.bbs_mod.utils;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.entity.ActorEntity;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.entity.ActorEntity;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileUtil;

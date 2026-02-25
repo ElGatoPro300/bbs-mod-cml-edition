@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.cubic.data.animation;
+package mchorse.bbs_mod.cubic.data.animation;
 
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.data.types.StringType;
-import elgatopro300.bbs_cml.math.Constant;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangValue;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.data.types.StringType;
+import mchorse.bbs_mod.math.Constant;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
+import mchorse.bbs_mod.math.molang.expressions.MolangValue;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 
 import java.util.List;
 

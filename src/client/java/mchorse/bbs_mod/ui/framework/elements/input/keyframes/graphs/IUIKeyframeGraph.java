@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.graphs;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.utils.Pair;
-import elgatopro300.bbs_cml.utils.interps.Interpolation;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
-import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.utils.Pair;
+import mchorse.bbs_mod.utils.interps.Interpolation;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 
 import java.util.List;
 

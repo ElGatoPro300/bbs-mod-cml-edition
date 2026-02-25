@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting;
+package mchorse.bbs_mod.ui.framework.elements.input.text.highlighting;
 
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.MapType;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.MapType;
 
 public class SyntaxStyle implements IMapSerializable
 {

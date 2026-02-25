@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import mchorse.bbs_mod.ui.dashboard.UIDashboard;
 
 public class RegisterDashboardPanelsEvent
 {

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.particles.components.shape.directions;
+package mchorse.bbs_mod.particles.components.shape.directions;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.particles.emitter.Particle;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.particles.emitter.Particle;
 
 public abstract class ShapeDirection
 {

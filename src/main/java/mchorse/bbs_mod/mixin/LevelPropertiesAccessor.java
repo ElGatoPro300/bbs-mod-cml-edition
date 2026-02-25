@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.mixin;
+package mchorse.bbs_mod.mixin;
 
 import net.minecraft.world.level.LevelInfo;
 import net.minecraft.world.level.LevelProperties;

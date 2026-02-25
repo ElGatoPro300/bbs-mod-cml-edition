@@ -1,31 +1,31 @@
-package elgatopro300.bbs_cml.network;
+package mchorse.bbs_mod.network;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.actions.ActionManager;
-import elgatopro300.bbs_cml.actions.ActionPlayer;
-import elgatopro300.bbs_cml.actions.ActionRecorder;
-import elgatopro300.bbs_cml.actions.ActionState;
-import elgatopro300.bbs_cml.actions.PlayerType;
-import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
-import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ByteType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.entity.GunProjectileEntity;
-import elgatopro300.bbs_cml.entity.IEntityFormProvider;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.film.FilmManager;
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.items.GunProperties;
-import elgatopro300.bbs_cml.morphing.Morph;
-import elgatopro300.bbs_cml.utils.DataPath;
-import elgatopro300.bbs_cml.utils.EnumUtils;
-import elgatopro300.bbs_cml.utils.PermissionUtils;
-import elgatopro300.bbs_cml.utils.clips.Clips;
-import elgatopro300.bbs_cml.utils.repos.RepositoryOperation;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.actions.ActionManager;
+import mchorse.bbs_mod.actions.ActionPlayer;
+import mchorse.bbs_mod.actions.ActionRecorder;
+import mchorse.bbs_mod.actions.ActionState;
+import mchorse.bbs_mod.actions.PlayerType;
+import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ByteType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.entity.GunProjectileEntity;
+import mchorse.bbs_mod.entity.IEntityFormProvider;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.film.FilmManager;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.items.GunProperties;
+import mchorse.bbs_mod.morphing.Morph;
+import mchorse.bbs_mod.utils.DataPath;
+import mchorse.bbs_mod.utils.EnumUtils;
+import mchorse.bbs_mod.utils.PermissionUtils;
+import mchorse.bbs_mod.utils.clips.Clips;
+import mchorse.bbs_mod.utils.repos.RepositoryOperation;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -268,7 +268,7 @@ public class ServerNetwork
                     World world = player.getWorld();
                     BlockEntity be = world.getBlockEntity(pos);
 
-                    if (be instanceof elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity trigger)
+                    if (be instanceof mchorse.bbs_mod.blocks.entities.TriggerBlockEntity trigger)
                     {
                         if (data.has("left")) trigger.left.fromData(data.getList("left"));
                         if (data.has("right")) trigger.right.fromData(data.getList("right"));

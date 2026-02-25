@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.cubic.model.loaders;
+package mchorse.bbs_mod.cubic.model.loaders;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.cubic.ModelInstance;
-import elgatopro300.bbs_cml.cubic.data.animation.Animations;
-import elgatopro300.bbs_cml.cubic.data.model.Model;
-import elgatopro300.bbs_cml.cubic.geo.GeoAnimationParser;
-import elgatopro300.bbs_cml.cubic.geo.GeoModelParser;
-import elgatopro300.bbs_cml.cubic.model.ModelManager;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.cubic.ModelInstance;
+import mchorse.bbs_mod.cubic.data.animation.Animations;
+import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.cubic.geo.GeoAnimationParser;
+import mchorse.bbs_mod.cubic.geo.GeoModelParser;
+import mchorse.bbs_mod.cubic.model.ModelManager;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.IOUtils;
 
 import java.io.InputStream;
 import java.util.Collection;

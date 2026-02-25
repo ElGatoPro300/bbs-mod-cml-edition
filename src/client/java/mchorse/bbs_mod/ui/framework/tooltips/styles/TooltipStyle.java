@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.framework.tooltips.styles;
+package mchorse.bbs_mod.ui.framework.tooltips.styles;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.utils.Area;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.utils.Area;
 
 public abstract class TooltipStyle
 {
