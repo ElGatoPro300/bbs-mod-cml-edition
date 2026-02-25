@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.math.functions.classic;
+package mchorse.bbs_mod.math.functions.classic;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.functions.NNFunction;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.functions.NNFunction;
 
 public class Mod extends NNFunction
 {

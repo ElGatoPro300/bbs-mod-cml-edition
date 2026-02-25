@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.cubic.animation;
+package mchorse.bbs_mod.cubic.animation;
 
-import elgatopro300.bbs_cml.cubic.IModelInstance;
-import elgatopro300.bbs_cml.cubic.data.animation.Animation;
-import elgatopro300.bbs_cml.cubic.data.animation.Animations;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
+import mchorse.bbs_mod.cubic.IModelInstance;
+import mchorse.bbs_mod.cubic.data.animation.Animation;
+import mchorse.bbs_mod.cubic.data.animation.Animations;
+import mchorse.bbs_mod.forms.entities.IEntity;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.interps;
+package mchorse.bbs_mod.utils.interps;
 
 /**
  * Interpolation methods

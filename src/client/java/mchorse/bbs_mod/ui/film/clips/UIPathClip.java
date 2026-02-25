@@ -1,22 +1,22 @@
-package elgatopro300.bbs_cml.ui.film.clips;
+package mchorse.bbs_mod.ui.film.clips;
 
-import elgatopro300.bbs_cml.camera.clips.overwrite.PathClip;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.camera.values.ValuePosition;
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIAngleModule;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointModule;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointsModule;
-import elgatopro300.bbs_cml.ui.film.utils.UICameraUtils;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.context.UIInterpolationContextMenu;
-import elgatopro300.bbs_cml.ui.framework.tooltips.InterpolationTooltip;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.camera.clips.overwrite.PathClip;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.camera.values.ValuePosition;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.film.clips.modules.UIAngleModule;
+import mchorse.bbs_mod.ui.film.clips.modules.UIPointModule;
+import mchorse.bbs_mod.ui.film.clips.modules.UIPointsModule;
+import mchorse.bbs_mod.ui.film.utils.UICameraUtils;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
+import mchorse.bbs_mod.ui.framework.tooltips.InterpolationTooltip;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.utils.MathUtils;
 
 public class UIPathClip extends UIClip<PathClip>
 {

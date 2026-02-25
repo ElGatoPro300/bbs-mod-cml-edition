@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.film.utils.undo;
+package mchorse.bbs_mod.ui.film.utils.undo;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.utils.CollectionUtils;
-import elgatopro300.bbs_cml.utils.StringUtils;
-import elgatopro300.bbs_cml.utils.undo.CompoundUndo;
-import elgatopro300.bbs_cml.utils.undo.IUndo;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.utils.CollectionUtils;
+import mchorse.bbs_mod.utils.StringUtils;
+import mchorse.bbs_mod.utils.undo.CompoundUndo;
+import mchorse.bbs_mod.utils.undo.IUndo;
 
 import java.util.ArrayList;
 import java.util.List;

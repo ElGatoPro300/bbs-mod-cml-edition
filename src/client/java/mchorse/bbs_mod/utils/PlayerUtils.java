@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.utils;
+package mchorse.bbs_mod.utils;
 
 import com.mojang.authlib.GameProfile;
-import elgatopro300.bbs_cml.network.ClientNetwork;
+import mchorse.bbs_mod.network.ClientNetwork;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.data.TrackedData;

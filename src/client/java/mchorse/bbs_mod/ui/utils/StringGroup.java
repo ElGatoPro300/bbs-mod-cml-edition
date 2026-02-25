@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
 import java.util.regex.Pattern;
 

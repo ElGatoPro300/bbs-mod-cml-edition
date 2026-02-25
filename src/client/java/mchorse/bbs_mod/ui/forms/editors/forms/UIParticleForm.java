@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.ui.forms.editors.forms;
+package mchorse.bbs_mod.ui.forms.editors.forms;
 
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.ParticleForm;
-import elgatopro300.bbs_cml.forms.renderers.ParticleFormRenderer;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.Keys;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITexturePicker;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.ParticleForm;
+import mchorse.bbs_mod.forms.renderers.ParticleFormRenderer;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.Keys;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
 
 public class UIParticleForm extends UIForm<ParticleForm>
 {

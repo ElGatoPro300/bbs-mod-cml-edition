@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils;
+package mchorse.bbs_mod.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.VertexSorter;
-import elgatopro300.bbs_cml.utils.joml.Vectors;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.utils.joml.Vectors;
+import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix3f;

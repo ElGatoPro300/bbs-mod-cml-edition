@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events;
+package mchorse.bbs_mod.events;
 
-import elgatopro300.bbs_cml.l10n.L10n;
+import mchorse.bbs_mod.l10n.L10n;
 
 public class L10nReloadEvent
 {

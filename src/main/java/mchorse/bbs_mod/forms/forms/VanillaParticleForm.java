@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.forms.forms.utils.ParticleSettings;
-import elgatopro300.bbs_cml.forms.values.ValueParticleSettings;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.forms.forms.utils.ParticleSettings;
+import mchorse.bbs_mod.forms.values.ValueParticleSettings;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 
 public class VanillaParticleForm extends Form
 {

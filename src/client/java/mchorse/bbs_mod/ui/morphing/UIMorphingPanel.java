@@ -1,18 +1,18 @@
-package elgatopro300.bbs_cml.ui.morphing;
+package mchorse.bbs_mod.ui.morphing;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.morphing.IMorphProvider;
-import elgatopro300.bbs_cml.morphing.Morph;
-import elgatopro300.bbs_cml.network.ClientNetwork;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
-import elgatopro300.bbs_cml.ui.dashboard.panels.UIDashboardPanel;
-import elgatopro300.bbs_cml.ui.forms.UIFormPalette;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.morphing.camera.ImmersiveMorphingCameraController;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.Direction;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.morphing.IMorphProvider;
+import mchorse.bbs_mod.morphing.Morph;
+import mchorse.bbs_mod.network.ClientNetwork;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.dashboard.UIDashboard;
+import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanel;
+import mchorse.bbs_mod.ui.forms.UIFormPalette;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.morphing.camera.ImmersiveMorphingCameraController;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.Direction;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.Perspective;
 

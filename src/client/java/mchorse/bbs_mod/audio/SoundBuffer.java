@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.audio;
+package mchorse.bbs_mod.audio;
 
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.Link;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.system.MemoryUtil;
 

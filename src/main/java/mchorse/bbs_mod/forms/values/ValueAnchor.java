@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.forms.values;
+package mchorse.bbs_mod.forms.values;
 
-import elgatopro300.bbs_cml.forms.forms.utils.Anchor;
-import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.forms.forms.utils.Anchor;
+import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
 public class ValueAnchor extends BaseKeyframeFactoryValue<Anchor>
 {

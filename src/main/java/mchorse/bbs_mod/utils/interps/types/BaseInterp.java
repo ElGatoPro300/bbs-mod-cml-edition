@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.utils.interps.types;
+package mchorse.bbs_mod.utils.interps.types;
 
-import elgatopro300.bbs_cml.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.IInterp;
 
 public abstract class BaseInterp implements IInterp
 {

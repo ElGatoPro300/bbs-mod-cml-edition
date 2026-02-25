@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.settings.values.misc;
+package mchorse.bbs_mod.settings.values.misc;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
 import org.joml.Vector3f;
 
 public class ValueVector3f extends BaseValueBasic<Vector3f>

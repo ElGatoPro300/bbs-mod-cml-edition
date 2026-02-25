@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.actions.values;
+package mchorse.bbs_mod.actions.values;
 
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueDouble;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.utils.EnumUtils;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueDouble;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.utils.EnumUtils;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;

@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.forms.editors.states.keyframes;
+package mchorse.bbs_mod.ui.forms.editors.states.keyframes;
 
-import elgatopro300.bbs_cml.camera.utils.TimeUtils;
-import elgatopro300.bbs_cml.ui.film.UIClips;
-import elgatopro300.bbs_cml.ui.forms.editors.UIFormEditor;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.camera.utils.TimeUtils;
+import mchorse.bbs_mod.ui.film.UIClips;
+import mchorse.bbs_mod.ui.forms.editors.UIFormEditor;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 
 import java.util.function.Consumer;
 

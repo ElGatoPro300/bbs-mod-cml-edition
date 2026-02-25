@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.settings;
+package mchorse.bbs_mod.settings;
 
-import elgatopro300.bbs_cml.data.DataToString;
+import mchorse.bbs_mod.data.DataToString;
 
 import java.io.File;
 import java.util.HashMap;

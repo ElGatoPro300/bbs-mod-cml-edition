@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.client.renderer.entity;
+package mchorse.bbs_mod.client.renderer.entity;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.entity.GunProjectileEntity;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
-import elgatopro300.bbs_cml.items.GunProperties;
-import elgatopro300.bbs_cml.utils.MatrixStackUtils;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.entity.GunProjectileEntity;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.renderers.FormRenderType;
+import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.items.GunProperties;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
+import mchorse.bbs_mod.utils.interps.Lerps;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;

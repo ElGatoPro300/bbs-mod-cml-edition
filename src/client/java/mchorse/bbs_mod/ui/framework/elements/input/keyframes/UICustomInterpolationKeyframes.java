@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes;
 
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.graphs.UICustomInterpolationGraph;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.UICustomInterpolationGraph;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 
 import java.util.function.Consumer;
 

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.framework.tooltips;
+package mchorse.bbs_mod.ui.framework.tooltips;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.UIContext;
 
 public interface ITooltip
 {

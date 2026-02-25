@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.cubic.render.vanilla;
+package mchorse.bbs_mod.cubic.render.vanilla;
 
 import com.google.common.collect.Maps;
-import elgatopro300.bbs_cml.cubic.model.ArmorType;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
+import mchorse.bbs_mod.cubic.model.ArmorType;
+import mchorse.bbs_mod.forms.entities.IEntity;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;

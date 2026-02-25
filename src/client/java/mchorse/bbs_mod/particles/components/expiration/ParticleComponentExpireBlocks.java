@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.particles.components.expiration;
+package mchorse.bbs_mod.particles.components.expiration;
 
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.math.molang.MolangException;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
-import elgatopro300.bbs_cml.particles.emitter.Particle;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.math.molang.MolangException;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.particles.components.ParticleComponentBase;
+import mchorse.bbs_mod.particles.emitter.Particle;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector3d;

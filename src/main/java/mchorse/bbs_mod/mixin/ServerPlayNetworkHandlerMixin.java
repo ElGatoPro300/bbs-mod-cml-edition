@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.mixin;
+package mchorse.bbs_mod.mixin;
 
 import com.mojang.brigadier.ParseResults;
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.actions.types.blocks.InteractBlockActionClip;
-import elgatopro300.bbs_cml.actions.types.chat.CommandActionClip;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.actions.types.blocks.InteractBlockActionClip;
+import mchorse.bbs_mod.actions.types.chat.CommandActionClip;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayNetworkHandler;

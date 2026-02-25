@@ -1,42 +1,42 @@
-package elgatopro300.bbs_cml.ui.framework.elements.context;
+package mchorse.bbs_mod.ui.framework.elements.context;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
-import elgatopro300.bbs_cml.ui.framework.elements.context.UIInterpolationContextMenu;
-import elgatopro300.bbs_cml.ui.framework.elements.context.UISimpleContextMenu;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UICustomInterpolationKeyframes;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.graphs.UIKeyframeGraph;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
-import elgatopro300.bbs_cml.ui.utils.InterpolationUtils;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.context.ContextAction;
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.utils.interps.CustomInterpolation;
-import elgatopro300.bbs_cml.utils.interps.CustomInterpolationManager;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.interps.InterpContext;
-import elgatopro300.bbs_cml.utils.interps.Interpolation;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.utils.interps.easings.EasingArgs;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
-import elgatopro300.bbs_cml.utils.undo.IUndo;
-import elgatopro300.bbs_cml.utils.undo.UndoManager;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
+import mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UICustomInterpolationKeyframes;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.graphs.UIKeyframeGraph;
+import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
+import mchorse.bbs_mod.ui.utils.InterpolationUtils;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.context.ContextAction;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.interps.CustomInterpolation;
+import mchorse.bbs_mod.utils.interps.CustomInterpolationManager;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.InterpContext;
+import mchorse.bbs_mod.utils.interps.Interpolation;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.undo.IUndo;
+import mchorse.bbs_mod.utils.undo.UndoManager;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
@@ -89,7 +89,7 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
         channel.insert(0, 0D);
         channel.insert(1, 1D);
 
-        for (elgatopro300.bbs_cml.utils.keyframes.Keyframe keyframe : channel.getKeyframes())
+        for (mchorse.bbs_mod.utils.keyframes.Keyframe keyframe : channel.getKeyframes())
         {
             keyframe.getInterpolation().setInterp(Interpolations.BEZIER);
             keyframe.lx = 0.15f;
@@ -215,7 +215,7 @@ public class UICustomInterpolationPanel extends UIOverlayPanel
 
         for (int i = 0; i <= samples; i++)
         {
-            elgatopro300.bbs_cml.utils.keyframes.Keyframe<Double> k = channel.get(i);
+            mchorse.bbs_mod.utils.keyframes.Keyframe<Double> k = channel.get(i);
             double x = k.getTick();
             double y = k.getValue();
 

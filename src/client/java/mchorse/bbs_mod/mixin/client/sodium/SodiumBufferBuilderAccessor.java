@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.mixin.client.sodium;
+package mchorse.bbs_mod.mixin.client.sodium;
 
 import me.jellysquid.mods.sodium.client.render.vertex.buffer.ExtendedBufferBuilder;
 import me.jellysquid.mods.sodium.client.render.vertex.buffer.SodiumBufferBuilder;

@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.dashboard.list;
+package mchorse.bbs_mod.ui.dashboard.list;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.DataPath;
-import elgatopro300.bbs_cml.utils.NaturalOrderComparator;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.DataPath;
+import mchorse.bbs_mod.utils.NaturalOrderComparator;
 
 import java.util.Collection;
 import java.util.HashSet;

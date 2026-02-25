@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.camera.clips.overwrite;
+package mchorse.bbs_mod.camera.clips.overwrite;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.clips.CameraClip;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.camera.values.ValuePosition;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.clips.CameraClip;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.camera.values.ValuePosition;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.ClipContext;
 
 public class IdleClip extends CameraClip
 {

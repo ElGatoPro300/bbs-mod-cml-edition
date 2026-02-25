@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.actions.types;
+package mchorse.bbs_mod.actions.types;
 
-import elgatopro300.bbs_cml.actions.SuperFakePlayer;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.film.replays.Replay;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.utils.clips.Clip;
+import mchorse.bbs_mod.actions.SuperFakePlayer;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.film.replays.Replay;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.utils.clips.Clip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.Hand;
 

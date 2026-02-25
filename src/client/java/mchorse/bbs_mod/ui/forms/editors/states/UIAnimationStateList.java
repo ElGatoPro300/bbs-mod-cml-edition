@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.forms.editors.states;
+package mchorse.bbs_mod.ui.forms.editors.states;
 
-import elgatopro300.bbs_cml.forms.states.AnimationState;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.forms.states.AnimationState;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
 
 import java.util.List;
 import java.util.function.Consumer;

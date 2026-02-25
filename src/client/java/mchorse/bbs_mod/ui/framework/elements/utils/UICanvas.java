@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.ui.framework.elements.utils;
+package mchorse.bbs_mod.ui.framework.elements.utils;
 
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.utils.Scale;
-import elgatopro300.bbs_cml.ui.utils.ScrollDirection;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.utils.Scale;
+import mchorse.bbs_mod.ui.utils.ScrollDirection;
 
 public abstract class UICanvas extends UIElement
 {

@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.triggers;
+package mchorse.bbs_mod.ui.triggers;
 
-import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.controller.ICameraController;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
+import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.controller.ICameraController;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
 import net.minecraft.util.math.BlockPos;
 
 public class ImmersiveTriggerBlockCameraController implements ICameraController

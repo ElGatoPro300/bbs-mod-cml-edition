@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.camera.clips.misc;
+package mchorse.bbs_mod.camera.clips.misc;
 
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.utils.pose.Transform;
 
 public class Subtitle
 {

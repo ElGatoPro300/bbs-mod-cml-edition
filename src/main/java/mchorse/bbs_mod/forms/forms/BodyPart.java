@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.forms.entities.StubEntity;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.settings.values.core.ValueString;
-import elgatopro300.bbs_cml.settings.values.core.ValueTransform;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.entities.StubEntity;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.settings.values.core.ValueString;
+import mchorse.bbs_mod.settings.values.core.ValueTransform;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.utils.pose.Transform;
 
 public class BodyPart extends ValueGroup
 {

@@ -1,19 +1,19 @@
-package elgatopro300.bbs_cml.ui.particles.utils;
+package mchorse.bbs_mod.ui.particles.utils;
 
-import elgatopro300.bbs_cml.math.Constant;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangValue;
-import elgatopro300.bbs_cml.particles.components.appearance.colors.Gradient;
-import elgatopro300.bbs_cml.particles.components.appearance.colors.Solid;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
-import elgatopro300.bbs_cml.ui.particles.sections.UIParticleSchemeSection;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.math.Constant;
+import mchorse.bbs_mod.math.molang.expressions.MolangValue;
+import mchorse.bbs_mod.particles.components.appearance.colors.Gradient;
+import mchorse.bbs_mod.particles.components.appearance.colors.Solid;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
+import mchorse.bbs_mod.ui.particles.sections.UIParticleSchemeSection;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 public class UIGradientEditor extends UIElement
 {

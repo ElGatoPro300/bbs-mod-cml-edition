@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.resources.packs;
+package mchorse.bbs_mod.resources.packs;
 
-import elgatopro300.bbs_cml.data.DataToString;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.FFMpegUtils;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.FFMpegUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

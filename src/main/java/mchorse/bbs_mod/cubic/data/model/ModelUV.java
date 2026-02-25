@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.cubic.data.model;
+package mchorse.bbs_mod.cubic.data.model;
 
-import elgatopro300.bbs_cml.data.IDataSerializable;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.utils.Quad;
+import mchorse.bbs_mod.data.IDataSerializable;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.utils.Quad;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

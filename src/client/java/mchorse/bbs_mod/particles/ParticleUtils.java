@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.particles;
+package mchorse.bbs_mod.particles;
 
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.math.molang.MolangException;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.math.molang.MolangException;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
 
 public class ParticleUtils
 {

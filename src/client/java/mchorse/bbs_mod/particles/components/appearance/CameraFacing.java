@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.particles.components.appearance;
+package mchorse.bbs_mod.particles.components.appearance;
 
 /**
  * Camera facing mode

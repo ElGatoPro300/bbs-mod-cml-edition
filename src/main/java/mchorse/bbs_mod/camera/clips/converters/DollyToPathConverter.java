@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.camera.clips.converters;
+package mchorse.bbs_mod.camera.clips.converters;
 
-import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
-import elgatopro300.bbs_cml.camera.clips.overwrite.DollyClip;
-import elgatopro300.bbs_cml.camera.clips.overwrite.PathClip;
-import elgatopro300.bbs_cml.camera.data.Position;
+import mchorse.bbs_mod.camera.clips.CameraClipContext;
+import mchorse.bbs_mod.camera.clips.overwrite.DollyClip;
+import mchorse.bbs_mod.camera.clips.overwrite.PathClip;
+import mchorse.bbs_mod.camera.data.Position;
 
 public class DollyToPathConverter implements IClipConverter<DollyClip, PathClip>
 {

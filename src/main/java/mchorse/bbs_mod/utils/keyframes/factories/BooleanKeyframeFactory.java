@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.utils.keyframes.factories;
+package mchorse.bbs_mod.utils.keyframes.factories;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ByteType;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ByteType;
+import mchorse.bbs_mod.utils.interps.IInterp;
 
 public class BooleanKeyframeFactory implements IKeyframeFactory<Boolean>
 {

@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
-import elgatopro300.bbs_cml.forms.renderers.MobFormRenderer;
-import elgatopro300.bbs_cml.utils.pose.Pose;
-import elgatopro300.bbs_cml.utils.pose.PoseTransform;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.forms.renderers.MobFormRenderer;
+import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

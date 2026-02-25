@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
+package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
 
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import org.joml.Vector4f;
 
 public class UIVector4fKeyframeFactory extends UIKeyframeFactory<Vector4f>
