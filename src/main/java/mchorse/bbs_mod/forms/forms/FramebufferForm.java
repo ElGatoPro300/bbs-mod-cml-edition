@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 
 public class FramebufferForm extends Form
 {

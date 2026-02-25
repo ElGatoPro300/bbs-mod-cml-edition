@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.camera.data;
+package mchorse.bbs_mod.camera.data;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.MathUtils;
 
 public class Position implements IMapSerializable
 {

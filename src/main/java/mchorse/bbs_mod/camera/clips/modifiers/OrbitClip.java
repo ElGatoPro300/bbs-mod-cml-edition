@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.camera.clips.modifiers;
+package mchorse.bbs_mod.camera.clips.modifiers;
 
-import elgatopro300.bbs_cml.camera.data.Angle;
-import elgatopro300.bbs_cml.camera.data.Point;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
-import elgatopro300.bbs_cml.utils.joml.Matrices;
+import mchorse.bbs_mod.camera.data.Angle;
+import mchorse.bbs_mod.camera.data.Point;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.ClipContext;
+import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.joml.Matrices;
 import org.joml.Vector3f;
 
 import java.util.List;

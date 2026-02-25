@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.math.molang.functions;
+package mchorse.bbs_mod.math.molang.functions;
 
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.functions.trig.Atan2;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.functions.trig.Atan2;
 
 public class Atan2Degrees extends Atan2
 {

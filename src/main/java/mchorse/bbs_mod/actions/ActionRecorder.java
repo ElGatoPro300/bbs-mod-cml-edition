@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.actions;
+package mchorse.bbs_mod.actions;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.actions.types.ActionClip;
-import elgatopro300.bbs_cml.actions.types.AttackActionClip;
-import elgatopro300.bbs_cml.actions.types.SwipeActionClip;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.utils.clips.Clips;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.actions.types.ActionClip;
+import mchorse.bbs_mod.actions.types.AttackActionClip;
+import mchorse.bbs_mod.actions.types.SwipeActionClip;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.utils.clips.Clips;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class ActionRecorder

@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.particles;
+package mchorse.bbs_mod.ui.particles;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.graphics.Draw;
-import elgatopro300.bbs_cml.particles.ParticleScheme;
-import elgatopro300.bbs_cml.particles.components.expiration.ParticleComponentKillPlane;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
-import elgatopro300.bbs_cml.ui.framework.UIBaseMenu;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
+import mchorse.bbs_mod.graphics.Draw;
+import mchorse.bbs_mod.particles.ParticleScheme;
+import mchorse.bbs_mod.particles.components.expiration.ParticleComponentKillPlane;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.ui.framework.UIBaseMenu;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;

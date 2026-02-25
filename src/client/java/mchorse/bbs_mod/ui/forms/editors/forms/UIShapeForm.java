@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.forms.editors.forms;
+package mchorse.bbs_mod.ui.forms.editors.forms;
 
-import elgatopro300.bbs_cml.forms.forms.ShapeForm;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.forms.editors.panels.UIShapeFormPanel;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.forms.forms.ShapeForm;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.forms.editors.panels.UIShapeFormPanel;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class UIShapeForm extends UIForm<ShapeForm>
 {

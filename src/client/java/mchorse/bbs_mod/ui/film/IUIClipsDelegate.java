@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.film;
+package mchorse.bbs_mod.ui.film;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.utils.clips.Clip;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.utils.clips.Clip;
 
 import java.util.function.Consumer;
 

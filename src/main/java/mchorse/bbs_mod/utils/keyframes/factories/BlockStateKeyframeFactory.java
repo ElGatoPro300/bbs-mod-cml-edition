@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.utils.keyframes.factories;
+package mchorse.bbs_mod.utils.keyframes.factories;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.utils.interps.IInterp;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtElement;

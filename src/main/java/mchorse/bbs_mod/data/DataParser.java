@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.data;
+package mchorse.bbs_mod.data;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ByteType;
-import elgatopro300.bbs_cml.data.types.DoubleType;
-import elgatopro300.bbs_cml.data.types.FloatType;
-import elgatopro300.bbs_cml.data.types.IntType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.LongType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.data.types.ShortType;
-import elgatopro300.bbs_cml.data.types.StringType;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ByteType;
+import mchorse.bbs_mod.data.types.DoubleType;
+import mchorse.bbs_mod.data.types.FloatType;
+import mchorse.bbs_mod.data.types.IntType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.LongType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.data.types.ShortType;
+import mchorse.bbs_mod.data.types.StringType;
 
 /**
  * Data parser

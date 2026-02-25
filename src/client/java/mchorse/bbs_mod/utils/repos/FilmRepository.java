@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.utils.repos;
+package mchorse.bbs_mod.utils.repos;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.network.ClientNetwork;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.network.ClientNetwork;
 
 import java.io.File;
 import java.util.ArrayList;

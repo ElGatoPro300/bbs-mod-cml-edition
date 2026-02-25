@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.mixin;
+package mchorse.bbs_mod.mixin;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.actions.types.blocks.BreakBlockActionClip;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.actions.types.blocks.BreakBlockActionClip;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;

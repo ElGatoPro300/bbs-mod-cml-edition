@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.utils;
+package mchorse.bbs_mod.utils;
 
-import elgatopro300.bbs_cml.ui.utils.Area;
+import mchorse.bbs_mod.ui.utils.Area;
 import org.joml.Vector2i;
 
 import java.util.List;

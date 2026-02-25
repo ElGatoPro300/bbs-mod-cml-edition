@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.utils.keys;
+package mchorse.bbs_mod.ui.utils.keys;
 
-import elgatopro300.bbs_cml.graphics.window.Window;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
+import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.l10n.keys.IKey;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;

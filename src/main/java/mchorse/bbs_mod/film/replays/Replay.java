@@ -1,24 +1,24 @@
-package elgatopro300.bbs_cml.film.replays;
+package mchorse.bbs_mod.film.replays;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.actions.SuperFakePlayer;
-import elgatopro300.bbs_cml.actions.types.ActionClip;
-import elgatopro300.bbs_cml.camera.data.Point;
-import elgatopro300.bbs_cml.camera.values.ValuePoint;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.settings.values.core.ValueForm;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.settings.values.core.ValueString;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.settings.values.base.BaseValueGroup;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.Clips;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.actions.SuperFakePlayer;
+import mchorse.bbs_mod.actions.types.ActionClip;
+import mchorse.bbs_mod.camera.data.Point;
+import mchorse.bbs_mod.camera.values.ValuePoint;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.settings.values.core.ValueForm;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.settings.values.core.ValueString;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.settings.values.base.BaseValueGroup;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.Clips;
 import net.minecraft.entity.LivingEntity;
 
 import java.util.List;
@@ -240,7 +240,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, String> entry : this.customSheetTitles.entrySet())
             {
-                titles.put(entry.getKey(), new elgatopro300.bbs_cml.data.types.StringType(entry.getValue()));
+                titles.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
             }
 
             map.put("custom_sheet_titles", titles);
@@ -252,7 +252,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, String> entry : this.anchoredBones.entrySet())
             {
-                anchored.put(entry.getKey(), new elgatopro300.bbs_cml.data.types.StringType(entry.getValue()));
+                anchored.put(entry.getKey(), new mchorse.bbs_mod.data.types.StringType(entry.getValue()));
             }
 
             map.put("anchored_bones", anchored);
@@ -264,7 +264,7 @@ public class Replay extends ValueGroup
 
             for (Map.Entry<String, Integer> entry : this.sheetColors.entrySet())
             {
-                colors.put(entry.getKey(), new elgatopro300.bbs_cml.data.types.IntType(entry.getValue()));
+                colors.put(entry.getKey(), new mchorse.bbs_mod.data.types.IntType(entry.getValue()));
             }
 
             map.put("sheet_colors", colors);

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.camera;
+package mchorse.bbs_mod.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

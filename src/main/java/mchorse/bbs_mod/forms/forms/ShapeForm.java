@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.forms.forms.shape.ValueShapeGraph;
-import elgatopro300.bbs_cml.settings.values.core.ValueColor;
-import elgatopro300.bbs_cml.settings.values.core.ValueEnum;
-import elgatopro300.bbs_cml.settings.values.core.ValueLink;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.forms.forms.shape.ValueShapeGraph;
+import mchorse.bbs_mod.settings.values.core.ValueColor;
+import mchorse.bbs_mod.settings.values.core.ValueEnum;
+import mchorse.bbs_mod.settings.values.core.ValueLink;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.utils.colors.Color;
 import org.joml.Vector2f;
 
 public class ShapeForm extends Form

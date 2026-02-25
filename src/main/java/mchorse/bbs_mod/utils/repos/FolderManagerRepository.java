@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.utils.repos;
+package mchorse.bbs_mod.utils.repos;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.utils.manager.FolderManager;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.utils.manager.FolderManager;
 
 import java.io.File;
 import java.util.Collection;

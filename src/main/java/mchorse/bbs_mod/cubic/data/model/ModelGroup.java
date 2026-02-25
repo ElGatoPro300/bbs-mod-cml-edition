@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.cubic.data.model;
+package mchorse.bbs_mod.cubic.data.model;
 
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.resources.LinkUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.resources.LinkUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.pose.Transform;
 
 import java.util.ArrayList;
 import java.util.List;

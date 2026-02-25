@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.particles.components.lifetime;
+package mchorse.bbs_mod.particles.components.lifetime;
 
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 
 public class ParticleComponentLifetimeOnce extends ParticleComponentLifetime
 {

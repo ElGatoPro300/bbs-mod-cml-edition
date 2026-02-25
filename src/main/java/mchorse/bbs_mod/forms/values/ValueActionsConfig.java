@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.forms.values;
+package mchorse.bbs_mod.forms.values;
 
-import elgatopro300.bbs_cml.cubic.animation.ActionsConfig;
-import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.cubic.animation.ActionsConfig;
+import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 
 public class ValueActionsConfig extends BaseKeyframeFactoryValue<ActionsConfig>
 {

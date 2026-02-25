@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.utils.iris;
+package mchorse.bbs_mod.utils.iris;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.utils.Pair;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.utils.Pair;
 import net.irisshaders.iris.uniforms.custom.cached.CachedUniform;
 
 import java.util.HashMap;

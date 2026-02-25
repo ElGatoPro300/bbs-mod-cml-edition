@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.importers;
+package mchorse.bbs_mod.importers;
 
 import java.io.File;
 

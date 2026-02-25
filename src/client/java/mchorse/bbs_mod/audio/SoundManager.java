@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.audio;
+package mchorse.bbs_mod.audio;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.data.DataToString;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.resources.AssetProvider;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.IOUtils;
-import elgatopro300.bbs_cml.utils.watchdog.IWatchDogListener;
-import elgatopro300.bbs_cml.utils.watchdog.WatchDogEvent;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.data.DataToString;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.resources.AssetProvider;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.IOUtils;
+import mchorse.bbs_mod.utils.watchdog.IWatchDogListener;
+import mchorse.bbs_mod.utils.watchdog.WatchDogEvent;
 
 import java.io.File;
 import java.io.IOException;

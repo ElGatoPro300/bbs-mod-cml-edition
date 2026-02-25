@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.ui.utils;
+package mchorse.bbs_mod.ui.utils;
 
-import elgatopro300.bbs_cml.l10n.keys.IKey;
+import mchorse.bbs_mod.l10n.keys.IKey;
 
 import java.util.Objects;
 

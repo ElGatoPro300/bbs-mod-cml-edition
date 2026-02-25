@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.ui.film.UIFilmPanel;
-import elgatopro300.bbs_cml.ui.film.UIFilmPreview;
-import elgatopro300.bbs_cml.ui.film.UIFilmRecorder;
-import elgatopro300.bbs_cml.ui.film.controller.UIFilmController;
-import elgatopro300.bbs_cml.ui.film.replays.UIReplaysEditor;
+import mchorse.bbs_mod.ui.film.UIFilmPanel;
+import mchorse.bbs_mod.ui.film.UIFilmPreview;
+import mchorse.bbs_mod.ui.film.UIFilmRecorder;
+import mchorse.bbs_mod.ui.film.controller.UIFilmController;
+import mchorse.bbs_mod.ui.film.replays.UIReplaysEditor;
 
 import java.util.function.Function;
 

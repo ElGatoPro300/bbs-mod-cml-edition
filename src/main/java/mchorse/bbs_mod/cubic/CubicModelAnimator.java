@@ -1,17 +1,17 @@
-package elgatopro300.bbs_cml.cubic;
+package mchorse.bbs_mod.cubic;
 
-import elgatopro300.bbs_cml.cubic.data.animation.Animation;
-import elgatopro300.bbs_cml.cubic.data.animation.AnimationPart;
-import elgatopro300.bbs_cml.cubic.data.model.Model;
-import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.interps.Interpolations;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
-import elgatopro300.bbs_cml.utils.keyframes.BezierUtils;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.cubic.data.animation.Animation;
+import mchorse.bbs_mod.cubic.data.animation.AnimationPart;
+import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.cubic.data.model.ModelGroup;
+import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.Interpolations;
+import mchorse.bbs_mod.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.keyframes.BezierUtils;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Vector3d;
 
 public class CubicModelAnimator

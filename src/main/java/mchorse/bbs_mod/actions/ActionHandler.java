@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.actions;
+package mchorse.bbs_mod.actions;
 
-import elgatopro300.bbs_cml.actions.types.blocks.PlaceBlockActionClip;
-import elgatopro300.bbs_cml.actions.types.chat.ChatActionClip;
+import mchorse.bbs_mod.actions.types.blocks.PlaceBlockActionClip;
+import mchorse.bbs_mod.actions.types.chat.ChatActionClip;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.block.BlockState;

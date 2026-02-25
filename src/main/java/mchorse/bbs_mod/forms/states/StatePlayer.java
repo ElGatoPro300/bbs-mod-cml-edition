@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms.states;
+package mchorse.bbs_mod.forms.states;
 
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.utils.interps.Lerps;
 
 public class StatePlayer
 {

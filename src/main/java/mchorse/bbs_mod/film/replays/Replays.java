@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.film.replays;
+package mchorse.bbs_mod.film.replays;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.settings.values.core.ValueList;
-import elgatopro300.bbs_cml.utils.CollectionUtils;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.settings.values.core.ValueList;
+import mchorse.bbs_mod.utils.CollectionUtils;
 
 public class Replays extends ValueList<Replay>
 {

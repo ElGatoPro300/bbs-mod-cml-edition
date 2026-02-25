@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.utils.keyframes;
+package mchorse.bbs_mod.utils.keyframes;
 
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.interps.Lerps;
 
 public class BezierUtils
 {

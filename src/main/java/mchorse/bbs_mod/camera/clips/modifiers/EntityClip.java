@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.camera.clips.modifiers;
+package mchorse.bbs_mod.camera.clips.modifiers;
 
-import elgatopro300.bbs_cml.camera.clips.CameraClip;
-import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
-import elgatopro300.bbs_cml.camera.data.Point;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.camera.values.ValuePoint;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import mchorse.bbs_mod.camera.clips.CameraClip;
+import mchorse.bbs_mod.camera.clips.CameraClipContext;
+import mchorse.bbs_mod.camera.data.Point;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.camera.values.ValuePoint;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.utils.clips.ClipContext;
 
 import java.util.Collections;
 import java.util.List;

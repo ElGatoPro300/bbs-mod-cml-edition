@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.film.clips;
+package mchorse.bbs_mod.ui.film.clips;
 
-import elgatopro300.bbs_cml.camera.clips.modifiers.AngleClip;
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIAngleModule;
-import elgatopro300.bbs_cml.ui.film.clips.widgets.UIBitToggle;
+import mchorse.bbs_mod.camera.clips.modifiers.AngleClip;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.film.clips.modules.UIAngleModule;
+import mchorse.bbs_mod.ui.film.clips.widgets.UIBitToggle;
 
 public class UIAngleClip extends UIClip<AngleClip>
 {

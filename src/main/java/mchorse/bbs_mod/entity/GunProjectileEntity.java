@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.entity;
+package mchorse.bbs_mod.entity;
 
-import elgatopro300.bbs_cml.forms.FormUtils;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.forms.entities.MCEntity;
-import elgatopro300.bbs_cml.forms.entities.StubEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.items.GunProperties;
-import elgatopro300.bbs_cml.network.ServerNetwork;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.forms.FormUtils;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.entities.MCEntity;
+import mchorse.bbs_mod.forms.entities.StubEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.items.GunProperties;
+import mchorse.bbs_mod.network.ServerNetwork;
+import mchorse.bbs_mod.utils.MathUtils;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

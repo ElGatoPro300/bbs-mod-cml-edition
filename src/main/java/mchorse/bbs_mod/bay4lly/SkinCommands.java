@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.bay4lly;
+package mchorse.bbs_mod.bay4lly;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -8,7 +8,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import elgatopro300.bbs_cml.network.ServerNetwork;
+import mchorse.bbs_mod.network.ServerNetwork;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.BufferedReader;

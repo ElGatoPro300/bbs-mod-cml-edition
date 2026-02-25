@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.camera.clips.modifiers;
+package mchorse.bbs_mod.camera.clips.modifiers;
 
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.camera.values.ValueExpression;
-import elgatopro300.bbs_cml.math.IExpression;
-import elgatopro300.bbs_cml.math.MathBuilder;
-import elgatopro300.bbs_cml.math.Variable;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.camera.values.ValueExpression;
+import mchorse.bbs_mod.math.IExpression;
+import mchorse.bbs_mod.math.MathBuilder;
+import mchorse.bbs_mod.math.Variable;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.ClipContext;
 
 /**
  * Math modifier

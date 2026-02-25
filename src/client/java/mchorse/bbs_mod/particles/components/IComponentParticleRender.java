@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.particles.components;
+package mchorse.bbs_mod.particles.components;
 
-import elgatopro300.bbs_cml.particles.emitter.Particle;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.particles.emitter.Particle;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexFormat;
 import org.joml.Matrix4f;

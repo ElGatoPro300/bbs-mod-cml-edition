@@ -1,18 +1,18 @@
-package elgatopro300.bbs_cml.cubic.model.bobj;
+package mchorse.bbs_mod.cubic.model.bobj;
 
-import elgatopro300.bbs_cml.bobj.BOBJArmature;
-import elgatopro300.bbs_cml.bobj.BOBJBone;
-import elgatopro300.bbs_cml.bobj.BOBJLoader;
-import elgatopro300.bbs_cml.cubic.IModel;
-import elgatopro300.bbs_cml.cubic.MolangHelper;
-import elgatopro300.bbs_cml.cubic.data.animation.Animation;
-import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
-import elgatopro300.bbs_cml.cubic.render.vao.BOBJModelSimpleVAO;
-import elgatopro300.bbs_cml.cubic.render.vao.BOBJModelVAO;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.utils.pose.Pose;
-import elgatopro300.bbs_cml.utils.pose.PoseTransform;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.bobj.BOBJArmature;
+import mchorse.bbs_mod.bobj.BOBJBone;
+import mchorse.bbs_mod.bobj.BOBJLoader;
+import mchorse.bbs_mod.cubic.IModel;
+import mchorse.bbs_mod.cubic.MolangHelper;
+import mchorse.bbs_mod.cubic.data.animation.Animation;
+import mchorse.bbs_mod.cubic.data.model.ModelGroup;
+import mchorse.bbs_mod.cubic.render.vao.BOBJModelSimpleVAO;
+import mchorse.bbs_mod.cubic.render.vao.BOBJModelVAO;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.pose.Transform;
 
 import java.util.ArrayList;
 import java.util.Collection;

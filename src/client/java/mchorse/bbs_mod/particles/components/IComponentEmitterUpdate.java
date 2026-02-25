@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.particles.components;
+package mchorse.bbs_mod.particles.components;
 
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 
 public interface IComponentEmitterUpdate extends IComponentBase
 {

@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.vox.data;
+package mchorse.bbs_mod.vox.data;
 
 public class Vox
 {

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.ui.film.clips.modules;
+package mchorse.bbs_mod.ui.film.clips.modules;
 
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
 
 public abstract class UIAbstractModule extends UIElement
 {

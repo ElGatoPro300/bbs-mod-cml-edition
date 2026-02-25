@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.camera.utils;
+package mchorse.bbs_mod.camera.utils;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.utils.StringUtils;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.utils.StringUtils;
 
 public class TimeUtils
 {

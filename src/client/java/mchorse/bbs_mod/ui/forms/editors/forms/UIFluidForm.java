@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.ui.forms.editors.forms;
+package mchorse.bbs_mod.ui.forms.editors.forms;
 
-import elgatopro300.bbs_cml.forms.forms.FluidForm;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.forms.editors.panels.UIFluidFormPanel;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.forms.forms.FluidForm;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.forms.editors.panels.UIFluidFormPanel;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class UIFluidForm extends UIForm<FluidForm>
 {

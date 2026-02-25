@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.graphics.texture;
+package mchorse.bbs_mod.graphics.texture;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.cubic.render.vao.ModelVAO;
-import elgatopro300.bbs_cml.cubic.render.vao.ModelVAOData;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.CollectionUtils;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.resources.Pixels;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.cubic.render.vao.ModelVAO;
+import mchorse.bbs_mod.cubic.render.vao.ModelVAOData;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.CollectionUtils;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.resources.Pixels;
 
 import java.util.ArrayList;
 import java.util.HashMap;

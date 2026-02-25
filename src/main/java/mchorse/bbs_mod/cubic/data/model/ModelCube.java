@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.cubic.data.model;
+package mchorse.bbs_mod.cubic.data.model;
 
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.Quad;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.Quad;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

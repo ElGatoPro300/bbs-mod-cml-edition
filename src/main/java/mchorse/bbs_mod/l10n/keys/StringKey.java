@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.l10n.keys;
+package mchorse.bbs_mod.l10n.keys;
 
 public class StringKey implements IKey
 {

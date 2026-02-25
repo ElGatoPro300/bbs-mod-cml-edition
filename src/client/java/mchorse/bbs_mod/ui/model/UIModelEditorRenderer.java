@@ -1,28 +1,28 @@
-package elgatopro300.bbs_cml.ui.model;
+package mchorse.bbs_mod.ui.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.client.BBSShaders;
-import elgatopro300.bbs_cml.cubic.ModelInstance;
-import elgatopro300.bbs_cml.cubic.model.ModelConfig;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.forms.forms.ModelForm;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderType;
-import elgatopro300.bbs_cml.forms.renderers.FormRenderingContext;
-import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
-import elgatopro300.bbs_cml.graphics.texture.Texture;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
-import elgatopro300.bbs_cml.ui.utils.Gizmo;
-import elgatopro300.bbs_cml.ui.utils.StencilFormFramebuffer;
-import elgatopro300.bbs_cml.utils.MatrixStackUtils;
-import elgatopro300.bbs_cml.utils.Pair;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.client.BBSShaders;
+import mchorse.bbs_mod.cubic.ModelInstance;
+import mchorse.bbs_mod.cubic.model.ModelConfig;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.forms.forms.ModelForm;
+import mchorse.bbs_mod.forms.renderers.FormRenderType;
+import mchorse.bbs_mod.forms.renderers.FormRenderingContext;
+import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
+import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
+import mchorse.bbs_mod.ui.utils.Gizmo;
+import mchorse.bbs_mod.ui.utils.StencilFormFramebuffer;
+import mchorse.bbs_mod.utils.MatrixStackUtils;
+import mchorse.bbs_mod.utils.Pair;
+import mchorse.bbs_mod.utils.colors.Colors;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.GlUniform;
 import net.minecraft.client.gl.ShaderProgram;
@@ -33,11 +33,11 @@ import org.joml.Matrix4f;
 
 import java.util.function.Consumer;
 
-import elgatopro300.bbs_cml.ui.utils.Gizmo;
-import elgatopro300.bbs_cml.ui.framework.UIBaseMenu;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCache;
-import elgatopro300.bbs_cml.forms.renderers.utils.MatrixCacheEntry;
+import mchorse.bbs_mod.ui.utils.Gizmo;
+import mchorse.bbs_mod.ui.framework.UIBaseMenu;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
+import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 
 public class UIModelEditorRenderer extends UIModelRenderer
 {

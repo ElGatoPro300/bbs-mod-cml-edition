@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms.forms;
+package mchorse.bbs_mod.forms.forms;
 
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.settings.values.core.ValueList;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.settings.values.core.ValueList;
 
 public class BodyPartManager extends ValueList<BodyPart>
 {

@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.ui.utils.context;
+package mchorse.bbs_mod.ui.utils.context;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.framework.elements.context.UISimpleContextMenu;
-import elgatopro300.bbs_cml.ui.framework.elements.events.UIRemovedEvent;
-import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.ui.utils.keys.KeyCombo;
-import elgatopro300.bbs_cml.ui.utils.keys.Keybind;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu;
+import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
+import mchorse.bbs_mod.ui.utils.keys.Keybind;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;

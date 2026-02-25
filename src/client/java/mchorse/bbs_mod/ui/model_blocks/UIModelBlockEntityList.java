@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.ui.model_blocks;
+package mchorse.bbs_mod.ui.model_blocks;
 
-import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIList;
-import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
+import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
+import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;

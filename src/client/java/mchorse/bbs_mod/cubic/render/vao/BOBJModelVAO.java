@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.cubic.render.vao;
+package mchorse.bbs_mod.cubic.render.vao;
 
-import elgatopro300.bbs_cml.bobj.BOBJArmature;
-import elgatopro300.bbs_cml.bobj.BOBJBone;
-import elgatopro300.bbs_cml.bobj.BOBJLoader;
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
-import elgatopro300.bbs_cml.utils.joml.Matrices;
+import mchorse.bbs_mod.bobj.BOBJArmature;
+import mchorse.bbs_mod.bobj.BOBJBone;
+import mchorse.bbs_mod.bobj.BOBJLoader;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
+import mchorse.bbs_mod.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -227,7 +227,7 @@ public class BOBJModelVAO
 
             if (lightBone != -1)
             {
-                elgatopro300.bbs_cml.utils.colors.Color color = this.armature.orderedBones.get(lightBone).color;
+                mchorse.bbs_mod.utils.colors.Color color = this.armature.orderedBones.get(lightBone).color;
 
                 this.tmpColors[i * 4] = color.r;
                 this.tmpColors[i * 4 + 1] = color.g;
