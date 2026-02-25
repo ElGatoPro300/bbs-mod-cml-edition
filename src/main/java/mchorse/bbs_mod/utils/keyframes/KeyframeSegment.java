@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils.keyframes;
+package elgatopro300.bbs_cml.utils.keyframes;
 
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
 
 /**
  * Keyframe segment.

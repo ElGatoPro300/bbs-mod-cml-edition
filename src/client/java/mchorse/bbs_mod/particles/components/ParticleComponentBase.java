@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.particles.components;
+package elgatopro300.bbs_cml.particles.components;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.math.molang.MolangException;
-import mchorse.bbs_mod.math.molang.MolangParser;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.math.molang.MolangException;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
 
 public abstract class ParticleComponentBase
 {

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
 import java.io.EOFException;
 import java.io.IOException;

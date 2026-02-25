@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.bay4lly;
+package elgatopro300.bbs_cml.bay4lly;
 
-import mchorse.bbs_mod.BBSMod;
+import elgatopro300.bbs_cml.BBSMod;
 
 import java.io.File;
 import java.io.IOException;

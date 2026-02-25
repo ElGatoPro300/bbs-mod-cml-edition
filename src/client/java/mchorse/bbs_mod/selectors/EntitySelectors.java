@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.selectors;
+package elgatopro300.bbs_cml.selectors;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.data.DataToString;
-import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.ListType;
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.data.DataToString;
+import elgatopro300.bbs_cml.data.IMapSerializable;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.ListType;
+import elgatopro300.bbs_cml.data.types.MapType;
 import net.minecraft.entity.LivingEntity;
 
 import java.io.File;

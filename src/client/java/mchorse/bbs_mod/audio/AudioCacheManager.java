@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
 import com.mojang.logging.LogUtils;
-import mchorse.bbs_mod.BBSMod;
+import elgatopro300.bbs_cml.BBSMod;
 import org.slf4j.Logger;
 
 import java.io.File;

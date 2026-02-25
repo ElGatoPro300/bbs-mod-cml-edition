@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.settings;
+package elgatopro300.bbs_cml.settings;
 
-import mchorse.bbs_mod.utils.Timer;
+import elgatopro300.bbs_cml.utils.Timer;
 
 import java.util.HashSet;
 import java.util.Set;

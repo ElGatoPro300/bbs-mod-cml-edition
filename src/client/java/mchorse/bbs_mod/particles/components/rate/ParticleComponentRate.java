@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.particles.components.rate;
+package elgatopro300.bbs_cml.particles.components.rate;
 
-import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
 
 public abstract class ParticleComponentRate extends ParticleComponentBase
 {

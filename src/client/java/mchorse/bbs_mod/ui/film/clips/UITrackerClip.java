@@ -1,16 +1,16 @@
-package mchorse.bbs_mod.ui.film.clips;
+package elgatopro300.bbs_cml.ui.film.clips;
 
-import mchorse.bbs_mod.camera.clips.modifiers.TrackerClip;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.film.UIFilmPanel;
-import mchorse.bbs_mod.ui.film.clips.modules.UIPointModule;
-import mchorse.bbs_mod.ui.film.clips.widgets.UIBitToggle;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIAnchorKeyframeFactory;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.camera.clips.modifiers.TrackerClip;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.UIFilmPanel;
+import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointModule;
+import elgatopro300.bbs_cml.ui.film.clips.widgets.UIBitToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories.UIAnchorKeyframeFactory;
+import elgatopro300.bbs_cml.ui.utils.UI;
 
 public class UITrackerClip extends UIClip<TrackerClip>
 {

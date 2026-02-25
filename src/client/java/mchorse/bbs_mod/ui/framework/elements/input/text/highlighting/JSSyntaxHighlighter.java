@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.ui.framework.elements.input.text.highlighting;
+package elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting;
 
 import java.util.Arrays;
 import java.util.HashSet;

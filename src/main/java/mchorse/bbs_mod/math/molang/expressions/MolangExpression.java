@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.math.molang.expressions;
+package elgatopro300.bbs_cml.math.molang.expressions;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.StringType;
-import mchorse.bbs_mod.math.Constant;
-import mchorse.bbs_mod.math.Operation;
-import mchorse.bbs_mod.math.molang.MolangParser;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.StringType;
+import elgatopro300.bbs_cml.math.Constant;
+import elgatopro300.bbs_cml.math.Operation;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
 
 public abstract class MolangExpression
 {

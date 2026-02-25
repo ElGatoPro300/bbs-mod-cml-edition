@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.particles.functions;
+package elgatopro300.bbs_cml.particles.functions;
 
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.MathBuilder;
-import mchorse.bbs_mod.math.functions.NNFunction;
-import mchorse.bbs_mod.particles.ParticleMolangParser;
-import mchorse.bbs_mod.particles.emitter.Particle;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.MathBuilder;
+import elgatopro300.bbs_cml.math.functions.NNFunction;
+import elgatopro300.bbs_cml.particles.ParticleMolangParser;
+import elgatopro300.bbs_cml.particles.emitter.Particle;
 
 public class SetParticleVariable extends NNFunction
 {

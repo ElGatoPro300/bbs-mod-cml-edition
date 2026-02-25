@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.camera.clips.ClipFactoryData;
-import mchorse.bbs_mod.utils.factory.MapFactory;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.camera.clips.ClipFactoryData;
+import elgatopro300.bbs_cml.utils.factory.MapFactory;
 
 public class RegisterActionClipsEvent
 {

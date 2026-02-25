@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.cubic.geo;
+package elgatopro300.bbs_cml.cubic.geo;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import mchorse.bbs_mod.cubic.data.model.Model;
-import mchorse.bbs_mod.cubic.data.model.ModelCube;
-import mchorse.bbs_mod.cubic.data.model.ModelGroup;
-import mchorse.bbs_mod.cubic.data.model.ModelUV;
-import mchorse.bbs_mod.math.molang.MolangParser;
+import elgatopro300.bbs_cml.cubic.data.model.Model;
+import elgatopro300.bbs_cml.cubic.data.model.ModelCube;
+import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
+import elgatopro300.bbs_cml.cubic.data.model.ModelUV;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.utils.presets;
+package elgatopro300.bbs_cml.ui.utils.presets;
 
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.utils.presets.PresetManager;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.utils.presets.PresetManager;
 
 import java.util.function.Supplier;
 

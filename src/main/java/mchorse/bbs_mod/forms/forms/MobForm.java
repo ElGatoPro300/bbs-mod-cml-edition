@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.forms.forms;
+package elgatopro300.bbs_cml.forms.forms;
 
-import mchorse.bbs_mod.settings.values.core.ValuePose;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.core.ValueLink;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.utils.pose.Pose;
+import elgatopro300.bbs_cml.settings.values.core.ValuePose;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.core.ValueLink;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.utils.pose.Pose;
 
 public class MobForm extends Form
 {

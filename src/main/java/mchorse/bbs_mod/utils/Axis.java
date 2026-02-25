@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
 public enum Axis
 {

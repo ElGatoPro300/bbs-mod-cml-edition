@@ -1,6 +1,6 @@
 {
     "required": true,
-    "package": "mchorse.bbs_mod.mixin.client",
+    "package": "elgatopro300.bbs_cml.mixin.client",
     "compatibilityLevel": "JAVA_21",
     "client": [
         "CameraMixin",

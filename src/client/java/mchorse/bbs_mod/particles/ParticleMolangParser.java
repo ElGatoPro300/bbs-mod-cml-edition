@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.particles;
+package elgatopro300.bbs_cml.particles;
 
-import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.particles.functions.GetParticleVariable;
-import mchorse.bbs_mod.particles.functions.SetParticleVariable;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.particles.functions.GetParticleVariable;
+import elgatopro300.bbs_cml.particles.functions.SetParticleVariable;
 
 public class ParticleMolangParser extends MolangParser
 {

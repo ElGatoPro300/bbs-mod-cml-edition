@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.events;
+package elgatopro300.bbs_cml.events;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;

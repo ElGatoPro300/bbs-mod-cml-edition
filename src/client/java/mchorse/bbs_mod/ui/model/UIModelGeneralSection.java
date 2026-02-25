@@ -1,16 +1,16 @@
-package mchorse.bbs_mod.ui.model;
+package elgatopro300.bbs_cml.ui.model;
 
-import mchorse.bbs_mod.cubic.model.ModelConfig;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.cubic.model.ModelConfig;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.utils.UI;
 import org.joml.Vector3f;
 
-import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
+import elgatopro300.bbs_cml.ui.utils.pose.UIPoseEditor;
 
 public class UIModelGeneralSection extends UIModelSection
 {

@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.settings.values.numeric;
+package elgatopro300.bbs_cml.settings.values.numeric;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.FloatType;
-import mchorse.bbs_mod.settings.values.base.BaseValueNumber;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.FloatType;
+import elgatopro300.bbs_cml.settings.values.base.BaseValueNumber;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
 
 public class ValueFloat extends BaseValueNumber<Float>
 {

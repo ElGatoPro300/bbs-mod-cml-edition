@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.math.functions.trig;
+package elgatopro300.bbs_cml.math.functions.trig;
 
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.MathBuilder;
-import mchorse.bbs_mod.math.functions.NNFunction;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.MathBuilder;
+import elgatopro300.bbs_cml.math.functions.NNFunction;
 
 public class Atan2 extends NNFunction
 {

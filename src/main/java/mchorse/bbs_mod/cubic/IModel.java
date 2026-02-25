@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.cubic;
+package elgatopro300.bbs_cml.cubic;
 
-import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.cubic.data.animation.Animation;
-import mchorse.bbs_mod.cubic.data.model.ModelGroup;
-import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.utils.pose.Pose;
+import elgatopro300.bbs_cml.bobj.BOBJBone;
+import elgatopro300.bbs_cml.cubic.data.animation.Animation;
+import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.utils.pose.Pose;
 
 import java.util.Collection;
 import java.util.Set;

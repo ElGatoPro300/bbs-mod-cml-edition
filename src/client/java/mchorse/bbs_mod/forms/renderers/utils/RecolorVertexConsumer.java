@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.forms.renderers.utils;
+package elgatopro300.bbs_cml.forms.renderers.utils;
 
-import mchorse.bbs_mod.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.colors.Color;
 import net.minecraft.client.render.VertexConsumer;
 import org.joml.Matrix4f;
 

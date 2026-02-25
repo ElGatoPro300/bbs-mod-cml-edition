@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.ui.film.clips;
+package elgatopro300.bbs_cml.ui.film.clips;
 
-import mchorse.bbs_mod.camera.clips.misc.SubtitleClip;
-import mchorse.bbs_mod.settings.values.IValueNotifier;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
-import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.utils.Direction;
+import elgatopro300.bbs_cml.camera.clips.misc.SubtitleClip;
+import elgatopro300.bbs_cml.settings.values.IValueNotifier;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.utils.Direction;
 
 public class UISubtitleClip extends UIClip<SubtitleClip>
 {

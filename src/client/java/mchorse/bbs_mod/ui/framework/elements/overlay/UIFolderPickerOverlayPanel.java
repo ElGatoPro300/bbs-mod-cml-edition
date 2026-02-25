@@ -1,16 +1,16 @@
-package mchorse.bbs_mod.ui.framework.elements.overlay;
+package elgatopro300.bbs_cml.ui.framework.elements.overlay;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.input.list.UIFileLinkList;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.utils.UIUtils;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIFileLinkList;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.utils.UIUtils;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
 
 import java.io.File;
 import java.util.function.Consumer;

@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
 
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
 
 public class UIBooleanKeyframeFactory extends UIKeyframeFactory<Boolean>
 {

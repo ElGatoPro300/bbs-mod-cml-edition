@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui.framework.elements;
+package elgatopro300.bbs_cml.ui.framework.elements;
 
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.Area;
 
 public interface IUIElement
 {

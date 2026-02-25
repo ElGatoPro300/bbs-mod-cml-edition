@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
 
 public class TimeUtilsClient
 {

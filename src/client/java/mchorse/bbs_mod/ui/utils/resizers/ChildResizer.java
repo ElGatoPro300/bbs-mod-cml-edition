@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui.utils.resizers;
+package elgatopro300.bbs_cml.ui.utils.resizers;
 
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.utils.Area;
 
 public class ChildResizer extends DecoratedResizer
 {

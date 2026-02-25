@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.data.types;
+package elgatopro300.bbs_cml.data.types;
 
-import mchorse.bbs_mod.data.DataStorageContext;
-import mchorse.bbs_mod.data.DataToString;
+import elgatopro300.bbs_cml.data.DataStorageContext;
+import elgatopro300.bbs_cml.data.DataToString;
 
 import java.io.IOException;
 

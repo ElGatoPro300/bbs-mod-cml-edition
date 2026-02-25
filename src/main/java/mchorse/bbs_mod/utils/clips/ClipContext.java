@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils.clips;
+package elgatopro300.bbs_cml.utils.clips;
 
-import mchorse.bbs_mod.camera.clips.misc.AudioClip;
+import elgatopro300.bbs_cml.camera.clips.misc.AudioClip;
 
 import java.util.function.Predicate;
 

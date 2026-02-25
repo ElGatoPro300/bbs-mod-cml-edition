@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.network;
+package elgatopro300.bbs_cml.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;

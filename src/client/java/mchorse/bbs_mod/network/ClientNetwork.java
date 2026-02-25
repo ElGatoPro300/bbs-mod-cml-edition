@@ -1,33 +1,33 @@
-package mchorse.bbs_mod.network;
+package elgatopro300.bbs_cml.network;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.actions.ActionState;
-import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
-import mchorse.bbs_mod.blocks.entities.ModelProperties;
-import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.data.DataStorageUtils;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.entity.GunProjectileEntity;
-import mchorse.bbs_mod.entity.IEntityFormProvider;
-import mchorse.bbs_mod.film.Film;
-import mchorse.bbs_mod.film.Films;
-import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.items.GunProperties;
-import mchorse.bbs_mod.morphing.Morph;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
-import mchorse.bbs_mod.ui.film.UIFilmPanel;
-import mchorse.bbs_mod.ui.framework.UIBaseMenu;
-import mchorse.bbs_mod.ui.framework.UIScreen;
-import mchorse.bbs_mod.ui.model_blocks.UIModelBlockPanel;
-import mchorse.bbs_mod.ui.morphing.UIMorphingPanel;
-import mchorse.bbs_mod.utils.DataPath;
-import mchorse.bbs_mod.utils.repos.RepositoryOperation;
-import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
-import mchorse.bbs_mod.ui.triggers.UITriggerBlockPanel;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.actions.ActionState;
+import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
+import elgatopro300.bbs_cml.blocks.entities.ModelProperties;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.data.DataStorageUtils;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.entity.GunProjectileEntity;
+import elgatopro300.bbs_cml.entity.IEntityFormProvider;
+import elgatopro300.bbs_cml.film.Film;
+import elgatopro300.bbs_cml.film.Films;
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.items.GunProperties;
+import elgatopro300.bbs_cml.morphing.Morph;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.ui.film.UIFilmPanel;
+import elgatopro300.bbs_cml.ui.framework.UIBaseMenu;
+import elgatopro300.bbs_cml.ui.framework.UIScreen;
+import elgatopro300.bbs_cml.ui.model_blocks.UIModelBlockPanel;
+import elgatopro300.bbs_cml.ui.morphing.UIMorphingPanel;
+import elgatopro300.bbs_cml.utils.DataPath;
+import elgatopro300.bbs_cml.utils.repos.RepositoryOperation;
+import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
+import elgatopro300.bbs_cml.ui.triggers.UITriggerBlockPanel;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -428,7 +428,7 @@ public class ClientNetwork
             {
                 try
                 {
-                    mchorse.bbs_mod.bay4lly.SkinManager.saveSkin(playerName, bytes);
+                    elgatopro300.bbs_cml.bay4lly.SkinManager.saveSkin(playerName, bytes);
                 }
                 catch (Exception e)
                 {

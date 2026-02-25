@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
+import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
 
 import java.util.Map;
 

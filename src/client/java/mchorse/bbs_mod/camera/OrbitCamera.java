@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.camera;
+package elgatopro300.bbs_cml.camera;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.ui.Keys;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
-import mchorse.bbs_mod.utils.Factor;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.joml.Matrices;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.ui.Keys;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.keys.KeyCombo;
+import elgatopro300.bbs_cml.utils.Factor;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.joml.Matrices;
 import net.minecraft.client.MinecraftClient;
 import org.joml.Matrix3f;
 import org.joml.Vector3d;
@@ -334,7 +334,7 @@ public class OrbitCamera
 
         if (this.velocityPosition.lengthSquared() > 0)
         {
-            float lastFrameDuration = ((mchorse.bbs_mod.mixin.client.RenderTickCounterAccessor) MinecraftClient.getInstance().getRenderTickCounter()).getTickDeltaField() * 5F;
+            float lastFrameDuration = ((elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor) MinecraftClient.getInstance().getRenderTickCounter()).getTickDeltaField() * 5F;
 
             this.position.add(this.rotateVector(this.velocityPosition.x, 0, this.velocityPosition.z)
                 .add(0, this.velocityPosition.y, 0)

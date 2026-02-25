@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui.utils.keys;
+package elgatopro300.bbs_cml.ui.utils.keys;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.utils.OS;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.utils.OS;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashMap;

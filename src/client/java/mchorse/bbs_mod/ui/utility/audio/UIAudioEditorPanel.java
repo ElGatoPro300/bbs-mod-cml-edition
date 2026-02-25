@@ -1,16 +1,16 @@
-package mchorse.bbs_mod.ui.utility.audio;
+package elgatopro300.bbs_cml.ui.utility.audio;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.audio.SoundManager;
-import mchorse.bbs_mod.audio.SoundPlayer;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.Keys;
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
-import mchorse.bbs_mod.ui.dashboard.panels.UISidebarDashboardPanel;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UISoundOverlayPanel;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.audio.SoundManager;
+import elgatopro300.bbs_cml.audio.SoundPlayer;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.Keys;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.ui.dashboard.panels.UISidebarDashboardPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UISoundOverlayPanel;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 public class UIAudioEditorPanel extends UISidebarDashboardPanel
 {

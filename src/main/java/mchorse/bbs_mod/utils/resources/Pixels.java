@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.utils.resources;
+package elgatopro300.bbs_cml.utils.resources;
 
-import mchorse.bbs_mod.utils.IOUtils;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.utils.IOUtils;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;

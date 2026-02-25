@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.camera.clips.misc;
+package elgatopro300.bbs_cml.camera.clips.misc;
 
-import mchorse.bbs_mod.camera.clips.CameraClip;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.camera.values.ValueChannels;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.ClipContext;
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.camera.clips.CameraClip;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.camera.values.ValueChannels;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 
 import java.util.HashMap;
 import java.util.Map;

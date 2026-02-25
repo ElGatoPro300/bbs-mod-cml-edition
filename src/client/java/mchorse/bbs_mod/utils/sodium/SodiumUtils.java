@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils.sodium;
+package elgatopro300.bbs_cml.utils.sodium;
 
-import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexSodiumConsumer;
-import mchorse.bbs_mod.utils.colors.Color;
+import elgatopro300.bbs_cml.forms.renderers.utils.RecolorVertexSodiumConsumer;
+import elgatopro300.bbs_cml.utils.colors.Color;
 import net.minecraft.client.render.VertexConsumer;
 
 public class SodiumUtils

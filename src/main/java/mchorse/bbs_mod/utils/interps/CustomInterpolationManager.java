@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.interps;
+package elgatopro300.bbs_cml.utils.interps;
 
-import mchorse.bbs_mod.data.DataToString;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.utils.IOUtils;
+import elgatopro300.bbs_cml.data.DataToString;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.utils.IOUtils;
 
 import java.io.File;
 import java.util.ArrayList;

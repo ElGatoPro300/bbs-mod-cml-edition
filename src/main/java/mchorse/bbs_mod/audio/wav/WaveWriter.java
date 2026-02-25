@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.audio.wav;
+package elgatopro300.bbs_cml.audio.wav;
 
-import mchorse.bbs_mod.audio.Wave;
+import elgatopro300.bbs_cml.audio.Wave;
 
 import java.io.File;
 import java.io.FileOutputStream;

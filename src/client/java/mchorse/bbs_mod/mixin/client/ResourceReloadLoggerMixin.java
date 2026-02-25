@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.mixin.client;
+package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.BBSModClient;
+import elgatopro300.bbs_cml.BBSModClient;
 import net.minecraft.client.resource.ResourceReloadLogger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.importers;
+package elgatopro300.bbs_cml.importers;
 
-import mchorse.bbs_mod.importers.types.IImporter;
+import elgatopro300.bbs_cml.importers.types.IImporter;
 
 import java.io.File;
 import java.util.List;

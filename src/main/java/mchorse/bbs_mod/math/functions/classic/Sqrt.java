@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.math.functions.classic;
+package elgatopro300.bbs_cml.math.functions.classic;
 
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.MathBuilder;
-import mchorse.bbs_mod.math.functions.NNFunction;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.MathBuilder;
+import elgatopro300.bbs_cml.math.functions.NNFunction;
 
 public class Sqrt extends NNFunction
 {

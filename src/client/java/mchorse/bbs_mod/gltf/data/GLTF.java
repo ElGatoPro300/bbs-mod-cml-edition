@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.gltf.data;
+package elgatopro300.bbs_cml.gltf.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;

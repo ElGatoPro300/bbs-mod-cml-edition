@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.ui.film.clips;
+package elgatopro300.bbs_cml.ui.film.clips;
 
-import mchorse.bbs_mod.camera.clips.overwrite.IdleClip;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.film.clips.modules.UIAngleModule;
-import mchorse.bbs_mod.ui.film.clips.modules.UIPointModule;
-import mchorse.bbs_mod.ui.film.utils.UICameraUtils;
+import elgatopro300.bbs_cml.camera.clips.overwrite.IdleClip;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.clips.modules.UIAngleModule;
+import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointModule;
+import elgatopro300.bbs_cml.ui.film.utils.UICameraUtils;
 
 /**
  * Idle clip panel

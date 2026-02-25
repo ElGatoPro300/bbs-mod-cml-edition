@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.ui.utils.presets;
+package elgatopro300.bbs_cml.ui.utils.presets;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.context.UISimpleContextMenu;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.context.UISimpleContextMenu;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class UIPresetContextMenu extends UISimpleContextMenu
 {

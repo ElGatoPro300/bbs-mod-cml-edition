@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.resources.packs;
+package elgatopro300.bbs_cml.resources.packs;
 
-import mchorse.bbs_mod.resources.ISourcePack;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.resources.ISourcePack;
+import elgatopro300.bbs_cml.resources.Link;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.fbx;
+package elgatopro300.bbs_cml.fbx;
 
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;

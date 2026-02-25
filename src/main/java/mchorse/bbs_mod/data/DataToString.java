@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.data;
+package elgatopro300.bbs_cml.data;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.ListType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.utils.IOUtils;
-import mchorse.bbs_mod.utils.StringUtils;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.ListType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.utils.IOUtils;
+import elgatopro300.bbs_cml.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

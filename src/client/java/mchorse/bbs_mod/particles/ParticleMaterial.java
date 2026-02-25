@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.particles;
+package elgatopro300.bbs_cml.particles;
 
 public enum ParticleMaterial
 {

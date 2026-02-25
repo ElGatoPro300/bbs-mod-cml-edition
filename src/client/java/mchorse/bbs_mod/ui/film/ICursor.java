@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.ui.film;
+package elgatopro300.bbs_cml.ui.film;
 
 public interface ICursor
 {

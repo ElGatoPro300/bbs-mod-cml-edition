@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.forms.forms.utils;
+package elgatopro300.bbs_cml.forms.forms.utils;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
 import java.util.Objects;
 // Numeric parsing is handled via MapType helpers; no direct NumberType/NumericType import required
 

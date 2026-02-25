@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
-import mchorse.bbs_mod.audio.BinaryReader;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.resources.Pixels;
+import elgatopro300.bbs_cml.audio.BinaryReader;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.resources.Pixels;
 import org.joml.Vector2i;
 
 import java.io.ByteArrayOutputStream;

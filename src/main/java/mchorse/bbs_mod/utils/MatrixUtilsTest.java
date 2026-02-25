@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
 import com.ibm.icu.impl.Assert;
-import mchorse.bbs_mod.utils.MatrixUtils;
+import elgatopro300.bbs_cml.utils.MatrixUtils;
 import org.joml.Matrix3d;
 import org.joml.Vector3d;
 

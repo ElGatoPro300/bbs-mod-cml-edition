@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.ui.utils.keys;
+package elgatopro300.bbs_cml.ui.utils.keys;
 
-import mchorse.bbs_mod.settings.SettingsBuilder;
-import mchorse.bbs_mod.settings.value.ValueKeyCombo;
-import mchorse.bbs_mod.ui.Keys;
+import elgatopro300.bbs_cml.settings.SettingsBuilder;
+import elgatopro300.bbs_cml.settings.value.ValueKeyCombo;
+import elgatopro300.bbs_cml.ui.Keys;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

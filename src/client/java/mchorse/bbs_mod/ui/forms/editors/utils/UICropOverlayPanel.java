@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.forms.editors.utils;
+package elgatopro300.bbs_cml.ui.forms.editors.utils;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.graphics.texture.Texture;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
 import org.joml.Vector4f;
 
 public class UICropOverlayPanel extends UIOverlayPanel

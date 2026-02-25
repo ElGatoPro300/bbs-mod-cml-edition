@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;

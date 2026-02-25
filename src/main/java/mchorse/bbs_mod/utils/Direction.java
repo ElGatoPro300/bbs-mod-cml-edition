@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 
 public enum Direction
 {

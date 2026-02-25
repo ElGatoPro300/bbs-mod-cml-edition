@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.framework.elements.overlay;
+package elgatopro300.bbs_cml.ui.framework.elements.overlay;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
-import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.input.list.UISearchList;
+import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
 
 import java.util.Collection;
 import java.util.List;

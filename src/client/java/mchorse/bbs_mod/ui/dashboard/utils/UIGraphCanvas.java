@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.ui.dashboard.utils;
+package elgatopro300.bbs_cml.ui.dashboard.utils;
 
-import mchorse.bbs_mod.graphics.line.LineBuilder;
-import mchorse.bbs_mod.graphics.line.SolidColorLineRenderer;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.MathBuilder;
-import mchorse.bbs_mod.math.Variable;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.utils.UICanvas;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.graphics.line.LineBuilder;
+import elgatopro300.bbs_cml.graphics.line.SolidColorLineRenderer;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.MathBuilder;
+import elgatopro300.bbs_cml.math.Variable;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UICanvas;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class UIGraphCanvas extends UICanvas
 {

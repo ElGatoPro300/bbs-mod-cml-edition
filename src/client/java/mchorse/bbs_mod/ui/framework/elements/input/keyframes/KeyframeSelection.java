@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui.framework.elements.input.keyframes;
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes;
 
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.ui.film.clips.modules;
+package elgatopro300.bbs_cml.ui.film.clips.modules;
 
-import mchorse.bbs_mod.camera.data.Angle;
-import mchorse.bbs_mod.camera.values.ValueAngle;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.film.clips.UIClip;
-import mchorse.bbs_mod.ui.film.utils.UICameraUtils;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.camera.data.Angle;
+import elgatopro300.bbs_cml.camera.values.ValueAngle;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.clips.UIClip;
+import elgatopro300.bbs_cml.ui.film.utils.UICameraUtils;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
 
 public class UIAngleModule extends UIAbstractModule
 {

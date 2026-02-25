@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
-import mchorse.bbs_mod.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.MathUtils;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;

@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.math.functions.string;
+package elgatopro300.bbs_cml.math.functions.string;
 
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.MathBuilder;
-import mchorse.bbs_mod.math.functions.SNFunction;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.MathBuilder;
+import elgatopro300.bbs_cml.math.functions.SNFunction;
 
 public class StringContains extends SNFunction
 {

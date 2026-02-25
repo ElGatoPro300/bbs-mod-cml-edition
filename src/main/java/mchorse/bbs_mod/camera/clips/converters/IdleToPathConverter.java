@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.camera.clips.converters;
+package elgatopro300.bbs_cml.camera.clips.converters;
 
-import mchorse.bbs_mod.camera.clips.overwrite.IdleClip;
-import mchorse.bbs_mod.camera.clips.overwrite.PathClip;
+import elgatopro300.bbs_cml.camera.clips.overwrite.IdleClip;
+import elgatopro300.bbs_cml.camera.clips.overwrite.PathClip;
 
 public class IdleToPathConverter implements IClipConverter<IdleClip, PathClip>
 {

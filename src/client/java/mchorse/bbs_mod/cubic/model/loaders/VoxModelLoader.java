@@ -1,19 +1,19 @@
-package mchorse.bbs_mod.cubic.model.loaders;
+package elgatopro300.bbs_cml.cubic.model.loaders;
 
-import mchorse.bbs_mod.cubic.ModelInstance;
-import mchorse.bbs_mod.cubic.data.animation.Animations;
-import mchorse.bbs_mod.cubic.data.model.Model;
-import mchorse.bbs_mod.cubic.data.model.ModelGroup;
-import mchorse.bbs_mod.cubic.model.ModelManager;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.resources.AssetProvider;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.utils.PNGEncoder;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.resources.Pixels;
-import mchorse.bbs_mod.vox.VoxBuilder;
-import mchorse.bbs_mod.vox.VoxDocument;
-import mchorse.bbs_mod.vox.VoxReader;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
+import elgatopro300.bbs_cml.cubic.data.animation.Animations;
+import elgatopro300.bbs_cml.cubic.data.model.Model;
+import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
+import elgatopro300.bbs_cml.cubic.model.ModelManager;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.resources.AssetProvider;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.utils.PNGEncoder;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.resources.Pixels;
+import elgatopro300.bbs_cml.vox.VoxBuilder;
+import elgatopro300.bbs_cml.vox.VoxDocument;
+import elgatopro300.bbs_cml.vox.VoxReader;
 
 import java.io.File;
 import java.io.InputStream;

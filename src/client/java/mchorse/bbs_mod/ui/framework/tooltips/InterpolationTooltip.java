@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.framework.tooltips;
+package elgatopro300.bbs_cml.ui.framework.tooltips;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.utils.Area;
-import mchorse.bbs_mod.ui.utils.renderers.InterpolationRenderer;
-import mchorse.bbs_mod.utils.interps.IInterp;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.utils.renderers.InterpolationRenderer;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
 
 import java.util.function.Supplier;
 

@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.ui.utils.presets;
+package elgatopro300.bbs_cml.ui.utils.presets;
 
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIListOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
-import mchorse.bbs_mod.ui.utils.UIUtils;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.utils.Direction;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIListOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIPromptOverlayPanel;
+import elgatopro300.bbs_cml.ui.utils.UIUtils;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.utils.Direction;
 
 public class UIPresetsOverlayPanel extends UIListOverlayPanel
 {

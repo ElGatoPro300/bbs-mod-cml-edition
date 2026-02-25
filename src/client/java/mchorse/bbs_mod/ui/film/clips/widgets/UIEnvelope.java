@@ -1,25 +1,25 @@
-package mchorse.bbs_mod.ui.film.clips.widgets;
+package elgatopro300.bbs_cml.ui.film.clips.widgets;
 
-import mchorse.bbs_mod.camera.utils.TimeUtils;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.clips.UIClip;
-import mchorse.bbs_mod.ui.film.replays.UIReplaysEditor;
-import mchorse.bbs_mod.ui.film.utils.keyframes.UIFilmKeyframes;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeEditor;
-import mchorse.bbs_mod.ui.framework.tooltips.InterpolationTooltip;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.utils.Direction;
-import mchorse.bbs_mod.utils.TimeUtilsClient;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.Clips;
-import mchorse.bbs_mod.utils.clips.Envelope;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.camera.utils.TimeUtils;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.clips.UIClip;
+import elgatopro300.bbs_cml.ui.film.replays.UIReplaysEditor;
+import elgatopro300.bbs_cml.ui.film.utils.keyframes.UIFilmKeyframes;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UICirculate;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.context.UIInterpolationContextMenu;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeEditor;
+import elgatopro300.bbs_cml.ui.framework.tooltips.InterpolationTooltip;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.utils.Direction;
+import elgatopro300.bbs_cml.utils.TimeUtilsClient;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.Clips;
+import elgatopro300.bbs_cml.utils.clips.Envelope;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class UIEnvelope extends UIElement
 {

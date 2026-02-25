@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.settings;
+package elgatopro300.bbs_cml.settings;
 
-import mchorse.bbs_mod.data.DataToString;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.ui.utils.icons.Icon;
-import mchorse.bbs_mod.utils.IOUtils;
+import elgatopro300.bbs_cml.data.DataToString;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.ui.utils.icons.Icon;
+import elgatopro300.bbs_cml.utils.IOUtils;
 
 import java.io.File;
 import java.io.IOException;

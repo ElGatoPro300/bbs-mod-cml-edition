@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.actions;
+package elgatopro300.bbs_cml.actions;
 
-import mchorse.bbs_mod.BBSSettings;
+import elgatopro300.bbs_cml.BBSSettings;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;

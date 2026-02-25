@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils.joml;
+package elgatopro300.bbs_cml.utils.joml;
 
-import mchorse.bbs_mod.utils.Axis;
+import elgatopro300.bbs_cml.utils.Axis;
 import org.joml.Intersectiond;
 import org.joml.Vector2d;
 import org.joml.Vector2f;

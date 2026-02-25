@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.camera.clips.converters;
+package elgatopro300.bbs_cml.camera.clips.converters;
 
-import mchorse.bbs_mod.camera.clips.overwrite.IdleClip;
-import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.camera.clips.overwrite.IdleClip;
+import elgatopro300.bbs_cml.camera.clips.overwrite.KeyframeClip;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 
 public class IdleToKeyframeConverter implements IClipConverter<IdleClip, KeyframeClip>
 {

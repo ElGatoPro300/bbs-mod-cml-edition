@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.keyframes.factories;
+package elgatopro300.bbs_cml.utils.keyframes.factories;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.StringType;
-import mchorse.bbs_mod.utils.interps.IInterp;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.StringType;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
 
 public class StringKeyframeFactory implements IKeyframeFactory<String>
 {

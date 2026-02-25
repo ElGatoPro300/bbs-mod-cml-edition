@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.forms;
+package elgatopro300.bbs_cml.ui.forms;
 
-import mchorse.bbs_mod.ui.framework.elements.events.UIEvent;
+import elgatopro300.bbs_cml.ui.framework.elements.events.UIEvent;
 
 public class UIToggleEditorEvent extends UIEvent<UIFormPalette>
 {

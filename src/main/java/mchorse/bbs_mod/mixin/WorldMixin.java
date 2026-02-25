@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.mixin;
+package elgatopro300.bbs_cml.mixin;
 
-import mchorse.bbs_mod.BBSMod;
+import elgatopro300.bbs_cml.BBSMod;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;

@@ -1,19 +1,19 @@
-package mchorse.bbs_mod.ui.film.replays.overlays;
+package elgatopro300.bbs_cml.ui.film.replays.overlays;
 
-import mchorse.bbs_mod.cubic.ModelInstance;
-import mchorse.bbs_mod.cubic.data.animation.Animation;
-import mchorse.bbs_mod.forms.forms.ModelForm;
-import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
-import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
+import elgatopro300.bbs_cml.cubic.data.animation.Animation;
+import elgatopro300.bbs_cml.forms.forms.ModelForm;
+import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import elgatopro300.bbs_cml.ui.framework.elements.input.list.UISearchList;
+import elgatopro300.bbs_cml.ui.framework.elements.input.list.UIStringList;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
+import elgatopro300.bbs_cml.ui.utils.UI;
 
 public class UIAnimationToPoseOverlayPanel extends UIOverlayPanel
 {

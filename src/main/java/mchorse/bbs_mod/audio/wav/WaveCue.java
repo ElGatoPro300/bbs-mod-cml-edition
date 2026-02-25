@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.audio.wav;
+package elgatopro300.bbs_cml.audio.wav;
 
 public class WaveCue
 {

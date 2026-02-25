@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.forms.categories;
+package elgatopro300.bbs_cml.forms.categories;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.UIFormList;
-import mchorse.bbs_mod.ui.forms.categories.UIFormCategory;
-import mchorse.bbs_mod.ui.forms.categories.UIRecentFormCategory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.UIFormList;
+import elgatopro300.bbs_cml.ui.forms.categories.UIFormCategory;
+import elgatopro300.bbs_cml.ui.forms.categories.UIRecentFormCategory;
 
 public class RecentFormCategory extends FormCategory
 {

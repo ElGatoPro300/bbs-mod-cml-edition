@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.obj;
+package elgatopro300.bbs_cml.obj;
 
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.resources.Link;
 
 /**
  * OBJ material

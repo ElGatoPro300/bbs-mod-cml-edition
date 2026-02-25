@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.cubic.model;
+package elgatopro300.bbs_cml.cubic.model;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.utils.pose.Transform;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.utils.pose.Transform;
 
 public class ArmorSlot extends ValueGroup
 {

@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.ui.model;
+package elgatopro300.bbs_cml.ui.model;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.cubic.ModelInstance;
-import mchorse.bbs_mod.cubic.model.ArmorSlot;
-import mchorse.bbs_mod.cubic.model.ModelConfig;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.model.UIModelItemsSection.UIStringListContextMenu;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
+import elgatopro300.bbs_cml.cubic.model.ArmorSlot;
+import elgatopro300.bbs_cml.cubic.model.ModelConfig;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.model.UIModelItemsSection.UIStringListContextMenu;
+import elgatopro300.bbs_cml.ui.utils.UI;
 
 import java.util.ArrayList;
 import java.util.Collections;

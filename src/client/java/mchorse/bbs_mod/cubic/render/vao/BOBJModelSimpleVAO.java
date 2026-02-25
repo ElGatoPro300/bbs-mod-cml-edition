@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.cubic.render.vao;
+package elgatopro300.bbs_cml.cubic.render.vao;
 
-import mchorse.bbs_mod.bobj.BOBJArmature;
-import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.bobj.BOBJLoader;
-import mchorse.bbs_mod.utils.MathUtils;
+import elgatopro300.bbs_cml.bobj.BOBJArmature;
+import elgatopro300.bbs_cml.bobj.BOBJBone;
+import elgatopro300.bbs_cml.bobj.BOBJLoader;
+import elgatopro300.bbs_cml.utils.MathUtils;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;

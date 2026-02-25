@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils.interps.rasterizers;
+package elgatopro300.bbs_cml.utils.interps.rasterizers;
 
 import org.joml.Vector2i;
 

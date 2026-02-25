@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.ui.utils.keys;
+package elgatopro300.bbs_cml.ui.utils.keys;
 
 import org.lwjgl.glfw.GLFW;
 

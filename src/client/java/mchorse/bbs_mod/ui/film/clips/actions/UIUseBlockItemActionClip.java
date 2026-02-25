@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.ui.film.clips.actions;
+package elgatopro300.bbs_cml.ui.film.clips.actions;
 
-import mchorse.bbs_mod.actions.types.item.UseBlockItemActionClip;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.film.clips.widgets.UIBlockHitResult;
-import mchorse.bbs_mod.ui.forms.editors.panels.widgets.UIItemStack;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.actions.types.item.UseBlockItemActionClip;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.clips.widgets.UIBlockHitResult;
+import elgatopro300.bbs_cml.ui.forms.editors.panels.widgets.UIItemStack;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.utils.UI;
 
 public class UIUseBlockItemActionClip extends UIActionClip<UseBlockItemActionClip>
 {

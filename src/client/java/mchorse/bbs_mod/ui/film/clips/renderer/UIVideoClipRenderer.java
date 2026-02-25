@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.ui.film.clips.renderer;
+package elgatopro300.bbs_cml.ui.film.clips.renderer;
 
-import mchorse.bbs_mod.audio.SoundBuffer;
-import mchorse.bbs_mod.camera.clips.misc.VideoClip;
-import mchorse.bbs_mod.camera.utils.TimeUtils;
-import mchorse.bbs_mod.client.video.VideoWaveformCache;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.utils.Area;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.audio.SoundBuffer;
+import elgatopro300.bbs_cml.camera.clips.misc.VideoClip;
+import elgatopro300.bbs_cml.camera.utils.TimeUtils;
+import elgatopro300.bbs_cml.client.video.VideoWaveformCache;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.Area;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class UIVideoClipRenderer extends UIClipRenderer<VideoClip>
 {

@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.mixin.client.iris;
+package elgatopro300.bbs_cml.mixin.client.iris;
 
-import mchorse.bbs_mod.utils.iris.ShaderCurves;
+import elgatopro300.bbs_cml.utils.iris.ShaderCurves;
 import net.irisshaders.iris.uniforms.custom.CustomUniforms;
 import net.irisshaders.iris.uniforms.custom.CustomUniformFixedInputUniformsHolder;
 import org.spongepowered.asm.mixin.Mixin;

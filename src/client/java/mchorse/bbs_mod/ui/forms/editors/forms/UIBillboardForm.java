@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.forms.editors.forms;
+package elgatopro300.bbs_cml.ui.forms.editors.forms;
 
-import mchorse.bbs_mod.forms.forms.BillboardForm;
-import mchorse.bbs_mod.ui.Keys;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.editors.panels.UIBillboardFormPanel;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.forms.forms.BillboardForm;
+import elgatopro300.bbs_cml.ui.Keys;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.editors.panels.UIBillboardFormPanel;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 public class UIBillboardForm extends UIForm<BillboardForm>
 {

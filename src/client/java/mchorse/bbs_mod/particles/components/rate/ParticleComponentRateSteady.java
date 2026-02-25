@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.particles.components.rate;
+package elgatopro300.bbs_cml.particles.components.rate;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.math.Constant;
-import mchorse.bbs_mod.math.molang.MolangException;
-import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
-import mchorse.bbs_mod.math.molang.expressions.MolangValue;
-import mchorse.bbs_mod.particles.components.IComponentEmitterUpdate;
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
-import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.math.Constant;
+import elgatopro300.bbs_cml.math.molang.MolangException;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
+import elgatopro300.bbs_cml.math.molang.expressions.MolangValue;
+import elgatopro300.bbs_cml.particles.components.IComponentEmitterUpdate;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
 
 public class ParticleComponentRateSteady extends ParticleComponentRate implements IComponentEmitterUpdate
 {

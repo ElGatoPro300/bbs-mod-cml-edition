@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.l10n.keys;
+package elgatopro300.bbs_cml.l10n.keys;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.resources.Link;
 
 import java.util.Collection;
 

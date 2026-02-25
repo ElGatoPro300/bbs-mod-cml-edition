@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.forms.forms;
+package elgatopro300.bbs_cml.forms.forms;
 
-import mchorse.bbs_mod.forms.states.AnimationState;
+import elgatopro300.bbs_cml.forms.states.AnimationState;
 
 public interface IStateFoundCallback
 {

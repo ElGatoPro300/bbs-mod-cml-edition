@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.mixin.client;
+package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.camera.controller.CameraController;
-import mchorse.bbs_mod.camera.controller.ICameraController;
-import mchorse.bbs_mod.camera.controller.PlayCameraController;
-import mchorse.bbs_mod.client.BBSRendering;
-import mchorse.bbs_mod.items.GunZoom;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.camera.controller.CameraController;
+import elgatopro300.bbs_cml.camera.controller.ICameraController;
+import elgatopro300.bbs_cml.camera.controller.PlayCameraController;
+import elgatopro300.bbs_cml.client.BBSRendering;
+import elgatopro300.bbs_cml.items.GunZoom;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;

@@ -1,20 +1,20 @@
-package mchorse.bbs_mod.ui.dashboard.panels;
+package elgatopro300.bbs_cml.ui.dashboard.panels;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.ui.ContentType;
-import mchorse.bbs_mod.ui.Keys;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
-import mchorse.bbs_mod.ui.dashboard.panels.overlay.UICRUDOverlayPanel;
-import mchorse.bbs_mod.ui.dashboard.panels.overlay.UIDataOverlayPanel;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.utils.UIDataUtils;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.utils.Timer;
-import mchorse.bbs_mod.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.ui.ContentType;
+import elgatopro300.bbs_cml.ui.Keys;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.ui.dashboard.panels.overlay.UICRUDOverlayPanel;
+import elgatopro300.bbs_cml.ui.dashboard.panels.overlay.UIDataOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.utils.UIDataUtils;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.utils.Timer;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
 
 import java.util.Collection;
 

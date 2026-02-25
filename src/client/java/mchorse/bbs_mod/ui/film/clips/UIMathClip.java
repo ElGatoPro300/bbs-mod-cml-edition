@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.ui.film.clips;
+package elgatopro300.bbs_cml.ui.film.clips;
 
-import mchorse.bbs_mod.camera.clips.modifiers.MathClip;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.film.clips.widgets.UIBitToggle;
-import mchorse.bbs_mod.ui.film.utils.UITextboxHelp;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.camera.clips.modifiers.MathClip;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.clips.widgets.UIBitToggle;
+import elgatopro300.bbs_cml.ui.film.utils.UITextboxHelp;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class UIMathClip extends UIClip<MathClip>
 {

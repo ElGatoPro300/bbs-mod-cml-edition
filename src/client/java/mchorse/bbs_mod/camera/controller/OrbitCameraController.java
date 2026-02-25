@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.camera.controller;
+package elgatopro300.bbs_cml.camera.controller;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.camera.Camera;
-import mchorse.bbs_mod.camera.OrbitCamera;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.camera.Camera;
+import elgatopro300.bbs_cml.camera.OrbitCamera;
 
 public class OrbitCameraController implements ICameraController
 {

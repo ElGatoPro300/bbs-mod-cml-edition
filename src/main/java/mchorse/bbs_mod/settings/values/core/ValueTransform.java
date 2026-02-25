@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.settings.values.core;
+package elgatopro300.bbs_cml.settings.values.core;
 
-import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
-import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
-import mchorse.bbs_mod.utils.pose.Transform;
+import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
+import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import elgatopro300.bbs_cml.utils.pose.Transform;
 
 public class ValueTransform extends BaseKeyframeFactoryValue<Transform>
 {

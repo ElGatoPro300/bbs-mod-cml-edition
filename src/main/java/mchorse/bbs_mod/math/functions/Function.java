@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.math.functions;
+package elgatopro300.bbs_cml.math.functions;
 
-import mchorse.bbs_mod.math.Constant;
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.MathBuilder;
+import elgatopro300.bbs_cml.math.Constant;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.MathBuilder;
 
 /**
  * Abstract function class

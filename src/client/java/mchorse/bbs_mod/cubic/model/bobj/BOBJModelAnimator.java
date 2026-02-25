@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.cubic.model.bobj;
+package elgatopro300.bbs_cml.cubic.model.bobj;
 
-import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.cubic.CubicModelAnimator;
-import mchorse.bbs_mod.cubic.data.animation.Animation;
-import mchorse.bbs_mod.cubic.data.animation.AnimationPart;
-import mchorse.bbs_mod.utils.interps.Lerps;
-import mchorse.bbs_mod.utils.pose.Transform;
+import elgatopro300.bbs_cml.bobj.BOBJBone;
+import elgatopro300.bbs_cml.cubic.CubicModelAnimator;
+import elgatopro300.bbs_cml.cubic.data.animation.Animation;
+import elgatopro300.bbs_cml.cubic.data.animation.AnimationPart;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
+import elgatopro300.bbs_cml.utils.pose.Transform;
 import org.joml.Vector3d;
 
 public class BOBJModelAnimator

@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.interps.types;
+package elgatopro300.bbs_cml.utils.interps.types;
 
-import mchorse.bbs_mod.utils.interps.InterpContext;
-import mchorse.bbs_mod.utils.interps.Lerps;
-import mchorse.bbs_mod.utils.interps.easings.IEasing;
+import elgatopro300.bbs_cml.utils.interps.InterpContext;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
+import elgatopro300.bbs_cml.utils.interps.easings.IEasing;
 
 public class EasingInterp extends BaseInterp
 {

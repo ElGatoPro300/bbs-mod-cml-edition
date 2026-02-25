@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.network;
+package elgatopro300.bbs_cml.network;
 
 import net.minecraft.network.PacketByteBuf;
 

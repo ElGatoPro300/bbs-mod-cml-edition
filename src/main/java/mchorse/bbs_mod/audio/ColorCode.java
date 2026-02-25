@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
-import mchorse.bbs_mod.data.IDataSerializable;
-import mchorse.bbs_mod.data.types.ListType;
+import elgatopro300.bbs_cml.data.IDataSerializable;
+import elgatopro300.bbs_cml.data.types.ListType;
 
 public class ColorCode implements IDataSerializable<ListType>
 {

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.cubic.render.vao;
+package elgatopro300.bbs_cml.cubic.render.vao;
 
 /**
  * Вершинные атрибуты (могут измениться в зависимости от версии игры или Iris, см. индексы в {@link net.irisshaders.iris.vertices.IrisVertexFormats})

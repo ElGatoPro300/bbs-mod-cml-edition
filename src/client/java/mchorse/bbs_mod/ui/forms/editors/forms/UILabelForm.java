@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.forms.editors.forms;
+package elgatopro300.bbs_cml.ui.forms.editors.forms;
 
-import mchorse.bbs_mod.forms.forms.LabelForm;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.editors.panels.UILabelFormPanel;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.forms.forms.LabelForm;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.editors.panels.UILabelFormPanel;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 public class UILabelForm extends UIForm<LabelForm>
 {

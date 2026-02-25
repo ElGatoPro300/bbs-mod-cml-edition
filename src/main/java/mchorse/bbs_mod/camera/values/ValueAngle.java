@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.camera.values;
+package elgatopro300.bbs_cml.camera.values;
 
-import mchorse.bbs_mod.camera.data.Angle;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
+import elgatopro300.bbs_cml.camera.data.Angle;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
 
 public class ValueAngle extends BaseValueBasic<Angle>
 {

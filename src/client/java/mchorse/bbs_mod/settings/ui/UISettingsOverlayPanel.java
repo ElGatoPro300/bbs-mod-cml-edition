@@ -1,26 +1,26 @@
-package mchorse.bbs_mod.settings.ui;
+package elgatopro300.bbs_cml.settings.ui;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.l10n.L10n;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.settings.Settings;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
-import mchorse.bbs_mod.ui.utils.ScrollDirection;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.utils.interps.Interpolations;
-import mchorse.bbs_mod.utils.Direction;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.l10n.L10n;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.settings.Settings;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.UIScrollView;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
+import elgatopro300.bbs_cml.ui.utils.ScrollDirection;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.utils.Direction;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +130,7 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
 
                         for (String k : Interpolations.MAP.keySet())
                         {
-                            interpKeys.add(mchorse.bbs_mod.ui.UIKeys.C_INTERPOLATION.get(k));
+                            interpKeys.add(elgatopro300.bbs_cml.ui.UIKeys.C_INTERPOLATION.get(k));
                         }
 
                         if (value instanceof ValueInt)

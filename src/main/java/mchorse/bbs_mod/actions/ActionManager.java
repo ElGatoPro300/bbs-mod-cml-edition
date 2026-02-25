@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.actions;
+package elgatopro300.bbs_cml.actions;
 
-import mchorse.bbs_mod.actions.types.ActionClip;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.film.Film;
-import mchorse.bbs_mod.utils.DataPath;
+import elgatopro300.bbs_cml.actions.types.ActionClip;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.film.Film;
+import elgatopro300.bbs_cml.utils.DataPath;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;

@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
-import mchorse.bbs_mod.BBSMod;
+import elgatopro300.bbs_cml.BBSMod;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import com.mojang.authlib.GameProfile;

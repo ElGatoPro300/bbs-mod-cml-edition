@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
-import mchorse.bbs_mod.ui.utils.context.ContextMenuManager;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
+import elgatopro300.bbs_cml.ui.utils.context.ContextMenuManager;
 
 import java.util.function.BiConsumer;
 

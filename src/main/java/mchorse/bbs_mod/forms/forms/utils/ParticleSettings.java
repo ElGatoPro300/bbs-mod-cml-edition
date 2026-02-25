@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.forms.forms.utils;
+package elgatopro300.bbs_cml.forms.forms.utils;
 
-import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.data.IMapSerializable;
+import elgatopro300.bbs_cml.data.types.MapType;
 import net.minecraft.util.Identifier;
 
 public class ParticleSettings implements IMapSerializable

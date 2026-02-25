@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.mixin.client;
+package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.client.BBSRendering;
+import elgatopro300.bbs_cml.client.BBSRendering;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.SimpleOption;
 import org.spongepowered.asm.mixin.Mixin;

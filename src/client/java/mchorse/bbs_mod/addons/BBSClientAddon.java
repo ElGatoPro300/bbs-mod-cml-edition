@@ -1,30 +1,30 @@
-package mchorse.bbs_mod.addons;
+package elgatopro300.bbs_cml.addons;
 
-import mchorse.bbs_mod.events.BBSAddonMod;
-import mchorse.bbs_mod.events.Subscribe;
-import mchorse.bbs_mod.events.register.RegisterClientSettingsEvent;
-import mchorse.bbs_mod.events.register.RegisterDashboardPanelsEvent;
-import mchorse.bbs_mod.events.register.RegisterFilmEditorFactoriesEvent;
-import mchorse.bbs_mod.events.register.RegisterFormCategoriesEvent;
-import mchorse.bbs_mod.events.register.RegisterGizmoEvent;
-import mchorse.bbs_mod.events.register.RegisterImportersEvent;
-import mchorse.bbs_mod.events.register.RegisterInterpolationsEvent;
-import mchorse.bbs_mod.events.register.RegisterIconsEvent;
-import mchorse.bbs_mod.events.register.RegisterUIKeyframeFactoriesEvent;
-import mchorse.bbs_mod.events.register.RegisterFormsRenderersEvent;
-import mchorse.bbs_mod.events.register.RegisterFormEditorsEvent;
-import mchorse.bbs_mod.events.register.RegisterL10nEvent;
-import mchorse.bbs_mod.events.register.RegisterParticleComponentsEvent;
-import mchorse.bbs_mod.events.register.RegisterPropTransformEvent;
-import mchorse.bbs_mod.events.register.RegisterStencilMapEvent;
-import mchorse.bbs_mod.events.register.RegisterRayTracingEvent;
-import mchorse.bbs_mod.events.register.RegisterFilmPreviewEvent;
-import mchorse.bbs_mod.events.register.RegisterReplayListContextMenuEvent;
-import mchorse.bbs_mod.events.register.RegisterReplayPanelEvent;
-import mchorse.bbs_mod.events.register.RegisterShadersEvent;
-import mchorse.bbs_mod.events.register.RegisterSourcePacksEvent;
-import mchorse.bbs_mod.events.register.RegisterKeyframeShapesEvent;
-import mchorse.bbs_mod.events.register.RegisterUIValueFactoriesEvent;
+import elgatopro300.bbs_cml.events.BBSAddonMod;
+import elgatopro300.bbs_cml.events.Subscribe;
+import elgatopro300.bbs_cml.events.register.RegisterClientSettingsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterDashboardPanelsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFilmEditorFactoriesEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFormCategoriesEvent;
+import elgatopro300.bbs_cml.events.register.RegisterGizmoEvent;
+import elgatopro300.bbs_cml.events.register.RegisterImportersEvent;
+import elgatopro300.bbs_cml.events.register.RegisterInterpolationsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterIconsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterUIKeyframeFactoriesEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFormsRenderersEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFormEditorsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterL10nEvent;
+import elgatopro300.bbs_cml.events.register.RegisterParticleComponentsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterPropTransformEvent;
+import elgatopro300.bbs_cml.events.register.RegisterStencilMapEvent;
+import elgatopro300.bbs_cml.events.register.RegisterRayTracingEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFilmPreviewEvent;
+import elgatopro300.bbs_cml.events.register.RegisterReplayListContextMenuEvent;
+import elgatopro300.bbs_cml.events.register.RegisterReplayPanelEvent;
+import elgatopro300.bbs_cml.events.register.RegisterShadersEvent;
+import elgatopro300.bbs_cml.events.register.RegisterSourcePacksEvent;
+import elgatopro300.bbs_cml.events.register.RegisterKeyframeShapesEvent;
+import elgatopro300.bbs_cml.events.register.RegisterUIValueFactoriesEvent;
 
 /**
  * Base class for BBS client addons.

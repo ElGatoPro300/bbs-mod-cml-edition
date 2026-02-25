@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.forms.forms;
+package elgatopro300.bbs_cml.forms.forms;
 
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
 
 public class LightForm extends Form
 {

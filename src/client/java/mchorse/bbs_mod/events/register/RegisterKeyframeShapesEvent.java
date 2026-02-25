@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.shapes.IKeyframeShapeRenderer;
-import mchorse.bbs_mod.utils.keyframes.KeyframeShape;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.shapes.IKeyframeShapeRenderer;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeShape;
 import java.util.Map;
 
 public class RegisterKeyframeShapesEvent

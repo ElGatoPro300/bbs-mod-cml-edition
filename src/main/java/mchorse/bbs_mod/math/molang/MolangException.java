@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.math.molang;
+package elgatopro300.bbs_cml.math.molang;
 
 public class MolangException extends Exception
 {

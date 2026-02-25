@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.resources;
+package elgatopro300.bbs_cml.utils.resources;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 import java.io.InputStream;
 import java.util.ArrayList;

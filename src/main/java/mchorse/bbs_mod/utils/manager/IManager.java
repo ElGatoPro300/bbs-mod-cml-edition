@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils.manager;
+package elgatopro300.bbs_cml.utils.manager;
 
-import mchorse.bbs_mod.data.IDataSerializable;
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.data.IDataSerializable;
+import elgatopro300.bbs_cml.data.types.MapType;
 
 import java.util.Collection;
 

@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.ui.particles.sections;
+package elgatopro300.bbs_cml.ui.particles.sections;
 
-import mchorse.bbs_mod.particles.ParticleScheme;
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
-import mchorse.bbs_mod.ui.particles.UIParticleSchemePanel;
+import elgatopro300.bbs_cml.particles.ParticleScheme;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.ui.particles.UIParticleSchemePanel;
 
 public abstract class UIParticleSchemeComponentSection <T extends ParticleComponentBase> extends UIParticleSchemeSection
 {

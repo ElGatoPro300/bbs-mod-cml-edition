@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.camera;
+package elgatopro300.bbs_cml.camera;
 
-import mchorse.bbs_mod.utils.Factor;
-import mchorse.bbs_mod.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.Factor;
+import elgatopro300.bbs_cml.utils.MathUtils;
 import org.joml.Matrix3f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;

@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.camera.clips.modifiers;
+package elgatopro300.bbs_cml.camera.clips.modifiers;
 
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.ClipContext;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.ClipContext;
 
 /**
  * Shake modifier

@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.ui.forms.editors.utils;
+package elgatopro300.bbs_cml.ui.forms.editors.utils;
 
-import mchorse.bbs_mod.forms.forms.utils.ParticleSettings;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIListOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.forms.forms.utils.ParticleSettings;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIListOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKey;

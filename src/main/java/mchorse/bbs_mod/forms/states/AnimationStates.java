@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.forms.states;
+package elgatopro300.bbs_cml.forms.states;
 
-import mchorse.bbs_mod.settings.values.IValueListener;
-import mchorse.bbs_mod.settings.values.core.ValueList;
-import mchorse.bbs_mod.utils.CollectionUtils;
+import elgatopro300.bbs_cml.settings.values.IValueListener;
+import elgatopro300.bbs_cml.settings.values.core.ValueList;
+import elgatopro300.bbs_cml.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

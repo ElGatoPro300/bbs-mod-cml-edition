@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.cubic.model;
+package elgatopro300.bbs_cml.cubic.model;
 
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
 
 import java.util.HashMap;
 import java.util.Map;

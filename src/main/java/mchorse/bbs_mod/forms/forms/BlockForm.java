@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.forms.forms;
+package elgatopro300.bbs_cml.forms.forms;
 
-import mchorse.bbs_mod.settings.values.mc.ValueBlockState;
-import mchorse.bbs_mod.settings.values.core.ValueColor;
-import mchorse.bbs_mod.utils.colors.Color;
+import elgatopro300.bbs_cml.settings.values.mc.ValueBlockState;
+import elgatopro300.bbs_cml.settings.values.core.ValueColor;
+import elgatopro300.bbs_cml.utils.colors.Color;
 import net.minecraft.block.Blocks;
 import net.minecraft.registry.Registries;
 

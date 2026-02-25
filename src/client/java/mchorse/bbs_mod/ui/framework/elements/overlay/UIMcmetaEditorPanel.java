@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.ui.framework.elements.overlay;
+package elgatopro300.bbs_cml.ui.framework.elements.overlay;
 
-import mchorse.bbs_mod.data.DataToString;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.UIKeys;
+import elgatopro300.bbs_cml.data.DataToString;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.UIKeys;
 
 import java.io.File;
 

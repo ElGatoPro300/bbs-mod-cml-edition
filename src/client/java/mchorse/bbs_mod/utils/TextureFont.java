@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;

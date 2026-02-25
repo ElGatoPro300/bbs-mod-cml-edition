@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.particles.components.expiration;
+package elgatopro300.bbs_cml.particles.components.expiration;
 
-import mchorse.bbs_mod.particles.components.IComponentParticleUpdate;
-import mchorse.bbs_mod.particles.emitter.Particle;
-import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+import elgatopro300.bbs_cml.particles.components.IComponentParticleUpdate;
+import elgatopro300.bbs_cml.particles.emitter.Particle;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
 import net.minecraft.block.BlockState;
 
 public class ParticleComponentExpireInBlocks extends ParticleComponentExpireBlocks implements IComponentParticleUpdate

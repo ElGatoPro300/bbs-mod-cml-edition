@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.ui.forms.editors.utils;
+package elgatopro300.bbs_cml.ui.forms.editors.utils;
 
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.utils.UICanvasEditor;
-import mchorse.bbs_mod.ui.utils.Area;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UICanvasEditor;
+import elgatopro300.bbs_cml.ui.utils.Area;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 

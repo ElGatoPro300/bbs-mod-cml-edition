@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.graphics;
+package elgatopro300.bbs_cml.graphics;
 
 import org.lwjgl.opengl.GL30;
 

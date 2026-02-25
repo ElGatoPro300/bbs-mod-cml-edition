@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.camera.clips.misc;
+package elgatopro300.bbs_cml.camera.clips.misc;
 
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.ClipContext;
-import mchorse.bbs_mod.utils.iris.ShaderCurves;
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
-import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import elgatopro300.bbs_cml.utils.iris.ShaderCurves;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
 
 public class CurveClientClip extends CurveClip
 {

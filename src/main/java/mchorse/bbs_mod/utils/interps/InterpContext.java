@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils.interps;
+package elgatopro300.bbs_cml.utils.interps;
 
-import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
+import elgatopro300.bbs_cml.utils.interps.easings.EasingArgs;
 
 public class InterpContext
 {

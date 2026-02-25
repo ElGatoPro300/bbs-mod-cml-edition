@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.ui.framework.elements.input.text.undo;
+package elgatopro300.bbs_cml.ui.framework.elements.input.text.undo;
 
-import mchorse.bbs_mod.ui.framework.elements.input.text.UITextarea;
-import mchorse.bbs_mod.ui.framework.elements.input.text.utils.Cursor;
-import mchorse.bbs_mod.utils.undo.IUndo;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextarea;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.utils.Cursor;
+import elgatopro300.bbs_cml.utils.undo.IUndo;
 
 public class TextEditUndo implements IUndo<UITextarea>
 {

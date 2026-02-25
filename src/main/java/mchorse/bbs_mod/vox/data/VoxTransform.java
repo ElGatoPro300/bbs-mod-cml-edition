@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.vox.data;
+package elgatopro300.bbs_cml.vox.data;
 
-import mchorse.bbs_mod.vox.VoxReader;
+import elgatopro300.bbs_cml.vox.VoxReader;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

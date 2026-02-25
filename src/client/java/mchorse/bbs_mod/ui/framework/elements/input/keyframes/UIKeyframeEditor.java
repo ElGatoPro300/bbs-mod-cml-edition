@@ -1,19 +1,19 @@
-package mchorse.bbs_mod.ui.framework.elements.input.keyframes;
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes;
 
-import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
-import mchorse.bbs_mod.data.DataStorageUtils;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.ListType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIKeyframeFactory;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UITransformKeyframeFactory;
-import mchorse.bbs_mod.utils.Pair;
-import mchorse.bbs_mod.utils.StringUtils;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.camera.clips.overwrite.KeyframeClip;
+import elgatopro300.bbs_cml.data.DataStorageUtils;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.ListType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories.UIKeyframeFactory;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories.UIPoseKeyframeFactory;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories.UITransformKeyframeFactory;
+import elgatopro300.bbs_cml.utils.Pair;
+import elgatopro300.bbs_cml.utils.StringUtils;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
 
 import java.util.List;
 import java.util.function.Consumer;

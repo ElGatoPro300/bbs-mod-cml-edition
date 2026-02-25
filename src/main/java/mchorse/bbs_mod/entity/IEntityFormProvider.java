@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.entity;
+package elgatopro300.bbs_cml.entity;
 
-import mchorse.bbs_mod.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.forms.Form;
 
 public interface IEntityFormProvider
 {

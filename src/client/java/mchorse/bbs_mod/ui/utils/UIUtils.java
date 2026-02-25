@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.ui.utils;
+package elgatopro300.bbs_cml.ui.utils;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.utils.OS;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.utils.OS;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;

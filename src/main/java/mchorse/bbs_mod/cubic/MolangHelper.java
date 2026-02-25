@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.cubic;
+package elgatopro300.bbs_cml.cubic;
 
-import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 
 public class MolangHelper
 {

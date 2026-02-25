@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils.colors;
+package elgatopro300.bbs_cml.utils.colors;
 
-import mchorse.bbs_mod.utils.StringUtils;
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.utils.StringUtils;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 
 public class Colors
 {

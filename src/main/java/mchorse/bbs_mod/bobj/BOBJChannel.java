@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.bobj;
+package elgatopro300.bbs_cml.bobj;
 
 import java.util.ArrayList;
 import java.util.List;

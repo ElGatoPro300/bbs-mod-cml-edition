@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.morphing.IEntityCaptureHandler;
+import elgatopro300.bbs_cml.morphing.IEntityCaptureHandler;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.forms.sections;
+package elgatopro300.bbs_cml.forms.sections;
 
-import mchorse.bbs_mod.forms.FormCategories;
-import mchorse.bbs_mod.forms.categories.FormCategory;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.l10n.keys.IKey;
+import elgatopro300.bbs_cml.forms.FormCategories;
+import elgatopro300.bbs_cml.forms.categories.FormCategory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;

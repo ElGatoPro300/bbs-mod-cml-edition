@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.ui.model;
+package elgatopro300.bbs_cml.ui.model;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.cubic.model.ModelConfig;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.cubic.model.ModelConfig;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public abstract class UIModelSection extends UIElement
 {

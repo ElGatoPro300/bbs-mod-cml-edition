@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.forms.entities;
+package elgatopro300.bbs_cml.forms.entities;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.morphing.Morph;
-import mchorse.bbs_mod.utils.AABB;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.morphing.Morph;
+import elgatopro300.bbs_cml.utils.AABB;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
@@ -14,8 +14,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import mchorse.bbs_mod.mixin.EntityAccessor;
-import mchorse.bbs_mod.mixin.LimbAnimatorAccessor;
+import elgatopro300.bbs_cml.mixin.EntityAccessor;
+import elgatopro300.bbs_cml.mixin.LimbAnimatorAccessor;
 
 public class MCEntity implements IEntity
 {

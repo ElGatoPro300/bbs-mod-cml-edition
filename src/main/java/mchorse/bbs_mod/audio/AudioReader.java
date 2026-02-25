@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
-import mchorse.bbs_mod.audio.ogg.VorbisReader;
-import mchorse.bbs_mod.audio.wav.WaveReader;
-import mchorse.bbs_mod.resources.AssetProvider;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.audio.ogg.VorbisReader;
+import elgatopro300.bbs_cml.audio.wav.WaveReader;
+import elgatopro300.bbs_cml.resources.AssetProvider;
+import elgatopro300.bbs_cml.resources.Link;
 
 import java.io.InputStream;
 

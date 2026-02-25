@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.resources.AssetProvider;
+import elgatopro300.bbs_cml.resources.AssetProvider;
 
 public class RegisterSourcePacksEvent
 {

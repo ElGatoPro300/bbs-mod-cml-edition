@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
 import java.util.List;
 

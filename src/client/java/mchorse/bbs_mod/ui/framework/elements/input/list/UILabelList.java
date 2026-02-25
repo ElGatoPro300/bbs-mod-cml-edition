@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.framework.elements.input.list;
+package elgatopro300.bbs_cml.ui.framework.elements.input.list;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.utils.Label;
-import mchorse.bbs_mod.utils.NaturalOrderComparator;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.Label;
+import elgatopro300.bbs_cml.utils.NaturalOrderComparator;
 
 import java.util.List;
 import java.util.function.Consumer;

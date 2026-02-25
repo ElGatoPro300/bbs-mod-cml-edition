@@ -1,21 +1,21 @@
-package mchorse.bbs_mod.ui.particles.utils;
+package elgatopro300.bbs_cml.ui.particles.utils;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.math.Variable;
-import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.particles.ParticleCurve;
-import mchorse.bbs_mod.particles.ParticleCurveType;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
-import mchorse.bbs_mod.ui.particles.sections.UIParticleSchemeSection;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.math.Variable;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.particles.ParticleCurve;
+import elgatopro300.bbs_cml.particles.ParticleCurveType;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UICirculate;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIPromptOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UILabel;
+import elgatopro300.bbs_cml.ui.particles.sections.UIParticleSchemeSection;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 import java.util.Map;
 

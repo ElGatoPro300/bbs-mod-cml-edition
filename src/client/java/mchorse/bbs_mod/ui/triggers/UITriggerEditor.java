@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.ui.triggers;
+package elgatopro300.bbs_cml.ui.triggers;
 
-import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
-import mchorse.bbs_mod.network.ClientNetwork;
-import mchorse.bbs_mod.settings.values.core.ValueList;
-import mchorse.bbs_mod.triggers.Trigger;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
+import elgatopro300.bbs_cml.network.ClientNetwork;
+import elgatopro300.bbs_cml.settings.values.core.ValueList;
+import elgatopro300.bbs_cml.triggers.Trigger;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.ui.utils.UI;
 
 public class UITriggerEditor extends UIElement
 {

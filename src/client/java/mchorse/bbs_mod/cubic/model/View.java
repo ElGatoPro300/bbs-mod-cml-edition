@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.cubic.model;
+package elgatopro300.bbs_cml.cubic.model;
 
-import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.data.IMapSerializable;
+import elgatopro300.bbs_cml.data.types.MapType;
 
 public class View implements IMapSerializable
 {

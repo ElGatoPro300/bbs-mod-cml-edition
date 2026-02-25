@@ -1,19 +1,19 @@
-package mchorse.bbs_mod.ui.film.screenplay;
+package elgatopro300.bbs_cml.ui.film.screenplay;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.audio.ColorCode;
-import mchorse.bbs_mod.audio.SoundBuffer;
-import mchorse.bbs_mod.audio.SoundPlayer;
-import mchorse.bbs_mod.audio.Wave;
-import mchorse.bbs_mod.audio.Waveform;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.IUITreeEventListener;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.ui.utils.Area;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.audio.ColorCode;
+import elgatopro300.bbs_cml.audio.SoundBuffer;
+import elgatopro300.bbs_cml.audio.SoundPlayer;
+import elgatopro300.bbs_cml.audio.Wave;
+import elgatopro300.bbs_cml.audio.Waveform;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.IUITreeEventListener;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
+import elgatopro300.bbs_cml.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 import java.util.List;
 

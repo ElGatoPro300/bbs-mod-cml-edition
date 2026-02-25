@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.vox.data;
+package elgatopro300.bbs_cml.vox.data;
 
-import mchorse.bbs_mod.vox.VoxReader;
+import elgatopro300.bbs_cml.vox.VoxReader;
 
 import java.io.InputStream;
 import java.util.ArrayList;

@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.ui.forms.categories;
+package elgatopro300.bbs_cml.ui.forms.categories;
 
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.categories.FormCategory;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.UIFormList;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.forms.categories.FormCategory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.UIFormList;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class UIRecentFormCategory extends UIFormCategory
 {

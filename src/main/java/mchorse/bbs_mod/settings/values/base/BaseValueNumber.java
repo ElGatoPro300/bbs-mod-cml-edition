@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.settings.values.base;
+package elgatopro300.bbs_cml.settings.values.base;
 
-import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
+import elgatopro300.bbs_cml.utils.keyframes.factories.IKeyframeFactory;
 
 public abstract class BaseValueNumber <T extends Number> extends BaseKeyframeFactoryValue<T>
 {

@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.morphing;
+package elgatopro300.bbs_cml.morphing;
 
-import mchorse.bbs_mod.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.forms.Form;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 

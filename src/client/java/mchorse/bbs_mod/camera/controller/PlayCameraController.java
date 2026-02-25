@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.camera.controller;
+package elgatopro300.bbs_cml.camera.controller;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.camera.Camera;
-import mchorse.bbs_mod.utils.clips.Clips;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.camera.Camera;
+import elgatopro300.bbs_cml.utils.clips.Clips;
 
 public class PlayCameraController extends CameraWorkCameraController
 {

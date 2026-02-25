@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.events;
+package elgatopro300.bbs_cml.events;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

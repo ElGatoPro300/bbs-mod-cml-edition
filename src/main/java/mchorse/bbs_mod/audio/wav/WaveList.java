@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.audio.wav;
+package elgatopro300.bbs_cml.audio.wav;
 
-import mchorse.bbs_mod.utils.Pair;
+import elgatopro300.bbs_cml.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

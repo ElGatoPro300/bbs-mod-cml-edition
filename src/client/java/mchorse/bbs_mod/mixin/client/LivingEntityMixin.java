@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.mixin.client;
+package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.selectors.ISelectorOwnerProvider;
-import mchorse.bbs_mod.selectors.SelectorOwner;
+import elgatopro300.bbs_cml.selectors.ISelectorOwnerProvider;
+import elgatopro300.bbs_cml.selectors.SelectorOwner;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;

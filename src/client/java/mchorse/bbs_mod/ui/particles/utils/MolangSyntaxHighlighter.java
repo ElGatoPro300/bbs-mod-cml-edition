@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.particles.utils;
+package elgatopro300.bbs_cml.ui.particles.utils;
 
-import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.BaseSyntaxHighlighter;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.BaseSyntaxHighlighter;
 
 import java.util.Arrays;
 import java.util.HashSet;

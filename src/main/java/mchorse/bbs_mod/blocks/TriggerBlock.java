@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.blocks;
+package elgatopro300.bbs_cml.blocks;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.blocks.entities.TriggerBlockEntity;
-import mchorse.bbs_mod.network.ServerNetwork;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.blocks.entities.TriggerBlockEntity;
+import elgatopro300.bbs_cml.network.ServerNetwork;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockRenderType;

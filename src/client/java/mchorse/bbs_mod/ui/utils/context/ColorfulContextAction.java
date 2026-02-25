@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.utils.context;
+package elgatopro300.bbs_cml.ui.utils.context;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.utils.icons.Icon;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.utils.icons.Icon;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class ColorfulContextAction extends ContextAction
 {

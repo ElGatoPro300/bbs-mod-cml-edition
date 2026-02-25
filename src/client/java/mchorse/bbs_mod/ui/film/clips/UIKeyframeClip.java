@@ -1,22 +1,22 @@
-package mchorse.bbs_mod.ui.film.clips;
+package elgatopro300.bbs_cml.ui.film.clips;
 
-import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.ui.Keys;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.film.replays.UIReplaysEditor;
-import mchorse.bbs_mod.ui.film.utils.keyframes.UIFilmKeyframes;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeEditor;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.clips.Clips;
-import mchorse.bbs_mod.utils.joml.Matrices;
-import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
-import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
+import elgatopro300.bbs_cml.camera.clips.overwrite.KeyframeClip;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.ui.Keys;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.film.replays.UIReplaysEditor;
+import elgatopro300.bbs_cml.ui.film.utils.keyframes.UIFilmKeyframes;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeEditor;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.clips.Clips;
+import elgatopro300.bbs_cml.utils.joml.Matrices;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
+import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
 import org.joml.Vector3f;
 
 public class UIKeyframeClip extends UIClip<KeyframeClip>

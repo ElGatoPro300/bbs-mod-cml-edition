@@ -1,19 +1,19 @@
-package mchorse.bbs_mod;
+package elgatopro300.bbs_cml;
 
-import mchorse.bbs_mod.audio.SoundManager;
-import mchorse.bbs_mod.camera.controller.CameraController;
-import mchorse.bbs_mod.cubic.model.ModelManager;
-import mchorse.bbs_mod.film.Films;
-import mchorse.bbs_mod.forms.FormCategories;
-import mchorse.bbs_mod.graphics.FramebufferManager;
-import mchorse.bbs_mod.graphics.texture.TextureManager;
-import mchorse.bbs_mod.items.GunZoom;
-import mchorse.bbs_mod.l10n.L10n;
-import mchorse.bbs_mod.particles.ParticleManager;
-import mchorse.bbs_mod.selectors.EntitySelectors;
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
-import mchorse.bbs_mod.utils.ScreenshotRecorder;
-import mchorse.bbs_mod.utils.VideoRecorder;
+import elgatopro300.bbs_cml.audio.SoundManager;
+import elgatopro300.bbs_cml.camera.controller.CameraController;
+import elgatopro300.bbs_cml.cubic.model.ModelManager;
+import elgatopro300.bbs_cml.film.Films;
+import elgatopro300.bbs_cml.forms.FormCategories;
+import elgatopro300.bbs_cml.graphics.FramebufferManager;
+import elgatopro300.bbs_cml.graphics.texture.TextureManager;
+import elgatopro300.bbs_cml.items.GunZoom;
+import elgatopro300.bbs_cml.l10n.L10n;
+import elgatopro300.bbs_cml.particles.ParticleManager;
+import elgatopro300.bbs_cml.selectors.EntitySelectors;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.utils.ScreenshotRecorder;
+import elgatopro300.bbs_cml.utils.VideoRecorder;
 
 /**
  * BBS utility class that provides easy access to BBS Mod's client components.

@@ -1,21 +1,21 @@
-package mchorse.bbs_mod.ui.forms.categories;
+package elgatopro300.bbs_cml.ui.forms.categories;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.categories.FormCategory;
-import mchorse.bbs_mod.forms.categories.UserFormCategory;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.sections.UserFormSection;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.UIFormList;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIConfirmOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIPromptOverlayPanel;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.forms.categories.FormCategory;
+import elgatopro300.bbs_cml.forms.categories.UserFormCategory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.sections.UserFormSection;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.UIFormList;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIConfirmOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIPromptOverlayPanel;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 public class UIUserFormCategory extends UIFormCategory
 {

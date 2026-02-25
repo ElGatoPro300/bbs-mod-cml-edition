@@ -1,14 +1,14 @@
-package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
 
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.editors.utils.UIStructureOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframeSheet;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.editors.utils.UIStructureOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITexturePicker;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframeSheet;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
 
 public class UILinkKeyframeFactory extends UIKeyframeFactory<Link>
 {

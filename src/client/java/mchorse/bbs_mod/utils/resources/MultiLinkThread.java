@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.resources;
+package elgatopro300.bbs_cml.utils.resources;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.graphics.texture.Texture;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.IOException;

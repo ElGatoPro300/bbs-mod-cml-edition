@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
 public class BinaryChunk
 {

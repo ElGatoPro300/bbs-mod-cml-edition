@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.bobj;
+package elgatopro300.bbs_cml.bobj;
 
-import mchorse.bbs_mod.utils.interps.IInterp;
-import mchorse.bbs_mod.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
 
 /**
  * BOBJ keyframe. This class is responsible for holding data about a 

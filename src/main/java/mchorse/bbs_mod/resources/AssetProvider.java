@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.resources;
+package elgatopro300.bbs_cml.resources;
 
 import java.io.File;
 import java.io.FileNotFoundException;

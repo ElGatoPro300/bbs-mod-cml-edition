@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.mixin.client;
+package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.selectors.ISelectorOwnerProvider;
+import elgatopro300.bbs_cml.selectors.ISelectorOwnerProvider;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

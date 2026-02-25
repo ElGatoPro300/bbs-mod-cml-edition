@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.actions.types.item;
+package elgatopro300.bbs_cml.actions.types.item;
 
-import mchorse.bbs_mod.actions.types.ActionClip;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.mc.ValueItemStack;
+import elgatopro300.bbs_cml.actions.types.ActionClip;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.mc.ValueItemStack;
 
 public abstract class ItemActionClip extends ActionClip
 {

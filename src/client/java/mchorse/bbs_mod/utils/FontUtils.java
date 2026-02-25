@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
-import mchorse.bbs_mod.BBSMod;
+import elgatopro300.bbs_cml.BBSMod;
 
 import java.io.File;
 import java.util.ArrayList;

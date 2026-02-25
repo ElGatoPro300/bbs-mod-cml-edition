@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.utils.resizers;
+package elgatopro300.bbs_cml.ui.utils.resizers;
 
-import mchorse.bbs_mod.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.utils.Area;
 
 public interface IParentResizer
 {

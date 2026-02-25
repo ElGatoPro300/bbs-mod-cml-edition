@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.keyframes.factories;
+package elgatopro300.bbs_cml.utils.keyframes.factories;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.obj.shapes.ShapeKeys;
-import mchorse.bbs_mod.utils.interps.IInterp;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.obj.shapes.ShapeKeys;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
 
 import java.util.HashSet;
 import java.util.Set;

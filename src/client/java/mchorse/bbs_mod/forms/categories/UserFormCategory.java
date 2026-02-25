@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.forms.categories;
+package elgatopro300.bbs_cml.forms.categories;
 
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.sections.UserFormSection;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.ui.forms.UIFormList;
-import mchorse.bbs_mod.ui.forms.categories.UIFormCategory;
-import mchorse.bbs_mod.ui.forms.categories.UIUserFormCategory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.sections.UserFormSection;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.ui.forms.UIFormList;
+import elgatopro300.bbs_cml.ui.forms.categories.UIFormCategory;
+import elgatopro300.bbs_cml.ui.forms.categories.UIUserFormCategory;
 
 public class UserFormCategory extends FormCategory
 {

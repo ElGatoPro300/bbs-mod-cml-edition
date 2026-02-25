@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.ui.film.clips.widgets;
+package elgatopro300.bbs_cml.ui.film.clips.widgets;
 
-import mchorse.bbs_mod.actions.values.ValueBlockHitResult;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UICirculate;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.actions.values.ValueBlockHitResult;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UICirculate;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
 
 public class UIBlockHitResult
 {

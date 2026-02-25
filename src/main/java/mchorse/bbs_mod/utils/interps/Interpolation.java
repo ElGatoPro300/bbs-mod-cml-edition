@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.utils.interps;
+package elgatopro300.bbs_cml.utils.interps;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.ListType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.data.types.StringType;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.utils.CollectionUtils;
-import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.ListType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.data.types.StringType;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.utils.CollectionUtils;
+import elgatopro300.bbs_cml.utils.interps.easings.EasingArgs;
 
 import java.util.Map;
 

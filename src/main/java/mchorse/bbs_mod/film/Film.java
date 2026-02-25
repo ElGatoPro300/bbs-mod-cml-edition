@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.film;
+package elgatopro300.bbs_cml.film;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.film.replays.Inventory;
-import mchorse.bbs_mod.film.replays.Replay;
-import mchorse.bbs_mod.film.replays.Replays;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
-import mchorse.bbs_mod.utils.clips.Clips;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.film.replays.Inventory;
+import elgatopro300.bbs_cml.film.replays.Replay;
+import elgatopro300.bbs_cml.film.replays.Replays;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import elgatopro300.bbs_cml.utils.clips.Clips;
 
 public class Film extends ValueGroup
 {

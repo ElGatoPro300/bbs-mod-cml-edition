@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.utils.factory;
+package elgatopro300.bbs_cml.utils.factory;
 
-import mchorse.bbs_mod.data.IDataSerializable;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.data.IDataSerializable;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.resources.Link;
 
 import java.util.Collection;
 import java.util.HashSet;

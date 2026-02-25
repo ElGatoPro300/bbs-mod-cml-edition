@@ -1,18 +1,18 @@
-package mchorse.bbs_mod.camera.clips.overwrite;
+package elgatopro300.bbs_cml.camera.clips.overwrite;
 
-import mchorse.bbs_mod.camera.Camera;
-import mchorse.bbs_mod.camera.clips.CameraClip;
-import mchorse.bbs_mod.camera.clips.CameraClipContext;
-import mchorse.bbs_mod.camera.data.Angle;
-import mchorse.bbs_mod.camera.data.Point;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.camera.values.ValuePositions;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.ClipContext;
-import mchorse.bbs_mod.utils.interps.IInterp;
-import mchorse.bbs_mod.utils.interps.Interpolation;
-import mchorse.bbs_mod.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.camera.Camera;
+import elgatopro300.bbs_cml.camera.clips.CameraClip;
+import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
+import elgatopro300.bbs_cml.camera.data.Angle;
+import elgatopro300.bbs_cml.camera.data.Point;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.camera.values.ValuePositions;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+import elgatopro300.bbs_cml.utils.interps.Interpolation;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
 
 import java.util.ArrayList;
 import java.util.Collections;

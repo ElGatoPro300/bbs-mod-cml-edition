@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.dashboard.utils;
+package elgatopro300.bbs_cml.ui.dashboard.utils;
 
-import mchorse.bbs_mod.ui.dashboard.UIDashboard;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.IUIElement;
-import mchorse.bbs_mod.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.dashboard.UIDashboard;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.IUIElement;
+import elgatopro300.bbs_cml.ui.utils.Area;
 
 import java.util.function.Supplier;
 

@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.resources.packs;
+package elgatopro300.bbs_cml.resources.packs;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.resources.ISourcePack;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.utils.DataPath;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.resources.ISourcePack;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.utils.DataPath;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 

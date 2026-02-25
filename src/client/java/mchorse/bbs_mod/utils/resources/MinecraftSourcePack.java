@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.utils.resources;
+package elgatopro300.bbs_cml.utils.resources;
 
-import mchorse.bbs_mod.resources.ISourcePack;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.utils.DataPath;
-import mchorse.bbs_mod.utils.StringUtils;
+import elgatopro300.bbs_cml.resources.ISourcePack;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.utils.DataPath;
+import elgatopro300.bbs_cml.utils.StringUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;

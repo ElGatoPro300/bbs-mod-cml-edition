@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.actions.types.item;
+package elgatopro300.bbs_cml.actions.types.item;
 
-import mchorse.bbs_mod.actions.SuperFakePlayer;
-import mchorse.bbs_mod.film.Film;
-import mchorse.bbs_mod.film.replays.Replay;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.numeric.ValueDouble;
-import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
-import mchorse.bbs_mod.utils.clips.Clip;
+import elgatopro300.bbs_cml.actions.SuperFakePlayer;
+import elgatopro300.bbs_cml.film.Film;
+import elgatopro300.bbs_cml.film.replays.Replay;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueDouble;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
+import elgatopro300.bbs_cml.utils.clips.Clip;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 

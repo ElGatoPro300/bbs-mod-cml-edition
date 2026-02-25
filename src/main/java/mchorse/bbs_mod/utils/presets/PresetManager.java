@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.utils.presets;
+package elgatopro300.bbs_cml.utils.presets;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.data.DataToString;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.data.DataToString;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
 
 import java.io.File;
 import java.util.ArrayList;

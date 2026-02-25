@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.forms.editors;
+package elgatopro300.bbs_cml.ui.forms.editors;
 
-import mchorse.bbs_mod.ui.forms.IUIFormList;
-import mchorse.bbs_mod.ui.forms.UIFormList;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.utils.EventPropagation;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.ui.forms.IUIFormList;
+import elgatopro300.bbs_cml.ui.forms.UIFormList;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.EventPropagation;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 import org.lwjgl.glfw.GLFW;
 
 public class UIFormEditorList extends UIFormList

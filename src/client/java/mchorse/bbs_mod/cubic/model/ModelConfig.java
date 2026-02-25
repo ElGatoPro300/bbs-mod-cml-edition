@@ -1,19 +1,19 @@
-package mchorse.bbs_mod.cubic.model;
+package elgatopro300.bbs_cml.cubic.model;
 
-import mchorse.bbs_mod.cubic.model.ArmorConfig;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.settings.values.core.ValueLink;
-import mchorse.bbs_mod.settings.values.core.ValueList;
-import mchorse.bbs_mod.settings.values.core.ValuePose;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.settings.values.misc.ValueVector3f;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.pose.Pose;
+import elgatopro300.bbs_cml.cubic.model.ArmorConfig;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.core.ValueLink;
+import elgatopro300.bbs_cml.settings.values.core.ValueList;
+import elgatopro300.bbs_cml.settings.values.core.ValuePose;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.settings.values.misc.ValueVector3f;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.pose.Pose;
 import org.joml.Vector3f;
 
 public class ModelConfig extends ValueGroup

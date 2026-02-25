@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui.framework.elements.input.text.utils;
+package elgatopro300.bbs_cml.ui.framework.elements.input.text.utils;
 
-import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.utils.MathUtils;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
+import elgatopro300.bbs_cml.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.List;

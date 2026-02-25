@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils.watchdog;
+package elgatopro300.bbs_cml.utils.watchdog;
 
 import java.io.File;
 import java.io.IOException;

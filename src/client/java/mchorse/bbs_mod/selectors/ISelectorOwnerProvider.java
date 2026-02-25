@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.selectors;
+package elgatopro300.bbs_cml.selectors;
 
 public interface ISelectorOwnerProvider
 {

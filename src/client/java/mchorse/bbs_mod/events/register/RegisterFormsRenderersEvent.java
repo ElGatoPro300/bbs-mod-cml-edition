@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.FormUtilsClient.IFormRendererFactory;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.ui.forms.editors.UIFormEditor;
-import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
-import mchorse.bbs_mod.ui.forms.editors.utils.UIPickableFormRenderer;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.FormUtilsClient.IFormRendererFactory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.ui.forms.editors.UIFormEditor;
+import elgatopro300.bbs_cml.ui.forms.editors.forms.UIForm;
+import elgatopro300.bbs_cml.ui.forms.editors.utils.UIPickableFormRenderer;
 
 import java.util.function.Function;
 import java.util.function.Supplier;

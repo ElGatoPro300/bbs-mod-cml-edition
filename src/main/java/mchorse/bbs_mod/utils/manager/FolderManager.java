@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils.manager;
+package elgatopro300.bbs_cml.utils.manager;
 
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
 
 import java.io.File;
 import java.util.Collection;

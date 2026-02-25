@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.camera.clips;
+package elgatopro300.bbs_cml.camera.clips;
 
-import mchorse.bbs_mod.camera.clips.converters.IClipConverter;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.utils.icons.Icon;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.camera.clips.converters.IClipConverter;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.utils.icons.Icon;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 import java.util.HashMap;
 import java.util.Map;

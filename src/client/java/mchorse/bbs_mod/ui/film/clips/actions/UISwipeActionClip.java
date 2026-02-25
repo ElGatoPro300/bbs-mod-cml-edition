@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.ui.film.clips.actions;
+package elgatopro300.bbs_cml.ui.film.clips.actions;
 
-import mchorse.bbs_mod.actions.types.AttackActionClip;
-import mchorse.bbs_mod.actions.types.SwipeActionClip;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.actions.types.AttackActionClip;
+import elgatopro300.bbs_cml.actions.types.SwipeActionClip;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
 
 public class UISwipeActionClip extends UIActionClip<SwipeActionClip>
 {

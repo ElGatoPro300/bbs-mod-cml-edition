@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils.watchdog;
+package elgatopro300.bbs_cml.utils.watchdog;
 
-import mchorse.bbs_mod.utils.Pair;
+import elgatopro300.bbs_cml.utils.Pair;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

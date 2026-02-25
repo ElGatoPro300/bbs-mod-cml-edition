@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.camera.clips.converters;
+package elgatopro300.bbs_cml.camera.clips.converters;
 
-import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
-import mchorse.bbs_mod.camera.clips.overwrite.PathClip;
-import mchorse.bbs_mod.camera.data.Position;
+import elgatopro300.bbs_cml.camera.clips.overwrite.KeyframeClip;
+import elgatopro300.bbs_cml.camera.clips.overwrite.PathClip;
+import elgatopro300.bbs_cml.camera.data.Position;
 
 public class PathToKeyframeConverter implements IClipConverter<PathClip, KeyframeClip>
 {

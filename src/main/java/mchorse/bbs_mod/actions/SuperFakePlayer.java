@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.actions;
+package elgatopro300.bbs_cml.actions;
 
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;

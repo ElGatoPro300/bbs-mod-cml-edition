@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.resources;
+package elgatopro300.bbs_cml.utils.resources;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.StringType;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.StringType;
+import elgatopro300.bbs_cml.resources.Link;
 
 public class LinkUtils
 {

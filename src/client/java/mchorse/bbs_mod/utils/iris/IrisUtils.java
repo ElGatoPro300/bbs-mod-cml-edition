@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.utils.iris;
+package elgatopro300.bbs_cml.utils.iris;
 
 import joptsimple.internal.Strings;
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.graphics.texture.Texture;
-import mchorse.bbs_mod.graphics.texture.TextureManager;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.utils.CollectionUtils;
-import mchorse.bbs_mod.utils.DataPath;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
+import elgatopro300.bbs_cml.graphics.texture.TextureManager;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.utils.CollectionUtils;
+import elgatopro300.bbs_cml.utils.DataPath;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.irisshaders.iris.gl.uniform.UniformUpdateFrequency;

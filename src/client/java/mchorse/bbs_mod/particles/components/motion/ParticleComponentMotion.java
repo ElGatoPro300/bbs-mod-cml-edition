@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.particles.components.motion;
+package elgatopro300.bbs_cml.particles.components.motion;
 
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
 
 public abstract class ParticleComponentMotion extends ParticleComponentBase
 {}

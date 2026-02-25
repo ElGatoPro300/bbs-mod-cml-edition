@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.cubic.data.model;
+package elgatopro300.bbs_cml.cubic.data.model;
 
-import mchorse.bbs_mod.obj.MeshOBJ;
+import elgatopro300.bbs_cml.obj.MeshOBJ;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 

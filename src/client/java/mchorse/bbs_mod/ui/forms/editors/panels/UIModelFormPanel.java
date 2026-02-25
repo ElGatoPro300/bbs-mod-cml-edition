@@ -1,22 +1,22 @@
-package mchorse.bbs_mod.ui.forms.editors.panels;
+package elgatopro300.bbs_cml.ui.forms.editors.panels;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.cubic.ModelInstance;
-import mchorse.bbs_mod.forms.forms.ModelForm;
-import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.forms.editors.forms.UIForm;
-import mchorse.bbs_mod.ui.forms.editors.panels.widgets.UIModelPoseEditor;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
-import mchorse.bbs_mod.ui.framework.elements.input.UITexturePicker;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIListOverlayPanel;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
-import mchorse.bbs_mod.ui.utils.shapes.UIShapeKeys;
-import mchorse.bbs_mod.utils.Direction;
-import mchorse.bbs_mod.utils.colors.Color;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
+import elgatopro300.bbs_cml.forms.forms.ModelForm;
+import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.forms.editors.forms.UIForm;
+import elgatopro300.bbs_cml.ui.forms.editors.panels.widgets.UIModelPoseEditor;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITexturePicker;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIListOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
+import elgatopro300.bbs_cml.ui.utils.shapes.UIShapeKeys;
+import elgatopro300.bbs_cml.utils.Direction;
+import elgatopro300.bbs_cml.utils.colors.Color;
 
 import java.util.Set;
 

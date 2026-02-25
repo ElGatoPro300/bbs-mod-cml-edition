@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.mixin;
+package elgatopro300.bbs_cml.mixin;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.actions.types.AttackActionClip;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.actions.types.AttackActionClip;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;

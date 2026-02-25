@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.settings.values.ui;
+package elgatopro300.bbs_cml.settings.values.ui;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.StringType;
-import mchorse.bbs_mod.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.StringType;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
 
 /**
  * Value language.

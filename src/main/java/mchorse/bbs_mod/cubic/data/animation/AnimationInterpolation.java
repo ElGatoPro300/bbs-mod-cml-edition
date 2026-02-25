@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.cubic.data.animation;
+package elgatopro300.bbs_cml.cubic.data.animation;
 
-import mchorse.bbs_mod.utils.CollectionUtils;
-import mchorse.bbs_mod.utils.interps.IInterp;
-import mchorse.bbs_mod.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.utils.CollectionUtils;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
 
 import java.util.HashMap;
 import java.util.Map;

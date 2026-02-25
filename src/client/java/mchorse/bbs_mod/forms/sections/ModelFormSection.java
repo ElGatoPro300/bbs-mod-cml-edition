@@ -1,18 +1,18 @@
-package mchorse.bbs_mod.forms.sections;
+package elgatopro300.bbs_cml.forms.sections;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.cubic.model.ModelManager;
-import mchorse.bbs_mod.forms.FormCategories;
-import mchorse.bbs_mod.forms.categories.FormCategory;
-import mchorse.bbs_mod.forms.categories.ModelFormCategory;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.forms.forms.ModelForm;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.utils.watchdog.WatchDogEvent;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.cubic.model.ModelManager;
+import elgatopro300.bbs_cml.forms.FormCategories;
+import elgatopro300.bbs_cml.forms.categories.FormCategory;
+import elgatopro300.bbs_cml.forms.categories.ModelFormCategory;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.forms.forms.ModelForm;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.utils.watchdog.WatchDogEvent;
 
 import java.io.File;
 import java.nio.file.Path;

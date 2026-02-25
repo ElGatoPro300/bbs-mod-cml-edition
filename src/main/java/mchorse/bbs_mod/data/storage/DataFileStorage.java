@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.data.storage;
+package elgatopro300.bbs_cml.data.storage;
 
 import java.io.File;
 import java.io.FileInputStream;

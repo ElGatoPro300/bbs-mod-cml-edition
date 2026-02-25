@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.forms.forms.shape.nodes;
+package elgatopro300.bbs_cml.forms.forms.shape.nodes;
 
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.forms.sections;
+package elgatopro300.bbs_cml.forms.sections;
 
-import mchorse.bbs_mod.forms.FormCategories;
-import mchorse.bbs_mod.forms.categories.FormCategory;
-import mchorse.bbs_mod.utils.watchdog.IWatchDogListener;
-import mchorse.bbs_mod.utils.watchdog.WatchDogEvent;
+import elgatopro300.bbs_cml.forms.FormCategories;
+import elgatopro300.bbs_cml.forms.categories.FormCategory;
+import elgatopro300.bbs_cml.utils.watchdog.IWatchDogListener;
+import elgatopro300.bbs_cml.utils.watchdog.WatchDogEvent;
 
 import java.nio.file.Path;
 import java.util.List;

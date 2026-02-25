@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.importers.types;
+package elgatopro300.bbs_cml.importers.types;
 
-import mchorse.bbs_mod.importers.ImporterContext;
-import mchorse.bbs_mod.importers.ImporterUtils;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.math.Operation;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.utils.PNGEncoder;
-import mchorse.bbs_mod.utils.resources.Pixels;
+import elgatopro300.bbs_cml.importers.ImporterContext;
+import elgatopro300.bbs_cml.importers.ImporterUtils;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.math.Operation;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.utils.PNGEncoder;
+import elgatopro300.bbs_cml.utils.resources.Pixels;
 import org.joml.Vector2i;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.cubic.model;
+package elgatopro300.bbs_cml.cubic.model;
 
 import net.minecraft.entity.EquipmentSlot;
 

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.simulation;
+package elgatopro300.bbs_cml.simulation;
 
 public class FluidInteractionTest
 {

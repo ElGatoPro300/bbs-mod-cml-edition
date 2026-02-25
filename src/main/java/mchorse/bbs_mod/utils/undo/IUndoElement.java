@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.utils.undo;
+package elgatopro300.bbs_cml.utils.undo;
 
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.data.types.MapType;
 
 public interface IUndoElement
 {

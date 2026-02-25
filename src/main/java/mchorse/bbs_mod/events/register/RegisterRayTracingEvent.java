@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.utils.IRayTracingHandler;
-import mchorse.bbs_mod.utils.RayTracing;
+import elgatopro300.bbs_cml.utils.IRayTracingHandler;
+import elgatopro300.bbs_cml.utils.RayTracing;
 
 public class RegisterRayTracingEvent
 {

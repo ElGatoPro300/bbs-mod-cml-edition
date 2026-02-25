@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.framework.notifications;
+package elgatopro300.bbs_cml.ui.framework.notifications;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.interps.Interpolations;
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 
 public class Notification
 {

@@ -1,19 +1,19 @@
-package mchorse.bbs_mod.ui.film.controller;
+package elgatopro300.bbs_cml.ui.film.controller;
 
-import mchorse.bbs_mod.film.replays.Replay;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.settings.values.ui.ValueOnionSkin;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanels;
-import mchorse.bbs_mod.ui.film.UIFilmPanel;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
-import mchorse.bbs_mod.ui.framework.elements.context.UIContextMenu;
-import mchorse.bbs_mod.ui.framework.elements.input.UIColor;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.film.replays.Replay;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.settings.values.ui.ValueOnionSkin;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.dashboard.panels.UIDashboardPanels;
+import elgatopro300.bbs_cml.ui.film.UIFilmPanel;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
+import elgatopro300.bbs_cml.ui.framework.elements.context.UIContextMenu;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UIColor;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 public class UIOnionSkinContextMenu extends UIContextMenu
 {

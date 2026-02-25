@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.camera.controller;
+package elgatopro300.bbs_cml.camera.controller;
 
-import mchorse.bbs_mod.camera.Camera;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.ui.film.UIFilmPanel;
-import mchorse.bbs_mod.ui.film.controller.UIFilmController;
+import elgatopro300.bbs_cml.camera.Camera;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.ui.film.UIFilmPanel;
+import elgatopro300.bbs_cml.ui.film.controller.UIFilmController;
 
 import java.util.function.Consumer;
 

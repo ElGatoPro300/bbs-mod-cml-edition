@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.importers.types;
+package elgatopro300.bbs_cml.importers.types;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.importers.ImporterContext;
-import mchorse.bbs_mod.importers.ImporterUtils;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.utils.FFMpegUtils;
-import mchorse.bbs_mod.utils.StringUtils;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.importers.ImporterContext;
+import elgatopro300.bbs_cml.importers.ImporterUtils;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.utils.FFMpegUtils;
+import elgatopro300.bbs_cml.utils.StringUtils;
 
 import java.io.File;
 

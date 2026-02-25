@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.particles.components;
+package elgatopro300.bbs_cml.particles.components;
 
 public interface IComponentBase
 {

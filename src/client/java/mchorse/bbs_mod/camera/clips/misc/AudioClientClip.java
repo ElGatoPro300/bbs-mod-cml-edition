@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.camera.clips.misc;
+package elgatopro300.bbs_cml.camera.clips.misc;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.audio.SoundPlayer;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.camera.utils.TimeUtils;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.ClipContext;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.audio.SoundPlayer;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.camera.utils.TimeUtils;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.ClipContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

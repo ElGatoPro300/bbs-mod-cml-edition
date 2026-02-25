@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
 
 import java.util.Map;
 

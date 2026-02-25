@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.ui.utils.renderers;
+package elgatopro300.bbs_cml.ui.utils.renderers;
 
-import mchorse.bbs_mod.graphics.line.LineBuilder;
-import mchorse.bbs_mod.graphics.line.SolidColorLineRenderer;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.tooltips.styles.TooltipStyle;
-import mchorse.bbs_mod.ui.utils.Area;
-import mchorse.bbs_mod.ui.utils.InterpolationUtils;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.interps.IInterp;
+import elgatopro300.bbs_cml.graphics.line.LineBuilder;
+import elgatopro300.bbs_cml.graphics.line.SolidColorLineRenderer;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.tooltips.styles.TooltipStyle;
+import elgatopro300.bbs_cml.ui.utils.Area;
+import elgatopro300.bbs_cml.ui.utils.InterpolationUtils;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
 
 public class InterpolationRenderer
 {

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.cubic.render.vao;
+package elgatopro300.bbs_cml.cubic.render.vao;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 

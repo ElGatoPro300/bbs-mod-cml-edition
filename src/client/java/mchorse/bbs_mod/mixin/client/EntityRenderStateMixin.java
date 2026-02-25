@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.mixin.client;
+package elgatopro300.bbs_cml.mixin.client;
 
-import mchorse.bbs_mod.bridge.IEntityRenderState;
+import elgatopro300.bbs_cml.bridge.IEntityRenderState;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;

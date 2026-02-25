@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.utils.pose;
+package elgatopro300.bbs_cml.utils.pose;
 
-import mchorse.bbs_mod.data.IMapSerializable;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.utils.Pair;
+import elgatopro300.bbs_cml.data.IMapSerializable;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.settings.values.ui;
+package elgatopro300.bbs_cml.settings.values.ui;
 
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 public class ValueOnionSkin extends ValueGroup
 {

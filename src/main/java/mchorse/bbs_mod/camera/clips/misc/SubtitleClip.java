@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.camera.clips.misc;
+package elgatopro300.bbs_cml.camera.clips.misc;
 
-import mchorse.bbs_mod.camera.clips.CameraClip;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.settings.values.core.ValueTransform;
-import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
-import mchorse.bbs_mod.settings.values.numeric.ValueFloat;
-import mchorse.bbs_mod.settings.values.numeric.ValueInt;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.ClipContext;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.pose.Transform;
+import elgatopro300.bbs_cml.camera.clips.CameraClip;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.settings.values.core.ValueTransform;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
+import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.ClipContext;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.pose.Transform;
 
 import java.util.ArrayList;
 import java.util.List;

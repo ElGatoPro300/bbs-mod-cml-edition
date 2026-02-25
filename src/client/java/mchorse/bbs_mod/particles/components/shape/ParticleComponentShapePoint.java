@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.particles.components.shape;
+package elgatopro300.bbs_cml.particles.components.shape;
 
-import mchorse.bbs_mod.particles.components.shape.directions.ShapeDirectionVector;
-import mchorse.bbs_mod.particles.emitter.Particle;
-import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+import elgatopro300.bbs_cml.particles.components.shape.directions.ShapeDirectionVector;
+import elgatopro300.bbs_cml.particles.emitter.Particle;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
 
 public class ParticleComponentShapePoint extends ParticleComponentShapeBase
 {

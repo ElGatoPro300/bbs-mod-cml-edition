@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.items;
+package elgatopro300.bbs_cml.items;
 
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.interps.IInterp;
-import mchorse.bbs_mod.utils.interps.Interpolation;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+import elgatopro300.bbs_cml.utils.interps.Interpolation;
 
 public class GunZoom
 {

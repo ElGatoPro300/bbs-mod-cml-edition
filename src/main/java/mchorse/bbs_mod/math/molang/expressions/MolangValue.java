@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.math.molang.expressions;
+package elgatopro300.bbs_cml.math.molang.expressions;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.DoubleType;
-import mchorse.bbs_mod.math.Constant;
-import mchorse.bbs_mod.math.IExpression;
-import mchorse.bbs_mod.math.molang.MolangParser;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.DoubleType;
+import elgatopro300.bbs_cml.math.Constant;
+import elgatopro300.bbs_cml.math.IExpression;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
 
 public class MolangValue extends MolangExpression
 {

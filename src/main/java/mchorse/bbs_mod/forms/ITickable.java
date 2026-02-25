@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.forms;
+package elgatopro300.bbs_cml.forms;
 
-import mchorse.bbs_mod.forms.entities.IEntity;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
 
 public interface ITickable
 {

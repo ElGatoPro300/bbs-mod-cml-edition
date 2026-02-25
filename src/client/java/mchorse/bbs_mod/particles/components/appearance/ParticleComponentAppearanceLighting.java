@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.particles.components.appearance;
+package elgatopro300.bbs_cml.particles.components.appearance;
 
-import mchorse.bbs_mod.particles.components.IComponentEmitterInitialize;
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
-import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
+import elgatopro300.bbs_cml.particles.components.IComponentEmitterInitialize;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
 
 public class ParticleComponentAppearanceLighting extends ParticleComponentBase implements IComponentEmitterInitialize
 {

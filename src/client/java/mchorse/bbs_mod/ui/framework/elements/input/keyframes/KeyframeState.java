@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.framework.elements.input.keyframes;
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes;
 
-import mchorse.bbs_mod.data.types.MapType;
+import elgatopro300.bbs_cml.data.types.MapType;
 
 import java.util.ArrayList;
 import java.util.List;

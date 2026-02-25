@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.cubic.animation;
+package elgatopro300.bbs_cml.cubic.animation;
 
-import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.cubic.IModel;
-import mchorse.bbs_mod.cubic.IModelInstance;
-import mchorse.bbs_mod.cubic.data.animation.Animation;
-import mchorse.bbs_mod.cubic.data.animation.Animations;
-import mchorse.bbs_mod.cubic.data.model.Model;
-import mchorse.bbs_mod.cubic.data.model.ModelGroup;
-import mchorse.bbs_mod.forms.entities.IEntity;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.bobj.BOBJBone;
+import elgatopro300.bbs_cml.cubic.IModel;
+import elgatopro300.bbs_cml.cubic.IModelInstance;
+import elgatopro300.bbs_cml.cubic.data.animation.Animation;
+import elgatopro300.bbs_cml.cubic.data.animation.Animations;
+import elgatopro300.bbs_cml.cubic.data.model.Model;
+import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;

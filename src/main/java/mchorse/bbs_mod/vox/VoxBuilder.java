@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.vox;
+package elgatopro300.bbs_cml.vox;
 
-import mchorse.bbs_mod.cubic.data.model.ModelMesh;
-import mchorse.bbs_mod.vox.data.Vox;
+import elgatopro300.bbs_cml.cubic.data.model.ModelMesh;
+import elgatopro300.bbs_cml.vox.data.Vox;
 import org.joml.Matrix3f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

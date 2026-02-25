@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.cubic.animation;
+package elgatopro300.bbs_cml.cubic.animation;
 
-import mchorse.bbs_mod.cubic.IModel;
-import mchorse.bbs_mod.cubic.data.animation.Animation;
-import mchorse.bbs_mod.forms.entities.IEntity;
+import elgatopro300.bbs_cml.cubic.IModel;
+import elgatopro300.bbs_cml.cubic.data.animation.Animation;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
 
 public class ActionPlayback
 {

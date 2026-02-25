@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.utils.icons;
+package elgatopro300.bbs_cml.ui.utils.icons;
 
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.resources.Link;
 
 import java.util.HashMap;
 import java.util.Map;

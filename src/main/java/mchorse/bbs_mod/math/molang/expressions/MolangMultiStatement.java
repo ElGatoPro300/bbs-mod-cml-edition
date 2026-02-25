@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.math.molang.expressions;
+package elgatopro300.bbs_cml.math.molang.expressions;
 
-import mchorse.bbs_mod.math.Variable;
-import mchorse.bbs_mod.math.molang.MolangParser;
+import elgatopro300.bbs_cml.math.Variable;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;

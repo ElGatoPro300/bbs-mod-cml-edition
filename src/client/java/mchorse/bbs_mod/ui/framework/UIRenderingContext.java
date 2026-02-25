@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.ui.framework;
+package elgatopro300.bbs_cml.ui.framework;
 
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.graphics.texture.TextureManager;
-import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.graphics.texture.TextureManager;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
 import net.minecraft.client.gui.DrawContext;
 
 import java.util.ArrayList;

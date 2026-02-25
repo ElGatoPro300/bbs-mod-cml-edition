@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.triggers;
+package elgatopro300.bbs_cml.ui.triggers;
 
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.IUIElement;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.IUIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
 
 public class UITriggerBlockRenderer extends UIModelRenderer
 {

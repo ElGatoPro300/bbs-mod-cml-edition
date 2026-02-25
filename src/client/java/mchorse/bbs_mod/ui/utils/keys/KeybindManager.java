@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui.utils.keys;
+package elgatopro300.bbs_cml.ui.utils.keys;
 
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.input.UIKeybinds;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UIKeybinds;
 
 import java.util.ArrayList;
 import java.util.List;

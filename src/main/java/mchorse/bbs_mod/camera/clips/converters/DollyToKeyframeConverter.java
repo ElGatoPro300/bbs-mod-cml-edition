@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.camera.clips.converters;
+package elgatopro300.bbs_cml.camera.clips.converters;
 
-import mchorse.bbs_mod.camera.clips.overwrite.DollyClip;
-import mchorse.bbs_mod.camera.clips.overwrite.KeyframeClip;
+import elgatopro300.bbs_cml.camera.clips.overwrite.DollyClip;
+import elgatopro300.bbs_cml.camera.clips.overwrite.KeyframeClip;
 
 public class DollyToKeyframeConverter implements IClipConverter<DollyClip, KeyframeClip>
 {

@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.settings.values.base;
+package elgatopro300.bbs_cml.settings.values.base;
 
-import mchorse.bbs_mod.settings.values.IValueListener;
+import elgatopro300.bbs_cml.settings.values.IValueListener;
 
 import java.util.Objects;
 

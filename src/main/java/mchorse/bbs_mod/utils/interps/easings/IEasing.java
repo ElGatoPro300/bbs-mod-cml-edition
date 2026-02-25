@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils.interps.easings;
+package elgatopro300.bbs_cml.utils.interps.easings;
 
 public interface IEasing
 {

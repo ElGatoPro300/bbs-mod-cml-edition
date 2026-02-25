@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.math;
+package elgatopro300.bbs_cml.math;
 
 /**
  * Variable class

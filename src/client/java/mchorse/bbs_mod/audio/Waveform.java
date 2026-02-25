@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
-import mchorse.bbs_mod.graphics.texture.Texture;
-import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.resources.Pixels;
+import elgatopro300.bbs_cml.graphics.texture.Texture;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.resources.Pixels;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 

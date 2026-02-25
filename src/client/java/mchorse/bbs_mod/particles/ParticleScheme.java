@@ -1,20 +1,20 @@
-package mchorse.bbs_mod.particles;
+package elgatopro300.bbs_cml.particles;
 
-import mchorse.bbs_mod.data.DataToString;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.particles.components.IComponentBase;
-import mchorse.bbs_mod.particles.components.IComponentEmitterInitialize;
-import mchorse.bbs_mod.particles.components.IComponentEmitterUpdate;
-import mchorse.bbs_mod.particles.components.IComponentParticleInitialize;
-import mchorse.bbs_mod.particles.components.IComponentParticleRender;
-import mchorse.bbs_mod.particles.components.IComponentParticleUpdate;
-import mchorse.bbs_mod.particles.components.ParticleComponentBase;
-import mchorse.bbs_mod.particles.components.motion.ParticleComponentInitialSpeed;
-import mchorse.bbs_mod.particles.emitter.Particle;
-import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.data.DataToString;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.particles.components.IComponentBase;
+import elgatopro300.bbs_cml.particles.components.IComponentEmitterInitialize;
+import elgatopro300.bbs_cml.particles.components.IComponentEmitterUpdate;
+import elgatopro300.bbs_cml.particles.components.IComponentParticleInitialize;
+import elgatopro300.bbs_cml.particles.components.IComponentParticleRender;
+import elgatopro300.bbs_cml.particles.components.IComponentParticleUpdate;
+import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
+import elgatopro300.bbs_cml.particles.components.motion.ParticleComponentInitialSpeed;
+import elgatopro300.bbs_cml.particles.emitter.Particle;
+import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;

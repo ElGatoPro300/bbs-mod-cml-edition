@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.forms.editors.forms;
+package elgatopro300.bbs_cml.ui.forms.editors.forms;
 
-import mchorse.bbs_mod.forms.forms.FramebufferForm;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.forms.editors.panels.UIFramebufferFormPanel;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.forms.forms.FramebufferForm;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.forms.editors.panels.UIFramebufferFormPanel;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 
 public class UIFramebufferForm extends UIForm<FramebufferForm>
 {

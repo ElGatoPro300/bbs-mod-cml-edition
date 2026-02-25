@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.l10n.keys;
+package elgatopro300.bbs_cml.l10n.keys;
 
 import java.util.List;
 

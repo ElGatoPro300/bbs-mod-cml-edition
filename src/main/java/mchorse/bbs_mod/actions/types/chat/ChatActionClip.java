@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.actions.types.chat;
+package elgatopro300.bbs_cml.actions.types.chat;
 
-import mchorse.bbs_mod.actions.SuperFakePlayer;
-import mchorse.bbs_mod.actions.types.ActionClip;
-import mchorse.bbs_mod.film.Film;
-import mchorse.bbs_mod.film.replays.Replay;
-import mchorse.bbs_mod.settings.values.core.ValueString;
-import mchorse.bbs_mod.utils.StringUtils;
-import mchorse.bbs_mod.utils.clips.Clip;
+import elgatopro300.bbs_cml.actions.SuperFakePlayer;
+import elgatopro300.bbs_cml.actions.types.ActionClip;
+import elgatopro300.bbs_cml.film.Film;
+import elgatopro300.bbs_cml.film.replays.Replay;
+import elgatopro300.bbs_cml.settings.values.core.ValueString;
+import elgatopro300.bbs_cml.utils.StringUtils;
+import elgatopro300.bbs_cml.utils.clips.Clip;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;

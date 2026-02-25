@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.cubic.model.loaders;
+package elgatopro300.bbs_cml.cubic.model.loaders;
 
-import mchorse.bbs_mod.cubic.ModelInstance;
-import mchorse.bbs_mod.cubic.model.ModelManager;
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.resources.Link;
+import elgatopro300.bbs_cml.cubic.ModelInstance;
+import elgatopro300.bbs_cml.cubic.model.ModelManager;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.resources.Link;
 
 import java.util.ArrayList;
 import java.util.Collection;

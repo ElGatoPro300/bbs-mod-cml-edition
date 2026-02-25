@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.ui.utils.renderers;
+package elgatopro300.bbs_cml.ui.utils.renderers;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.graphics.window.Window;
-import mchorse.bbs_mod.ui.framework.UIBaseMenu;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
-import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.ui.utils.icons.Icons;
-import mchorse.bbs_mod.ui.utils.keys.KeyCodes;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.graphics.window.Window;
+import elgatopro300.bbs_cml.ui.framework.UIBaseMenu;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
+import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import elgatopro300.bbs_cml.ui.utils.keys.KeyCodes;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 

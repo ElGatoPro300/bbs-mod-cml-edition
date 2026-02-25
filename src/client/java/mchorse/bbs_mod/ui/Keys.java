@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.ui;
+package elgatopro300.bbs_cml.ui;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.ui.utils.keys.KeyCombo;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.ui.utils.keys.KeyCombo;
 import org.lwjgl.glfw.GLFW;
 
 /**

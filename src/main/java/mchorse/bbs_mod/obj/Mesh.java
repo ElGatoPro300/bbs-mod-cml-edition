@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.obj;
+package elgatopro300.bbs_cml.obj;
 
 /**
  * Holds the mesh data

@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.ui.framework.elements.overlay;
+package elgatopro300.bbs_cml.ui.framework.elements.overlay;
 
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.utils.EventPropagation;
-import mchorse.bbs_mod.ui.utils.UIUtils;
-import mchorse.bbs_mod.ui.utils.resizers.Flex;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.EventPropagation;
+import elgatopro300.bbs_cml.ui.utils.UIUtils;
+import elgatopro300.bbs_cml.ui.utils.resizers.Flex;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 

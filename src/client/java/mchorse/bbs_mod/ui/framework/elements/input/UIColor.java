@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.ui.framework.elements.input;
+package elgatopro300.bbs_cml.ui.framework.elements.input;
 
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.input.color.UIColorPicker;
-import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.utils.Direction;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.input.color.UIColorPicker;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
+import elgatopro300.bbs_cml.utils.Direction;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 
 import java.util.function.Consumer;
 

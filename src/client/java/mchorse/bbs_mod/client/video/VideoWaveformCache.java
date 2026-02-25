@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.client.video;
+package elgatopro300.bbs_cml.client.video;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.audio.SoundBuffer;
-import mchorse.bbs_mod.audio.Wave;
-import mchorse.bbs_mod.audio.Waveform;
-import mchorse.bbs_mod.audio.wav.WaveReader;
-import mchorse.bbs_mod.utils.FFMpegUtils;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.audio.SoundBuffer;
+import elgatopro300.bbs_cml.audio.Wave;
+import elgatopro300.bbs_cml.audio.Waveform;
+import elgatopro300.bbs_cml.audio.wav.WaveReader;
+import elgatopro300.bbs_cml.utils.FFMpegUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

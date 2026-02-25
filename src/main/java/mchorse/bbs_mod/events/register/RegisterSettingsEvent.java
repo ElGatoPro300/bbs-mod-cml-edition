@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.events.register;
+package elgatopro300.bbs_cml.events.register;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.settings.SettingsBuilder;
-import mchorse.bbs_mod.ui.utils.icons.Icon;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.settings.SettingsBuilder;
+import elgatopro300.bbs_cml.ui.utils.icons.Icon;
 
 import java.io.File;
 import java.util.function.Consumer;

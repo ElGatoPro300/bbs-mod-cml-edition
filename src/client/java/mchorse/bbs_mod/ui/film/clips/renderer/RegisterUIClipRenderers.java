@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.ui.film.clips.renderer;
+package elgatopro300.bbs_cml.ui.film.clips.renderer;
 
 public class RegisterUIClipRenderers
 {

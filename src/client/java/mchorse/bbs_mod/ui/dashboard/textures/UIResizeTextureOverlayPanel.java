@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.dashboard.textures;
+package elgatopro300.bbs_cml.ui.dashboard.textures;
 
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageBarOverlayPanel;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIMessageBarOverlayPanel;
 import org.joml.Vector2i;
 
 import java.util.function.Consumer;

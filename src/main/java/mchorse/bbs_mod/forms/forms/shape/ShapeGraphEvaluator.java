@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.forms.forms.shape;
+package elgatopro300.bbs_cml.forms.forms.shape;
 
-import mchorse.bbs_mod.forms.forms.shape.nodes.*;
-import mchorse.bbs_mod.utils.math.Noise;
-import mchorse.bbs_mod.utils.colors.Color;
+import elgatopro300.bbs_cml.forms.forms.shape.nodes.*;
+import elgatopro300.bbs_cml.utils.math.Noise;
+import elgatopro300.bbs_cml.utils.colors.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

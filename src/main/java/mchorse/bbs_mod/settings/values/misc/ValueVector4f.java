@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.settings.values.misc;
+package elgatopro300.bbs_cml.settings.values.misc;
 
-import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
-import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
+import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
 import org.joml.Vector4f;
 
 public class ValueVector4f extends BaseKeyframeFactoryValue<Vector4f>

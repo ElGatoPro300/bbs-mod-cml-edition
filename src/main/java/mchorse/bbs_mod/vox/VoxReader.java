@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.vox;
+package elgatopro300.bbs_cml.vox;
 
-import mchorse.bbs_mod.audio.BinaryReader;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.vox.data.Vox;
-import mchorse.bbs_mod.vox.data.VoxChunk;
-import mchorse.bbs_mod.vox.data.VoxGroup;
-import mchorse.bbs_mod.vox.data.VoxLayer;
-import mchorse.bbs_mod.vox.data.VoxShape;
-import mchorse.bbs_mod.vox.data.VoxTransform;
+import elgatopro300.bbs_cml.audio.BinaryReader;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.vox.data.Vox;
+import elgatopro300.bbs_cml.vox.data.VoxChunk;
+import elgatopro300.bbs_cml.vox.data.VoxGroup;
+import elgatopro300.bbs_cml.vox.data.VoxLayer;
+import elgatopro300.bbs_cml.vox.data.VoxShape;
+import elgatopro300.bbs_cml.vox.data.VoxTransform;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 

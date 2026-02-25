@@ -1,8 +1,8 @@
-package mchorse.bbs_mod.settings.values.misc;
+package elgatopro300.bbs_cml.settings.values.misc;
 
-import mchorse.bbs_mod.forms.forms.utils.StructureLightSettings;
-import mchorse.bbs_mod.settings.values.base.BaseKeyframeFactoryValue;
-import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import elgatopro300.bbs_cml.forms.forms.utils.StructureLightSettings;
+import elgatopro300.bbs_cml.settings.values.base.BaseKeyframeFactoryValue;
+import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
 
 public class ValueStructureLightSettings extends BaseKeyframeFactoryValue<StructureLightSettings>
 {

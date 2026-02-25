@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.cubic.animation;
+package elgatopro300.bbs_cml.cubic.animation;
 
-import mchorse.bbs_mod.cubic.IModelInstance;
-import mchorse.bbs_mod.forms.entities.IEntity;
+import elgatopro300.bbs_cml.cubic.IModelInstance;
+import elgatopro300.bbs_cml.forms.entities.IEntity;
 
 import java.util.List;
 

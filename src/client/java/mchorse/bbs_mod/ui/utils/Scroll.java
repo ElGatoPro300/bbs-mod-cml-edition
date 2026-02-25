@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.ui.utils;
+package elgatopro300.bbs_cml.ui.utils;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
-import mchorse.bbs_mod.utils.MathUtils;
-import mchorse.bbs_mod.utils.colors.Colors;
-import mchorse.bbs_mod.utils.interps.Lerps;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.utils.MathUtils;
+import elgatopro300.bbs_cml.utils.colors.Colors;
+import elgatopro300.bbs_cml.utils.interps.Lerps;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Util;
 

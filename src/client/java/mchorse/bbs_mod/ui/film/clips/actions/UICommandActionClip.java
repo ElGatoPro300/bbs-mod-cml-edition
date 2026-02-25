@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.film.clips.actions;
+package elgatopro300.bbs_cml.ui.film.clips.actions;
 
-import mchorse.bbs_mod.actions.types.chat.CommandActionClip;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
-import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
-import mchorse.bbs_mod.ui.utils.UI;
+import elgatopro300.bbs_cml.actions.types.chat.CommandActionClip;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
+import elgatopro300.bbs_cml.ui.framework.elements.input.text.UITextbox;
+import elgatopro300.bbs_cml.ui.utils.UI;
 
 public class UICommandActionClip extends UIActionClip<CommandActionClip>
 {

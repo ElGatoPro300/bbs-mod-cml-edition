@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.ui.particles.sections;
+package elgatopro300.bbs_cml.ui.particles.sections;
 
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.math.molang.MolangParser;
-import mchorse.bbs_mod.particles.ParticleScheme;
-import mchorse.bbs_mod.particles.components.motion.ParticleComponentMotionCollision;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
-import mchorse.bbs_mod.ui.particles.UIParticleSchemePanel;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.math.molang.MolangParser;
+import elgatopro300.bbs_cml.particles.ParticleScheme;
+import elgatopro300.bbs_cml.particles.components.motion.ParticleComponentMotionCollision;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.particles.UIParticleSchemePanel;
 
 public class UIParticleSchemeCollisionSection extends UIParticleSchemeComponentSection<ParticleComponentMotionCollision>
 {

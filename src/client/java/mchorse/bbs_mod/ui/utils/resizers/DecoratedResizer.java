@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.ui.utils.resizers;
+package elgatopro300.bbs_cml.ui.utils.resizers;
 
 public abstract class DecoratedResizer extends BaseResizer
 {

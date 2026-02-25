@@ -1,10 +1,10 @@
-package mchorse.bbs_mod.ui.framework.elements.context;
+package elgatopro300.bbs_cml.ui.framework.elements.context;
 
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.ui.framework.UIContext;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.ui.framework.elements.utils.EventPropagation;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.ui.framework.UIContext;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.EventPropagation;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class UIContextMenu extends UIElement

@@ -1,18 +1,18 @@
-package mchorse.bbs_mod.ui.film.utils;
+package elgatopro300.bbs_cml.ui.film.utils;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.network.ClientNetwork;
-import mchorse.bbs_mod.settings.values.base.BaseValue;
-import mchorse.bbs_mod.settings.values.core.ValueGroup;
-import mchorse.bbs_mod.ui.film.UIFilmPanel;
-import mchorse.bbs_mod.ui.film.utils.undo.ValueChangeUndo;
-import mchorse.bbs_mod.ui.forms.editors.UIFormUndoHandler;
-import mchorse.bbs_mod.ui.framework.elements.UIElement;
-import mchorse.bbs_mod.utils.Timer;
-import mchorse.bbs_mod.utils.clips.Clips;
-import mchorse.bbs_mod.utils.undo.CompoundUndo;
-import mchorse.bbs_mod.utils.undo.IUndo;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.network.ClientNetwork;
+import elgatopro300.bbs_cml.settings.values.base.BaseValue;
+import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
+import elgatopro300.bbs_cml.ui.film.UIFilmPanel;
+import elgatopro300.bbs_cml.ui.film.utils.undo.ValueChangeUndo;
+import elgatopro300.bbs_cml.ui.forms.editors.UIFormUndoHandler;
+import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
+import elgatopro300.bbs_cml.utils.Timer;
+import elgatopro300.bbs_cml.utils.clips.Clips;
+import elgatopro300.bbs_cml.utils.undo.CompoundUndo;
+import elgatopro300.bbs_cml.utils.undo.IUndo;
 
 import java.util.HashSet;
 import java.util.Iterator;

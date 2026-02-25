@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.forms;
+package elgatopro300.bbs_cml.forms;
 
-import mchorse.bbs_mod.data.types.MapType;
-import mchorse.bbs_mod.forms.forms.Form;
-import mchorse.bbs_mod.resources.Link;
-import mchorse.bbs_mod.utils.factory.MapFactory;
+import elgatopro300.bbs_cml.data.types.MapType;
+import elgatopro300.bbs_cml.forms.forms.Form;
+import elgatopro300.bbs_cml.resources.Link;
+import elgatopro300.bbs_cml.utils.factory.MapFactory;
 
 public class FormArchitect extends MapFactory<Form, Void>
 {

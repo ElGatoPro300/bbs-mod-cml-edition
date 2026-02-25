@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.framework.elements.events;
+package elgatopro300.bbs_cml.ui.framework.elements.events;
 
-import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
 
 public class UITrackpadDragEndEvent extends UIEvent<UITrackpad>
 {

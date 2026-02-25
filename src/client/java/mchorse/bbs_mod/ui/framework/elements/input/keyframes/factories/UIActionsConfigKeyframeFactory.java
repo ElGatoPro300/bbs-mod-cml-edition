@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories;
+package elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.factories;
 
-import mchorse.bbs_mod.cubic.animation.ActionsConfig;
-import mchorse.bbs_mod.forms.FormUtils;
-import mchorse.bbs_mod.forms.FormUtilsClient;
-import mchorse.bbs_mod.forms.forms.ModelForm;
-import mchorse.bbs_mod.forms.renderers.ModelFormRenderer;
-import mchorse.bbs_mod.ui.UIKeys;
-import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
-import mchorse.bbs_mod.ui.utils.UI;
-import mchorse.bbs_mod.ui.utils.pose.UIActionsConfigEditor;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.cubic.animation.ActionsConfig;
+import elgatopro300.bbs_cml.forms.FormUtils;
+import elgatopro300.bbs_cml.forms.FormUtilsClient;
+import elgatopro300.bbs_cml.forms.forms.ModelForm;
+import elgatopro300.bbs_cml.forms.renderers.ModelFormRenderer;
+import elgatopro300.bbs_cml.ui.UIKeys;
+import elgatopro300.bbs_cml.ui.framework.elements.input.keyframes.UIKeyframes;
+import elgatopro300.bbs_cml.ui.utils.UI;
+import elgatopro300.bbs_cml.ui.utils.pose.UIActionsConfigEditor;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
 
 public class UIActionsConfigKeyframeFactory extends UIKeyframeFactory<ActionsConfig>
 {

@@ -1,12 +1,12 @@
-package mchorse.bbs_mod.ui;
+package elgatopro300.bbs_cml.ui;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.l10n.L10n;
-import mchorse.bbs_mod.l10n.keys.IKey;
-import mchorse.bbs_mod.l10n.keys.KeyCollection;
-import mchorse.bbs_mod.particles.ParticleCurveType;
-import mchorse.bbs_mod.utils.EnumUtils;
-import mchorse.bbs_mod.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.l10n.L10n;
+import elgatopro300.bbs_cml.l10n.keys.IKey;
+import elgatopro300.bbs_cml.l10n.keys.KeyCollection;
+import elgatopro300.bbs_cml.particles.ParticleCurveType;
+import elgatopro300.bbs_cml.utils.EnumUtils;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
 
 public class UIKeys
 {

@@ -1,9 +1,9 @@
-package mchorse.bbs_mod.ui.dashboard.textures.undo;
+package elgatopro300.bbs_cml.ui.dashboard.textures.undo;
 
-import mchorse.bbs_mod.utils.Pair;
-import mchorse.bbs_mod.utils.colors.Color;
-import mchorse.bbs_mod.utils.resources.Pixels;
-import mchorse.bbs_mod.utils.undo.IUndo;
+import elgatopro300.bbs_cml.utils.Pair;
+import elgatopro300.bbs_cml.utils.colors.Color;
+import elgatopro300.bbs_cml.utils.resources.Pixels;
+import elgatopro300.bbs_cml.utils.undo.IUndo;
 import org.joml.Vector2i;
 
 import java.util.HashMap;

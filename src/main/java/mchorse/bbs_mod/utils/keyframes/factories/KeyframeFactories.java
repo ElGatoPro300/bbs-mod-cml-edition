@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.utils.keyframes.factories;
+package elgatopro300.bbs_cml.utils.keyframes.factories;
 
 import java.util.HashMap;
 import java.util.Map;

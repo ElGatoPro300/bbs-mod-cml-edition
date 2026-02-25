@@ -1,7 +1,7 @@
-package mchorse.bbs_mod.utils;
+package elgatopro300.bbs_cml.utils;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSSettings;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSSettings;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.graphics.line;
+package elgatopro300.bbs_cml.graphics.line;
 
 import org.joml.Vector2f;
 

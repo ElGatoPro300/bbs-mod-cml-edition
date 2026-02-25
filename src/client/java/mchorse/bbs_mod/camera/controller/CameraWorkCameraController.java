@@ -1,11 +1,11 @@
-package mchorse.bbs_mod.camera.controller;
+package elgatopro300.bbs_cml.camera.controller;
 
-import mchorse.bbs_mod.camera.Camera;
-import mchorse.bbs_mod.camera.clips.CameraClipContext;
-import mchorse.bbs_mod.camera.clips.misc.AudioClientClip;
-import mchorse.bbs_mod.camera.data.Position;
-import mchorse.bbs_mod.utils.clips.Clip;
-import mchorse.bbs_mod.utils.clips.Clips;
+import elgatopro300.bbs_cml.camera.Camera;
+import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
+import elgatopro300.bbs_cml.camera.clips.misc.AudioClientClip;
+import elgatopro300.bbs_cml.camera.data.Position;
+import elgatopro300.bbs_cml.utils.clips.Clip;
+import elgatopro300.bbs_cml.utils.clips.Clips;
 
 public abstract class CameraWorkCameraController implements ICameraController
 {

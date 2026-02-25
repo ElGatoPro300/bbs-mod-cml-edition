@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.audio;
+package elgatopro300.bbs_cml.audio;
 
-import mchorse.bbs_mod.BBSMod;
-import mchorse.bbs_mod.BBSModClient;
-import mchorse.bbs_mod.BBSSettings;
-import mchorse.bbs_mod.audio.wav.WaveWriter;
-import mchorse.bbs_mod.camera.clips.misc.AudioClip;
-import mchorse.bbs_mod.camera.utils.TimeUtils;
-import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
-import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
-import mchorse.bbs_mod.utils.StringUtils;
-import mchorse.bbs_mod.utils.colors.Colors;
+import elgatopro300.bbs_cml.BBSMod;
+import elgatopro300.bbs_cml.BBSModClient;
+import elgatopro300.bbs_cml.BBSSettings;
+import elgatopro300.bbs_cml.audio.wav.WaveWriter;
+import elgatopro300.bbs_cml.camera.clips.misc.AudioClip;
+import elgatopro300.bbs_cml.camera.utils.TimeUtils;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
+import elgatopro300.bbs_cml.utils.StringUtils;
+import elgatopro300.bbs_cml.utils.colors.Colors;
 import org.lwjgl.system.MemoryUtil;
 
 import java.io.File;

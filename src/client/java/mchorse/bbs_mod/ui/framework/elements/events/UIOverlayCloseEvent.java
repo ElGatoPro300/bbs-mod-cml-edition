@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.ui.framework.elements.events;
+package elgatopro300.bbs_cml.ui.framework.elements.events;
 
-import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
+import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlayPanel;
 
 public class UIOverlayCloseEvent extends UIEvent<UIOverlayPanel>
 {

@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.resources;
+package elgatopro300.bbs_cml.resources;
 
-import mchorse.bbs_mod.utils.StringUtils;
+import elgatopro300.bbs_cml.utils.StringUtils;
 
 import java.util.Objects;
 

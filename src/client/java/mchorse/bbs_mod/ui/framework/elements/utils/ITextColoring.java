@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.ui.framework.elements.utils;
+package elgatopro300.bbs_cml.ui.framework.elements.utils;
 
 public interface ITextColoring
 {

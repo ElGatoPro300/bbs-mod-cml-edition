@@ -1,6 +1,6 @@
-package mchorse.bbs_mod.camera.controller;
+package elgatopro300.bbs_cml.camera.controller;
 
-import mchorse.bbs_mod.camera.Camera;
+import elgatopro300.bbs_cml.camera.Camera;
 
 public interface ICameraController
 {

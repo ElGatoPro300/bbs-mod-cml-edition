@@ -1,13 +1,13 @@
-package mchorse.bbs_mod.utils.keyframes.factories;
+package elgatopro300.bbs_cml.utils.keyframes.factories;
 
-import mchorse.bbs_mod.data.types.BaseType;
-import mchorse.bbs_mod.data.types.FloatType;
-import mchorse.bbs_mod.utils.interps.IInterp;
-import mchorse.bbs_mod.utils.interps.InterpContext;
-import mchorse.bbs_mod.utils.interps.Interpolations;
-import mchorse.bbs_mod.utils.interps.easings.EasingArgs;
-import mchorse.bbs_mod.utils.keyframes.BezierUtils;
-import mchorse.bbs_mod.utils.keyframes.Keyframe;
+import elgatopro300.bbs_cml.data.types.BaseType;
+import elgatopro300.bbs_cml.data.types.FloatType;
+import elgatopro300.bbs_cml.utils.interps.IInterp;
+import elgatopro300.bbs_cml.utils.interps.InterpContext;
+import elgatopro300.bbs_cml.utils.interps.Interpolations;
+import elgatopro300.bbs_cml.utils.interps.easings.EasingArgs;
+import elgatopro300.bbs_cml.utils.keyframes.BezierUtils;
+import elgatopro300.bbs_cml.utils.keyframes.Keyframe;
 
 public class FloatKeyframeFactory implements IKeyframeFactory<Float>
 {

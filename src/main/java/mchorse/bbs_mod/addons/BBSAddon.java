@@ -1,15 +1,15 @@
-package mchorse.bbs_mod.addons;
+package elgatopro300.bbs_cml.addons;
 
-import mchorse.bbs_mod.events.BBSAddonMod;
-import mchorse.bbs_mod.events.Subscribe;
-import mchorse.bbs_mod.events.register.RegisterActionClipsEvent;
-import mchorse.bbs_mod.events.register.RegisterCameraClipsEvent;
-import mchorse.bbs_mod.events.register.RegisterEntityCaptureHandlersEvent;
-import mchorse.bbs_mod.events.register.RegisterFormsEvent;
-import mchorse.bbs_mod.events.register.RegisterSettingsEvent;
-import mchorse.bbs_mod.events.register.RegisterSourcePacksEvent;
-import mchorse.bbs_mod.events.register.RegisterKeyframeFactoriesEvent;
-import mchorse.bbs_mod.events.register.RegisterMolangFunctionsEvent;
+import elgatopro300.bbs_cml.events.BBSAddonMod;
+import elgatopro300.bbs_cml.events.Subscribe;
+import elgatopro300.bbs_cml.events.register.RegisterActionClipsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterCameraClipsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterEntityCaptureHandlersEvent;
+import elgatopro300.bbs_cml.events.register.RegisterFormsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterSettingsEvent;
+import elgatopro300.bbs_cml.events.register.RegisterSourcePacksEvent;
+import elgatopro300.bbs_cml.events.register.RegisterKeyframeFactoriesEvent;
+import elgatopro300.bbs_cml.events.register.RegisterMolangFunctionsEvent;
 
 /**
  * Base class for BBS addons.
