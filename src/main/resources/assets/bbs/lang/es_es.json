@@ -21,5 +21,10 @@
     "gamerule.bbsEditing": "Permisos de edición de BBS mod",
     "command.getskin.success": "Skin aplicada a todos los jugadores",
     "command.getskin.error": "Error: %s",
-    "command.getskin.downloading": "Descargando skin..."
+    "command.getskin.downloading": "Descargando skin...",
+    "bbs.ui.transforms.context.resets": "Restablecer",
+    "bbs.ui.transforms.context.reset_translation": "Restablecer traslación",
+    "bbs.ui.transforms.context.reset_scale": "Restablecer escala",
+    "bbs.ui.transforms.context.reset_rotation": "Restablecer rotación",
+    "bbs.ui.transforms.context.reset": "Restablecer transformación"
 }
