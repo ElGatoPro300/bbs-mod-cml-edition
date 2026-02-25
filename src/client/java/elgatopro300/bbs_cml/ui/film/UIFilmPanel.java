@@ -65,7 +65,6 @@ import elgatopro300.bbs_cml.utils.Direction;
 import elgatopro300.bbs_cml.utils.MathUtils;
 import elgatopro300.bbs_cml.utils.PlayerUtils;
 import elgatopro300.bbs_cml.utils.Timer;
-import net.minecraft.client.util.math.MatrixStack;
 import elgatopro300.bbs_cml.utils.clips.Clip;
 import elgatopro300.bbs_cml.utils.clips.Clips;
 import elgatopro300.bbs_cml.utils.colors.Colors;
@@ -1480,15 +1479,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         if (!BBSRendering.isIrisShadowPass())
         {
             this.lastProjection.set(RenderSystem.getProjectionMatrix());
-            MatrixStack ms = context.matrixStack();
-            if (ms != null)
-            {
-                this.lastView.set(ms.peek().getPositionMatrix());
-            }
-            else
-            {
-                this.lastView.set(RenderSystem.getModelViewMatrix());
-            }
+            this.lastView.set(context.matrixStack().peek().getPositionMatrix());
         }
 
         this.controller.renderFrame(context);

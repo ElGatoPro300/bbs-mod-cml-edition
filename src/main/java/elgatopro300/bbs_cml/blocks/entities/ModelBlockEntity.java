@@ -9,9 +9,7 @@ import elgatopro300.bbs_cml.events.ModelBlockEntityUpdateCallback;
 import elgatopro300.bbs_cml.forms.entities.IEntity;
 import elgatopro300.bbs_cml.forms.entities.StubEntity;
 import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.forms.forms.BillboardForm;
 import elgatopro300.bbs_cml.forms.forms.LightForm;
-import elgatopro300.bbs_cml.resources.Link;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -19,7 +17,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.RegistryWrapper.WrapperLookup;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -188,15 +185,15 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt(WrapperLookup registryLookup)
+    public NbtCompound toInitialChunkDataNbt()
     {
-        return this.createNbtWithId(registryLookup);
+        return createNbt();
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt, WrapperLookup registryLookup)
+    protected void writeNbt(NbtCompound nbt)
     {
-        super.writeNbt(nbt, registryLookup);
+        super.writeNbt(nbt);
 
         MapType data = this.properties.toData();
 
@@ -204,9 +201,9 @@ public class ModelBlockEntity extends BlockEntity
     }
 
     @Override
-    public void readNbt(NbtCompound nbt, WrapperLookup registryLookup)
+    public void readNbt(NbtCompound nbt)
     {
-        super.readNbt(nbt, registryLookup);
+        super.readNbt(nbt);
 
         BaseType baseType = DataStorageUtils.readFromNbtCompound(nbt, "Properties");
 

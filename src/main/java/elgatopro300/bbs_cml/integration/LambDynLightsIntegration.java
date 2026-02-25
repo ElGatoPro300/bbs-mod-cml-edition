@@ -2,7 +2,6 @@ package elgatopro300.bbs_cml.integration;
 
 import dev.lambdaurora.lambdynlights.api.DynamicLightHandlers;
 import dev.lambdaurora.lambdynlights.api.DynamicLightsInitializer;
-import dev.lambdaurora.lambdynlights.api.item.ItemLightSourceManager;
 import elgatopro300.bbs_cml.BBSMod;
 import elgatopro300.bbs_cml.entity.ActorEntity;
 import elgatopro300.bbs_cml.entity.GunProjectileEntity;
@@ -15,7 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class LambDynLightsIntegration implements DynamicLightsInitializer
 {
     @Override
-    public void onInitializeDynamicLights(ItemLightSourceManager itemLightSourceManager)
+    public void onInitializeDynamicLights()
     {
         DynamicLightHandlers.registerDynamicLightHandler(BBSMod.ACTOR_ENTITY, (ActorEntity entity) -> getLightLevelFromForm(entity.getForm()));
         DynamicLightHandlers.registerDynamicLightHandler(BBSMod.GUN_PROJECTILE_ENTITY, (GunProjectileEntity entity) -> getLightLevelFromForm(entity.getForm()));
@@ -32,7 +31,7 @@ public class LambDynLightsIntegration implements DynamicLightsInitializer
         });
     }
 
-    private static int getLightLevelFromForm(Form form)
+    private int getLightLevelFromForm(Form form)
     {
         if (!(form instanceof LightForm lightForm))
         {
