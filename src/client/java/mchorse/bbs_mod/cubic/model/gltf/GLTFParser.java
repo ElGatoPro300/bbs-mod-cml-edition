@@ -1,8 +1,9 @@
-package mchorse.bbs_mod.gltf;
+package mchorse.bbs_mod.cubic.model.gltf;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import mchorse.bbs_mod.gltf.data.GLTF;
+
+import mchorse.bbs_mod.cubic.model.gltf.data.GLTF;
 import mchorse.bbs_mod.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;

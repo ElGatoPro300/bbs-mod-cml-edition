@@ -1,37 +1,28 @@
-package mchorse.bbs_mod.fbx;
+package mchorse.bbs_mod.cubic.model.fbx;
 
 import mchorse.bbs_mod.bobj.BOBJAction;
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJBone;
-import mchorse.bbs_mod.bobj.BOBJChannel;
-import mchorse.bbs_mod.bobj.BOBJGroup;
-import mchorse.bbs_mod.bobj.BOBJKeyframe;
 import mchorse.bbs_mod.bobj.BOBJLoader.BOBJData;
 import mchorse.bbs_mod.bobj.BOBJLoader.BOBJMesh;
 import mchorse.bbs_mod.bobj.BOBJLoader.Face;
 import mchorse.bbs_mod.bobj.BOBJLoader.IndexGroup;
 import mchorse.bbs_mod.bobj.BOBJLoader.Vertex;
 import mchorse.bbs_mod.bobj.BOBJLoader.Weight;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
-import org.lwjgl.assimp.AINodeAnim;
-import org.lwjgl.assimp.AIQuatKey;
-import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.AIVertexWeight;
-import org.lwjgl.assimp.AIMetaData;
-import org.lwjgl.assimp.AIMetaDataEntry;
 import org.lwjgl.assimp.Assimp;
 
 
