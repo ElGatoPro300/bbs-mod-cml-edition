@@ -3,11 +3,11 @@ package elgatopro300.bbs_cml.forms.values;
 import elgatopro300.bbs_cml.data.types.BaseType;
 import elgatopro300.bbs_cml.data.types.StringType;
 import elgatopro300.bbs_cml.settings.values.base.BaseValueBasic;
-import elgatopro300.bbs_cml.items.ItemDisplayMode;
+import net.minecraft.item.ModelTransformationMode;
 
-public class ValueModelTransformationMode extends BaseValueBasic<ItemDisplayMode>
+public class ValueModelTransformationMode extends BaseValueBasic<ModelTransformationMode>
 {
-    public ValueModelTransformationMode(String id, ItemDisplayMode value)
+    public ValueModelTransformationMode(String id, ModelTransformationMode value)
     {
         super(id, value);
     }
@@ -15,7 +15,7 @@ public class ValueModelTransformationMode extends BaseValueBasic<ItemDisplayMode
     @Override
     public BaseType toData()
     {
-        return new StringType((this.value == null ? ItemDisplayMode.NONE : this.value).asString());
+        return new StringType((this.value == null ? ModelTransformationMode.NONE : this.value).asString());
     }
 
     @Override
@@ -23,9 +23,9 @@ public class ValueModelTransformationMode extends BaseValueBasic<ItemDisplayMode
     {
         String string = data.isString() ? data.asString() : "";
 
-        this.set(ItemDisplayMode.NONE);
+        this.set(ModelTransformationMode.NONE);
 
-        for (ItemDisplayMode value : ItemDisplayMode.values())
+        for (ModelTransformationMode value : ModelTransformationMode.values())
         {
             if (value.asString().equals(string))
             {

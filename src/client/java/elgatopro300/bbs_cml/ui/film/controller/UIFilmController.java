@@ -1,6 +1,5 @@
 package elgatopro300.bbs_cml.ui.film.controller;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.VertexSorter;
@@ -49,7 +48,6 @@ import elgatopro300.bbs_cml.ui.utils.Area;
 import elgatopro300.bbs_cml.ui.utils.StencilFormFramebuffer;
 import elgatopro300.bbs_cml.ui.utils.UIUtils;
 import elgatopro300.bbs_cml.ui.utils.icons.Icon;
-import elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor;
 import elgatopro300.bbs_cml.ui.utils.icons.Icons;
 import elgatopro300.bbs_cml.ui.utils.keys.KeyAction;
 import elgatopro300.bbs_cml.utils.CollectionUtils;
@@ -61,7 +59,7 @@ import elgatopro300.bbs_cml.utils.RayTracing;
 import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.joml.Matrices;
 import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 import net.minecraft.client.gl.GlUniform;
@@ -69,7 +67,6 @@ import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
@@ -132,7 +129,7 @@ public class UIFilmController extends UIElement
     private int pov;
     private boolean paused;
 
-    // private WorldRenderContext worldRenderContext;
+    private WorldRenderContext worldRenderContext;
 
     public UIFilmController(UIFilmPanel panel)
     {
@@ -676,7 +673,7 @@ public class UIFilmController extends UIElement
                 return true;
             }
 
-            InputUtil.Key utilKey = InputUtil.fromKeyCode(new KeyInput(context.getKeyCode(), context.getScanCode(), 0));
+            InputUtil.Key utilKey = InputUtil.fromKeyCode(context.getKeyCode(), context.getScanCode());
 
             if (this.canControlWithKeyboard(utilKey) && !(this.recording && this.recordingCountdown > 0 && !this.countdownControl))
             {
@@ -1098,15 +1095,14 @@ public class UIFilmController extends UIElement
 
         boolean altPressed = Window.isAltPressed();
 
-        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_LESS);
+        RenderSystem.depthFunc(GL11.GL_LESS);
 
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        // RenderSystem.setProjectionMatrix(this.panel.lastProjection, ProjectionType.ORTHOGRAPHIC);
+        RenderSystem.setProjectionMatrix(this.panel.lastProjection, ProjectionType.ORTHOGRAPHIC);
 
         /* Render the stencil */
-        /*
         MatrixStack worldStack = this.worldRenderContext.matrixStack();
         if (worldStack != null)
         {
@@ -1129,13 +1125,11 @@ public class UIFilmController extends UIElement
             mvStack.popMatrix();
             MatrixStackUtils.applyModelViewMatrix();
         }
-        */
 
         /* Return back to orthographic projection */
         MatrixStackUtils.restoreMatrices();
 
-        com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
-        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_ALWAYS);
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
         this.hoveredEntity = null;
 
@@ -1156,10 +1150,10 @@ public class UIFilmController extends UIElement
 
         if (target != null)
         {
-            // target.set(index);
+            target.set(index);
         }
 
-        com.mojang.blaze3d.opengl.GlStateManager._enableBlend();
+        RenderSystem.enableBlend();
         context.batcher.texturedBox(getPickerPreviewProgram.get(), texture.id, Colors.WHITE, area.x, area.y, area.w, area.h, 0, h, w, 0, w, h);
 
         if (altPressed)
@@ -1196,12 +1190,11 @@ public class UIFilmController extends UIElement
         }
     }
 
-    /*
     public void renderFrame(WorldRenderContext context)
     {
         this.worldRenderContext = context;
 
-        com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
+        RenderSystem.enableDepthTest();
 
         if (this.editorController != null)
         {
@@ -1230,7 +1223,7 @@ public class UIFilmController extends UIElement
             }
             else
             {
-                // Control sticks and triggers variables
+                /* Control sticks and triggers variables */
                 float sensitivity = 100F;
 
                 float xx = (y - this.lastMouse.y) / sensitivity;
@@ -1244,10 +1237,8 @@ public class UIFilmController extends UIElement
 
         this.lastMouse.set(x, y);
 
-        GlStateManager._disableDepthTest();
-        GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.disableDepthTest();
     }
-    */
 
     public Pair<String, Boolean> getBone()
     {
@@ -1256,7 +1247,6 @@ public class UIFilmController extends UIElement
         return keyframeEditor != null ? keyframeEditor.getBone() : null;
     }
 
-    /*
     private void renderStencil(WorldRenderContext renderContext, UIContext context, boolean altPressed)
     {
         Area viewport = this.panel.preview.getViewport();
@@ -1294,7 +1284,7 @@ public class UIFilmController extends UIElement
 
                 BaseFilmController.renderEntity(FilmControllerContext.instance
                     .setup(this.getEntities(), entry.getValue(), replay, renderContext)
-                    .transition(isPlaying ? ((RenderTickCounterAccessor) renderContext.tickCounter()).getTickDeltaField() : 0)
+                    .transition(isPlaying ? renderContext.tickCounter().getTickDelta(false) : 0)
                     .stencil(this.stencilMap)
                     .relative(replay.relative.get()));
             }
@@ -1321,9 +1311,8 @@ public class UIFilmController extends UIElement
         this.stencil.pick(x, y);
         this.stencil.unbind(this.stencilMap);
 
-        // MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
+        MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
     }
-    */
 
     private void ensureStencilFramebuffer()
     {

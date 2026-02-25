@@ -1,8 +1,6 @@
 package elgatopro300.bbs_cml.particles.emitter;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
-import org.lwjgl.opengl.GL11;
 import elgatopro300.bbs_cml.BBSModClient;
 import elgatopro300.bbs_cml.camera.Camera;
 import elgatopro300.bbs_cml.graphics.texture.Texture;
@@ -19,11 +17,11 @@ import elgatopro300.bbs_cml.utils.MathUtils;
 import elgatopro300.bbs_cml.utils.interps.Lerps;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
-// import net.minecraft.client.gl.ShaderProgramKeys;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.gl.ShaderProgramKeys;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -126,7 +124,7 @@ public class ParticleEmitter
     public void setTarget(LivingEntity target)
     {
         this.target = target;
-        this.world = target == null ? null : target.getEntityWorld();
+        this.world = target == null ? null : target.getWorld();
     }
 
     public void setWorld(World world)
@@ -460,7 +458,10 @@ public class ParticleEmitter
                 render.renderUI(this.uiParticle, builder, matrix, transition);
             }
 
-            
+            RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
         }
     }
 
@@ -499,8 +500,13 @@ public class ParticleEmitter
                 }
             }
             
-            // Shader selection handled by pipeline in 1.21.11
-            
+            RenderSystem.setShader(program.get());
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.disableCull();
+            BufferRenderer.drawWithGlobalProgram(builder.end());
+            RenderSystem.enableCull();
+            RenderSystem.disableBlend();
         }
 
         for (IComponentParticleRender component : renders)
@@ -529,22 +535,8 @@ public class ParticleEmitter
     {
         this.cYaw = 180 - camera.getYaw();
         this.cPitch = -camera.getPitch();
-        net.minecraft.entity.Entity focused = camera.getFocusedEntity();
-        if (focused != null)
-        {
-            net.minecraft.util.math.Vec3d pos = focused.getCameraPosVec(0.0F);
-            this.cX = pos.x;
-            this.cY = pos.y;
-            this.cZ = pos.z;
-        }
-        else
-        {
-            net.minecraft.util.math.Vec3d pos = net.minecraft.util.math.Vec3d.ofCenter(camera.getBlockPos());
-            this.cX = pos.x;
-            this.cY = pos.y;
-            this.cZ = pos.z;
-        }
+        this.cX = camera.getPos().x;
+        this.cY = camera.getPos().y;
+        this.cZ = camera.getPos().z;
     }
 }
-
-

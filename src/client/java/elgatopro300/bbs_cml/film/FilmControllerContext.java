@@ -7,7 +7,7 @@ import elgatopro300.bbs_cml.forms.entities.IEntity;
 import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
 import elgatopro300.bbs_cml.utils.colors.Colors;
 import elgatopro300.bbs_cml.utils.MatrixStackUtils;
-// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -60,7 +60,6 @@ public class FilmControllerContext
         this.viewMatrix = null;
     }
 
-    /*
     public FilmControllerContext setup(IntObjectMap<IEntity> entities, IEntity entity, Replay replay, WorldRenderContext context)
     {
         this.reset();
@@ -76,11 +75,10 @@ public class FilmControllerContext
             MatrixStackUtils.multiply(this.stack, RenderSystem.getModelViewMatrix());
         }
         this.consumers = context.consumers();
-        this.transition = ((elgatopro300.bbs_cml.mixin.client.RenderTickCounterAccessor) context.tickCounter()).getTickDeltaField();
+        this.transition = context.tickCounter().getTickDelta(false);
 
         return this;
     }
-    */
 
     public FilmControllerContext setup(IntObjectMap<IEntity> entities, IEntity entity, Replay replay, Camera camera, MatrixStack stack, VertexConsumerProvider consumers, float transition)
     {

@@ -1,7 +1,6 @@
 package elgatopro300.bbs_cml.ui.framework;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
 import elgatopro300.bbs_cml.ui.Keys;
 import elgatopro300.bbs_cml.ui.framework.elements.IUIElement;
 import elgatopro300.bbs_cml.ui.framework.elements.IViewport;
@@ -11,7 +10,7 @@ import elgatopro300.bbs_cml.ui.utils.Area;
 import elgatopro300.bbs_cml.ui.utils.Gizmo;
 import elgatopro300.bbs_cml.ui.utils.renderers.InputRenderer;
 import elgatopro300.bbs_cml.utils.colors.Colors;
-// import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -221,7 +220,7 @@ public abstract class UIBaseMenu
 
     public void renderMenu(UIRenderingContext context, int mouseX, int mouseY)
     {
-        // GlStateManager._depthFunc(GL11.GL_ALWAYS);
+        RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
         this.context.resetMatrix();
         this.context.setMouse(mouseX, mouseY);
@@ -244,7 +243,7 @@ public abstract class UIBaseMenu
             inputRenderer.render(this, mouseX, mouseY);
         }
 
-        // GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        RenderSystem.depthFunc(GL11.GL_LEQUAL);
     }
 
     protected void preRenderMenu(UIRenderingContext context)
@@ -253,10 +252,8 @@ public abstract class UIBaseMenu
     public void startRenderFrame(float tickDelta)
     {}
 
-    /*
     public void renderInWorld(WorldRenderContext context)
     {}
-    */
 
     public static class UIRootElement extends UIElement implements IViewport
     {

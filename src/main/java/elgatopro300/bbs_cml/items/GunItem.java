@@ -1,6 +1,5 @@
 package elgatopro300.bbs_cml.items;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import elgatopro300.bbs_cml.BBSMod;
 import elgatopro300.bbs_cml.entity.GunProjectileEntity;
 import elgatopro300.bbs_cml.forms.FormUtils;
@@ -70,13 +69,9 @@ public class GunItem extends Item
 
             if (!properties.cmdFiring.isEmpty())
             {
-                if (owner.world.getServer() != null && world instanceof ServerWorld serverWorld)
+                if (owner.getServer() != null && world instanceof ServerWorld serverWorld)
                 {
-                    try {
-                        owner.world.getServer().getCommandManager().getDispatcher().execute(properties.cmdFiring, owner.getCommandSource(serverWorld));
-                    } catch (CommandSyntaxException e) {
-                        e.printStackTrace();
-                    }
+                    owner.getServer().getCommandManager().executeWithPrefix(owner.getCommandSource(serverWorld), properties.cmdFiring);
                 }
             }
         }

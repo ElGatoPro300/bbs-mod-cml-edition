@@ -1,7 +1,7 @@
 package elgatopro300.bbs_cml.cubic.render.vao;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import elgatopro300.bbs_cml.bobj.BOBJArmature;
 import elgatopro300.bbs_cml.bobj.BOBJBone;
 import elgatopro300.bbs_cml.bobj.BOBJLoader;
@@ -10,6 +10,7 @@ import elgatopro300.bbs_cml.client.BBSRendering;
 import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
 import elgatopro300.bbs_cml.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -345,6 +346,12 @@ public class BOBJModelVAO
 
         ModelVAORenderer.setupUniforms(stack, shader, r, g, b, a);
 
+        shader.bind();
+
+        int textureID = RenderSystem.getShaderTexture(0);
+        GlStateManager._activeTexture(GL30.GL_TEXTURE0);
+        GlStateManager._bindTexture(textureID);
+
         GL30.glBindVertexArray(this.vao);
 
         GL30.glEnableVertexAttribArray(Attributes.COLOR);
@@ -365,7 +372,7 @@ public class BOBJModelVAO
         boolean globalTranslucent = a < 1.0F;
         boolean semiTransparent = globalTranslucent || this.hasSemiTransparency;
 
-        GlStateManager._enableCull();
+        com.mojang.blaze3d.systems.RenderSystem.enableCull();
 
         /* Opaque pass first (only if global alpha is 1) */
         if (!globalTranslucent && this.opaqueIndexCount > 0)
@@ -502,7 +509,7 @@ public class BOBJModelVAO
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
             GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, sortedTrans, GL15.GL_DYNAMIC_DRAW);
 
-            GlStateManager._depthMask(false);
+            com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
 
             GL11.glCullFace(GL11.GL_FRONT);
             GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
@@ -511,7 +518,7 @@ public class BOBJModelVAO
             GL11.glCullFace(GL11.GL_BACK);
             GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
 
-            GlStateManager._depthMask(true);
+            com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
         }
 
         GL30.glDisableVertexAttribArray(Attributes.COLOR);
@@ -526,11 +533,13 @@ public class BOBJModelVAO
         if (hasShaders) GL30.glDisableVertexAttribArray(Attributes.TANGENTS);
         if (hasShaders) GL30.glDisableVertexAttribArray(Attributes.MID_TEXTURE_UV);
 
+        shader.unbind();
+
         /* Restore GL state */
         if (prevCullEnabled) org.lwjgl.opengl.GL11.glEnable(org.lwjgl.opengl.GL11.GL_CULL_FACE);
         else org.lwjgl.opengl.GL11.glDisable(org.lwjgl.opengl.GL11.GL_CULL_FACE);
         org.lwjgl.opengl.GL11.glCullFace(prevCullFace);
-        GlStateManager._depthMask(prevDepthMask);
+        com.mojang.blaze3d.systems.RenderSystem.depthMask(prevDepthMask);
 
         /* Restore only the previous VAO; its own EBO binding is part of that VAO's state */
         GL30.glBindVertexArray(currentVAO);
