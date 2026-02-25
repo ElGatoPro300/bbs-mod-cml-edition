@@ -6,7 +6,6 @@ import elgatopro300.bbs_cml.film.replays.Replay;
 import elgatopro300.bbs_cml.settings.values.numeric.ValueFloat;
 import elgatopro300.bbs_cml.utils.clips.Clip;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.server.world.ServerWorld;
 
 public class DamageActionClip extends ActionClip
 {
@@ -31,9 +30,9 @@ public class DamageActionClip extends ActionClip
 
         this.applyPositionRotation(player, replay, tick);
 
-        if (actor != null && player.getWorld() instanceof ServerWorld serverWorld)
+        if (actor != null)
         {
-            actor.damage(serverWorld, player.getWorld().getDamageSources().mobAttack(player), damage);
+            actor.damage(player.getWorld().getDamageSources().mobAttack(player), damage);
         }
     }
 

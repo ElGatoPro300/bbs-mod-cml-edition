@@ -1,7 +1,5 @@
 package elgatopro300.bbs_cml.cubic.render.vao;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.platform.GlStateManager;
 import elgatopro300.bbs_cml.bobj.BOBJArmature;
 import elgatopro300.bbs_cml.bobj.BOBJBone;
 import elgatopro300.bbs_cml.bobj.BOBJLoader;
@@ -10,7 +8,6 @@ import elgatopro300.bbs_cml.client.BBSRendering;
 import elgatopro300.bbs_cml.ui.framework.elements.utils.StencilMap;
 import elgatopro300.bbs_cml.utils.joml.Matrices;
 import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -347,10 +344,6 @@ public class BOBJModelVAO
         ModelVAORenderer.setupUniforms(stack, shader, r, g, b, a);
 
         shader.bind();
-
-        int textureID = RenderSystem.getShaderTexture(0);
-        GlStateManager._activeTexture(GL30.GL_TEXTURE0);
-        GlStateManager._bindTexture(textureID);
 
         GL30.glBindVertexArray(this.vao);
 

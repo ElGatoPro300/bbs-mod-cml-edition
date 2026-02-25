@@ -1,6 +1,6 @@
 package elgatopro300.bbs_cml.forms.renderers;
 
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 
 public enum FormRenderType
 {
