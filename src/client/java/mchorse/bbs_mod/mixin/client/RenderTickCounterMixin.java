@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.mixin.client;
+package mchorse.bbs_mod.mixin.client;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.utils.VideoRecorder;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.utils.VideoRecorder;
 import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

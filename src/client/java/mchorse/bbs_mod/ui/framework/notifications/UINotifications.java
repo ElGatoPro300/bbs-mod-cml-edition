@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.framework.notifications;
+package mchorse.bbs_mod.ui.framework.notifications;
 
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.l10n.keys.IKey;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.utils.interps.Lerps;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.interps.Lerps;
 
 import java.util.ArrayList;
 import java.util.Iterator;

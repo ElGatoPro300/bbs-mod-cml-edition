@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.camera.clips.overwrite;
+package mchorse.bbs_mod.camera.clips.overwrite;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.clips.CameraClip;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.ClipContext;
-import elgatopro300.bbs_cml.utils.joml.Matrices;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeChannel;
-import elgatopro300.bbs_cml.utils.keyframes.KeyframeSegment;
-import elgatopro300.bbs_cml.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.clips.CameraClip;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.ClipContext;
+import mchorse.bbs_mod.utils.joml.Matrices;
+import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
+import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
+import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
 import org.joml.Vector3f;
 
 /**

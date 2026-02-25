@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.graphics;
+package mchorse.bbs_mod.graphics;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import elgatopro300.bbs_cml.BBSSettings;
-import elgatopro300.bbs_cml.camera.data.Angle;
-import elgatopro300.bbs_cml.utils.Axis;
-import elgatopro300.bbs_cml.utils.MathUtils;
+import mchorse.bbs_mod.BBSSettings;
+import mchorse.bbs_mod.camera.data.Angle;
+import mchorse.bbs_mod.utils.Axis;
+import mchorse.bbs_mod.utils.MathUtils;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;

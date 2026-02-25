@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.data.types;
+package mchorse.bbs_mod.data.types;
 
 public abstract class NumericType extends BaseType
 {

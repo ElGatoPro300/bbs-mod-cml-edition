@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.client;
+package mchorse.bbs_mod.client;
 
-import elgatopro300.bbs_cml.BBSMod;
+import mchorse.bbs_mod.BBSMod;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.ShaderProgram;
 import net.minecraft.client.render.VertexFormats;

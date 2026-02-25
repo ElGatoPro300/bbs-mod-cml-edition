@@ -1,15 +1,15 @@
-package elgatopro300.bbs_cml.ui.framework;
+package mchorse.bbs_mod.ui.framework;
 
-import elgatopro300.bbs_cml.BBSModClient;
-import elgatopro300.bbs_cml.client.BBSRendering;
-import elgatopro300.bbs_cml.importers.IImportPathProvider;
-import elgatopro300.bbs_cml.importers.ImporterContext;
-import elgatopro300.bbs_cml.importers.Importers;
-import elgatopro300.bbs_cml.importers.types.IImporter;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.utils.IFileDropListener;
-import elgatopro300.bbs_cml.ui.utils.UIUtils;
-import elgatopro300.bbs_cml.utils.FFMpegUtils;
+import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.client.BBSRendering;
+import mchorse.bbs_mod.importers.IImportPathProvider;
+import mchorse.bbs_mod.importers.ImporterContext;
+import mchorse.bbs_mod.importers.Importers;
+import mchorse.bbs_mod.importers.types.IImporter;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.utils.IFileDropListener;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.utils.FFMpegUtils;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

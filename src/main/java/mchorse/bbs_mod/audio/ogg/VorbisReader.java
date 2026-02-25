@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.audio.ogg;
+package mchorse.bbs_mod.audio.ogg;
 
-import elgatopro300.bbs_cml.audio.Wave;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.audio.Wave;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.IOUtils;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.stb.STBVorbisInfo;
 import org.lwjgl.system.MemoryStack;

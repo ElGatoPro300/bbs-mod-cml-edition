@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.events.register;
+package mchorse.bbs_mod.events.register;
 
-import elgatopro300.bbs_cml.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.IInterp;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms.renderers.utils;
+package mchorse.bbs_mod.forms.renderers.utils;
 
-import elgatopro300.bbs_cml.mixin.client.sodium.SodiumBufferBuilderAccessor;
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.mixin.client.sodium.SodiumBufferBuilderAccessor;
+import mchorse.bbs_mod.utils.colors.Color;
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
 import net.caffeinemc.mods.sodium.api.vertex.format.VertexFormatDescription;
 import net.minecraft.client.render.VertexConsumer;

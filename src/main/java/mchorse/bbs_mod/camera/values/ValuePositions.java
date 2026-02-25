@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.camera.values;
+package mchorse.bbs_mod.camera.values;
 
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.settings.values.IValueListener;
-import elgatopro300.bbs_cml.settings.values.core.ValueList;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.settings.values.IValueListener;
+import mchorse.bbs_mod.settings.values.core.ValueList;
 
 import java.util.List;
 

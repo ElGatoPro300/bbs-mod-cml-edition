@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.particles.components.shape;
+package mchorse.bbs_mod.particles.components.shape;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.math.molang.MolangException;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.math.molang.expressions.MolangExpression;
-import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
-import elgatopro300.bbs_cml.particles.emitter.Particle;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.math.molang.MolangException;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.math.molang.expressions.MolangExpression;
+import mchorse.bbs_mod.particles.components.ParticleComponentBase;
+import mchorse.bbs_mod.particles.emitter.Particle;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 import org.joml.Vector3f;
 
 public class ParticleComponentShapeSphere extends ParticleComponentShapeBase

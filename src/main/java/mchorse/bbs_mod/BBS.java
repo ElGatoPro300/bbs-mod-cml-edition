@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml;
+package mchorse.bbs_mod;
 
-import elgatopro300.bbs_cml.actions.ActionManager;
-import elgatopro300.bbs_cml.events.EventBus;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.camera.clips.ClipFactoryData;
-import elgatopro300.bbs_cml.film.FilmManager;
-import elgatopro300.bbs_cml.forms.FormArchitect;
-import elgatopro300.bbs_cml.resources.AssetProvider;
-import elgatopro300.bbs_cml.resources.packs.DynamicSourcePack;
-import elgatopro300.bbs_cml.resources.packs.ExternalAssetsSourcePack;
-import elgatopro300.bbs_cml.settings.SettingsManager;
-import elgatopro300.bbs_cml.utils.factory.MapFactory;
+import mchorse.bbs_mod.actions.ActionManager;
+import mchorse.bbs_mod.events.EventBus;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.camera.clips.ClipFactoryData;
+import mchorse.bbs_mod.film.FilmManager;
+import mchorse.bbs_mod.forms.FormArchitect;
+import mchorse.bbs_mod.resources.AssetProvider;
+import mchorse.bbs_mod.resources.packs.DynamicSourcePack;
+import mchorse.bbs_mod.resources.packs.ExternalAssetsSourcePack;
+import mchorse.bbs_mod.settings.SettingsManager;
+import mchorse.bbs_mod.utils.factory.MapFactory;
 
 import java.io.File;
 

@@ -1,16 +1,16 @@
-package elgatopro300.bbs_cml.ui.framework.elements.input.text;
+package mchorse.bbs_mod.ui.framework.elements.input.text;
 
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.HighlightedTextLine;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.ISyntaxHighlighter;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.JSSyntaxHighlighter;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.SyntaxStyle;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.TextLineNumber;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.highlighting.TextSegment;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.undo.TextEditUndo;
-import elgatopro300.bbs_cml.ui.framework.elements.input.text.utils.Cursor;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.FontRenderer;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.HighlightedTextLine;
+import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.ISyntaxHighlighter;
+import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.JSSyntaxHighlighter;
+import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.SyntaxStyle;
+import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.TextLineNumber;
+import mchorse.bbs_mod.ui.framework.elements.input.text.highlighting.TextSegment;
+import mchorse.bbs_mod.ui.framework.elements.input.text.undo.TextEditUndo;
+import mchorse.bbs_mod.ui.framework.elements.input.text.utils.Cursor;
+import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
+import mchorse.bbs_mod.utils.colors.Colors;
 import net.minecraft.client.font.TextRenderer;
 
 import java.util.ArrayList;

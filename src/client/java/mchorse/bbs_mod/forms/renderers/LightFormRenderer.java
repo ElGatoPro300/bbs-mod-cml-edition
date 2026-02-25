@@ -1,9 +1,9 @@
-package elgatopro300.bbs_cml.forms.renderers;
+package mchorse.bbs_mod.forms.renderers;
 
-import elgatopro300.bbs_cml.forms.CustomVertexConsumerProvider;
-import elgatopro300.bbs_cml.forms.FormUtilsClient;
-import elgatopro300.bbs_cml.forms.forms.LightForm;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
+import mchorse.bbs_mod.forms.CustomVertexConsumerProvider;
+import mchorse.bbs_mod.forms.FormUtilsClient;
+import mchorse.bbs_mod.forms.forms.LightForm;
+import mchorse.bbs_mod.ui.framework.UIContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;

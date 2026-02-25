@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.obj;
+package mchorse.bbs_mod.obj;
 
 import java.util.LinkedHashMap;
 import java.util.List;

@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.ui.model_blocks.camera;
+package mchorse.bbs_mod.ui.model_blocks.camera;
 
-import elgatopro300.bbs_cml.blocks.entities.ModelBlockEntity;
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.controller.ICameraController;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.UIModelRenderer;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.blocks.entities.ModelBlockEntity;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.controller.ICameraController;
+import mchorse.bbs_mod.ui.framework.elements.utils.UIModelRenderer;
+import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.util.math.BlockPos;
 
 public class ImmersiveModelBlockCameraController implements ICameraController

@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.gltf;
+package mchorse.bbs_mod.gltf;
 
-import elgatopro300.bbs_cml.bobj.BOBJLoader;
-import elgatopro300.bbs_cml.gltf.data.GLTF;
+import mchorse.bbs_mod.bobj.BOBJLoader;
+import mchorse.bbs_mod.gltf.data.GLTF;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 

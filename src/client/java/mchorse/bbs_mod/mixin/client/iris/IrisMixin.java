@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.mixin.client.iris;
+package mchorse.bbs_mod.mixin.client.iris;
 
-import elgatopro300.bbs_cml.utils.iris.QueueMap;
-import elgatopro300.bbs_cml.utils.iris.ShaderCurves;
+import mchorse.bbs_mod.utils.iris.QueueMap;
+import mchorse.bbs_mod.utils.iris.ShaderCurves;
 import net.irisshaders.iris.Iris;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

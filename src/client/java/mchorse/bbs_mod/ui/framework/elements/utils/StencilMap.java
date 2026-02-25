@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.ui.framework.elements.utils;
+package mchorse.bbs_mod.ui.framework.elements.utils;
 
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.ui.utils.Gizmo;
-import elgatopro300.bbs_cml.utils.Pair;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.ui.utils.Gizmo;
+import mchorse.bbs_mod.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;

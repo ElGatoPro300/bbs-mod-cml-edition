@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.entity;
+package mchorse.bbs_mod.entity;
 
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.film.replays.Replay;
-import elgatopro300.bbs_cml.forms.entities.MCEntity;
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.network.ServerNetwork;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.film.replays.Replay;
+import mchorse.bbs_mod.forms.entities.MCEntity;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.network.ServerNetwork;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;

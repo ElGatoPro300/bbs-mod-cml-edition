@@ -1,23 +1,23 @@
-package elgatopro300.bbs_cml.ui.film.clips;
+package mchorse.bbs_mod.ui.film.clips;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.camera.clips.misc.VideoClip;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.client.video.VideoRenderer;
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIToggle;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIOverlay;
-import elgatopro300.bbs_cml.ui.framework.elements.overlay.UIVideoOverlayPanel;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.UIUtils;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
-import elgatopro300.bbs_cml.utils.colors.Colors;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.Batcher2D;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.camera.clips.misc.VideoClip;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.client.video.VideoRenderer;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIVideoOverlayPanel;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
+import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.ui.framework.elements.utils.Batcher2D;
 
 public class UIVideoClip extends UIClip<VideoClip>
 {

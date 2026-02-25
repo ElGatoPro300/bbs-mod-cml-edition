@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.cubic.model;
+package mchorse.bbs_mod.cubic.model;
 
-import elgatopro300.bbs_cml.BBSMod;
-import elgatopro300.bbs_cml.cubic.ModelInstance;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.IOUtils;
-import elgatopro300.bbs_cml.utils.repos.IRepository;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.cubic.ModelInstance;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.IOUtils;
+import mchorse.bbs_mod.utils.repos.IRepository;
 
 import java.io.File;
 import java.util.Collection;

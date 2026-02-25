@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.graphics.line;
+package mchorse.bbs_mod.graphics.line;
 
-import elgatopro300.bbs_cml.utils.colors.Color;
+import mchorse.bbs_mod.utils.colors.Color;
 import net.minecraft.client.render.BufferBuilder;
 import org.joml.Matrix4f;
 

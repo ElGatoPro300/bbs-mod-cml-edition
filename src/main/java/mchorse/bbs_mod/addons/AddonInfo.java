@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.addons;
+package mchorse.bbs_mod.addons;
 
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.Link;
 import java.util.List;
 
 public class AddonInfo

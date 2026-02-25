@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.bobj;
+package mchorse.bbs_mod.bobj;
 
-import elgatopro300.bbs_cml.utils.IOUtils;
+import mchorse.bbs_mod.utils.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;

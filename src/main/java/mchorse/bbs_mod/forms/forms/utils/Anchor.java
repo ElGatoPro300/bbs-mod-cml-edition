@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.forms.forms.utils;
+package mchorse.bbs_mod.forms.forms.utils;
 
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.MapType;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.MapType;
 
 public class Anchor implements IMapSerializable
 {

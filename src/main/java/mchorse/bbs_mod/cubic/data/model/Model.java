@@ -1,20 +1,20 @@
-package elgatopro300.bbs_cml.cubic.data.model;
+package mchorse.bbs_mod.cubic.data.model;
 
-import elgatopro300.bbs_cml.bobj.BOBJBone;
-import elgatopro300.bbs_cml.cubic.CubicModelAnimator;
-import elgatopro300.bbs_cml.cubic.IModel;
-import elgatopro300.bbs_cml.cubic.MolangHelper;
-import elgatopro300.bbs_cml.cubic.data.animation.Animation;
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.forms.entities.IEntity;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.pose.Pose;
-import elgatopro300.bbs_cml.utils.pose.PoseTransform;
-import elgatopro300.bbs_cml.utils.resources.LinkUtils;
+import mchorse.bbs_mod.bobj.BOBJBone;
+import mchorse.bbs_mod.cubic.CubicModelAnimator;
+import mchorse.bbs_mod.cubic.IModel;
+import mchorse.bbs_mod.cubic.MolangHelper;
+import mchorse.bbs_mod.cubic.data.animation.Animation;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.resources.LinkUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

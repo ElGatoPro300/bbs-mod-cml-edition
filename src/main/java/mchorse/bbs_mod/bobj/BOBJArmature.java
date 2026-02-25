@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.bobj;
+package mchorse.bbs_mod.bobj;
 
 import org.joml.Matrix4f;
 

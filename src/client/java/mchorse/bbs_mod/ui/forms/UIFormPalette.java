@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.forms;
+package mchorse.bbs_mod.ui.forms;
 
-import elgatopro300.bbs_cml.forms.forms.Form;
-import elgatopro300.bbs_cml.ui.Keys;
-import elgatopro300.bbs_cml.ui.forms.categories.UIFormCategory;
-import elgatopro300.bbs_cml.ui.forms.editors.UIFormEditor;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.framework.elements.utils.EventPropagation;
-import elgatopro300.bbs_cml.utils.colors.Colors;
+import mchorse.bbs_mod.forms.forms.Form;
+import mchorse.bbs_mod.ui.Keys;
+import mchorse.bbs_mod.ui.forms.categories.UIFormCategory;
+import mchorse.bbs_mod.ui.forms.editors.UIFormEditor;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.framework.elements.utils.EventPropagation;
+import mchorse.bbs_mod.utils.colors.Colors;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;

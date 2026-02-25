@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.mixin.client.iris;
+package mchorse.bbs_mod.mixin.client.iris;
 
-import elgatopro300.bbs_cml.utils.iris.IrisUtils;
+import mchorse.bbs_mod.utils.iris.IrisUtils;
 import net.irisshaders.iris.shaderpack.ShaderPack;
 import net.irisshaders.iris.shaderpack.properties.ShaderProperties;
 import org.spongepowered.asm.mixin.Mixin;

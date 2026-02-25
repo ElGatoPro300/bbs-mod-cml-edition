@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.graphics;
+package mchorse.bbs_mod.graphics;
 
-import elgatopro300.bbs_cml.resources.Link;
+import mchorse.bbs_mod.resources.Link;
 
 import java.util.HashMap;
 import java.util.Map;

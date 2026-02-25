@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.camera.clips.converters;
+package mchorse.bbs_mod.camera.clips.converters;
 
-import elgatopro300.bbs_cml.camera.clips.CameraClip;
-import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
-import elgatopro300.bbs_cml.camera.clips.overwrite.IdleClip;
+import mchorse.bbs_mod.camera.clips.CameraClip;
+import mchorse.bbs_mod.camera.clips.CameraClipContext;
+import mchorse.bbs_mod.camera.clips.overwrite.IdleClip;
 
 public class IdleConverter
 {

@@ -1,12 +1,12 @@
-package elgatopro300.bbs_cml.utils.pose;
+package mchorse.bbs_mod.utils.pose;
 
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.IMapSerializable;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.utils.MathUtils;
-import elgatopro300.bbs_cml.utils.interps.IInterp;
-import elgatopro300.bbs_cml.utils.interps.InterpContext;
-import elgatopro300.bbs_cml.utils.joml.Matrices;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.IMapSerializable;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.utils.MathUtils;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.InterpContext;
+import mchorse.bbs_mod.utils.joml.Matrices;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -43,10 +43,10 @@ public class Transform implements IMapSerializable
            However, in PoseKeyframeFactory, 'interp' is passed from Keyframe.getInterpolation().
            If IInterp passed here is actually an instance of Interpolation, we can cast it. */
            
-        elgatopro300.bbs_cml.utils.interps.easings.EasingArgs args = null;
-        if (interp instanceof elgatopro300.bbs_cml.utils.interps.Interpolation)
+        mchorse.bbs_mod.utils.interps.easings.EasingArgs args = null;
+        if (interp instanceof mchorse.bbs_mod.utils.interps.Interpolation)
         {
-            args = ((elgatopro300.bbs_cml.utils.interps.Interpolation) interp).getArgs();
+            args = ((mchorse.bbs_mod.utils.interps.Interpolation) interp).getArgs();
         }
 
         this.lerp(this.translate, preA.translate, a.translate, b.translate, postB.translate, interp, args, x, w0, w1, w2, w3);
@@ -56,7 +56,7 @@ public class Transform implements IMapSerializable
         this.lerp(this.pivot, preA.pivot, a.pivot, b.pivot, postB.pivot, interp, args, x, w0, w1, w2, w3);
     }
 
-    private void lerp(Vector3f target, Vector3f preA, Vector3f a, Vector3f b, Vector3f postB, IInterp interp, elgatopro300.bbs_cml.utils.interps.easings.EasingArgs args, float x, double w0, double w1, double w2, double w3)
+    private void lerp(Vector3f target, Vector3f preA, Vector3f a, Vector3f b, Vector3f postB, IInterp interp, mchorse.bbs_mod.utils.interps.easings.EasingArgs args, float x, double w0, double w1, double w2, double w3)
     {
         double ax = a.x, ay = a.y, az = a.z;
         double bx = b.x, by = b.y, bz = b.z;
@@ -66,7 +66,7 @@ public class Transform implements IMapSerializable
         InterpContext ctx = IInterp.context.setBoundary(preA == a, postB == b);
         if (args != null) ctx.extra(args);
         
-        if (interp == elgatopro300.bbs_cml.utils.interps.Interpolations.NURBS)
+        if (interp == mchorse.bbs_mod.utils.interps.Interpolations.NURBS)
         {
             ctx.weights(w0, w1, w2, w3);
         }

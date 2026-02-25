@@ -1,4 +1,4 @@
-package elgatopro300.bbs_cml.utils.watchdog;
+package mchorse.bbs_mod.utils.watchdog;
 
 import java.nio.file.Path;
 

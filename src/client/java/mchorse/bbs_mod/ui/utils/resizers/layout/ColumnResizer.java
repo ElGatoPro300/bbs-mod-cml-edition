@@ -1,13 +1,13 @@
-package elgatopro300.bbs_cml.ui.utils.resizers.layout;
+package mchorse.bbs_mod.ui.utils.resizers.layout;
 
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.ui.utils.Area;
-import elgatopro300.bbs_cml.ui.utils.Scroll;
-import elgatopro300.bbs_cml.ui.utils.ScrollDirection;
-import elgatopro300.bbs_cml.ui.utils.resizers.AutomaticResizer;
-import elgatopro300.bbs_cml.ui.utils.resizers.ChildResizer;
-import elgatopro300.bbs_cml.ui.utils.resizers.IResizer;
-import elgatopro300.bbs_cml.ui.utils.resizers.Margin;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.ui.utils.Scroll;
+import mchorse.bbs_mod.ui.utils.ScrollDirection;
+import mchorse.bbs_mod.ui.utils.resizers.AutomaticResizer;
+import mchorse.bbs_mod.ui.utils.resizers.ChildResizer;
+import mchorse.bbs_mod.ui.utils.resizers.IResizer;
+import mchorse.bbs_mod.ui.utils.resizers.Margin;
 
 public class ColumnResizer extends AutomaticResizer
 {

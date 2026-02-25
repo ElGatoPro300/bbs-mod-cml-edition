@@ -1,20 +1,20 @@
-package elgatopro300.bbs_cml.ui.film;
+package mchorse.bbs_mod.ui.film;
 
-import elgatopro300.bbs_cml.camera.Camera;
-import elgatopro300.bbs_cml.camera.clips.ClipFactoryData;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.data.DataStorageUtils;
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.film.Film;
-import elgatopro300.bbs_cml.settings.values.base.BaseValue;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
-import elgatopro300.bbs_cml.ui.film.clips.UIClip;
-import elgatopro300.bbs_cml.ui.framework.UIContext;
-import elgatopro300.bbs_cml.ui.framework.elements.UIElement;
-import elgatopro300.bbs_cml.utils.DataPath;
-import elgatopro300.bbs_cml.utils.clips.Clip;
-import elgatopro300.bbs_cml.utils.clips.Clips;
-import elgatopro300.bbs_cml.utils.factory.IFactory;
+import mchorse.bbs_mod.camera.Camera;
+import mchorse.bbs_mod.camera.clips.ClipFactoryData;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.data.DataStorageUtils;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.film.Film;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.ui.film.clips.UIClip;
+import mchorse.bbs_mod.ui.framework.UIContext;
+import mchorse.bbs_mod.ui.framework.elements.UIElement;
+import mchorse.bbs_mod.utils.DataPath;
+import mchorse.bbs_mod.utils.clips.Clip;
+import mchorse.bbs_mod.utils.clips.Clips;
+import mchorse.bbs_mod.utils.factory.IFactory;
 
 import java.util.List;
 import java.util.Map;

@@ -1,10 +1,10 @@
-package elgatopro300.bbs_cml.forms.states;
+package mchorse.bbs_mod.forms.states;
 
-import elgatopro300.bbs_cml.film.replays.FormProperties;
-import elgatopro300.bbs_cml.settings.values.core.ValueGroup;
-import elgatopro300.bbs_cml.settings.values.core.ValueString;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueBoolean;
-import elgatopro300.bbs_cml.settings.values.numeric.ValueInt;
+import mchorse.bbs_mod.film.replays.FormProperties;
+import mchorse.bbs_mod.settings.values.core.ValueGroup;
+import mchorse.bbs_mod.settings.values.core.ValueString;
+import mchorse.bbs_mod.settings.values.numeric.ValueBoolean;
+import mchorse.bbs_mod.settings.values.numeric.ValueInt;
 
 import java.util.UUID;
 

@@ -1,14 +1,14 @@
-package elgatopro300.bbs_cml.particles.components.expiration;
+package mchorse.bbs_mod.particles.components.expiration;
 
-import elgatopro300.bbs_cml.data.types.BaseType;
-import elgatopro300.bbs_cml.data.types.ListType;
-import elgatopro300.bbs_cml.math.Operation;
-import elgatopro300.bbs_cml.math.molang.MolangException;
-import elgatopro300.bbs_cml.math.molang.MolangParser;
-import elgatopro300.bbs_cml.particles.components.IComponentParticleUpdate;
-import elgatopro300.bbs_cml.particles.components.ParticleComponentBase;
-import elgatopro300.bbs_cml.particles.emitter.Particle;
-import elgatopro300.bbs_cml.particles.emitter.ParticleEmitter;
+import mchorse.bbs_mod.data.types.BaseType;
+import mchorse.bbs_mod.data.types.ListType;
+import mchorse.bbs_mod.math.Operation;
+import mchorse.bbs_mod.math.molang.MolangException;
+import mchorse.bbs_mod.math.molang.MolangParser;
+import mchorse.bbs_mod.particles.components.IComponentParticleUpdate;
+import mchorse.bbs_mod.particles.components.ParticleComponentBase;
+import mchorse.bbs_mod.particles.emitter.Particle;
+import mchorse.bbs_mod.particles.emitter.ParticleEmitter;
 import org.joml.Vector3d;
 
 public class ParticleComponentKillPlane extends ParticleComponentBase implements IComponentParticleUpdate

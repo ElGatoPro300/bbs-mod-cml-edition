@@ -1,20 +1,20 @@
-package elgatopro300.bbs_cml.ui.film.clips;
+package mchorse.bbs_mod.ui.film.clips;
 
-import elgatopro300.bbs_cml.camera.clips.CameraClipContext;
-import elgatopro300.bbs_cml.camera.clips.overwrite.DollyClip;
-import elgatopro300.bbs_cml.camera.data.Position;
-import elgatopro300.bbs_cml.ui.UIKeys;
-import elgatopro300.bbs_cml.ui.film.IUIClipsDelegate;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIAngleModule;
-import elgatopro300.bbs_cml.ui.film.clips.modules.UIPointModule;
-import elgatopro300.bbs_cml.ui.film.utils.UICameraUtils;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIButton;
-import elgatopro300.bbs_cml.ui.framework.elements.buttons.UIIcon;
-import elgatopro300.bbs_cml.ui.framework.elements.context.UIInterpolationContextMenu;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UITrackpad;
-import elgatopro300.bbs_cml.ui.framework.tooltips.InterpolationTooltip;
-import elgatopro300.bbs_cml.ui.utils.UI;
-import elgatopro300.bbs_cml.ui.utils.icons.Icons;
+import mchorse.bbs_mod.camera.clips.CameraClipContext;
+import mchorse.bbs_mod.camera.clips.overwrite.DollyClip;
+import mchorse.bbs_mod.camera.data.Position;
+import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.film.IUIClipsDelegate;
+import mchorse.bbs_mod.ui.film.clips.modules.UIAngleModule;
+import mchorse.bbs_mod.ui.film.clips.modules.UIPointModule;
+import mchorse.bbs_mod.ui.film.utils.UICameraUtils;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.context.UIInterpolationContextMenu;
+import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
+import mchorse.bbs_mod.ui.framework.tooltips.InterpolationTooltip;
+import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 
 public class UIDollyClip extends UIClip<DollyClip>
 {

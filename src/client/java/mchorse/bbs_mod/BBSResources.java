@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml;
+package mchorse.bbs_mod;
 
-import elgatopro300.bbs_cml.utils.watchdog.WatchDog;
+import mchorse.bbs_mod.utils.watchdog.WatchDog;
 import net.minecraft.client.MinecraftClient;
 
 import java.io.File;

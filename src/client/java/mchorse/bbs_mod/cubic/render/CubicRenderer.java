@@ -1,7 +1,7 @@
-package elgatopro300.bbs_cml.cubic.render;
+package mchorse.bbs_mod.cubic.render;
 
-import elgatopro300.bbs_cml.cubic.data.model.Model;
-import elgatopro300.bbs_cml.cubic.data.model.ModelGroup;
+import mchorse.bbs_mod.cubic.data.model.Model;
+import mchorse.bbs_mod.cubic.data.model.ModelGroup;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 

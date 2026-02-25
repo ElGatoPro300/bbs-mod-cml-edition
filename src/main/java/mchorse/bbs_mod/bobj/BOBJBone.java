@@ -1,8 +1,8 @@
-package elgatopro300.bbs_cml.bobj;
+package mchorse.bbs_mod.bobj;
 
-import elgatopro300.bbs_cml.resources.Link;
-import elgatopro300.bbs_cml.utils.colors.Color;
-import elgatopro300.bbs_cml.utils.pose.Transform;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.utils.colors.Color;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Matrix4f;
 
 public class BOBJBone

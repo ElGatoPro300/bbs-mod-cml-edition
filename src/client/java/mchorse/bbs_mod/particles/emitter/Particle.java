@@ -1,6 +1,6 @@
-package elgatopro300.bbs_cml.particles.emitter;
+package mchorse.bbs_mod.particles.emitter;
 
-import elgatopro300.bbs_cml.utils.joml.Vectors;
+import mchorse.bbs_mod.utils.joml.Vectors;
 import org.joml.Matrix3f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;

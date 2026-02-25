@@ -1,11 +1,11 @@
-package elgatopro300.bbs_cml.ui.forms.editors.panels.widgets;
+package mchorse.bbs_mod.ui.forms.editors.panels.widgets;
 
-import elgatopro300.bbs_cml.data.types.MapType;
-import elgatopro300.bbs_cml.settings.values.IValueListener;
-import elgatopro300.bbs_cml.settings.values.core.ValuePose;
-import elgatopro300.bbs_cml.ui.framework.elements.input.UIPropTransform;
-import elgatopro300.bbs_cml.ui.utils.pose.UIPoseEditor;
-import elgatopro300.bbs_cml.utils.pose.PoseTransform;
+import mchorse.bbs_mod.data.types.MapType;
+import mchorse.bbs_mod.settings.values.IValueListener;
+import mchorse.bbs_mod.settings.values.core.ValuePose;
+import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
+import mchorse.bbs_mod.ui.utils.pose.UIPoseEditor;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
 
 public class UIModelPoseEditor extends UIPoseEditor
 {
