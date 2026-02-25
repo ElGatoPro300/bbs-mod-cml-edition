@@ -1285,7 +1285,7 @@
     "bbs.ui.supporters.tutorials": "教程",
     "bbs.ui.supporters.tutorials_link": "https://space.bilibili.com/472615413/channel/collectiondetail?sid=3647570",
     "bbs.ui.supporters.wiki": "Wiki（英文）",
-    "bbs.ui.supporters.wiki_link": "https://github.com/ElGatoPro300/bbs-cml-edition/wiki/",
+    "bbs.ui.supporters.wiki_link": "https://github.com/mchorse/bbs-mod-wiki/wiki/",
     "bbs.ui.texture.editor.auto_size": "自動縮放",
     "bbs.ui.texture.editor.auto_size_tooltip": "啟用後，將使用紋理的原始大小，否則提供下方的自定義大小。",
     "bbs.ui.texture.editor.color": "使用此顏色控件，您可以調整顏色（RGB）通道。它最適用於白色 / 灰度圖像。",

@@ -32,10 +32,5 @@
     "gamerule.bbsEditing": "BBS mod's editing permission",
     "command.getskin.success": "Skin applied to all players",
     "command.getskin.error": "Error: %s",
-    "command.getskin.downloading": "Downloading skin...",
-    "bbs.ui.transforms.context.resets": "Resets",
-    "bbs.ui.transforms.context.reset_translation": "Reset translation",
-    "bbs.ui.transforms.context.reset_scale": "Reset scale",
-    "bbs.ui.transforms.context.reset_rotation": "Reset rotation",
-    "bbs.ui.transforms.context.reset": "Reset transformation"
+    "command.getskin.downloading": "Downloading skin..."
 }
