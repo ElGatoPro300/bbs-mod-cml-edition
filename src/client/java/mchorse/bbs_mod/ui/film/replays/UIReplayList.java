@@ -65,6 +65,7 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.utils.resources.Pixels;
 import net.minecraft.client.MinecraftClient;
@@ -159,6 +160,22 @@ public class UIReplayList extends UIList<Replay> {
                 MapType data = Window.getClipboardMap("_CopyKeyframes");
 
                 if (!isGroup) {
+                    menu.action(Icons.COPY, IKey.constant("Copy keyframes..."), () -> {
+                        this.getContext().replaceContextMenu((sub) -> {
+                            sub.autoKeys();
+                            sub.action(Icons.POSE, IKey.constant("Copy Poses"), () -> this.copyKeyframesFiltered(KeyframeFactories.POSE));
+                            sub.action(Icons.ALL_DIRECTIONS, IKey.constant("Copy Transforms"), () -> this.copyKeyframesFiltered(KeyframeFactories.TRANSFORM));
+                            sub.action(Icons.IMAGE, IKey.constant("Copy texture"), () -> this.copyKeyframesByPropertySuffixes("texture"));
+                            sub.action(Icons.STRUCTURE, IKey.constant("Copy model"), () -> this.copyKeyframesByPropertySuffixes("model"));
+                        });
+                    });
+                    if (data != null) {
+                        menu.action(Icons.PASTE, UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES,
+                                () -> this.pasteToReplays(data));
+                    }
+                }
+
+                if (!isGroup) {
                     menu.action(Icons.ALL_DIRECTIONS, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS, this::processReplays);
                     menu.action(Icons.TIME, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME, this::offsetTimeReplays);
                     menu.action(Icons.BLOCK, UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS, this::applyRandomSkins);
@@ -166,10 +183,7 @@ public class UIReplayList extends UIList<Replay> {
 
                 menu.action(Icons.FOLDER, UIKeys.SCENE_REPLAYS_CONTEXT_ADD_GROUP, this::addGroup);
 
-                if (!isGroup && data != null) {
-                    menu.action(Icons.PASTE, UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES,
-                            () -> this.pasteToReplays(data));
-                }
+                
 
                 if (!isGroup) {
                     menu.action(Icons.DUPE, UIKeys.SCENE_REPLAYS_CONTEXT_DUPE, () -> {
@@ -199,6 +213,146 @@ public class UIReplayList extends UIList<Replay> {
                 consumer.accept(this, menu);
             }
         });
+    }
+
+    private boolean hasSelectedKeyframes() {
+        UIReplaysEditor replayEditor = this.panel.replayEditor;
+
+        if (replayEditor == null || replayEditor.keyframeEditor == null || replayEditor.keyframeEditor.view == null) {
+            return false;
+        }
+
+        return replayEditor.keyframeEditor.view.getGraph().getSelected() != null;
+    }
+
+    private void copyKeyframesFiltered(IKeyframeFactory... factories) {
+        UIReplaysEditor replayEditor = this.panel.replayEditor;
+
+        if (replayEditor == null || replayEditor.keyframeEditor == null || replayEditor.keyframeEditor.view == null) {
+            // Fallback to export from replay directly
+            MapType fallback = exportAllKeyframesFromReplay(this.getCurrentFirst(), factories);
+            if (fallback != null && !fallback.isEmpty()) {
+                Window.setClipboard(fallback, "_CopyKeyframes");
+            }
+            return;
+        }
+
+        MapType data = replayEditor.keyframeEditor.view.serializeKeyframesByFactories(factories);
+
+        if (data == null || data.isEmpty()) {
+            data = exportAllKeyframesFromReplay(this.getCurrentFirst(), factories);
+        }
+
+        if (data != null && !data.isEmpty()) {
+            Window.setClipboard(data, "_CopyKeyframes");
+        }
+    }
+
+    private void copyKeyframesByPropertySuffixes(String... suffixes) {
+        UIReplaysEditor replayEditor = this.panel.replayEditor;
+
+        if (replayEditor == null || replayEditor.keyframeEditor == null || replayEditor.keyframeEditor.view == null) {
+            MapType fallback = exportKeyframesFromReplayByPropertySuffixes(this.getCurrentFirst(), suffixes);
+            if (fallback != null && !fallback.isEmpty()) {
+                Window.setClipboard(fallback, "_CopyKeyframes");
+            }
+            return;
+        }
+
+        MapType data = replayEditor.keyframeEditor.view.serializeKeyframesByPropertySuffixes(suffixes);
+
+        if (data == null || data.isEmpty()) {
+            data = exportKeyframesFromReplayByPropertySuffixes(this.getCurrentFirst(), suffixes);
+        }
+
+        if (data != null && !data.isEmpty()) {
+            Window.setClipboard(data, "_CopyKeyframes");
+        }
+    }
+
+    private MapType exportAllKeyframesFromReplay(Replay replay, IKeyframeFactory... factories) {
+        if (replay == null) {
+            return null;
+        }
+
+        java.util.Set<IKeyframeFactory> allow = new java.util.HashSet<>();
+        if (factories != null && factories.length > 0) {
+            allow.addAll(java.util.Arrays.asList(factories));
+        }
+
+        MapType out = new MapType();
+
+        for (java.util.Map.Entry<String, KeyframeChannel> entry : replay.properties.properties.entrySet()) {
+            KeyframeChannel channel = entry.getValue();
+
+            if (!allow.isEmpty() && !allow.contains(channel.getFactory())) {
+                continue;
+            }
+
+            ListType list = new ListType();
+
+            for (Object kfObj : channel.getKeyframes()) {
+                Keyframe<?> kf = (Keyframe<?>) kfObj;
+                list.add(kf.toData());
+            }
+
+            if (!list.isEmpty()) {
+                MapType data = new MapType();
+                data.putString("type", CollectionUtils.getKey(KeyframeFactories.FACTORIES, channel.getFactory()));
+                data.put("keyframes", list);
+
+                out.put(entry.getKey(), data);
+            }
+        }
+
+        return out;
+    }
+
+    private MapType exportKeyframesFromReplayByPropertySuffixes(Replay replay, String... suffixes) {
+        if (replay == null) {
+            return null;
+        }
+
+        java.util.Set<String> allow = new java.util.HashSet<>();
+        if (suffixes != null && suffixes.length > 0) {
+            allow.addAll(java.util.Arrays.asList(suffixes));
+        }
+
+        MapType out = new MapType();
+
+        for (java.util.Map.Entry<String, KeyframeChannel> entry : replay.properties.properties.entrySet()) {
+            if (!allow.isEmpty() && !matchesPropertySuffix(entry.getKey(), allow)) {
+                continue;
+            }
+
+            KeyframeChannel channel = entry.getValue();
+            ListType list = new ListType();
+
+            for (Object kfObj : channel.getKeyframes()) {
+                Keyframe<?> kf = (Keyframe<?>) kfObj;
+                list.add(kf.toData());
+            }
+
+            if (!list.isEmpty()) {
+                MapType data = new MapType();
+                data.putString("type", CollectionUtils.getKey(KeyframeFactories.FACTORIES, channel.getFactory()));
+                data.put("keyframes", list);
+
+                out.put(entry.getKey(), data);
+            }
+        }
+
+        return out;
+    }
+
+    private boolean matchesPropertySuffix(String property, java.util.Set<String> allow) {
+        for (String suffix : allow) {
+            if (property.equals(suffix) || property.endsWith("/" + suffix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -359,8 +513,6 @@ public class UIReplayList extends UIList<Replay> {
 
         UINumberOverlayPanel offsetPanel = new UINumberOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES_TITLE,
                 UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES_DESCRIPTION, (n) -> {
-                    int tick = this.panel.getCursor();
-
                     for (Replay replay : selectedReplays) {
                         int randomOffset = (int) (n.intValue() * Math.random());
 
@@ -373,14 +525,8 @@ public class UIReplayList extends UIList<Replay> {
                                 channel = replay.properties.getOrCreate(replay.form.get(), id);
                             }
 
-                            float min = Integer.MAX_VALUE;
-
                             for (Keyframe kf : pastedKeyframes.keyframes) {
-                                min = Math.min(kf.getTick(), min);
-                            }
-
-                            for (Keyframe kf : pastedKeyframes.keyframes) {
-                                float finalTick = tick + (kf.getTick() - min) + randomOffset;
+                                float finalTick = kf.getTick() + randomOffset;
                                 int index = channel.insert(finalTick, kf.getValue());
                                 Keyframe inserted = channel.get(index);
 
