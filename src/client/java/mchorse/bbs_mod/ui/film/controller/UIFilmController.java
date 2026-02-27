@@ -44,6 +44,7 @@ import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.framework.elements.utils.StencilMap;
 import mchorse.bbs_mod.ui.utils.Area;
+import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.ui.utils.StencilFormFramebuffer;
 import mchorse.bbs_mod.ui.utils.UIUtils;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
@@ -1257,6 +1258,7 @@ public class UIFilmController extends UIElement
         this.stencilMap.setup();
         this.stencilMap.setIncrement(!altPressed);
         this.stencil.apply();
+        Gizmo.INSTANCE.setViewport(viewport);
 
         if (altPressed)
         {
