@@ -41,6 +41,7 @@ import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.utils.Axis;
 import mchorse.bbs_mod.utils.MathUtils;
 import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -1193,7 +1194,7 @@ public class UIPoseEditor extends UIElement
             context.batcher.textShadow(line2, x2, y, color);
             int iconX = x2 + line2TextWidth + iconSpacing;
             int iconY = y + (context.batcher.getFont().getHeight() - iconSize) / 2;
-            RenderSystem.enableBlend();
+            GlStateManager._enableBlend();
             context.batcher.icon(Icons.VISIBLE, color, iconX, iconY);
             context.batcher.unclip(context);
         }
