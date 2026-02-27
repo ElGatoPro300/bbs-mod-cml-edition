@@ -21,6 +21,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.io.InputStream;
+import mchorse.bbs_mod.BBSMod;
+import mchorse.bbs_mod.resources.Link;
 
 public class Batcher2D
 {
@@ -255,8 +258,11 @@ public class Batcher2D
         int xx = (int) (x - icon.w * ax);
         int yy = (int) (y - icon.h * ay);
 
-        Identifier id = Identifier.of(icon.texture.source.equals("assets") ? "minecraft" : icon.texture.source, icon.texture.path);
-        this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, xx, yy, (float) icon.x, (float) icon.y, icon.w, icon.h, icon.textureW, icon.textureH, color);
+        Identifier id = getOrRegisterAtlas(icon.texture);
+        if (id != null)
+        {
+            this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, xx, yy, (float) icon.x, (float) icon.y, icon.w, icon.h, icon.textureW, icon.textureH, color);
+        }
     }
 
     public void iconArea(Icon icon, float x, float y, float w, float h)
@@ -266,8 +272,11 @@ public class Batcher2D
 
     public void iconArea(Icon icon, int color, float x, float y, float w, float h)
     {
-        Identifier id = Identifier.of(icon.texture.source.equals("assets") ? "minecraft" : icon.texture.source, icon.texture.path);
-        this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, (int) x, (int) y, (float) icon.x, (float) icon.y, (int) w, (int) h, icon.textureW, icon.textureH, color);
+        Identifier id = getOrRegisterAtlas(icon.texture);
+        if (id != null)
+        {
+            this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, (int) x, (int) y, (float) icon.x, (float) icon.y, (int) w, (int) h, icon.textureW, icon.textureH, color);
+        }
     }
 
     public void outlinedIcon(Icon icon, float x, float y, float ax, float ay)
@@ -495,6 +504,48 @@ public class Batcher2D
             id = Identifier.of("bbs_dyn", "tex_" + texture.id + "_" + texture.width + "x" + texture.height);
             MinecraftClient.getInstance().getTextureManager().registerTexture(id, nativeTex);
             NATIVE_IDS.put(texture.id, id);
+            return id;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /* Atlas bridge: load PNG via BBS AssetProvider and register as NativeImageBackedTexture */
+    private static final Map<String, Identifier> ATLAS_IDS = new HashMap<>();
+
+    private Identifier getOrRegisterAtlas(Link link)
+    {
+        if (link == null)
+        {
+            return null;
+        }
+
+        Identifier cached = ATLAS_IDS.get(link.toString());
+        if (cached != null)
+        {
+            return cached;
+        }
+
+        try (InputStream in0 = BBSMod.getProvider().getAsset(link))
+        {
+            InputStream in = in0;
+            if (in == null && "assets".equals(link.source) && !link.path.startsWith("assets/"))
+            {
+                in = BBSMod.getProvider().getAsset(Link.assets("assets/" + link.path));
+            }
+            if (in == null)
+            {
+                return null;
+            }
+            net.minecraft.client.texture.NativeImage img = net.minecraft.client.texture.NativeImage.read(in);
+            NativeImageBackedTexture tex = new NativeImageBackedTexture(() -> "bbs_icons", img);
+            String safe = link.path.replace('/', '_').replace('\\', '_');
+            Identifier id = Identifier.of("bbs_dyn", "atlas_" + safe);
+            MinecraftClient.getInstance().getTextureManager().registerTexture(id, tex);
+            ATLAS_IDS.put(link.toString(), id);
             return id;
         }
         catch (Exception e)
