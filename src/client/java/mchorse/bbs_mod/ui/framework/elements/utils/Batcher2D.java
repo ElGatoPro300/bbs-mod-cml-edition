@@ -1,7 +1,5 @@
 package mchorse.bbs_mod.ui.framework.elements.utils;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.opengl.GlStateManager;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.graphics.texture.Texture;
 import mchorse.bbs_mod.ui.framework.UIContext;
@@ -9,23 +7,12 @@ import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.icons.Icon;
 import mchorse.bbs_mod.utils.colors.Colors;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgram;
-// import net.minecraft.client.gl.ShaderProgramKey;
-// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.BufferBuilder;
-// import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.util.Identifier;
+import net.minecraft.client.gl.RenderPipelines;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class Batcher2D
 {
@@ -111,20 +98,14 @@ public class Batcher2D
 
     public void box(float x1, float y1, float x2, float y2, int color)
     {
-        this.box(x1, y1, x2 - x1, y2 - y1, color, color, color, color);
+        this.context.fill(RenderPipelines.GUI, (int) x1, (int) y1, (int) x2, (int) y2, color);
     }
 
     public void box(float x, float y, float w, float h, int color1, int color2, int color3, int color4)
     {
-        Matrix4f matrix4f = new Matrix4f();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-
-        this.fillRect(builder, matrix4f, x, y, w, h, color1, color2, color3, color4);
-
-        GlStateManager._enableBlend();
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-        // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
+        int top = color1;
+        int bottom = color4;
+        this.context.fillGradient((int) x, (int) y, (int) (x + w), (int) (y + h), top, bottom);
     }
 
     /**
@@ -133,10 +114,6 @@ public class Batcher2D
      */
     public void line(float x1, float y1, float x2, float y2, float thickness, int color)
     {
-        Matrix4f matrix4f = new Matrix4f();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-
         float dx = x2 - x1;
         float dy = y2 - y1;
         float len = (float) Math.sqrt(dx * dx + dy * dy);
@@ -148,41 +125,23 @@ public class Batcher2D
             return;
         }
 
-        float nx = -dy / len; // perpendicular
-        float ny =  dx / len;
-        float hw = thickness * 0.5f;
-
-        float x1a = x1 + nx * hw;
-        float y1a = y1 + ny * hw;
-        float x1b = x1 - nx * hw;
-        float y1b = y1 - ny * hw;
-        float x2a = x2 + nx * hw;
-        float y2a = y2 + ny * hw;
-        float x2b = x2 - nx * hw;
-        float y2b = y2 - ny * hw;
-
-        
-        builder.vertex(matrix4f, x1a, y1a, 0).color(color);
-        builder.vertex(matrix4f, x1b, y1b, 0).color(color);
-        builder.vertex(matrix4f, x2b, y2b, 0).color(color);
-        builder.vertex(matrix4f, x2a, y2a, 0).color(color);
-
-        GlStateManager._enableBlend();
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
-        // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
-
-        // this.context.draw();
+        int steps = Math.max(1, (int) Math.ceil(len));
+        for (int i = 0; i <= steps; i++)
+        {
+            float t = i / (float) steps;
+            float px = x1 + dx * t;
+            float py = y1 + dy * t;
+            int ix = (int) (px - thickness * 0.5f);
+            int iy = (int) (py - thickness * 0.5f);
+            int ex = (int) (px + thickness * 0.5f);
+            int ey = (int) (py + thickness * 0.5f);
+            this.context.fill(RenderPipelines.GUI, ix, iy, ex, ey, color);
+        }
     }
 
-    public void fillRect(BufferBuilder builder, Matrix4f matrix4f, float x, float y, float w, float h, int color1, int color2, int color3, int color4)
+    public void fillRect(Object builder, Matrix4f matrix4f, float x, float y, float w, float h, int color1, int color2, int color3, int color4)
     {
-        /* c1 ---- c2
-         * |        |
-         * c3 ---- c4 */
-        builder.vertex(matrix4f, x, y, 0).color(color1);
-        builder.vertex(matrix4f, x, y + h, 0).color(color3);
-        builder.vertex(matrix4f, x + w, y + h, 0).color(color4);
-        builder.vertex(matrix4f, x + w, y, 0).color(color2);
+        this.box(x, y, w, h, color1, color2, color3, color4);
     }
 
     public void dropShadow(int left, int top, int right, int bottom, int offset, int opaque, int shadow)
@@ -192,53 +151,11 @@ public class Batcher2D
         right += offset;
         bottom += offset;
 
-        Matrix4f matrix4f = new Matrix4f();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-
-        
-
-        /* Draw opaque part */
-        builder.vertex(matrix4f, left + offset, top + offset, 0).color(opaque);
-        builder.vertex(matrix4f,left + offset, bottom - offset, 0).color(opaque);
-        builder.vertex(matrix4f, right - offset, bottom - offset, 0).color(opaque);
-        builder.vertex(matrix4f, right - offset, top + offset, 0).color(opaque);
-
-        /* Draw top shadow */
-        builder.vertex(matrix4f, left, top, 0).color(shadow);
-        builder.vertex(matrix4f,left + offset, top + offset, 0).color(opaque);
-        builder.vertex(matrix4f, right - offset, top + offset, 0).color(opaque);
-        builder.vertex(matrix4f, right, top, 0).color(shadow);
-
-        /* Draw bottom shadow */
-        builder.vertex(matrix4f, left + offset, bottom - offset, 0).color(opaque);
-        builder.vertex(matrix4f,left, bottom, 0).color(shadow);
-        builder.vertex(matrix4f, right, bottom, 0).color(shadow);
-        builder.vertex(matrix4f, right - offset, bottom - offset, 0).color(opaque);
-
-        /* Draw left shadow */
-        builder.vertex(matrix4f, left, top, 0).color(shadow);
-        builder.vertex(matrix4f, left, bottom, 0).color(shadow);
-        builder.vertex(matrix4f, left + offset, bottom - offset, 0).color(opaque);
-        builder.vertex(matrix4f,left + offset, top + offset, 0).color(opaque);
-
-        /* Draw right shadow */
-        builder.vertex(matrix4f, right - offset, top + offset, 0).color(opaque);
-        builder.vertex(matrix4f, right - offset, bottom - offset, 0).color(opaque);
-        builder.vertex(matrix4f, right, bottom, 0).color(shadow);
-        builder.vertex(matrix4f,right, top, 0).color(shadow);
-
-        GlStateManager._enableBlend();
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
-        
-        try
-        {
-            // net.minecraft.client.render.BufferUploader.drawWithShader(builder.end());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        this.context.fill(RenderPipelines.GUI, left + offset, top + offset, right - offset, bottom - offset, opaque);
+        this.context.fillGradient(left, top, right, top + offset, shadow, opaque);
+        this.context.fillGradient(left, bottom - offset, right, bottom, opaque, shadow);
+        this.context.fill(RenderPipelines.GUI, left, top + offset, left + offset, bottom - offset, shadow);
+        this.context.fill(RenderPipelines.GUI, right - offset, top + offset, right, bottom - offset, shadow);
     }
 
     /* Gradients */
@@ -255,94 +172,22 @@ public class Batcher2D
 
     public void dropCircleShadow(int x, int y, int radius, int segments, int opaque, int shadow)
     {
-        Matrix4f matrix4f = new Matrix4f();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-
-        
-        builder.vertex(matrix4f, x, y, 0F).color(opaque);
-
-        for (int i = 0; i <= segments; i ++)
+        int r = Math.max(1, radius);
+        for (int i = r; i > 0; i -= Math.max(1, r / 8))
         {
-            double a = i / (double) segments * Math.PI * 2 - Math.PI / 2;
-
-            builder.vertex(matrix4f, (float) (x - Math.cos(a) * radius), (float) (y + Math.sin(a) * radius), 0F).color(shadow);
+            float t = (float) i / (float) r;
+            int col = Colors.mulA(shadow, t);
+            this.context.fill(RenderPipelines.GUI, x - i, y - i, x + i, y + i, col);
         }
-        GlStateManager._enableBlend();
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionColorProgram);
-        
-        try
-        {
-            // BufferRenderer.drawWithGlobalProgram(builder.end());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        this.context.fill(RenderPipelines.GUI, x - 1, y - 1, x + 1, y + 1, opaque);
     }
 
     public void dropCircleShadow(int x, int y, int radius, int offset, int segments, int opaque, int shadow)
     {
-        if (offset >= radius)
-        {
-            this.dropCircleShadow(x, y, radius, segments, opaque, shadow);
-
-            return;
-        }
-
-        Matrix4f matrix4f = new Matrix4f();
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
-
-        GlStateManager._enableBlend();
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiProgram);
-
-        /* Draw opaque base */
-        
-        builder.vertex(matrix4f, x, y, 0F).color(opaque);
-
-        for (int i = 0; i <= segments; i ++)
-        {
-            double a = i / (double) segments * Math.PI * 2 - Math.PI / 2;
-
-            builder.vertex(matrix4f, (int) (x - Math.cos(a) * offset), (int) (y + Math.sin(a) * offset), 0F).color(opaque);
-        }
-
-        try
-        {
-            // BufferRenderer.drawWithGlobalProgram(builder.end());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        /* Draw outer shadow */
-        BufferBuilder builder2 = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
-
-        for (int i = 0; i < segments; i ++)
-        {
-            double alpha1 = i / (double) segments * Math.PI * 2 - Math.PI / 2;
-            double alpha2 = (i + 1) / (double) segments * Math.PI * 2 - Math.PI / 2;
-
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha2) * offset), (float) (y + Math.sin(alpha2) * offset), 0F).color(opaque);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha1) * offset), (float) (y + Math.sin(alpha1) * offset), 0F).color(opaque);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha1) * radius), (float) (y + Math.sin(alpha1) * radius), 0F).color(shadow);
-
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha2) * offset), (float) (y + Math.sin(alpha2) * offset), 0F).color(opaque);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha1) * radius), (float) (y + Math.sin(alpha1) * radius), 0F).color(shadow);
-            builder2.vertex(matrix4f, (float) (x - Math.cos(alpha2) * radius), (float) (y + Math.sin(alpha2) * radius), 0F).color(shadow);
-        }
-
-        try
-        {
-            // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder2.end());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        // Simplified: draw inner opaque disc approximation and outer fading squares
+        int inner = Math.max(0, radius - offset);
+        this.dropCircleShadow(x, y, inner, segments, opaque, opaque);
+        this.dropCircleShadow(x, y, radius, segments, opaque, shadow);
     }
 
     /* Outline methods */
@@ -367,10 +212,11 @@ public class Batcher2D
      */
     public void outline(float x1, float y1, float x2, float y2, int color, int border)
     {
-        this.box(x1, y1, x1 + border, y2, color);
-        this.box(x2 - border, y1, x2, y2, color);
-        this.box(x1 + border, y1, x2 - border, y1 + border, color);
-        this.box(x1 + border, y2 - border, x2 - border, y2, color);
+        int ix1 = (int) x1, iy1 = (int) y1, ix2 = (int) x2, iy2 = (int) y2;
+        this.context.fill(RenderPipelines.GUI, ix1, iy1, ix2, iy1 + border, color); // top
+        this.context.fill(RenderPipelines.GUI, ix1, iy2 - border, ix2, iy2, color); // bottom
+        this.context.fill(RenderPipelines.GUI, ix1, iy1 + border, ix1 + border, iy2 - border, color); // left
+        this.context.fill(RenderPipelines.GUI, ix2 - border, iy1 + border, ix2, iy2 - border, color); // right
     }
 
     /* Icon */
@@ -397,10 +243,11 @@ public class Batcher2D
             return;
         }
 
-        x -= icon.w * ax;
-        y -= icon.h * ay;
+        int xx = (int) (x - icon.w * ax);
+        int yy = (int) (y - icon.h * ay);
 
-        this.texturedBox(BBSModClient.getTextures().getTexture(icon.texture), color, x, y, icon.w, icon.h, icon.x, icon.y, icon.x + icon.w, icon.y + icon.h, icon.textureW, icon.textureH);
+        Identifier id = Identifier.of(icon.texture.source.equals("assets") ? "minecraft" : icon.texture.source, icon.texture.path);
+        this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, xx, yy, (float) icon.x, (float) icon.y, icon.w, icon.h, icon.textureW, icon.textureH, color);
     }
 
     public void iconArea(Icon icon, float x, float y, float w, float h)
@@ -410,7 +257,8 @@ public class Batcher2D
 
     public void iconArea(Icon icon, int color, float x, float y, float w, float h)
     {
-        this.texturedArea(BBSModClient.getTextures().getTexture(icon.texture), color, x, y, w, h, icon.x, icon.y, icon.w, icon.h, icon.textureW, icon.textureH);
+        Identifier id = Identifier.of(icon.texture.source.equals("assets") ? "minecraft" : icon.texture.source, icon.texture.path);
+        this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, (int) x, (int) y, (float) icon.x, (float) icon.y, (int) w, (int) h, icon.textureW, icon.textureH, color);
     }
 
     public void outlinedIcon(Icon icon, float x, float y, float ax, float ay)
@@ -454,77 +302,22 @@ public class Batcher2D
 
     public void texturedBox(Texture texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        // RenderSystem.setShaderTexture(0, texture.id);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id);
-
-        Matrix4f matrix = new Matrix4f();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getRenderTypeGuiTexturedProgram);
-
-        
-        this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
-
-        try
-        {
-            // BufferRenderer.drawWithGlobalProgram(builder.end());
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        // Fallback: no AbstractTexture bridge here; draw solid box as placeholder
+        this.box(x, y, x + w, y + h, color);
     }
 
     public void texturedBox(int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        this.texturedBox(() -> null, texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
+        // Unsupported in pipeline path; draw placeholder
+        this.box(x, y, x + w, y + h, color);
     }
 
-    public void texturedBox(Supplier<ShaderProgram> shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
+    public void texturedBox(Object shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        // RenderSystem.setShaderTexture(0, texture);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-
-        Matrix4f matrix = new Matrix4f();
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-        // RenderSystem.setShader(shader);
-
-        
-        this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
-
-        // BufferRenderer.drawWithGlobalProgram(builder.end());
+        this.box(x, y, x + w, y + h, color);
     }
 
-    public void texturedBox(ShaderProgram shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
-    {
-        // RenderSystem.setShaderTexture(0, texture);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-
-        Matrix4f matrix = new Matrix4f();
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-        // RenderSystem.setShader(() -> shader);
-
-        
-        this.fillTexturedBox(builder, matrix, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
-
-        // BufferRenderer.drawWithGlobalProgram(builder.end());
-    }
-
-    private void fillTexturedBox(BufferBuilder builder, Matrix4f matrix, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
-    {
-        builder.vertex(matrix, x, y + h, 0F).texture(u1 / (float) textureW, v2 / (float) textureH).color(color);
-        builder.vertex(matrix, x + w, y + h, 0F).texture(u2 / (float) textureW, v2 / (float) textureH).color(color);
-        builder.vertex(matrix, x + w, y, 0F).texture(u2 / (float) textureW, v1 / (float) textureH).color(color);
-        builder.vertex(matrix, x, y + h, 0F).texture(u1 / (float) textureW, v2 / (float) textureH).color(color);
-        builder.vertex(matrix, x + w, y, 0F).texture(u2 / (float) textureW, v1 / (float) textureH).color(color);
-        builder.vertex(matrix, x, y, 0F).texture(u1 / (float) textureW, v1 / (float) textureH).color(color);
-    }
+    private void fillTexturedBoxPlaceholder() {}
 
     /* Repeatable textured box */
 
@@ -534,44 +327,21 @@ public class Batcher2D
         {
             return;
         }
-
-        int countX = (int) Math.ceil(w / tileW);
-        int countY = (int) Math.ceil(h / tileH);
-        
-        if (countX <= 0) countX = 1;
-        if (countY <= 0) countY = 1;
-        
-        long c = (long) countX * countY;
-        
-        if (c <= 0 || c > 10000) // Safety limit to prevent freeze/crash
-        {
-             return;
-        }
-
+        int countX = Math.max(1, (int) Math.ceil(w / tileW));
+        int countY = Math.max(1, (int) Math.ceil(h / tileH));
         float fillerX = w - (countX - 1) * tileW;
         float fillerY = h - (countY - 1) * tileH;
-
-        Matrix4f matrix = new Matrix4f();
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_TEXTURE_COLOR);
-
-        // RenderSystem.setShader(net.minecraft.client.render.GameRenderer::getPositionTexColorProgram);
-        // RenderSystem.setShaderTexture(0, texture.id);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id);
-
-        for (int i = 0; i < c; i ++)
+        for (int ix = 0; ix < countX; ix++)
         {
-            float ix = i % countX;
-            float iy = i / countX;
-            float xx = x + ix * tileW;
-            float yy = y + iy * tileH;
-            float xw = ix == countX - 1 ? fillerX : tileW;
-            float yh = iy == countY - 1 ? fillerY : tileH;
-
-            this.fillTexturedBox(builder, matrix, color, xx, yy, xw, yh, u, v, u + xw, v + yh, tw, th);
+            for (int iy = 0; iy < countY; iy++)
+            {
+                float xx = x + ix * tileW;
+                float yy = y + iy * tileH;
+                float xw = ix == countX - 1 ? fillerX : tileW;
+                float yh = iy == countY - 1 ? fillerY : tileH;
+                this.box(xx, yy, xx + xw, yy + yh, color);
+            }
         }
-
-        // BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
     /* Text with default font */
@@ -600,8 +370,6 @@ public class Batcher2D
     {
         this.context.drawText(this.font.getRenderer(), label, (int) x, (int) y, color, shadow);
         // this.context.draw();
-
-        GlStateManager._depthFunc(GL11.GL_ALWAYS);
     }
 
     /* Text helpers */
@@ -668,17 +436,11 @@ public class Batcher2D
         // this.context.draw();
     }
 
-    public void draw(BufferBuilder builder, Supplier<ShaderProgram> shader)
-    {
-        // RenderSystem.setShader(shader);
-        // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
-    }
+    public void draw(Object builder, Object shader) {}
 
-    public void draw(BufferBuilder builder, ShaderProgram shader)
+    /* Compatibility overload to accept method references like BBSShaders::getPickerPreviewProgram */
+    public void texturedBox(java.util.function.Supplier<?> shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        // RenderSystem.setShader(() -> shader);
-        // net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram(builder.end());
+        this.texturedBox(texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
     }
 }
-
-
