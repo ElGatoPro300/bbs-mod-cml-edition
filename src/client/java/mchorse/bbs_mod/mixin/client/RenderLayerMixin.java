@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(RenderLayer.class)
+@Mixin(targets = "net.minecraft.client.render.RenderLayer$MultiPhase")
 public class RenderLayerMixin
 {
-    @Inject(method = "draw", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;startDrawing()V", ordinal = 0, shift = At.Shift.AFTER))
+    @Inject(method = "draw", at = @At("HEAD"))
     public void onDraw(BuiltBuffer buffer, CallbackInfo info)
     {
         CustomVertexConsumerProvider.drawLayer((RenderLayer) (Object) this);

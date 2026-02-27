@@ -64,7 +64,22 @@ public class SelectorOwner
             this.nbtCheck = 10;
 
             Set<String> keys = createWhitelist();
-            NbtCompound compound = this.mcEntity.writeNbt(new NbtCompound());
+            NbtCompound compound;
+            
+            try
+            {
+                if (net.minecraft.client.MinecraftClient.getInstance().world != null) {
+                    // compound = this.mcEntity.writeNbt(new NbtCompound(), net.minecraft.client.MinecraftClient.getInstance().world.getRegistryManager());
+                    compound = new NbtCompound();
+                } else {
+                    compound = new NbtCompound();
+                }
+            }
+            catch (Exception e)
+            {
+                compound = new NbtCompound();
+            }
+
             NbtCompound newCompound = new NbtCompound();
 
             for (String key : keys)

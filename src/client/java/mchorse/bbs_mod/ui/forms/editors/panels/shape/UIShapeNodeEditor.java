@@ -41,16 +41,17 @@ import mchorse.bbs_mod.ui.utils.presets.UICopyPasteController;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.presets.PresetManager;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+// import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
+// import net.minecraft.client.render.BufferUploader;
+// import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -1100,15 +1101,13 @@ public class UIShapeNodeEditor extends UIElement
         float radius = Math.max(5 * this.scale, 3F);
         int segments = 32;
 
-        Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
+        Matrix4f matrix4f = new Matrix4f();
         Tessellator tessellator = Tessellator.getInstance();
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        // Blending and pipeline are handled by BufferRenderer in 1.21.11
 
-        // Border
-        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+            // Border
+            BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
 
         for (int i = 0; i < segments; i++)
         {
@@ -1120,7 +1119,7 @@ public class UIShapeNodeEditor extends UIElement
             builder.vertex(matrix4f, (float) (x + Math.cos(a2) * (radius + 1.5F)), (float) (y + Math.sin(a2) * (radius + 1.5F)), 0F).color(0xFF000000);
         }
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        builder.end();
 
         // Fill
         builder = tessellator.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
@@ -1133,10 +1132,10 @@ public class UIShapeNodeEditor extends UIElement
             builder.vertex(matrix4f, x, y, 0F).color(color);
             builder.vertex(matrix4f, (float) (x + Math.cos(a1) * radius), (float) (y + Math.sin(a1) * radius), 0F).color(color);
             builder.vertex(matrix4f, (float) (x + Math.cos(a2) * radius), (float) (y + Math.sin(a2) * radius), 0F).color(color);
-        }
+            }
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
-    }
+            builder.end();
+        }
 
     private void drawBezier(UIContext context, int x1, int y1, int x2, int y2, int color, float thickness)
     {

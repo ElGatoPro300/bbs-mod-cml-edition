@@ -1,6 +1,7 @@
 package mchorse.bbs_mod.ui.framework.elements.utils;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.VertexSorter;
 import com.mojang.blaze3d.systems.ProjectionType;
 import mchorse.bbs_mod.BBSModClient;
@@ -14,13 +15,13 @@ import mchorse.bbs_mod.utils.Factor;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.ShaderProgramKeys;
+// import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
+// import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GameRenderer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.BufferAllocator;
@@ -209,19 +210,20 @@ public abstract class UIModelRenderer extends UIElement
      */
     private void renderModel(UIContext context)
     {
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
+        com.mojang.blaze3d.opengl.GlStateManager._enableDepthTest();
+        com.mojang.blaze3d.opengl.GlStateManager._enableCull();
+        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_LEQUAL);
 
         this.setupPosition();
         this.setupViewport(context);
 
-        MatrixStack stack = context.render.batcher.getContext().getMatrices();
+        MatrixStack stack = new MatrixStack();
+        // stack.multiply(new Matrix4f()); // stack.multiply(new Matrix4f(context.render.batcher.getContext().getMatrices().peek()));
 
         /* Cache the global stuff */
         MatrixStackUtils.cacheMatrices();
 
-        RenderSystem.setProjectionMatrix(this.camera.projection, ProjectionType.ORTHOGRAPHIC);
+        // RenderSystem.setProjectionMatrix(this.camera.projection, ProjectionType.PERSPECTIVE);
 
         /* Rendering begins... */
         stack.push();
@@ -231,8 +233,10 @@ public abstract class UIModelRenderer extends UIElement
 
         Vector3f a = new Vector3f(0F, 0.85F, -1F).normalize();
         Vector3f b = new Vector3f(0F, 0.85F, 1F).normalize();
-        
-        RenderSystem.setupLevelDiffuseLighting(a, b);
+
+        // RenderSystem.setupLevelDiffuseLighting(a, b);
+        // net.minecraft.client.render.DiffuseLighting.enableGuiDepthLighting();
+        // net.minecraft.client.render.DiffuseLighting.enableGuiDepthLighting();
 
         if (this.grid)
         {
@@ -241,20 +245,20 @@ public abstract class UIModelRenderer extends UIElement
 
         this.renderUserModel(context);
 
-        DiffuseLighting.disableGuiDepthLighting();
+        // DiffuseLighting.disableGuiDepthLighting();
 
         stack.pop();
 
         /* Return back to orthographic projection */
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        RenderSystem.viewport(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
+        GlStateManager._viewport(0, 0, mc.getWindow().getFramebufferWidth(), mc.getWindow().getFramebufferHeight());
         MatrixStackUtils.restoreMatrices();
         context.resetMatrix();
 
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableCull();
+        com.mojang.blaze3d.opengl.GlStateManager._depthFunc(GL11.GL_ALWAYS);
+        com.mojang.blaze3d.opengl.GlStateManager._disableDepthTest();
+        com.mojang.blaze3d.opengl.GlStateManager._disableCull();
 
         this.processInputs(context);
     }
@@ -336,7 +340,7 @@ public abstract class UIModelRenderer extends UIElement
         int vw = (int) (this.area.w * rx);
         int vh = (int) (this.area.h * ry);
 
-        RenderSystem.viewport((int) (vx * size), (int) (vy * size), (int) (vw * size), (int) (vh * size));
+        GlStateManager._viewport((int) (vx * size), (int) (vy * size), (int) (vw * size), (int) (vh * size));
         this.camera.updatePerspectiveProjection(vw, vh);
         this.camera.updateView();
     }
@@ -352,10 +356,10 @@ public abstract class UIModelRenderer extends UIElement
      */
     protected void renderGrid(UIContext context)
     {
-        Matrix4f matrix4f = context.batcher.getContext().getMatrices().peek().getPositionMatrix();
+        Matrix4f matrix4f = new Matrix4f();
         BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        
 
         for (int x = 0; x <= 10; x ++)
         {
@@ -385,6 +389,9 @@ public abstract class UIModelRenderer extends UIElement
             }
         }
 
-        BufferRenderer.drawWithGlobalProgram(builder.end());
+        builder.end();
     }
 }
+
+
+
