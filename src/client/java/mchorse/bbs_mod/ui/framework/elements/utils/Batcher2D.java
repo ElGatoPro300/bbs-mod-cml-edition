@@ -10,9 +10,17 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.texture.NativeImage;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import org.joml.Matrix4f;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class Batcher2D
 {
@@ -20,6 +28,7 @@ public class Batcher2D
 
     private DrawContext context;
     private FontRenderer font;
+    private static final Map<Integer, Identifier> NATIVE_IDS = new HashMap<>();
 
     public static FontRenderer getDefaultTextRenderer()
     {
@@ -302,8 +311,13 @@ public class Batcher2D
 
     public void texturedBox(Texture texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
-        // Fallback: no AbstractTexture bridge here; draw solid box as placeholder
-        this.box(x, y, x + w, y + h, color);
+        Identifier id = getOrRegister(texture);
+        if (id == null)
+        {
+            this.box(x, y, x + w, y + h, color);
+            return;
+        }
+        this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, (int) x, (int) y, u1, v1, (int) w, (int) h, textureW, textureH, color);
     }
 
     public void texturedBox(int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
@@ -327,6 +341,12 @@ public class Batcher2D
         {
             return;
         }
+        Identifier id = getOrRegister(texture);
+        if (id == null)
+        {
+            this.box(x, y, x + w, y + h, color);
+            return;
+        }
         int countX = Math.max(1, (int) Math.ceil(w / tileW));
         int countY = Math.max(1, (int) Math.ceil(h / tileH));
         float fillerX = w - (countX - 1) * tileW;
@@ -339,7 +359,7 @@ public class Batcher2D
                 float yy = y + iy * tileH;
                 float xw = ix == countX - 1 ? fillerX : tileW;
                 float yh = iy == countY - 1 ? fillerY : tileH;
-                this.box(xx, yy, xx + xw, yy + yh, color);
+                this.context.drawTexture(RenderPipelines.GUI_TEXTURED, id, (int) xx, (int) yy, u, v, (int) xw, (int) yh, tw, th, color);
             }
         }
     }
@@ -442,5 +462,45 @@ public class Batcher2D
     public void texturedBox(java.util.function.Supplier<?> shader, int texture, int color, float x, float y, float w, float h, float u1, float v1, float u2, float v2, int textureW, int textureH)
     {
         this.texturedBox(texture, color, x, y, w, h, u1, v1, u2, v2, textureW, textureH);
+    }
+
+    /* Texture bridge: register GL texture into TextureManager as NativeImageBackedTexture */
+    private Identifier getOrRegister(Texture texture)
+    {
+        if (texture == null || !texture.isValid())
+        {
+            return null;
+        }
+
+        Identifier id = NATIVE_IDS.get(texture.id);
+        if (id != null)
+        {
+            return id;
+        }
+
+        try
+        {
+            mchorse.bbs_mod.utils.resources.Pixels px = mchorse.bbs_mod.graphics.texture.Texture.pixelsFromTexture(texture);
+            if (px == null) return null;
+
+            int[] argb = px.getARGB();
+            BufferedImage img = new BufferedImage(texture.width, texture.height, BufferedImage.TYPE_INT_ARGB);
+            img.setRGB(0, 0, texture.width, texture.height, argb, 0, texture.width);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, "png", baos);
+            NativeImage nativeImage = NativeImage.read(new ByteArrayInputStream(baos.toByteArray()));
+            NativeImageBackedTexture nativeTex = new NativeImageBackedTexture(() -> "bbs_dyn", nativeImage);
+
+            id = Identifier.of("bbs_dyn", "tex_" + texture.id + "_" + texture.width + "x" + texture.height);
+            MinecraftClient.getInstance().getTextureManager().registerTexture(id, nativeTex);
+            NATIVE_IDS.put(texture.id, id);
+            return id;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
