@@ -32,6 +32,7 @@ import mchorse.bbs_mod.settings.values.IValueListener;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.core.ValueForm;
 import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanels;
 import mchorse.bbs_mod.ui.film.UIFilmPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.forms.UIFormPalette;
@@ -39,6 +40,7 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
@@ -112,6 +114,7 @@ public class UIReplayList extends UIList<Replay> {
     private static double LAST_PROCESS_SCATTER_AREA_Z = 10D;
     private static double LAST_PROCESS_SCATTER_SEED = 0D;
     private static double LAST_PROCESS_SCATTER_MIN_SEPARATION = 1D;
+    private static boolean LAST_PROCESS_SNAP_TERRAIN = false;
     private static int LAST_OFFSET_SECTION = 0;
     private static double LAST_OFFSET_STEP = 1D;
     private static double LAST_OFFSET_RANDOM_SEED = 0D;
@@ -567,6 +570,7 @@ public class UIReplayList extends UIList<Replay> {
         UITrackpad scatterAreaZ = new UITrackpad((v) -> LAST_PROCESS_SCATTER_AREA_Z = v.doubleValue());
         UITrackpad scatterSeed = new UITrackpad((v) -> LAST_PROCESS_SCATTER_SEED = v.doubleValue());
         UITrackpad scatterMinSeparation = new UITrackpad((v) -> LAST_PROCESS_SCATTER_MIN_SEPARATION = v.doubleValue());
+        UIToggle snapTerrain = new UIToggle(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SNAP_TERRAIN, LAST_PROCESS_SNAP_TERRAIN, (t) -> LAST_PROCESS_SNAP_TERRAIN = t.getValue());
         UIElement gridControls = UI.column(4,
                 UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_GRID_COLUMNS),
                 gridColumns,
@@ -626,6 +630,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -656,6 +664,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -689,6 +701,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -757,6 +773,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -803,9 +823,48 @@ public class UIReplayList extends UIList<Replay> {
                                     kf.setValue(kf.getFactory().yToValue(parse.doubleValue()), true);
                                 }
                             }
+
+                            if (snapTerrain.getValue()) {
+                                this.snapReplayToTerrain(replay);
+                            }
                         }
                     }
-                });
+                })
+        {
+            @Override
+            protected void renderBackground(UIContext context)
+            {
+                super.renderBackground(context);
+
+                UIIcon active = null;
+
+                if (sectionExpression.isActive())
+                {
+                    active = sectionExpression;
+                }
+                else if (sectionGrid.isActive())
+                {
+                    active = sectionGrid;
+                }
+                else if (sectionCircle.isActive())
+                {
+                    active = sectionCircle;
+                }
+                else if (sectionLine.isActive())
+                {
+                    active = sectionLine;
+                }
+                else if (sectionScatter.isActive())
+                {
+                    active = sectionScatter;
+                }
+
+                if (active != null)
+                {
+                    UIDashboardPanels.renderHighlightHorizontal(context.batcher, active.area);
+                }
+            }
+        };
 
         for (KeyframeChannel<?> channel : this.getCurrentFirst().keyframes.getChannels()) {
             if (KeyframeFactories.isNumeric(channel.getFactory())) {
@@ -814,7 +873,7 @@ public class UIReplayList extends UIList<Replay> {
         }
 
         properties.background().multi().sort();
-        properties.relative(expression).y(-5).w(1F).h(16 * 9).anchor(0F, 1F);
+        properties.relative(expression).y(-28).w(1F).h(16 * 9).anchor(0F, 1F);
 
         if (!LAST_PROCESS_PROPERTIES.isEmpty()) {
             properties.setCurrentScroll(LAST_PROCESS_PROPERTIES.get(0));
@@ -941,11 +1000,13 @@ public class UIReplayList extends UIList<Replay> {
         expression.setVisible(LAST_PROCESS_SECTION == 0);
         properties.setVisible(LAST_PROCESS_SECTION == 0);
 
+        snapTerrain.relative(panel.confirm).x(6).y(-1F, -24).w(1F, -12);
+
         panel.confirm.w(1F, -10);
-        panel.content.add(gridControls, circleControls, lineControls, scatterControls, expression, properties);
+        panel.content.add(gridControls, circleControls, lineControls, scatterControls, expression, properties, snapTerrain);
         panel.icons.add(sectionExpression, sectionGrid, sectionCircle, sectionLine, sectionScatter);
 
-        UIOverlay.addOverlay(this.getContext(), panel, 240, 300);
+        UIOverlay.addOverlay(this.getContext(), panel, 240, 320);
     }
 
     private void applyOffset(Replay replay, String property, double offset) {
@@ -966,6 +1027,64 @@ public class UIReplayList extends UIList<Replay> {
 
             kf.setValue(rawChannel.getFactory().yToValue(currentValue + offset), true);
         }
+    }
+
+    private void snapReplayToTerrain(Replay replay) {
+        World world = MinecraftClient.getInstance().world;
+
+        if (world == null || replay.keyframes.y.getKeyframes().isEmpty()) {
+            return;
+        }
+
+        float tick = this.getFirstPositionTick(replay);
+        double x = replay.keyframes.x.interpolate(tick);
+        double y = replay.keyframes.y.interpolate(tick);
+        double z = replay.keyframes.z.interpolate(tick);
+        Double terrainY = this.getTerrainY(world, x, z);
+
+        if (terrainY == null) {
+            return;
+        }
+
+        double offset = terrainY - y;
+
+        if (offset != 0D) {
+            this.applyOffset(replay, "y", offset);
+        }
+    }
+
+    private float getFirstPositionTick(Replay replay) {
+        float tick = Float.MAX_VALUE;
+
+        tick = Math.min(tick, this.getFirstTick(replay.keyframes.x));
+        tick = Math.min(tick, this.getFirstTick(replay.keyframes.y));
+        tick = Math.min(tick, this.getFirstTick(replay.keyframes.z));
+
+        return tick == Float.MAX_VALUE ? 0F : tick;
+    }
+
+    private float getFirstTick(KeyframeChannel<Double> channel) {
+        List<Keyframe<Double>> keyframes = channel.getKeyframes();
+
+        if (keyframes.isEmpty()) {
+            return Float.MAX_VALUE;
+        }
+
+        return keyframes.get(0).getTick();
+    }
+
+    private Double getTerrainY(World world, double x, double z) {
+        int top = world.getTopY();
+        int bottom = world.getBottomY();
+        double distance = Math.max(0D, top - bottom + 2D);
+        Vec3d start = new Vec3d(x, top + 1D, z);
+        BlockHitResult result = RayTracing.rayTrace(world, start, new Vec3d(0D, -1D, 0D), distance);
+
+        if (result.getType() == HitResult.Type.BLOCK) {
+            return result.getPos().y;
+        }
+
+        return null;
     }
 
     private void offsetTimeReplays() {
@@ -1085,7 +1204,38 @@ public class UIReplayList extends UIList<Replay> {
                             BaseValue.edit(replay, (r) -> r.shift(tickv));
                         }
                     }
-                });
+                })
+        {
+            @Override
+            protected void renderBackground(UIContext context)
+            {
+                super.renderBackground(context);
+
+                UIIcon active = null;
+
+                if (sectionExpression.isActive())
+                {
+                    active = sectionExpression;
+                }
+                else if (sectionStagger.isActive())
+                {
+                    active = sectionStagger;
+                }
+                else if (sectionAlternating.isActive())
+                {
+                    active = sectionAlternating;
+                }
+                else if (sectionRandom.isActive())
+                {
+                    active = sectionRandom;
+                }
+
+                if (active != null)
+                {
+                    UIDashboardPanels.renderHighlightHorizontal(context.batcher, active.area);
+                }
+            }
+        };
 
         tick.setText(LAST_OFFSET);
         tick.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_EXPRESSION_TOOLTIP);

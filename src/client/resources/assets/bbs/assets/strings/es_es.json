@@ -1087,6 +1087,7 @@
     "bbs.ui.scene.replays.context.process.grid.spacing_x": "Espaciado X",
     "bbs.ui.scene.replays.context.process.grid.spacing_z": "Espaciado Z",
     "bbs.ui.scene.replays.context.process.grid.toggle": "Usar preset de cuadrícula",
+    "bbs.ui.scene.replays.context.process.snap_terrain": "Ajustar al terreno",
     "bbs.ui.scene.replays.context.process.line.direction": "Dirección",
     "bbs.ui.scene.replays.context.process.line.spacing": "Espaciado",
     "bbs.ui.scene.replays.context.process.scatter.area_x": "Área X",

@@ -901,6 +901,7 @@ public class UIKeys
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_DESCRIPTION = L10n.lang("bbs.ui.scene.replays.context.process-description");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_EXPRESSION_TOOLTIP = L10n.lang("bbs.ui.scene.replays.context.process.expression-tooltip");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_TOGGLE = L10n.lang("bbs.ui.scene.replays.context.process.grid.toggle");
+    public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_SNAP_TERRAIN = L10n.lang("bbs.ui.scene.replays.context.process.snap_terrain");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_COLUMNS = L10n.lang("bbs.ui.scene.replays.context.process.grid.columns");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_SPACING_X = L10n.lang("bbs.ui.scene.replays.context.process.grid.spacing_x");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_SPACING_Z = L10n.lang("bbs.ui.scene.replays.context.process.grid.spacing_z");

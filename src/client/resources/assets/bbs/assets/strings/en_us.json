@@ -1141,6 +1141,7 @@
     "bbs.ui.scene.replays.context.process.grid.spacing_x": "Spacing X",
     "bbs.ui.scene.replays.context.process.grid.spacing_z": "Spacing Z",
     "bbs.ui.scene.replays.context.process.grid.toggle": "Use grid preset",
+    "bbs.ui.scene.replays.context.process.snap_terrain": "Snap to terrain",
     "bbs.ui.scene.replays.context.process.line.direction": "Direction",
     "bbs.ui.scene.replays.context.process.line.spacing": "Spacing",
     "bbs.ui.scene.replays.context.process.scatter.area_x": "Area X",
