@@ -449,6 +449,38 @@ public class BBSModClient implements ClientModInitializer
         KeybindSettings.registerClasses();
 
         BBSMod.setupConfig(Icons.KEY_CAP, "keybinds", new File(BBSMod.getSettingsFolder(), "keybinds.json"), KeybindSettings::register);
+        BBSMod.setupConfig(Icons.SETTINGS, "cml", new File(BBSMod.getSettingsFolder(), "cml.json"), (builder) ->
+        {
+            builder.category("general");
+            BBSSettings.modelFormsHierarchy = builder.getBoolean("model_forms_hierarchy", false);
+            builder.category("appearance");
+            BBSSettings.disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
+            BBSSettings.gizmoYAxisHorizontal = builder.getBoolean("gizmo_y_axis_horizontal", true);
+            BBSSettings.defaultInterpolation = builder.getInt("default_interpolation", 0);
+            builder.category("editor");
+            BBSSettings.editorSafeMarginsColor = builder.getInt("safe_margins_color", 0xcccc0000).colorAlpha();
+            BBSSettings.editorSafeMargins = builder.getBoolean("safe_margins", false);
+            BBSSettings.editorFlightFreeLook = builder.getBoolean("flight_free_look", false);
+            BBSSettings.editorClipTypeLabels = builder.getBoolean("clip_type_labels", false);
+            BBSSettings.editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", false);
+            builder.category("display");
+            BBSSettings.editorReplayHud = builder.getBoolean("replay_hud", false);
+            BBSSettings.editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
+            BBSSettings.editorReplayHudDisplayName = builder.getBoolean("replay_hud_display_name", true);
+            builder.category("fluid_simulation");
+            BBSSettings.fluidRealisticModelInteraction = builder.getBoolean("realistic_model_interaction", false);
+            builder.category("model_blocks");
+            BBSSettings.modelBlockCategoriesPanelEnabled = builder.getBoolean("categories_panel_enabled", false);
+            builder.category("pose_track_selection");
+            BBSSettings.boneAnchoringEnabled = builder.getBoolean("bone_anchoring_enabled", true);
+            BBSSettings.anchorOverrideEnabled = builder.getBoolean("anchor_override_enabled", false);
+            BBSSettings.autoKeyframe = builder.getBoolean("auto_keyframe", false);
+            BBSSettings.poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
+            BBSSettings.poseBonesFilterMarked.invisible();
+            BBSSettings.replayMarkedBonesOnly = builder.getBoolean("replay_marked_bones_only", false);
+            builder.category("replay_editor");
+            BBSSettings.editorReplayEditorTitleLimit = builder.getInt("replay_editor_title_limit", 12, 0, 64);
+        });
 
         BBSMod.events.post(new RegisterClientSettingsEvent());
 
