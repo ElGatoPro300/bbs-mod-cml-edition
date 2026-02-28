@@ -298,6 +298,9 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         });
         this.openHistory.tooltip(UIKeys.FILM_OPEN_HISTORY, Direction.LEFT);
 
+        this.openOverlay.tooltip(UIKeys.FILM_OPEN_MANAGER, Direction.LEFT);
+        this.saveIcon.tooltip(UIKeys.FILM_SAVE, Direction.LEFT);
+
         this.toggleTimeMode = new UIIcon(this::getTimeModeIcon, (b) -> this.cycleTimeMode());
 
         this.updateTimeTooltips();
@@ -721,6 +724,8 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
             UIOverlay.addOverlay(this.getContext(), panel);
         });
+
+        this.duplicateFilm.tooltip(UIKeys.FILM_CRUD_DUPE, Direction.LEFT);
 
         crudPanel.icons.add(this.duplicateFilm);
 
