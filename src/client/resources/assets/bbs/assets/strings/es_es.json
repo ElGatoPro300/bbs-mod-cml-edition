@@ -1479,7 +1479,7 @@
     "keybinds.config.transformations.tooltip": "Atajos de teclado que están disponibles al editar la pose en el panel de fotogramas clave de la forma del editor de películas",
     "keybinds.config.world.title": "Mundo",
     "keybinds.config.world.tooltip": "Atajos de teclado que están disponibles en el menú global",
-    "cml.config.title": "CML settings",
+    "cml.config.title": "Configuración de CML",
     "studio.ui.language.editor.context.copy_key": "Copiar clave",
     "studio.ui.language.editor.context.copy_original": "Copiar original",
     "studio.ui.language.editor.context.mark_completed": "Marcar como sin necesidad de traducir",
