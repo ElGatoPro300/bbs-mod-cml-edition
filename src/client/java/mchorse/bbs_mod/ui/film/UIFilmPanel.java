@@ -1527,7 +1527,7 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     private void renderDividers(UIContext context)
     {
         Area a1 = this.openHistory.area;
-        Area a2 = this.layoutLock.area;
+        Area a2 = this.invertLayout.area;
 
         context.batcher.box(a1.x + 3, a1.ey() + 4, a1.ex() - 3, a1.ey() + 5, 0x22ffffff);
         context.batcher.box(a2.x + 3, a2.ey() + 4, a2.ex() - 3, a2.ey() + 5, 0x22ffffff);
