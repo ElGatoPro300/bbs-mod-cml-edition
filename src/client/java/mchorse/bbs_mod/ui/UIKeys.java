@@ -768,6 +768,7 @@ public class UIKeys
     public static final IKey MODEL_BLOCKS_KEYS_MOVE_TO = L10n.lang("bbs.ui.model_blocks.keys.move_to");
     public static final IKey MODEL_BLOCKS_KEYS_TELEPORT = L10n.lang("bbs.ui.model_blocks.keys.teleport");
     public static final IKey MODEL_BLOCKS_KEYS_TOGGLE_RENDERING = L10n.lang("bbs.ui.model_blocks.keys.toggle_rendering");
+    public static final IKey MODEL_BLOCKS_PROPERTIES = L10n.lang("bbs.ui.model_blocks.properties");
     public static final IKey MODEL_BLOCKS_SHADOW = L10n.lang("bbs.ui.model_blocks.shadow");
     public static final IKey MODEL_BLOCKS_HITBOX = L10n.lang("bbs.ui.model_blocks.hitbox");
     public static final IKey MODEL_BLOCKS_HITBOX_CUSTOM = L10n.lang("bbs.ui.model_blocks.hitbox_custom");

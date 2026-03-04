@@ -115,7 +115,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             if (this.modelBlock != null) menu.action(UIKeys.MODEL_BLOCKS_KEYS_TELEPORT, this::teleport);
         });
         this.modelBlocks.background();
-        this.modelBlocks.h(UIStringList.DEFAULT_HEIGHT * 9);
+        this.modelBlocks.h(UIStringList.DEFAULT_HEIGHT * 7);
 
         this.pickEdit = new UINestedEdit((editing) ->
         {
@@ -282,7 +282,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         hitboxIcon1.iconColor = hitboxIcon1.hoverColor = hitboxIcon1.activeColor = hitboxIcon1.disabledColor = Colors.WHITE;
         hitboxIcon2.iconColor = hitboxIcon2.hoverColor = hitboxIcon2.activeColor = hitboxIcon2.disabledColor = Colors.WHITE;
 
-        this.editor = UI.column(
+        this.editor = UI.column(4,
             this.pickEdit,
             this.enabled,
             this.shadow,
@@ -290,8 +290,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             this.lookAt,
             this.hitbox,
             this.transform,
-            UI.row(hitboxIcon1, this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
-            UI.row(hitboxIcon2, this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z),
+            UI.label(UIKeys.MODEL_BLOCKS_PROPERTIES).background(() -> Colors.A50 | BBSSettings.primaryColor.get()).marginTop(2),
             UI.row(5, 0, 20, new UIElement()
             {
                 @Override
@@ -311,12 +310,14 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
                     context.batcher.icon(Icons.PICKAXE, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
                 }
-            }.w(20).h(20), this.hardness));
+            }.w(20).h(20), this.hardness),
+            UI.row(hitboxIcon1, this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
+            UI.row(hitboxIcon2, this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z));
 
         this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, Direction.BOTTOM);
         this.hardness.tooltip(UIKeys.MODEL_BLOCKS_HARDNESS, Direction.BOTTOM);
 
-        this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
+        this.scrollView = UI.scrollView(5, 8, this.modelBlocks, this.editor);
         this.scrollView.scroll.opposite().cancelScrolling();
         this.scrollView.relative(this).w(200).h(1F);
 
