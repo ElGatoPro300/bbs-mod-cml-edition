@@ -308,7 +308,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             }.w(20).h(20), this.hardness),
             UI.row(hitboxIcon1, this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
             UI.row(hitboxIcon2, this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z));
-        this.properties.setVisible(false);
+        this.properties.setVisible(true);
 
         this.editor = UI.column(4,
             this.pickEdit,
