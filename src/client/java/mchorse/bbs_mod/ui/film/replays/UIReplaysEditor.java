@@ -18,6 +18,7 @@ import mchorse.bbs_mod.film.replays.Replay;
 import mchorse.bbs_mod.film.replays.ReplayKeyframes;
 import mchorse.bbs_mod.forms.FormUtils;
 import mchorse.bbs_mod.forms.entities.IEntity;
+import mchorse.bbs_mod.forms.forms.BodyPart;
 import mchorse.bbs_mod.forms.forms.Form;
 import mchorse.bbs_mod.forms.forms.ModelForm;
 import mchorse.bbs_mod.forms.forms.StructureForm;
@@ -202,15 +203,64 @@ public class UIReplaysEditor extends UIElement
         ICONS.put("structure_file", Icons.FILE);
     }
 
+    private void collectLimbTracks(Form form, Set<String> propertyPaths)
+    {
+        if (form == null || !form.animatable.get())
+        {
+            return;
+        }
+
+        if (form instanceof ModelForm modelForm)
+        {
+            ModelInstance model = ModelFormRenderer.getModel(modelForm);
+
+            if (model != null)
+            {
+                String path = FormUtils.getPath(modelForm);
+
+                for (String bone : model.model.getAllGroupKeys())
+                {
+                    if (bone.startsWith("armor_") || bone.endsWith("_item"))
+                    {
+                        continue;
+                    }
+
+                    propertyPaths.add(StringUtils.combinePaths(path, "pose") + ":" + bone);
+                }
+            }
+        }
+
+        for (BodyPart part : form.parts.getAllTyped())
+        {
+            this.collectLimbTracks(part.getForm(), propertyPaths);
+        }
+    }
+
     public static Icon getIcon(String key)
     {
+        if (key.indexOf(':') != -1)
+        {
+            return null;
+        }
+
         String topLevel = StringUtils.fileName(key);
 
-        return ICONS.getOrDefault(topLevel, Icons.NONE);
+        return ICONS.getOrDefault(topLevel, null);
     }
 
     public static int getColor(String key)
     {
+        int colon = key.indexOf(':');
+
+        if (colon != -1)
+        {
+            String bone = key.substring(colon + 1);
+            int hash = Math.abs(bone.hashCode());
+            int[] colors = {0xff3333, 0x33ff33, 0x3366ff, 0xffff33, 0x33ffff, 0xff66ff, 0xff1493, 0xff9da1, 0xff8822};
+
+            return colors[hash % colors.length];
+        }
+
         String topLevel = StringUtils.fileName(key);
 
         if (topLevel.startsWith("pose_overlay")) return COLORS.get("pose_overlay");
@@ -234,6 +284,11 @@ public class UIReplaysEditor extends UIElement
             {
                 for (String modelGroup : model.model.getAdjacentGroups(bone))
                 {
+                    if (modelGroup.endsWith("_item"))
+                    {
+                        continue;
+                    }
+
                     menu.action(Icons.LIMB, IKey.constant(modelGroup), () -> consumer.accept(modelGroup));
                 }
 
@@ -257,6 +312,11 @@ public class UIReplaysEditor extends UIElement
             {
                 for (String modelGroup : model.model.getHierarchyGroups(bone))
                 {
+                    if (modelGroup.endsWith("_item"))
+                    {
+                        continue;
+                    }
+
                     menu.action(Icons.LIMB, IKey.constant(modelGroup), () -> consumer.accept(modelGroup));
                 }
 
@@ -449,10 +509,19 @@ public class UIReplaysEditor extends UIElement
             }
 
             /* Form properties */
-            for (String key : FormUtils.collectPropertyPaths(this.replay.form.get()))
+            java.util.Set<String> propertyPaths = new java.util.LinkedHashSet<>(FormUtils.collectPropertyPaths(this.replay.form.get()));
+
+            propertyPaths.addAll(this.replay.properties.properties.keySet());
+
+            if (BBSSettings.limbTracks.get())
             {
-                /* Ocultar/omitir la pista tint_block_entities */
-                if (key.endsWith("tint_block_entities"))
+                this.collectLimbTracks(this.replay.form.get(), propertyPaths);
+            }
+
+            for (String key : propertyPaths)
+            {
+                /* Ocultar/omitir la pista tint_block_entities y huesos de item */
+                if (key.endsWith("tint_block_entities") || key.endsWith("_item"))
                 {
                     continue;
                 }
@@ -466,9 +535,31 @@ public class UIReplaysEditor extends UIElement
                     Integer customColor = this.replay.getSheetColor(key);
                     int baseColor = getColor(key);
                     int sheetColor = customColor != null ? customColor : baseColor;
+
+                    String title = key;
+                    int colon = key.indexOf(':');
+
+                    if (colon != -1)
+                    {
+                        String propertyPath = key.substring(0, colon);
+                        String boneName = key.substring(colon + 1);
+                        String propertyName = StringUtils.fileName(propertyPath);
+
+                        title = boneName;
+
+                        if (propertyName.equals("pose_overlay"))
+                        {
+                            title += " (Overlay)";
+                        }
+                        else if (propertyName.startsWith("pose_overlay"))
+                        {
+                            title += " (Overlay " + propertyName.substring("pose_overlay".length()) + ")";
+                        }
+                    }
+
                     UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
                         ? new UIKeyframeSheet(key, IKey.constant(customTitle), sheetColor, false, property, formProperty)
-                        : new UIKeyframeSheet(sheetColor, false, property, formProperty);
+                        : new UIKeyframeSheet(key, IKey.constant(title), sheetColor, false, property, formProperty);
 
                     if (anchoredBone != null && !anchoredBone.isEmpty())
                     {
@@ -478,191 +569,85 @@ public class UIReplaysEditor extends UIElement
                     sheets.add(sheet.icon(getIcon(key)));
                 }
             }
-
-            UIKeyframeSheet shadowSizeSheet = null;
-            UIKeyframeSheet shadowOpacitySheet = null;
-
-            for (UIKeyframeSheet sheet : sheets)
-            {
-                if (sheet.property == null)
-                {
-                    if ("shadow_size".equals(sheet.id))
-                    {
-                        shadowSizeSheet = sheet;
-                    }
-                    else if ("shadow_opacity".equals(sheet.id))
-                    {
-                        shadowOpacitySheet = sheet;
-                    }
-                }
-            }
-
-            if (shadowSizeSheet != null && shadowOpacitySheet != null)
-            {
-                sheets.remove(shadowSizeSheet);
-                sheets.remove(shadowOpacitySheet);
-
-                int insertAt = -1;
-                int insertAfterLighting = -1;
-                String rootPath = null;
-
-                if (this.replay.form.get() != null)
-                {
-                    rootPath = FormUtils.getPath(FormUtils.getRoot(this.replay.form.get()));
-                }
-
-                for (int i = 0; i < sheets.size(); i++)
-                {
-                    UIKeyframeSheet candidate = sheets.get(i);
-
-                    if (candidate.property == null)
-                    {
-                        insertAt = i + 1;
-                    }
-                    else if ("lighting".equals(StringUtils.fileName(candidate.id)) && rootPath != null)
-                    {
-                        Form candidateForm = FormUtils.getForm(candidate.property);
-
-                        if (candidateForm != null && FormUtils.getPath(candidateForm).equals(rootPath))
-                        {
-                            insertAfterLighting = i + 1;
-                        }
-                    }
-                }
-
-                if (insertAfterLighting >= 0)
-                {
-                    insertAt = insertAfterLighting;
-                }
-                else if (insertAt < 0)
-                {
-                    insertAt = sheets.size();
-                }
-
-                sheets.add(insertAt, shadowSizeSheet);
-                sheets.add(insertAt + 1, shadowOpacitySheet);
-            }
         }
 
-        /* Reordenar propiedades de StructureForm por grupo de formulario:
-           - Mantener transform/transform_overlay arriba
-           - Colocar las dems debajo en orden: anchor, structure_file, pivot, biome_id, structure_light, color */
-        java.util.Map<Object, java.util.List<Integer>> groupIndices = new java.util.HashMap<>();
-        java.util.Map<Object, java.util.List<UIKeyframeSheet>> groupSheets = new java.util.HashMap<>();
-
-        for (int i = 0; i < sheets.size(); i++)
+        /* Sort sheets by form path and priority */
+        sheets.sort((a, b) ->
         {
-            UIKeyframeSheet sheet = sheets.get(i);
-            Object form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
+            Form formA = a.property == null ? null : FormUtils.getForm(a.property);
+            Form formB = b.property == null ? null : FormUtils.getForm(b.property);
+            String pathA = formA == null ? "" : FormUtils.getPath(formA);
+            String pathB = formB == null ? "" : FormUtils.getPath(formB);
 
-            if (form instanceof mchorse.bbs_mod.forms.forms.StructureForm)
+            int pathComp = pathA.compareTo(pathB);
+
+            if (pathComp != 0)
             {
-                groupIndices.computeIfAbsent(form, k -> new ArrayList<>()).add(i);
-                groupSheets.computeIfAbsent(form, k -> new ArrayList<>()).add(sheet);
+                return pathComp;
             }
-        }
 
-        if (!groupSheets.isEmpty())
-        {
-            // Orden no-transform específico para StructureForm
-            java.util.Map<String, Integer> nonTransformOrder = new java.util.HashMap<>();
-            nonTransformOrder.put("anchor", 0);
-            nonTransformOrder.put("structure_file", 1);
-            nonTransformOrder.put("pivot", 2);
-            nonTransformOrder.put("biome_id", 3);
-            nonTransformOrder.put("structure_light", 4);
-            nonTransformOrder.put("color", 5);
-
-            // Orden prioritario arriba del todo
-            java.util.Map<String, Integer> topOrder = new java.util.HashMap<>();
-            topOrder.put("visible", 0);
-            topOrder.put("lighting", 1);
-
-            java.util.function.Function<String, Integer> toIndex = (id) ->
+            java.util.function.ToIntFunction<UIKeyframeSheet> getPriority = (sheet) ->
             {
-                Integer v = nonTransformOrder.get(id);
-                return v == null ? 1000 : v;
+                String id = sheet.id;
+                String name = StringUtils.fileName(id);
+
+                int curatedIndex = ReplayKeyframes.CURATED_CHANNELS.indexOf(id);
+
+                if (curatedIndex != -1)
+                {
+                    return -100 + curatedIndex;
+                }
+
+                if (name.equals("visible")) return 0;
+                if (name.equals("lighting")) return 1;
+
+                if (name.equals("transform")) return 10;
+                if (name.startsWith("transform_overlay"))
+                {
+                    String suffix = name.substring("transform_overlay".length());
+                    if (suffix.isEmpty()) return 11;
+                    try { return 11 + Integer.parseInt(suffix); } catch (Exception e) { return 100; }
+                }
+
+                if (name.equals("pose")) return 20;
+                if (name.startsWith("pose_overlay"))
+                {
+                    if (name.indexOf(':') != -1) return 29;
+                    String suffix = name.substring("pose_overlay".length());
+                    if (suffix.isEmpty()) return 21;
+                    try { return 21 + Integer.parseInt(suffix); } catch (Exception e) { return 28; }
+                }
+
+                if (name.indexOf(':') != -1) return 29;
+
+                if (name.equals("anchor")) return 30;
+                if (name.equals("structure_file")) return 31;
+                if (name.equals("pivot")) return 32;
+                if (name.equals("biome_id")) return 33;
+                if (name.equals("structure_light")) return 34;
+                if (name.equals("color")) return 35;
+
+                return 500;
             };
 
-            for (java.util.Map.Entry<Object, java.util.List<UIKeyframeSheet>> entry : groupSheets.entrySet())
+            int priorityA = getPriority.applyAsInt(a);
+            int priorityB = getPriority.applyAsInt(b);
+
+            if (priorityA != priorityB)
             {
-                Object form = entry.getKey();
-                java.util.List<UIKeyframeSheet> group = entry.getValue();
-                java.util.List<Integer> indices = groupIndices.get(form);
-
-                if (indices == null || indices.isEmpty())
-                {
-                    continue;
-                }
-
-                java.util.List<UIKeyframeSheet> top = new ArrayList<>();
-                java.util.List<UIKeyframeSheet> transforms = new ArrayList<>();
-                java.util.List<UIKeyframeSheet> overlays = new ArrayList<>();
-                java.util.List<UIKeyframeSheet> nonTransforms = new ArrayList<>();
-
-                for (UIKeyframeSheet s : group)
-                {
-                    if ("visible".equals(s.id) || "lighting".equals(s.id))
-                    {
-                        top.add(s);
-                    }
-                    else if ("transform".equals(s.id))
-                    {
-                        transforms.add(s);
-                    }
-                    else if (s.id != null && s.id.startsWith("transform_overlay"))
-                    {
-                        overlays.add(s);
-                    }
-                    else
-                    {
-                        nonTransforms.add(s);
-                    }
-                }
-
-                // Ordenar top: visible, luego lighting
-                top.sort((a, b) -> Integer.compare(
-                    topOrder.getOrDefault(a.id, 1000),
-                    topOrder.getOrDefault(b.id, 1000)
-                ));
-
-                // Ordenar overlays por sufijo numrico (default primero)
-                overlays.sort((a, b) -> {
-                    java.util.function.ToIntFunction<String> parseIndex = (id) ->
-                    {
-                        String suffix = id.substring("transform_overlay".length());
-                        if (suffix.isEmpty()) return -1; // default overlay primero
-                        try { return Integer.parseInt(suffix); } catch (Exception e) { return 999; }
-                    };
-                    return Integer.compare(parseIndex.applyAsInt(a.id), parseIndex.applyAsInt(b.id));
-                });
-
-                // Ordenar no-transform segn mapa
-                nonTransforms.sort((a, b) -> Integer.compare(toIndex.apply(a.id), toIndex.apply(b.id)));
-
-                // Posicin base del grupo y recolocacin contigua
-                int start = indices.stream().min(Integer::compareTo).get();
-
-                // Eliminar en orden descendente para evitar el corrimiento de indices
-                indices.sort(java.util.Collections.reverseOrder());
-                for (int idx : indices)
-                {
-                    sheets.remove(idx);
-                }
-
-                // Insertar: top (visible, lighting), transform, overlays, luego no-transforms
-                java.util.List<UIKeyframeSheet> newGroup = new ArrayList<>();
-                newGroup.addAll(top);
-                newGroup.addAll(transforms);
-                newGroup.addAll(overlays);
-                newGroup.addAll(nonTransforms);
-
-                for (int j = 0; j < newGroup.size(); j++)
-                {
-                    sheets.add(start + j, newGroup.get(j));
-                }
+                return Integer.compare(priorityA, priorityB);
             }
-        }
+
+            if (priorityA == 29)
+            {
+                String boneA = a.id.substring(a.id.indexOf(':') + 1);
+                String boneB = b.id.substring(b.id.indexOf(':') + 1);
+
+                return boneA.compareTo(boneB);
+            }
+
+            return 0;
+        });
 
         this.keys.clear();
 
@@ -858,7 +843,7 @@ public class UIReplaysEditor extends UIElement
                     int mouseY = this.getContext().mouseY;
                     UIKeyframeSheet sheet = this.keyframeEditor.view.getGraph().getSheet(mouseY);
 
-                    if (sheet != null && sheet.channel.getFactory() == KeyframeFactories.POSE && sheet.id.equals("pose"))
+                    if (sheet != null && sheet.channel.getFactory() == KeyframeFactories.POSE && (sheet.id.equals("pose") || sheet.id.startsWith("pose_overlay")))
                     {
                         menu.action(Icons.POSE, UIKeys.FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES, () -> this.animationToPoses(modelForm, sheet));
                     }
@@ -1015,14 +1000,16 @@ public class UIReplaysEditor extends UIElement
         {
             UIKeyframeSheet sheet = graph.getSheet(selected);
 
-            if (sheet != null && sheet.property != null)
+            if (sheet != null)
             {
-                Form sheetForm = (Form) sheet.property.getParent();
-                String sheetFormPath = FormUtils.getPath(sheetForm);
+                String sheetId = sheet.id;
+                int colon = sheetId.indexOf(':');
+                String pathWithProperty = colon != -1 ? sheetId.substring(0, colon) : sheetId;
+                String propertyId = StringUtils.fileName(pathWithProperty);
 
-                if (sheetFormPath.equals(formPath) && sheet.property.getId().startsWith("pose"))
+                if (pathWithProperty.startsWith(formPath) && (propertyId.equals("pose") || propertyId.startsWith("pose_overlay")))
                 {
-                    propertyPath = FormUtils.getPropertyPath(sheet.property);
+                    propertyPath = pathWithProperty;
                 }
             }
         }
@@ -1031,14 +1018,16 @@ public class UIReplaysEditor extends UIElement
         {
             UIKeyframeSheet lastSheet = graph.getLastSheet();
 
-            if (lastSheet != null && lastSheet.property != null)
+            if (lastSheet != null)
             {
-                Form lastForm = (Form) lastSheet.property.getParent();
-                String lastFormPath = FormUtils.getPath(lastForm);
+                String sheetId = lastSheet.id;
+                int colon = sheetId.indexOf(':');
+                String pathWithProperty = colon != -1 ? sheetId.substring(0, colon) : sheetId;
+                String propertyId = StringUtils.fileName(pathWithProperty);
 
-                if (lastFormPath.equals(formPath) && lastSheet.property.getId().startsWith("pose"))
+                if (pathWithProperty.startsWith(formPath) && (propertyId.equals("pose") || propertyId.startsWith("pose_overlay")))
                 {
-                    propertyPath = FormUtils.getPropertyPath(lastSheet.property);
+                    propertyPath = pathWithProperty;
                 }
             }
         }
@@ -1053,44 +1042,42 @@ public class UIReplaysEditor extends UIElement
 
             for (UIKeyframeSheet sheet : graph.getSheets())
             {
-                BaseValueBasic property = sheet.property;
+                String sheetId = sheet.id;
+                int colon = sheetId.indexOf(':');
+                String pathWithProperty = colon != -1 ? sheetId.substring(0, colon) : sheetId;
 
-                if (property != null)
+                if (pathWithProperty.startsWith(formPath))
                 {
-                    Form sheetForm = (Form) property.getParent();
-                    String sheetFormPath = FormUtils.getPath(sheetForm);
+                    String propertyId = StringUtils.fileName(pathWithProperty);
 
-                    if (sheetFormPath.equals(formPath))
+                    if (propertyId.equals("pose"))
                     {
-                        if (property.getId().equals("pose"))
+                        posePath = pathWithProperty;
+
+                        if (!sheet.channel.isEmpty())
                         {
-                            posePath = FormUtils.getPropertyPath(property);
+                            KeyframeSegment segment = sheet.channel.find(currentTick);
 
-                            if (!sheet.channel.isEmpty())
+                            if (segment != null)
                             {
-                                KeyframeSegment segment = sheet.channel.find(currentTick);
-
-                                if (segment != null)
-                                {
-                                    minPoseDist = Math.abs(segment.getClosest().getTick() - currentTick);
-                                }
+                                minPoseDist = Math.abs(segment.getClosest().getTick() - currentTick);
                             }
                         }
-                        else if (property.getId().startsWith("pose_overlay"))
+                    }
+                    else if (propertyId.startsWith("pose_overlay"))
+                    {
+                        if (!sheet.channel.isEmpty())
                         {
-                            if (!sheet.channel.isEmpty())
+                            KeyframeSegment segment = sheet.channel.find(currentTick);
+
+                            if (segment != null)
                             {
-                                KeyframeSegment segment = sheet.channel.find(currentTick);
+                                double dist = Math.abs(segment.getClosest().getTick() - currentTick);
 
-                                if (segment != null)
+                                if (activeOverlayPath == null)
                                 {
-                                    double dist = Math.abs(segment.getClosest().getTick() - currentTick);
-
-                                    if (activeOverlayPath == null)
-                                    {
-                                        activeOverlayPath = FormUtils.getPropertyPath(property);
-                                        minOverlayDist = dist;
-                                    }
+                                    activeOverlayPath = pathWithProperty;
+                                    minOverlayDist = dist;
                                 }
                             }
                         }
@@ -1142,6 +1129,28 @@ public class UIReplaysEditor extends UIElement
 
     private void pickProperty(String bone, String key, boolean insert)
     {
+        IUIKeyframeGraph graph = this.keyframeEditor.view.getGraph();
+        Keyframe selected = graph.getSelected();
+        UIKeyframeSheet activeSheet = selected != null ? graph.getSheet(selected) : null;
+
+        if (activeSheet != null)
+        {
+            String id = activeSheet.id;
+            int colon = id.indexOf(':');
+            String baseId = colon != -1 ? id.substring(0, colon) : id;
+            String boneId = colon != -1 ? id.substring(colon + 1) : null;
+
+            if (baseId.equals(key))
+            {
+                if (boneId == null || boneId.equals(bone))
+                {
+                    this.pickProperty(bone, activeSheet, insert);
+
+                    return;
+                }
+            }
+        }
+
         /* Redirección al sheet anclado si el hueso seleccionado está anclado y no hay override */
         if (bone != null && !bone.isEmpty() && BBSSettings.boneAnchoringEnabled.get() && !BBSSettings.anchorOverrideEnabled.get())
         {
@@ -1155,15 +1164,29 @@ public class UIReplaysEditor extends UIElement
             }
         }
 
+        /* Redirección a la pista de limb track si existe */
+        if (bone != null && !bone.isEmpty())
+        {
+            String limbTrackId = key + ":" + bone;
+
+            for (UIKeyframeSheet sheet : this.keyframeEditor.view.getGraph().getSheets())
+            {
+                if (sheet.id.equals(limbTrackId))
+                {
+                    this.pickProperty(bone, sheet, insert);
+
+                    return;
+                }
+            }
+        }
+
         for (UIKeyframeSheet sheet : this.keyframeEditor.view.getGraph().getSheets())
         {
-            BaseValueBasic property = sheet.property;
-
-            if (property != null && FormUtils.getPropertyPath(property).equals(key))
+            if (sheet.id.equals(key))
             {
                 this.pickProperty(bone, sheet, insert);
 
-                break;
+                return;
             }
         }
     }
@@ -1182,11 +1205,19 @@ public class UIReplaysEditor extends UIElement
         }
 
         KeyframeSegment segment = sheet.channel.find(tick);
+        Keyframe closest = null;
 
         if (segment != null)
         {
-            Keyframe closest = segment.getClosest();
+            closest = segment.getClosest();
+        }
+        else if (!sheet.channel.isEmpty())
+        {
+            closest = sheet.channel.get(0);
+        }
 
+        if (closest != null)
+        {
             if (this.keyframeEditor.view.getGraph().getSelected() != closest)
             {
                 this.keyframeEditor.view.getGraph().selectKeyframe(closest);

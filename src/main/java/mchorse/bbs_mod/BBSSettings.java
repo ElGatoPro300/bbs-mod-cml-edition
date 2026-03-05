@@ -129,6 +129,7 @@ public class BBSSettings
     public static ValueBoolean replayMarkedBonesOnly;
     public static ValueBoolean pickLimbTexture;
     public static ValueBoolean fluidRealisticModelInteraction;
+    public static ValueBoolean limbTracks;
 
     public static ValueString cdnUrl;
     public static ValueString cdnToken;

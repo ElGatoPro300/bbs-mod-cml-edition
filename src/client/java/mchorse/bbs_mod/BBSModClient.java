@@ -457,7 +457,6 @@ public class BBSModClient implements ClientModInitializer
             BBSSettings.disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
             BBSSettings.gizmoYAxisHorizontal = builder.getBoolean("gizmo_y_axis_horizontal", true);
             BBSSettings.defaultInterpolation = builder.getInt("default_interpolation", 0);
-            BBSSettings.pickLimbTexture = builder.getBoolean("pick_limb_texture", true);
             builder.category("editor");
             BBSSettings.editorSafeMarginsColor = builder.getInt("safe_margins_color", 0xcccc0000).colorAlpha();
             BBSSettings.editorSafeMargins = builder.getBoolean("safe_margins", false);
@@ -479,6 +478,7 @@ public class BBSModClient implements ClientModInitializer
             BBSSettings.poseBonesFilterMarked = builder.getBoolean("pose_bones_filter_marked", false);
             BBSSettings.poseBonesFilterMarked.invisible();
             BBSSettings.replayMarkedBonesOnly = builder.getBoolean("replay_marked_bones_only", false);
+            BBSSettings.limbTracks = builder.getBoolean("limb_tracks", true);
             builder.category("replay_editor");
             BBSSettings.editorReplayEditorTitleLimit = builder.getInt("replay_editor_title_limit", 12, 0, 64);
         });
