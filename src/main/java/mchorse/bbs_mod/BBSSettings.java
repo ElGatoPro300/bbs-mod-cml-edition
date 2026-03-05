@@ -127,6 +127,7 @@ public class BBSSettings
     public static ValueBoolean autoKeyframe;
     public static ValueBoolean poseBonesFilterMarked;
     public static ValueBoolean replayMarkedBonesOnly;
+    public static ValueBoolean pickLimbTexture;
     public static ValueBoolean fluidRealisticModelInteraction;
 
     public static ValueString cdnUrl;

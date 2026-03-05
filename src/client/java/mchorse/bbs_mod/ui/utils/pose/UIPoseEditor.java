@@ -266,7 +266,7 @@ public class UIPoseEditor extends UIElement
             });
         });
         /* Botón para elegir textura de hueso (etiqueta fija ES/EN) */
-        this.pickTexture = new UIButton(UIKeys.TEXTURE_PICK_BONE_TEXTURE, (b) ->
+        this.pickTexture = new UIButton(UIKeys.TEXTURE_PICK_LIMB_TEXTURE, (b) ->
         {
             PoseTransform poseTransform = (PoseTransform) this.transform.getTransform();
             Link current = null;
@@ -390,14 +390,23 @@ public class UIPoseEditor extends UIElement
 
         this.column().vertical().stretch();
         boolean categoriesEnabled = BBSSettings.modelBlockCategoriesPanelEnabled != null && BBSSettings.modelBlockCategoriesPanelEnabled.get();
+        boolean pickLimbTexture = BBSSettings.pickLimbTexture != null && BBSSettings.pickLimbTexture.get();
+
         if (categoriesEnabled)
         {
-            this.add(UI.row(this.groups, this.categories), this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
+            this.add(UI.row(this.groups, this.categories), this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix);
         }
         else
         {
-            this.add(this.groups, this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
+            this.add(this.groups, this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix);
         }
+
+        if (pickLimbTexture)
+        {
+            this.add(this.pickTexture);
+        }
+
+        this.add(UI.row(this.color, this.lighting), this.transform);
     }
 
     /**
@@ -753,15 +762,17 @@ public class UIPoseEditor extends UIElement
 
         boolean isPoseTransform = transform instanceof PoseTransform;
 
+        boolean pickLimbTexture = BBSSettings.pickLimbTexture != null && BBSSettings.pickLimbTexture.get();
+
         this.fix.setVisible(true);
         this.color.setVisible(true);
         this.lighting.setVisible(true);
-        this.pickTexture.setVisible(true);
+        this.pickTexture.setVisible(pickLimbTexture);
 
         this.fix.setEnabled(isPoseTransform);
         this.color.setEnabled(isPoseTransform);
         this.lighting.setEnabled(isPoseTransform);
-        this.pickTexture.setEnabled(isPoseTransform);
+        this.pickTexture.setEnabled(isPoseTransform && pickLimbTexture);
 
         if (!isPoseTransform || this.pose == null || CollectionUtils.getKey(this.pose.transforms, (PoseTransform) transform) == null)
         {
@@ -782,15 +793,17 @@ public class UIPoseEditor extends UIElement
 
         this.cacheLastSelectedBone(bone);
 
+        boolean pickLimbTexture = BBSSettings.pickLimbTexture != null && BBSSettings.pickLimbTexture.get();
+
         this.fix.setVisible(true);
         this.color.setVisible(true);
         this.lighting.setVisible(true);
-        this.pickTexture.setVisible(true);
+        this.pickTexture.setVisible(pickLimbTexture);
 
         this.fix.setEnabled(true);
         this.color.setEnabled(true);
         this.lighting.setEnabled(true);
-        this.pickTexture.setEnabled(true);
+        this.pickTexture.setEnabled(pickLimbTexture);
 
         PoseTransform poseTransform = this.pose != null ? this.pose.get(bone) : null;
 

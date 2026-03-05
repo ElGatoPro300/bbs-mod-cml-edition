@@ -457,6 +457,7 @@ public class BBSModClient implements ClientModInitializer
             BBSSettings.disablePivotTransform = builder.getBoolean("disable_pivot_transform", false);
             BBSSettings.gizmoYAxisHorizontal = builder.getBoolean("gizmo_y_axis_horizontal", true);
             BBSSettings.defaultInterpolation = builder.getInt("default_interpolation", 0);
+            BBSSettings.pickLimbTexture = builder.getBoolean("pick_limb_texture", true);
             builder.category("editor");
             BBSSettings.editorSafeMarginsColor = builder.getInt("safe_margins_color", 0xcccc0000).colorAlpha();
             BBSSettings.editorSafeMargins = builder.getBoolean("safe_margins", false);
