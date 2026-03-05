@@ -90,6 +90,7 @@ public class BBSSettings
     public static ValueBoolean editorClipPreview;
     public static ValueBoolean editorClipTypeLabels;
     public static ValueBoolean editorReplaySprintParticles;
+    public static ValueInt editorTimeMode;
     public static ValueInt editorReplayEditorTitleLimit;
     public static ValueBoolean editorReplayHud;
     public static ValueInt editorReplayHudPosition;
@@ -241,6 +242,7 @@ public class BBSSettings
         editorRuleOfThirds = builder.getBoolean("rule_of_thirds", false);
         editorCenterLines = builder.getBoolean("center_lines", false);
         editorCrosshair = builder.getBoolean("crosshair", false);
+
         editorSeconds = builder.getBoolean("seconds", false);
         editorFrames = builder.getBoolean("frames", false);
         editorPeriodicSave = builder.getInt("periodic_save", 60, 0, 3600);

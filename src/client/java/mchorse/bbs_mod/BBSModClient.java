@@ -465,6 +465,57 @@ public class BBSModClient implements ClientModInitializer
             BBSSettings.editorFlightFreeLook = builder.getBoolean("flight_free_look", false);
             BBSSettings.editorClipTypeLabels = builder.getBoolean("clip_type_labels", false);
             BBSSettings.editorReplaySprintParticles = builder.getBoolean("replay_sprint_particles", false);
+            BBSSettings.editorTimeMode = builder.getInt("time_mode", 0, 0, 2);
+            BBSSettings.editorTimeMode.modes(
+                UIKeys.CONFIG_EDITOR_TICKS_MODE,
+                UIKeys.CONFIG_EDITOR_SECONDS_MODE,
+                UIKeys.CONFIG_EDITOR_FRAMES_MODE
+            );
+            BBSSettings.editorTimeMode.postCallback((changed, flag) ->
+            {
+                int mode = BBSSettings.editorTimeMode.get();
+
+                if (mode == 0)
+                {
+                    if (BBSSettings.editorSeconds.get()) BBSSettings.editorSeconds.set(false);
+                    if (BBSSettings.editorFrames.get()) BBSSettings.editorFrames.set(false);
+                }
+                else if (mode == 1)
+                {
+                    if (!BBSSettings.editorSeconds.get()) BBSSettings.editorSeconds.set(true);
+                    if (BBSSettings.editorFrames.get()) BBSSettings.editorFrames.set(false);
+                }
+                else
+                {
+                    if (BBSSettings.editorSeconds.get()) BBSSettings.editorSeconds.set(false);
+                    if (!BBSSettings.editorFrames.get()) BBSSettings.editorFrames.set(true);
+                }
+            });
+
+            BBSSettings.editorSeconds.postCallback((changed, flag) ->
+            {
+                if (BBSSettings.editorSeconds.get())
+                {
+                    if (BBSSettings.editorTimeMode.get() != 1) BBSSettings.editorTimeMode.set(1);
+                    if (BBSSettings.editorFrames.get()) BBSSettings.editorFrames.set(false);
+                }
+                else if (!BBSSettings.editorFrames.get())
+                {
+                    if (BBSSettings.editorTimeMode.get() != 0) BBSSettings.editorTimeMode.set(0);
+                }
+            });
+            BBSSettings.editorFrames.postCallback((changed, flag) ->
+            {
+                if (BBSSettings.editorFrames.get())
+                {
+                    if (BBSSettings.editorTimeMode.get() != 2) BBSSettings.editorTimeMode.set(2);
+                    if (BBSSettings.editorSeconds.get()) BBSSettings.editorSeconds.set(false);
+                }
+                else if (!BBSSettings.editorSeconds.get())
+                {
+                    if (BBSSettings.editorTimeMode.get() != 0) BBSSettings.editorTimeMode.set(0);
+                }
+            });
             builder.category("display");
             BBSSettings.editorReplayHud = builder.getBoolean("replay_hud", false);
             BBSSettings.editorReplayHudPosition = builder.getInt("replay_hud_position", 0, 0, 3);
@@ -487,7 +538,8 @@ public class BBSModClient implements ClientModInitializer
         BBSMod.events.post(new RegisterClientSettingsEvent());
 
         BBSSettings.language.postCallback((v, f) -> reloadLanguage(getLanguageKey()));
-        BBSSettings.editorSeconds.postCallback((v, f) ->
+
+        BBSSettings.editorTimeMode.postCallback((v, f) ->
         {
             if (dashboard != null && dashboard.getPanels().panel instanceof UIFilmPanel panel)
             {

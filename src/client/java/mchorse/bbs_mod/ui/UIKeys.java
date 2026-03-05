@@ -442,6 +442,10 @@ public class UIKeys
     public static final IKey FLUID_SIZE_Y = L10n.lang("bbs.fluid.size_y");
     public static final IKey FLUID_SIZE_Z = L10n.lang("bbs.fluid.size_z");
     public static final IKey FILM_TIME_MODE = L10n.lang("bbs.film.time_mode");
+    public static final IKey CONFIG_EDITOR_TIME_MODE = L10n.lang("bbs.film.time_mode");
+    public static final IKey CONFIG_EDITOR_TICKS_MODE = L10n.lang("cml.config.editor.ticks");
+    public static final IKey CONFIG_EDITOR_SECONDS_MODE = L10n.lang("cml.config.editor.seconds");
+    public static final IKey CONFIG_EDITOR_FRAMES_MODE = L10n.lang("cml.config.editor.frames");
     public static final IKey CONFIG_EDITOR_TICKS = L10n.lang("bbs.config.editor.ticks");
     public static final IKey CONFIG_EDITOR_SECONDS = L10n.lang("bbs.config.editor.seconds");
     public static final IKey CONFIG_EDITOR_FRAMES = L10n.lang("bbs.config.editor.frames");
