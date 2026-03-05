@@ -86,7 +86,12 @@ public class UIModelFormPanel extends UIFormPanel<ModelForm>
             UITexturePicker.open(this.getContext(), link, (l) -> this.form.texture.set(l));
         });
 
-        this.options.add(this.pickModel, this.pick, this.color, this.poseEditor);
+        this.options.add(this.pickModel);
+        if (mchorse.bbs_mod.BBSSettings.pickLimbTexture.get())
+        {
+            this.options.add(this.pick);
+        }
+        this.options.add(this.color, this.poseEditor);
     }
 
     private void pickGroup(String group)
