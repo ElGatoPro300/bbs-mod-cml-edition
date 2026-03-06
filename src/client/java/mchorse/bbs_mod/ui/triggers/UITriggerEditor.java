@@ -10,6 +10,8 @@ import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.UIUtils;
+import mchorse.bbs_mod.utils.colors.Colors;
 
 public class UITriggerEditor extends UIElement
 {
@@ -80,6 +82,19 @@ public class UITriggerEditor extends UIElement
         this.sx = new UITrackpad((v) -> { if (this.entity != null) { this.entity.regionSize.set(v.floatValue(), this.entity.regionSize.get().y, this.entity.regionSize.get().z); this.save(); } }).increment(0.1);
         this.sy = new UITrackpad((v) -> { if (this.entity != null) { this.entity.regionSize.set(this.entity.regionSize.get().x, v.floatValue(), this.entity.regionSize.get().z); this.save(); } }).increment(0.1);
         this.sz = new UITrackpad((v) -> { if (this.entity != null) { this.entity.regionSize.set(this.entity.regionSize.get().x, this.entity.regionSize.get().y, v.floatValue()); this.save(); } }).increment(0.1);
+
+        this.x1.textbox.setColor(Colors.RED);
+        this.y1.textbox.setColor(Colors.GREEN);
+        this.z1.textbox.setColor(Colors.BLUE);
+        this.x2.textbox.setColor(Colors.RED);
+        this.y2.textbox.setColor(Colors.GREEN);
+        this.z2.textbox.setColor(Colors.BLUE);
+        this.ox.textbox.setColor(Colors.RED);
+        this.oy.textbox.setColor(Colors.GREEN);
+        this.oz.textbox.setColor(Colors.BLUE);
+        this.sx.textbox.setColor(Colors.RED);
+        this.sy.textbox.setColor(Colors.GREEN);
+        this.sz.textbox.setColor(Colors.BLUE);
 
         this.hitboxLabel = UI.label(TriggerKeys.HITBOX).background(() -> 0x88000000).marginTop(10).marginBottom(2);
         this.pos1Label = UI.label(TriggerKeys.POS1);
