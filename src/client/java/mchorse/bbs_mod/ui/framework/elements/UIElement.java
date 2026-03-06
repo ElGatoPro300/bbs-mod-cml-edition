@@ -1413,7 +1413,7 @@ public class UIElement implements IUIElement, IUndoElement
     {
         if (!this.isEnabled())
         {
-            this.area.render(context.batcher, Colors.A50);
+            context.batcher.box(this.area.x, this.area.y, this.area.ex(), this.area.ey(), 0xAA000000);
 
             context.batcher.outlinedIcon(Icons.LOCKED, this.area.mx(), this.area.my(), 0.5F, 0.5F);
         }
