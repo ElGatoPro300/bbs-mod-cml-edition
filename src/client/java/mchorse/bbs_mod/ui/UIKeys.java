@@ -349,6 +349,12 @@ public class UIKeys
     public static final IKey FILM_TELEPORT_TITLE = L10n.lang("bbs.ui.film.teleport-title");
     public static final IKey FILM_TITLE = L10n.lang("bbs.ui.film.title");
     public static final IKey FILM_TOGGLE_LAYOUT = L10n.lang("bbs.ui.film.toggle_layout");
+    public static final IKey FILM_CRUD_ADD = L10n.lang("bbs.ui.film.crud.add");
+    public static final IKey FILM_CRUD_DUPE = L10n.lang("bbs.ui.film.crud.dupe");
+    public static final IKey FILM_CRUD_RENAME = L10n.lang("bbs.ui.film.crud.rename");
+    public static final IKey FILM_CRUD_REMOVE = L10n.lang("bbs.ui.film.crud.remove");
+    public static final IKey FILM_SAVE = L10n.lang("bbs.ui.film.save");
+    public static final IKey FILM_OPEN_MANAGER = L10n.lang("bbs.ui.film.manager.open");
     public static final IKey FILM_LAYOUT_TITLE = L10n.lang("bbs.ui.film.layout.title");
     public static final IKey FILM_LAYOUT_HORIZONTAL_BOTTOM = L10n.lang("bbs.ui.film.layout.horizontal_bottom");
     public static final IKey FILM_LAYOUT_HORIZONTAL_TOP = L10n.lang("bbs.ui.film.layout.horizontal_top");
@@ -436,6 +442,10 @@ public class UIKeys
     public static final IKey FLUID_SIZE_Y = L10n.lang("bbs.fluid.size_y");
     public static final IKey FLUID_SIZE_Z = L10n.lang("bbs.fluid.size_z");
     public static final IKey FILM_TIME_MODE = L10n.lang("bbs.film.time_mode");
+    public static final IKey CONFIG_EDITOR_TIME_MODE = L10n.lang("bbs.film.time_mode");
+    public static final IKey CONFIG_EDITOR_TICKS_MODE = L10n.lang("cml.config.editor.ticks");
+    public static final IKey CONFIG_EDITOR_SECONDS_MODE = L10n.lang("cml.config.editor.seconds");
+    public static final IKey CONFIG_EDITOR_FRAMES_MODE = L10n.lang("cml.config.editor.frames");
     public static final IKey CONFIG_EDITOR_TICKS = L10n.lang("bbs.config.editor.ticks");
     public static final IKey CONFIG_EDITOR_SECONDS = L10n.lang("bbs.config.editor.seconds");
     public static final IKey CONFIG_EDITOR_FRAMES = L10n.lang("bbs.config.editor.frames");
@@ -762,6 +772,7 @@ public class UIKeys
     public static final IKey MODEL_BLOCKS_KEYS_MOVE_TO = L10n.lang("bbs.ui.model_blocks.keys.move_to");
     public static final IKey MODEL_BLOCKS_KEYS_TELEPORT = L10n.lang("bbs.ui.model_blocks.keys.teleport");
     public static final IKey MODEL_BLOCKS_KEYS_TOGGLE_RENDERING = L10n.lang("bbs.ui.model_blocks.keys.toggle_rendering");
+    public static final IKey MODEL_BLOCKS_PROPERTIES = L10n.lang("bbs.ui.model_blocks.properties");
     public static final IKey MODEL_BLOCKS_SHADOW = L10n.lang("bbs.ui.model_blocks.shadow");
     public static final IKey MODEL_BLOCKS_HITBOX = L10n.lang("bbs.ui.model_blocks.hitbox");
     public static final IKey MODEL_BLOCKS_HITBOX_CUSTOM = L10n.lang("bbs.ui.model_blocks.hitbox_custom");
@@ -901,6 +912,7 @@ public class UIKeys
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_DESCRIPTION = L10n.lang("bbs.ui.scene.replays.context.process-description");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_EXPRESSION_TOOLTIP = L10n.lang("bbs.ui.scene.replays.context.process.expression-tooltip");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_TOGGLE = L10n.lang("bbs.ui.scene.replays.context.process.grid.toggle");
+    public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_SNAP_TERRAIN = L10n.lang("bbs.ui.scene.replays.context.process.snap_terrain");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_COLUMNS = L10n.lang("bbs.ui.scene.replays.context.process.grid.columns");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_SPACING_X = L10n.lang("bbs.ui.scene.replays.context.process.grid.spacing_x");
     public static final IKey SCENE_REPLAYS_CONTEXT_PROCESS_GRID_SPACING_Z = L10n.lang("bbs.ui.scene.replays.context.process.grid.spacing_z");

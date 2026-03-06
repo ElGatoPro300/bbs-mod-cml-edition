@@ -145,11 +145,13 @@ public class UISettingsOverlayPanel extends UIOverlayPanel
                 {
                     if (value instanceof ValueInt)
                     {
+                        String key = UIValueFactory.getValueLabelKey(value);
+
                         ((ValueInt) value).modes(
-                            L10n.lang("bbs.config.display.replay_hud_position.top_left"),
-                            L10n.lang("bbs.config.display.replay_hud_position.top_right"),
-                            L10n.lang("bbs.config.display.replay_hud_position.bottom_left"),
-                            L10n.lang("bbs.config.display.replay_hud_position.bottom_right")
+                            L10n.lang(key + ".top_left"),
+                            L10n.lang(key + ".top_right"),
+                            L10n.lang(key + ".bottom_left"),
+                            L10n.lang(key + ".bottom_right")
                         );
                     }
                 }

@@ -109,10 +109,8 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
     /* Icon bar buttons */
     public UIIcon openHistory;
-    public UIIcon toggleTimeMode;
     public UIIcon toggleHorizontal;
     public UIIcon layoutLock;
-    public UIIcon invertLayout;
     public UIIcon openCameraEditor;
     public UIIcon openReplayEditor;
     public UIIcon openActionEditor;
@@ -298,16 +296,27 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         });
         this.openHistory.tooltip(UIKeys.FILM_OPEN_HISTORY, Direction.LEFT);
 
-        this.toggleTimeMode = new UIIcon(this::getTimeModeIcon, (b) -> this.cycleTimeMode());
+        this.openOverlay.tooltip(UIKeys.FILM_OPEN_MANAGER, Direction.LEFT);
+        this.saveIcon.tooltip(UIKeys.FILM_SAVE, Direction.LEFT);
 
-        this.updateTimeTooltips();
+        this.toggleHorizontal = new UIIcon(this::getLayoutIcon, (b) -> this.openLayoutSelector())
+        {
+            @Override
+            public boolean subMouseClicked(UIContext context)
+            {
+                if (context.mouseButton == 1 && this.area.isInside(context))
+                {
+                    UIFilmPanel.this.invertSelectedLayout();
 
-        this.toggleHorizontal = new UIIcon(this::getLayoutIcon, (b) -> this.openLayoutSelector());
+                    return true;
+                }
+
+                return super.subMouseClicked(context);
+            }
+        };
         this.toggleHorizontal.tooltip(UIKeys.FILM_TOGGLE_LAYOUT, Direction.LEFT);
         this.layoutLock = new UIIcon(this::getLayoutLockIcon, (b) -> this.toggleLayoutLock());
         this.updateLayoutLockTooltip();
-        this.invertLayout = new UIIcon(Icons.EXCHANGE, (b) -> this.invertSelectedLayout());
-        this.invertLayout.tooltip(UIKeys.FILM_LAYOUT_INVERT, Direction.LEFT);
         this.openCameraEditor = new UIIcon(Icons.FRUSTUM, (b) -> this.showPanel(this.cameraEditor));
         this.openCameraEditor.tooltip(UIKeys.FILM_OPEN_CAMERA_EDITOR, Direction.LEFT);
         this.openReplayEditor = new UIIcon(Icons.SCENE, (b) -> this.showPanel(this.replayEditor));
@@ -316,11 +325,16 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         this.openActionEditor.tooltip(UIKeys.FILM_OPEN_ACTION_EDITOR, Direction.LEFT);
 
         /* Setup elements */
-        this.iconBar.add(this.openHistory, this.toggleTimeMode.marginTop(9), this.toggleHorizontal, this.layoutLock, this.invertLayout, this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
+        this.iconBar.add(this.openHistory, this.openCameraEditor.marginTop(9), this.openReplayEditor, this.openActionEditor);
+
+        UIElement bottomIcons = new UIElement();
+
+        bottomIcons.relative(this).x(1F, -20).y(1F).wh(20, 40).anchorY(1F).column(0).stretch();
+        bottomIcons.add(this.toggleHorizontal, this.layoutLock);
 
         this.editor.add(this.main, new UIRenderable(this::renderIcons));
         this.main.add(this.cameraEditor, this.replayEditor, this.actionEditor, this.editArea, this.preview, this.draggableMain, this.draggableEditor);
-        this.add(this.controller, new UIRenderable(this::renderDividers));
+        this.add(this.controller, new UIRenderable(this::renderDividers), bottomIcons);
         this.overlay.namesList.setFileIcon(Icons.FILM);
 
         /* Register keybinds */
@@ -722,6 +736,8 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
             UIOverlay.addOverlay(this.getContext(), panel);
         });
 
+        this.duplicateFilm.tooltip(UIKeys.FILM_CRUD_DUPE, Direction.LEFT);
+
         crudPanel.icons.add(this.duplicateFilm);
 
         return crudPanel;
@@ -869,68 +885,6 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
         {
             this.layoutLock.tooltip(UIKeys.FILM_LAYOUT_LOCK, Direction.LEFT);
         }
-    }
-
-    private int getTimeMode()
-    {
-        if (BBSSettings.editorSeconds.get())
-        {
-            return 1;
-        }
-
-        if (BBSSettings.editorFrames.get())
-        {
-            return 2;
-        }
-
-        return 0;
-    }
-
-    private Icon getTimeModeIcon()
-    {
-        int mode = this.getTimeMode();
-
-        if (mode == 1)
-        {
-            return Icons.TIME;
-        }
-
-        if (mode == 2)
-        {
-            return Icons.FILM;
-        }
-
-        return Icons.STOPWATCH;
-    }
-
-    private void cycleTimeMode()
-    {
-        int mode = this.getTimeMode();
-
-        mode = MathUtils.cycler(mode + 1, 0, 2);
-
-        if (mode == 0)
-        {
-            BBSSettings.editorSeconds.set(false);
-            BBSSettings.editorFrames.set(false);
-        }
-        else if (mode == 1)
-        {
-            BBSSettings.editorSeconds.set(true);
-            BBSSettings.editorFrames.set(false);
-        }
-        else
-        {
-            BBSSettings.editorSeconds.set(false);
-            BBSSettings.editorFrames.set(true);
-        }
-
-        this.updateTimeTooltips();
-    }
-
-    private void updateTimeTooltips()
-    {
-        this.toggleTimeMode.tooltip(UIKeys.FILM_TIME_MODE, Direction.LEFT);
     }
 
     private void invertSelectedLayout()
@@ -1202,7 +1156,6 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
 
         this.preview.replays.setEnabled(data != null);
         this.openHistory.setEnabled(data != null);
-        this.toggleTimeMode.setEnabled(data != null);
         this.toggleHorizontal.setEnabled(data != null);
         this.layoutLock.setEnabled(data != null);
         this.openCameraEditor.setEnabled(data != null);
@@ -1527,10 +1480,8 @@ public class UIFilmPanel extends UIDataDashboardPanel<Film> implements IFlightSu
     private void renderDividers(UIContext context)
     {
         Area a1 = this.openHistory.area;
-        Area a2 = this.layoutLock.area;
 
         context.batcher.box(a1.x + 3, a1.ey() + 4, a1.ex() - 3, a1.ey() + 5, 0x22ffffff);
-        context.batcher.box(a2.x + 3, a2.ey() + 4, a2.ex() - 3, a2.ey() + 5, 0x22ffffff);
     }
 
     @Override

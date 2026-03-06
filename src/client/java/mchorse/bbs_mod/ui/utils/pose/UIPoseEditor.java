@@ -390,14 +390,25 @@ public class UIPoseEditor extends UIElement
 
         this.column().vertical().stretch();
         boolean categoriesEnabled = BBSSettings.modelBlockCategoriesPanelEnabled != null && BBSSettings.modelBlockCategoriesPanelEnabled.get();
+        boolean pickLimbTexture = BBSSettings.pickLimbTexture != null && BBSSettings.pickLimbTexture.get();
+
         if (categoriesEnabled)
         {
-            this.add(UI.row(this.groups, this.categories), this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
+            this.add(UI.row(this.groups, this.categories));
         }
         else
         {
-            this.add(this.groups, this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix, this.pickTexture, UI.row(this.color, this.lighting), this.transform);
+            this.add(this.groups);
         }
+
+        this.add(this.extra, UI.label(UIKeys.POSE_CONTEXT_FIX), this.fix);
+
+        if (pickLimbTexture)
+        {
+            this.add(this.pickTexture);
+        }
+
+        this.add(UI.row(this.color, this.lighting), this.transform);
     }
 
     /**
@@ -756,7 +767,7 @@ public class UIPoseEditor extends UIElement
         this.fix.setVisible(true);
         this.color.setVisible(true);
         this.lighting.setVisible(true);
-        this.pickTexture.setVisible(true);
+        this.pickTexture.setVisible(BBSSettings.pickLimbTexture != null && BBSSettings.pickLimbTexture.get());
 
         this.fix.setEnabled(isPoseTransform);
         this.color.setEnabled(isPoseTransform);
@@ -785,7 +796,7 @@ public class UIPoseEditor extends UIElement
         this.fix.setVisible(true);
         this.color.setVisible(true);
         this.lighting.setVisible(true);
-        this.pickTexture.setVisible(true);
+        this.pickTexture.setVisible(BBSSettings.pickLimbTexture != null && BBSSettings.pickLimbTexture.get());
 
         this.fix.setEnabled(true);
         this.color.setEnabled(true);
