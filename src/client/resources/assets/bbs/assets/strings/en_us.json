@@ -35,6 +35,8 @@
     "cml.config.appearance.gizmo_y_axis_horizontal-comment": "If enabled, dragging the Y gizmo axis uses horizontal mouse movement instead of vertical",
     "cml.config.appearance.pick_limb_texture": "Pick limb texture",
     "cml.config.appearance.pick_limb_texture-comment": "Allows picking limb texture from the model (only for .bbs.json models)",
+    "cml.config.appearance.original_keyframe_ui": "Original keyframe UI",
+    "cml.config.appearance.original_keyframe_ui-comment": "When enabled, the keyframe editor will use the original flat list layout instead of the new grouped hierarchy",
     "cml.config.appearance.limb_tracks": "Limb tracks",
     "cml.config.appearance.limb_tracks-comment": "When enabled, individual bone tracks will be automatically discovered for models",
     "cml.config.appearance.title": "Appearance",

@@ -9,6 +9,8 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Vec3d;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,15 +38,6 @@ public class WorldRendererMixin
             RenderSystem.setShaderFogColor(color.r, color.g, color.b, 1F);
 
             info.cancel();
-        }
-    }
-
-    @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    public void onRenderClouds(BufferBuilder buffer, double cameraX, double cameraY, double cameraZ, net.minecraft.util.math.Vec3d cameraPos, CallbackInfoReturnable<Boolean> info)
-    {
-        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
-        {
-            info.setReturnValue(false);
         }
     }
 
