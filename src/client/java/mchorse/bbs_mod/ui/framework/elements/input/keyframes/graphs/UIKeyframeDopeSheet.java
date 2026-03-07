@@ -322,21 +322,33 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
         {
             UIKeyframeSheet sheet = this.getSheet(context.mouseY);
 
-            if (sheet != null && sheet.groupHeader)
+            if (sheet != null)
             {
-                if (sheet.toggleGroup != null)
-                {
-                    FontRenderer font = context.batcher.getFont();
-                    String title = sheet.title.get();
-                    String displayTitle = this.getDisplayTitle(title);
-                    Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
-                    int clickableWidth = 2 + arrow.w + 4 + font.getWidth(displayTitle) + 6;
-                    int left = this.keyframes.area.x;
+                FontRenderer font = context.batcher.getFont();
+                String title = sheet.title.get();
+                String displayTitle = this.getDisplayTitle(title);
+                Icon arrow = sheet.groupHeader
+                    ? (sheet.groupKey != null && (sheet.groupKey.endsWith("__world__") || sheet.groupKey.endsWith("__model__")) ? (sheet.groupExpanded ? Icons.UNCOLLAPSED : Icons.COLLAPSED) : (sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT))
+                    : (sheet.toggleExpanded != null ? (sheet.expanded ? Icons.UNCOLLAPSED : Icons.COLLAPSED) : null);
 
-                    if (context.mouseX >= left && context.mouseX <= left + clickableWidth)
+                int left = this.keyframes.area.x + sheet.level * 12;
+                if (sheet.groupHeader && (sheet.groupKey == null || (!sheet.groupKey.endsWith("__world__") && !sheet.groupKey.endsWith("__model__"))))
+                {
+                    left += 4;
+                }
+                int iconWidth = 2 + (arrow != null ? arrow.w + 4 : 0);
+                int clickableWidth = iconWidth + font.getWidth(displayTitle) + 6;
+
+                if (context.mouseX >= left && context.mouseX <= left + clickableWidth)
+                {
+                    if (sheet.groupHeader && sheet.toggleGroup != null)
                     {
                         sheet.toggleGroup.run();
-
+                        return true;
+                    }
+                    else if (!sheet.groupHeader && sheet.toggleExpanded != null)
+                    {
+                        sheet.toggleExpanded.run();
                         return true;
                     }
                 }
@@ -438,7 +450,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             String label = TimeUtils.formatTime(j * mult);
 
             context.batcher.box(x, area.y, x + 1, area.ey(), Colors.setA(Colors.WHITE, 0.25F));
-            context.batcher.text(label, x + 4, area.y + 4);
+            context.batcher.text(label, x + 4, area.y + 2);
         }
 
         /* Render where the keyframe will be duplicated or added */
@@ -612,19 +624,28 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
                 FontRenderer font = context.batcher.getFont();
                 String title = sheet.title.get();
                 String displayTitle = this.getDisplayTitle(title);
-                int bg = Colors.setA(0, 0.35F);
-
-                context.batcher.box(area.x, y, area.ex(), y + (int) this.trackHeight, bg);
 
                 Icon arrow = sheet.groupExpanded ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT;
-                int iconX = area.x + 2;
+                int iconX = area.x + 6 + sheet.level * 12;
+
+                if (sheet.groupKey != null && (sheet.groupKey.endsWith("__world__") || sheet.groupKey.endsWith("__model__")))
+                {
+                    arrow = sheet.groupExpanded ? Icons.UNCOLLAPSED : Icons.COLLAPSED;
+                    iconX = area.x + 2 + sheet.level * 12;
+                }
+
                 int iconY = my - arrow.h / 2;
                 int textX = iconX + arrow.w + 4;
                 int textY = my - font.getHeight() / 2;
                 int textW = font.getWidth(displayTitle);
-                int textBg = Colors.setA(BBSSettings.primaryColor.get(), 0.35F);
 
-                context.batcher.box(iconX - 3, textY - 2, textX + textW + 3, textY + font.getHeight() + 2, textBg);
+                /* Clip header text to sidebar width */
+                if (textX + textW > area.x + SIDEBAR_WIDTH)
+                {
+                    displayTitle = font.limitToWidth(displayTitle, area.x + SIDEBAR_WIDTH - textX - 10);
+                    textW = font.getWidth(displayTitle);
+                }
+
                 context.batcher.icon(arrow, iconX, iconY);
                 context.batcher.textShadow(displayTitle, textX, textY);
 
@@ -634,14 +655,17 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             /* Render track bars (horizontal lines) */
             BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
-            context.batcher.fillRect(builder, matrix, area.x, my - 1, area.w, 2, cc, cc, cc, cc);
+            int startX = area.x;
+            int endX = area.ex();
+
+            context.batcher.fillRect(builder, matrix, startX, my - 2, endX - startX, 4, cc, cc, cc, cc);
 
             if (sheet.separator)
             {
                 int c = Colors.setA(sheet.color, 0F);
 
                 /* Render separator */
-                context.batcher.fillRect(builder, matrix, area.x, y, area.w, (int) this.trackHeight, c | Colors.A25, c | Colors.A25, c, c);
+                context.batcher.fillRect(builder, matrix, startX, y, endX - startX, (int) this.trackHeight, c | Colors.A25, c | Colors.A25, c, c);
             }
 
             /* Render bars indicating same values */
@@ -655,7 +679,7 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
 
                 if (previous.getFactory().compare(previous.getValue(), frame.getValue()))
                 {
-                    context.batcher.fillRect(builder, matrix, xx, my - 2, this.keyframes.toGraphX(frame.getTick()) - xx, 4, c, c, c, c);
+                    context.batcher.fillRect(builder, matrix, xx, my - 2, xxx - xx, 4, c, c, c, c);
                 }
 
                 if (Math.abs(xxx - xx) < 5)
@@ -714,8 +738,9 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             for (int j = 0; j < keyframes.size(); j++)
             {
                 Keyframe frame = (Keyframe) keyframes.get(j);
-                int c = sheet.selection.has(j) ? Colors.ACTIVE : 0;
                 int mx = this.keyframes.toGraphX(frame.getTick());
+
+                int c = sheet.selection.has(j) ? Colors.ACTIVE : 0;
                 int mc = c | Colors.A100;
                 IKeyframeShapeRenderer shapeResult = renderShape(frame, context, builder, matrix, mx, my, 2, mc);
 
@@ -747,26 +772,45 @@ public class UIKeyframeDopeSheet implements IUIKeyframeGraph
             {
                 displayTitle = baseTitle;
             }
+
+            Icon icon = sheet.getIcon();
+            Icon arrow = sheet.toggleExpanded != null ? (sheet.expanded ? Icons.UNCOLLAPSED : Icons.COLLAPSED) : null;
+
+            int iconWidth = 2 + sheet.level * 12 + (arrow != null ? arrow.w + 4 : 0);
+            if (icon != null) iconWidth += icon.w + 4;
             int lw = font.getWidth(displayTitle);
 
-            context.batcher.gradientHBox(area.ex() - lw - 10, y, area.ex(), y + (int) this.trackHeight, sheet.color, sheet.color | (hover ? Colors.A75 : Colors.A25));
+            /* Limit text width to sidebar */
+            if (iconWidth + lw + 10 > SIDEBAR_WIDTH)
+            {
+                displayTitle = font.limitToWidth(displayTitle, SIDEBAR_WIDTH - iconWidth - 15);
+                lw = font.getWidth(displayTitle);
+            }
+
+            int totalWidth = iconWidth + lw + 10;
+
+            context.batcher.gradientHBox(area.x, y, area.x + SIDEBAR_WIDTH, y + (int) this.trackHeight, Colors.setA(sheet.color, hover ? 0.75F : 0.45F), sheet.color & 0x00ffffff);
+
+            if (arrow != null)
+            {
+                context.batcher.icon(arrow, area.x + 2 + sheet.level * 12, my - arrow.h / 2);
+            }
+
+            int currentX = area.x + 2 + sheet.level * 12 + (arrow != null ? arrow.w + 4 : 0);
+
+            if (icon != null)
+            {
+                context.batcher.icon(icon, currentX, my - icon.h / 2);
+                currentX += icon.w + 4;
+            }
 
             if (hover)
             {
-                context.batcher.textShadow(displayTitle, area.ex() - lw - 5, my - font.getHeight() / 2);
+                context.batcher.textShadow(displayTitle, currentX, my - font.getHeight() / 2);
             }
             else
             {
-                context.batcher.text(displayTitle, area.ex() - lw - 5, my - font.getHeight() / 2, Colors.WHITE & 0x88ffffff);
-            }
-
-            Icon icon = sheet.getIcon();
-
-            if (icon != null && this.trackHeight >= 12D)
-            {
-                context.batcher.box(area.x, y, area.x + 6, y + (int) this.trackHeight, Colors.A75);
-                context.batcher.gradientHBox(area.x + 6, y, area.x + 4 + icon.w, y + (int) this.trackHeight, Colors.A75, 0);
-                context.batcher.icon(icon, area.x + 2, my - icon.h / 2);
+                context.batcher.textShadow(displayTitle, currentX, my - font.getHeight() / 2, Colors.WHITE & 0xeeffffff);
             }
         }
     }

@@ -1025,13 +1025,17 @@ public class UIKeyframes extends UIElement
             max = this.getDuration();
         }
 
+        int sidebar = this.currentGraph instanceof UIKeyframeDopeSheet ? IUIKeyframeGraph.SIDEBAR_WIDTH : 0;
+
         if (Math.abs(max - min) > 0.01F)
         {
-            this.xAxis.viewOffset(min, max, this.area.w, 30);
+            this.xAxis.viewOffset(min, max, this.area.w - sidebar, 30);
+            this.xAxis.setShift(this.xAxis.getShift() - sidebar / this.xAxis.getZoom());
         }
         else
         {
             this.xAxis.set(0, 2);
+            this.xAxis.setShift(this.xAxis.getShift() - sidebar / this.xAxis.getZoom());
         }
     }
 
@@ -1361,9 +1365,10 @@ public class UIKeyframes extends UIElement
         {
             int leftBorder = this.toGraphX(0);
             int rightBorder = this.toGraphX(duration);
+            int sidebarX = this.area.x + IUIKeyframeGraph.SIDEBAR_WIDTH;
 
-            if (leftBorder > this.area.x) context.batcher.box(this.area.x, this.area.y, Math.min(this.area.ex(), leftBorder), this.area.y + this.area.h, Colors.A50);
-            if (rightBorder < this.area.ex()) context.batcher.box(Math.max(this.area.x, rightBorder), this.area.y, this.area.ex() , this.area.y + this.area.h, Colors.A50);
+            if (leftBorder > sidebarX) context.batcher.box(sidebarX, this.area.y, Math.min(this.area.ex(), leftBorder), this.area.y + this.area.h, Colors.A50);
+            if (rightBorder < this.area.ex()) context.batcher.box(Math.max(sidebarX, rightBorder), this.area.y, this.area.ex() , this.area.y + this.area.h, Colors.A50);
         }
 
         if (this.backgroundRender != null)
