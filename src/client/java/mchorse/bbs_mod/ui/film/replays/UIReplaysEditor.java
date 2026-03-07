@@ -83,6 +83,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +120,7 @@ public class UIReplaysEditor extends UIElement
         COLORS.put("vZ", Colors.BLUE);
         COLORS.put("yaw", Colors.YELLOW);
         COLORS.put("pitch", Colors.CYAN);
+        COLORS.put("headYaw", Colors.WHITE);
         COLORS.put("bodyYaw", Colors.MAGENTA);
 
         COLORS.put("stick_lx", Colors.RED);
@@ -170,6 +172,10 @@ public class UIReplaysEditor extends UIElement
         ICONS.put("x", Icons.X);
         ICONS.put("y", Icons.Y);
         ICONS.put("z", Icons.Z);
+        ICONS.put("yaw", Icons.Y);
+        ICONS.put("pitch", Icons.X);
+        ICONS.put("headYaw", Icons.Y);
+        ICONS.put("bodyYaw", Icons.Y);
 
         ICONS.put("visible", Icons.VISIBLE);
         ICONS.put("texture", Icons.MATERIAL);
@@ -254,11 +260,7 @@ public class UIReplaysEditor extends UIElement
 
         if (colon != -1)
         {
-            String bone = key.substring(colon + 1);
-            int hash = Math.abs(bone.hashCode());
-            int[] colors = {0xff3333, 0x33ff33, 0x3366ff, 0xffff33, 0x33ffff, 0xff66ff, 0xff1493, 0xff9da1, 0xff8822};
-
-            return colors[hash % colors.length];
+            return 0xff3333;
         }
 
         String topLevel = StringUtils.fileName(key);
@@ -447,6 +449,9 @@ public class UIReplaysEditor extends UIElement
         }
     }
 
+    private static final List<String> WORLD_CHANNELS = Arrays.asList("x", "y", "z", "vX", "vY", "vZ", "yaw", "pitch", "headYaw", "bodyYaw", "grounded", "damage", "fall", "sneaking", "sprinting", "item_main_hand", "item_off_hand", "item_head", "item_chest", "item_legs", "item_feet", "selected_slot", "stick_lx", "stick_ly", "stick_rx", "stick_ry", "trigger_l", "trigger_r", "extra1_x", "extra1_y", "extra2_x", "extra2_y", "shadow_size", "shadow_opacity");
+    private static final List<String> MODEL_PROPERTIES = Arrays.asList("visible", "lighting", "transform", "transform_overlay", "pose", "pose_overlay", "anchor", "color", "texture", "model", "actions", "shape_keys");
+
     public void updateChannelsList()
     {
         UIKeyframes lastEditor = null;
@@ -459,6 +464,11 @@ public class UIReplaysEditor extends UIElement
         }
 
         if (this.replay == null)
+        {
+            return;
+        }
+
+        if (!this.replay.isGroup.get() && this.replay.form.get() == null)
         {
             return;
         }
@@ -496,6 +506,7 @@ public class UIReplaysEditor extends UIElement
                 Integer customColor = this.replay.getSheetColor(key);
                 int baseColor = getColor(key);
                 int sheetColor = customColor != null ? customColor : baseColor;
+
                 UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
                     ? new UIKeyframeSheet(key, IKey.constant(customTitle), sheetColor, false, channel, null)
                     : new UIKeyframeSheet(sheetColor, false, channel, null);
@@ -672,102 +683,313 @@ public class UIReplaysEditor extends UIElement
         List<UIKeyframeSheet> grouped = new ArrayList<>();
         Set<String> addedGroups = new HashSet<>();
 
-        for (UIKeyframeSheet sheet : sheets)
+        if (BBSSettings.originalKeyframeUI.get() && !this.replay.isGroup.get())
         {
-            Form form = sheet.property == null ? null : FormUtils.getForm(sheet.property);
+            Form formObj = this.replay.form.get();
 
-            if (form != null && (form.getParent() != null || form instanceof ModelForm))
+            if (formObj == null)
             {
-                String path = FormUtils.getPath(form);
-                String groupKey = this.replay.uuid.get() + ":" + path;
+                sheets = grouped;
 
-                if (addedGroups.add(groupKey))
+                return;
+            }
+
+            Form rootForm = FormUtils.getRoot(formObj);
+            String rootPath = FormUtils.getPath(rootForm);
+            String rootKey = this.replay.uuid.get() + ":" + rootPath;
+            boolean rootExpanded = !this.collapsedModelTracks.getOrDefault(rootKey, false);
+
+            UIKeyframeSheet rootHeader = UIKeyframeSheet.groupHeader(
+                "__group__" + rootKey,
+                IKey.constant(rootForm.getDisplayName()),
+                Colors.LIGHTEST_GRAY & Colors.RGB,
+                rootKey,
+                rootExpanded,
+                () ->
                 {
-                    boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
-                    UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
-                        "__group__" + groupKey,
-                        IKey.constant(form.getDisplayName()),
-                        Colors.LIGHTEST_GRAY & Colors.RGB,
-                        groupKey,
-                        expanded,
-                        () ->
-                        {
-                            this.collapsedModelTracks.put(groupKey, expanded);
-                            this.updateChannelsList();
-                        }
-                    );
+                    this.collapsedModelTracks.put(rootKey, !this.collapsedModelTracks.getOrDefault(rootKey, false));
+                    this.updateChannelsList();
+                }
+            );
 
-                    grouped.add(header);
+            rootHeader.level = 0;
+            grouped.add(rootHeader);
+
+            if (rootExpanded)
+            {
+                FormTracks rootTracks = new FormTracks(rootForm);
+                Map<String, FormTracks> subForms = new LinkedHashMap<>();
+                List<UIKeyframeSheet> otherTracks = new ArrayList<>();
+
+                for (UIKeyframeSheet sheet : sheets)
+                {
+                    Form form = null;
+
+                    if (sheet.property != null)
+                    {
+                        form = FormUtils.getForm(sheet.property);
+                    }
+                    else
+                    {
+                        int colon = sheet.id.indexOf(':');
+                        String path = "";
+
+                        if (colon != -1)
+                        {
+                            String propertyPath = sheet.id.substring(0, colon);
+                            int lastSlash = propertyPath.lastIndexOf('/');
+
+                            if (lastSlash != -1)
+                            {
+                                path = propertyPath.substring(0, lastSlash);
+                            }
+                        }
+
+                        form = FormUtils.getForm(this.replay.form.get(), path);
+                    }
+
+                    if (form != null)
+                    {
+                        String path = FormUtils.getPath(form);
+
+                        if (path.equals(rootPath))
+                        {
+                            this.processTrack(sheet, "", 1, rootTracks.before, rootTracks.pose, rootTracks.limbs, rootTracks.overlays, rootTracks.after);
+                        }
+                        else
+                        {
+                            if (!subForms.containsKey(path))
+                            {
+                                subForms.put(path, new FormTracks(form));
+                            }
+
+                            this.processTrack(sheet, "", 1, subForms.get(path).before, subForms.get(path).pose, subForms.get(path).limbs, subForms.get(path).overlays, subForms.get(path).after);
+                        }
+                    }
+                    else
+                    {
+                        otherTracks.add(sheet);
+                    }
                 }
 
-                if (this.collapsedModelTracks.getOrDefault(groupKey, false))
+                /* Add root tracks first */
+                grouped.addAll(rootTracks.before);
+                grouped.addAll(rootTracks.pose);
+                grouped.addAll(rootTracks.overlays);
+                grouped.addAll(rootTracks.limbs);
+                grouped.addAll(rootTracks.after);
+
+                /* Add sub-form tracks next */
+                for (FormTracks subForm : subForms.values())
                 {
-                    continue;
+                    /* Add sub-form pose tracks renamed to form name */
+                    for (UIKeyframeSheet poseSheet : subForm.pose)
+                    {
+                        poseSheet.title = IKey.constant(subForm.form.getDisplayName());
+                        grouped.add(poseSheet);
+                    }
+
+                    grouped.addAll(subForm.before);
+                    grouped.addAll(subForm.overlays);
+                    grouped.addAll(subForm.limbs);
+                    grouped.addAll(subForm.after);
+                }
+
+                grouped.addAll(otherTracks);
+
+                /* Flatten levels and disable toggles */
+                for (UIKeyframeSheet sheet : grouped)
+                {
+                    if (sheet != rootHeader)
+                    {
+                        sheet.level = 1;
+                        sheet.toggleExpanded = null;
+                    }
                 }
             }
 
-            grouped.add(sheet);
+            sheets = grouped;
         }
-
-        sheets = grouped;
-
-        /* Ensure main model header is on top without reordering tracks */
-        if (this.replay.form.get() instanceof ModelForm)
+        else if (!this.replay.isGroup.get())
         {
             Form rootForm = FormUtils.getRoot(this.replay.form.get());
             String rootPath = FormUtils.getPath(rootForm);
             String rootKey = this.replay.uuid.get() + ":" + rootPath;
-            UIKeyframeSheet rootHeader = null;
+            boolean rootExpanded = !this.collapsedModelTracks.getOrDefault(rootKey, false);
 
-            for (UIKeyframeSheet sheet : sheets)
-            {
-                if (sheet.groupHeader && rootKey.equals(sheet.groupKey))
+            UIKeyframeSheet rootHeader = UIKeyframeSheet.groupHeader(
+                "__group__" + rootKey,
+                IKey.constant(rootForm.getDisplayName()),
+                Colors.LIGHTEST_GRAY & Colors.RGB,
+                rootKey,
+                rootExpanded,
+                () ->
                 {
-                    rootHeader = sheet;
-                    break;
+                    this.collapsedModelTracks.put(rootKey, !this.collapsedModelTracks.getOrDefault(rootKey, false));
+                    this.updateChannelsList();
                 }
-            }
+            );
 
-            if (rootHeader != null)
+            rootHeader.level = 0;
+            grouped.add(rootHeader);
+
+            if (rootExpanded)
             {
-                List<UIKeyframeSheet> reordered = new ArrayList<>();
-                reordered.add(rootHeader);
+                String worldKey = this.replay.uuid.get() + ":__world__";
+                boolean worldExpanded = !this.collapsedModelTracks.getOrDefault(worldKey, false);
+                UIKeyframeSheet worldHeader = UIKeyframeSheet.groupHeader(
+                    "__group__" + worldKey,
+                    IKey.constant("World"),
+                    Colors.LIGHTEST_GRAY & Colors.RGB,
+                    worldKey,
+                    worldExpanded,
+                    () ->
+                    {
+                        this.collapsedModelTracks.put(worldKey, !this.collapsedModelTracks.getOrDefault(worldKey, false));
+                        this.updateChannelsList();
+                    }
+                );
+
+                worldHeader.level = 1;
+
+                String modelPropsKey = this.replay.uuid.get() + ":__model__";
+                boolean modelPropsExpanded = !this.collapsedModelTracks.getOrDefault(modelPropsKey, false);
+                UIKeyframeSheet modelPropsHeader = UIKeyframeSheet.groupHeader(
+                    "__group__" + modelPropsKey,
+                    IKey.constant("Model"),
+                    Colors.LIGHTEST_GRAY & Colors.RGB,
+                    modelPropsKey,
+                    modelPropsExpanded,
+                    () ->
+                    {
+                        this.collapsedModelTracks.put(modelPropsKey, !this.collapsedModelTracks.getOrDefault(modelPropsKey, false));
+                        this.updateChannelsList();
+                    }
+                );
+
+                modelPropsHeader.level = 1;
+
+                grouped.add(worldHeader);
+
+                List<UIKeyframeSheet> worldTracks = new ArrayList<>();
+                List<UIKeyframeSheet> modelTracksBeforePose = new ArrayList<>();
+                List<UIKeyframeSheet> poseTrack = new ArrayList<>();
+                List<UIKeyframeSheet> poseLimbTracks = new ArrayList<>();
+                List<UIKeyframeSheet> overlayTracks = new ArrayList<>();
+                List<UIKeyframeSheet> modelTracksAfterPose = new ArrayList<>();
+
+                Map<String, FormTracks> subForms = new LinkedHashMap<>();
 
                 for (UIKeyframeSheet sheet : sheets)
                 {
-                    if (sheet != rootHeader)
+                    if (WORLD_CHANNELS.contains(sheet.id))
                     {
-                        reordered.add(sheet);
+                        if (!this.collapsedModelTracks.getOrDefault(worldKey, false))
+                        {
+                            sheet.level = 2;
+                            worldTracks.add(sheet);
+                        }
+                    }
+                    else if (MODEL_PROPERTIES.contains(sheet.id) || sheet.id.startsWith("pose:") || sheet.id.startsWith("pose_overlay:"))
+                    {
+                        if (!this.collapsedModelTracks.getOrDefault(modelPropsKey, false))
+                        {
+                            this.processTrack(sheet, modelPropsKey, 2, modelTracksBeforePose, poseTrack, poseLimbTracks, overlayTracks, modelTracksAfterPose);
+                        }
+                    }
+                    else
+                    {
+                        Form form = null;
+
+                        if (sheet.property != null)
+                        {
+                            form = FormUtils.getForm(sheet.property);
+                        }
+                        else
+                        {
+                            int colon = sheet.id.indexOf(':');
+                            String path = "";
+
+                            if (colon != -1)
+                            {
+                                String propertyPath = sheet.id.substring(0, colon);
+                                int lastSlash = propertyPath.lastIndexOf('/');
+
+                                if (lastSlash != -1)
+                                {
+                                    path = propertyPath.substring(0, lastSlash);
+                                }
+                            }
+
+                            form = FormUtils.getForm(this.replay.form.get(), path);
+                        }
+
+                        if (form != null && (form.getParent() != null || form instanceof ModelForm))
+                        {
+                            String path = FormUtils.getPath(form);
+
+                            /* Skip root form sheets since they are now handled by World/Model groups */
+                            if (path.equals(rootPath))
+                            {
+                                continue;
+                            }
+
+                            if (!subForms.containsKey(path))
+                            {
+                                subForms.put(path, new FormTracks(form));
+                            }
+
+                            this.processTrack(sheet, this.replay.uuid.get() + ":" + path, path.split("/").length, subForms.get(path).before, subForms.get(path).pose, subForms.get(path).limbs, subForms.get(path).overlays, subForms.get(path).after);
+                        }
                     }
                 }
 
-                sheets = reordered;
+                grouped.addAll(worldTracks);
+                grouped.add(modelPropsHeader);
+                grouped.addAll(modelTracksBeforePose);
+                grouped.addAll(poseTrack);
+                grouped.addAll(poseLimbTracks);
+                grouped.addAll(overlayTracks);
+                grouped.addAll(modelTracksAfterPose);
 
-                if (this.collapsedModelTracks.getOrDefault(rootKey, false))
+                for (FormTracks subForm : subForms.values())
                 {
-                    sheets.removeIf((sheet) ->
+                    String path = FormUtils.getPath(subForm.form);
+                    String groupKey = this.replay.uuid.get() + ":" + path;
+                    int level = path.split("/").length;
+
+                    if (addedGroups.add(groupKey))
                     {
-                        if (sheet.groupHeader)
-                        {
-                            return false;
-                        }
+                        boolean expanded = !this.collapsedModelTracks.getOrDefault(groupKey, false);
+                        UIKeyframeSheet header = UIKeyframeSheet.groupHeader(
+                            "__group__" + groupKey,
+                            IKey.constant(subForm.form.getDisplayName()),
+                            Colors.LIGHTEST_GRAY & Colors.RGB,
+                            groupKey,
+                            expanded,
+                            () ->
+                            {
+                                this.collapsedModelTracks.put(groupKey, !this.collapsedModelTracks.getOrDefault(groupKey, false));
+                                this.updateChannelsList();
+                            }
+                        );
 
-                        if (sheet.property == null)
-                        {
-                            return ReplayKeyframes.CURATED_CHANNELS.contains(sheet.id);
-                        }
+                        header.level = level;
+                        grouped.add(header);
+                    }
 
-                        Form sheetForm = FormUtils.getForm(sheet.property);
-
-                        if (sheetForm == null)
-                        {
-                            return false;
-                        }
-
-                        return FormUtils.getPath(sheetForm).equals(rootPath);
-                    });
+                    if (!this.collapsedModelTracks.getOrDefault(groupKey, false))
+                    {
+                        grouped.addAll(subForm.before);
+                        grouped.addAll(subForm.pose);
+                        grouped.addAll(subForm.limbs);
+                        grouped.addAll(subForm.overlays);
+                        grouped.addAll(subForm.after);
+                    }
                 }
             }
+
+            sheets = grouped;
         }
 
         Object lastForm = null;
@@ -814,26 +1036,9 @@ public class UIReplaysEditor extends UIElement
             this.keyframeEditor.view.backgroundRenderer((context) ->
             {
                 UIKeyframes view = this.keyframeEditor.view;
-                boolean yes = renderBackground(context, view, this.film.camera, 0);
-                int shift = yes ? 35 : 15;
 
-                UIClipsPanel cameraEditor = this.filmPanel.cameraEditor;
-                Clip clip = cameraEditor.getClip();
-
-                if (clip != null && BBSSettings.editorClipPreview.get())
-                {
-                    IUIClipRenderer<Clip> renderer = cameraEditor.clips.getRenderers().get(clip);
-                    Scale scale = view.getXAxis();
-                    Area area = new Area();
-
-                    float offset = clip.tick.get();
-                    int duration = clip.duration.get();
-                    int x1 = (int) scale.to(offset);
-                    int x2 = (int) scale.to(offset + duration);
-
-                    area.setPoints(x1, view.area.y + shift, x2, view.area.y + shift + 20);
-                    renderer.renderClip(context, cameraEditor.clips, clip, area, true, true);
-                }
+                context.batcher.flush();
+                renderBackground(context, view, this.film.camera, 0);
             });
             this.keyframeEditor.view.duration(() -> this.film.camera.calculateDuration());
             this.keyframeEditor.view.context((menu) ->
@@ -903,6 +1108,108 @@ public class UIReplaysEditor extends UIElement
         if (this.keyframeEditor != null && lastEditor == null)
         {
             this.keyframeEditor.view.resetView();
+        }
+    }
+
+    private void processTrack(UIKeyframeSheet sheet, String groupKey, int level, List<UIKeyframeSheet> before, List<UIKeyframeSheet> pose, List<UIKeyframeSheet> limbs, List<UIKeyframeSheet> overlays, List<UIKeyframeSheet> after)
+    {
+        sheet.level = level;
+
+        /* Reset title in case it was changed by originalKeyframeUI mode */
+        if (sheet.property != null)
+        {
+            Form trackForm = FormUtils.getForm(sheet.property);
+
+            if (trackForm != null)
+            {
+                sheet.title = IKey.constant(trackForm.getTrackName(sheet.channel.getId()));
+            }
+        }
+
+        int colon = sheet.id.indexOf(':');
+        String trackName = StringUtils.fileName(sheet.id);
+
+        if (colon != -1)
+        {
+            String parentId = sheet.id.substring(0, colon);
+            String actualParentId = parentId.replaceAll("pose_overlay_?\\d*", "pose");
+            String parentKey = this.replay.uuid.get() + ":" + actualParentId;
+
+            if (!BBSSettings.originalKeyframeUI.get() && this.collapsedModelTracks.getOrDefault(parentKey, false))
+            {
+                return;
+            }
+
+            sheet.level += 1;
+
+            if (BBSSettings.originalKeyframeUI.get())
+            {
+                sheet.title = IKey.constant(sheet.id.substring(colon + 1));
+            }
+
+            if (parentId.startsWith("pose_overlay"))
+            {
+                overlays.add(sheet);
+            }
+            else
+            {
+                limbs.add(sheet);
+            }
+        }
+        else if (trackName.equals("pose"))
+        {
+            String parentKey = this.replay.uuid.get() + ":" + sheet.id;
+            boolean expanded = !this.collapsedModelTracks.getOrDefault(parentKey, false);
+
+            sheet.expanded = expanded;
+            sheet.toggleExpanded = () ->
+            {
+                this.collapsedModelTracks.put(parentKey, !this.collapsedModelTracks.getOrDefault(parentKey, false));
+                this.updateChannelsList();
+            };
+
+            pose.add(sheet);
+        }
+        else if (trackName.startsWith("pose_overlay"))
+        {
+            overlays.add(sheet);
+        }
+        else
+        {
+            /* Decide whether it's before or after pose based on MODEL_PROPERTIES index */
+            int poseIndex = MODEL_PROPERTIES.indexOf("pose");
+            int currentIndex = MODEL_PROPERTIES.indexOf(trackName);
+
+            if (WORLD_CHANNELS.contains(trackName))
+            {
+                before.add(sheet);
+
+                return;
+            }
+
+            if (currentIndex != -1 && currentIndex < poseIndex)
+            {
+                before.add(sheet);
+            }
+            else
+            {
+                after.add(sheet);
+            }
+        }
+    }
+
+    private static class FormTracks
+    {
+        public final Form form;
+        public final List<UIKeyframeSheet> before = new ArrayList<>();
+        public final List<UIKeyframeSheet> pose = new ArrayList<>();
+        public final List<UIKeyframeSheet> limbs = new ArrayList<>();
+        public final List<UIKeyframeSheet> overlays = new ArrayList<>();
+        public final List<UIKeyframeSheet> after = new ArrayList<>();
+
+        public FormTracks(Form form)
+        {
+            this.form = form;
         }
     }
 

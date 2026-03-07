@@ -458,6 +458,8 @@ public class BBSModClient implements ClientModInitializer
             BBSSettings.gizmoYAxisHorizontal = builder.getBoolean("gizmo_y_axis_horizontal", true);
             BBSSettings.pickLimbTexture = builder.getBoolean("pick_limb_texture", true);
             BBSSettings.limbTracks = builder.getBoolean("limb_tracks", true);
+            BBSSettings.originalKeyframeUI = builder.getBoolean("original_keyframe_ui", false);
+            BBSSettings.simplifiedKeyframeUI = builder.getBoolean("simplified_keyframe_ui", false);
             BBSSettings.defaultInterpolation = builder.getInt("default_interpolation", 0);
             builder.category("editor");
             BBSSettings.editorSafeMarginsColor = builder.getInt("safe_margins_color", 0xcccc0000).colorAlpha();

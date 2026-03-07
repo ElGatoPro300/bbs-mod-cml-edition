@@ -41,15 +41,6 @@ public class WorldRendererMixin
         }
     }
 
-    @Inject(method = "renderClouds", at = @At("HEAD"), cancellable = true)
-    public void onRenderClouds(MatrixStack matrices, Matrix4f projectionMatrix, float tickDelta, double cameraX, double cameraY, double cameraZ, CallbackInfo info)
-    {
-        if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyClouds.get())
-        {
-            info.cancel();
-        }
-    }
-
     @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true)
     public void onRenderLayer(RenderLayer renderLayer, MatrixStack matrices, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, CallbackInfo info)
     {

@@ -131,6 +131,8 @@ public class BBSSettings
     public static ValueBoolean pickLimbTexture;
     public static ValueBoolean fluidRealisticModelInteraction;
     public static ValueBoolean limbTracks;
+    public static ValueBoolean originalKeyframeUI;
+    public static ValueBoolean simplifiedKeyframeUI;
 
     public static ValueString cdnUrl;
     public static ValueString cdnToken;
