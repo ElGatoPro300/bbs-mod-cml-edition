@@ -890,7 +890,7 @@ public class UIReplaysEditor extends UIElement
                             worldTracks.add(sheet);
                         }
                     }
-                    else if (MODEL_PROPERTIES.contains(sheet.id) || sheet.id.startsWith("pose:") || sheet.id.startsWith("pose_overlay:"))
+                    else if (MODEL_PROPERTIES.contains(sheet.id) || sheet.id.startsWith("pose") || sheet.id.startsWith("transform_overlay"))
                     {
                         if (!this.collapsedModelTracks.getOrDefault(modelPropsKey, false))
                         {
