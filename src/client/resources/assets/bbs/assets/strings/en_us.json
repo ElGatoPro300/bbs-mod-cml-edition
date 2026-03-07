@@ -39,6 +39,8 @@
     "cml.config.appearance.original_keyframe_ui-comment": "When enabled, the keyframe editor will use the original flat list layout instead of the new grouped hierarchy",
     "cml.config.appearance.limb_tracks": "Limb tracks",
     "cml.config.appearance.limb_tracks-comment": "When enabled, individual bone tracks will be automatically discovered for models",
+    "cml.config.appearance.simplified_keyframe_ui": "Simplified keyframe UI",
+    "cml.config.appearance.simplified_keyframe_ui-comment": "When enabled, the keyframe editor sidebar will be cleaned up by removing track backgrounds and clipping keyframes/lines to the graph area",
     "cml.config.appearance.title": "Appearance",
     "cml.config.appearance.tooltip": "Options related to appearance",
     "cml.config.editor.safe_margins_color": "Safe margins color",

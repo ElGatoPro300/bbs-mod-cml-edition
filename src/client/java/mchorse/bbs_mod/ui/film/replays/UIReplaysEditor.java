@@ -260,11 +260,7 @@ public class UIReplaysEditor extends UIElement
 
         if (colon != -1)
         {
-            String bone = key.substring(colon + 1);
-            int hash = Math.abs(bone.hashCode());
-            int[] colors = {0xff3333, 0x33ff33, 0x3366ff, 0xffff33, 0x33ffff, 0xff66ff, 0xff1493, 0xff9da1, 0xff8822};
-
-            return colors[hash % colors.length];
+            return 0xff3333;
         }
 
         String topLevel = StringUtils.fileName(key);
@@ -472,6 +468,11 @@ public class UIReplaysEditor extends UIElement
             return;
         }
 
+        if (!this.replay.isGroup.get() && this.replay.form.get() == null)
+        {
+            return;
+        }
+
         /* Replay keyframes */
         List<UIKeyframeSheet> sheets = new ArrayList<>();
 
@@ -505,6 +506,7 @@ public class UIReplaysEditor extends UIElement
                 Integer customColor = this.replay.getSheetColor(key);
                 int baseColor = getColor(key);
                 int sheetColor = customColor != null ? customColor : baseColor;
+
                 UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
                     ? new UIKeyframeSheet(key, IKey.constant(customTitle), sheetColor, false, channel, null)
                     : new UIKeyframeSheet(sheetColor, false, channel, null);
@@ -681,9 +683,18 @@ public class UIReplaysEditor extends UIElement
         List<UIKeyframeSheet> grouped = new ArrayList<>();
         Set<String> addedGroups = new HashSet<>();
 
-        if (BBSSettings.originalKeyframeUI.get())
+        if (BBSSettings.originalKeyframeUI.get() && !this.replay.isGroup.get())
         {
-            Form rootForm = FormUtils.getRoot(this.replay.form.get());
+            Form formObj = this.replay.form.get();
+
+            if (formObj == null)
+            {
+                sheets = grouped;
+
+                return;
+            }
+
+            Form rootForm = FormUtils.getRoot(formObj);
             String rootPath = FormUtils.getPath(rootForm);
             String rootKey = this.replay.uuid.get() + ":" + rootPath;
             boolean rootExpanded = !this.collapsedModelTracks.getOrDefault(rootKey, false);
@@ -799,7 +810,7 @@ public class UIReplaysEditor extends UIElement
 
             sheets = grouped;
         }
-        else
+        else if (!this.replay.isGroup.get())
         {
             Form rootForm = FormUtils.getRoot(this.replay.form.get());
             String rootPath = FormUtils.getPath(rootForm);
@@ -1107,7 +1118,12 @@ public class UIReplaysEditor extends UIElement
         /* Reset title in case it was changed by originalKeyframeUI mode */
         if (sheet.property != null)
         {
-            sheet.title = IKey.constant(FormUtils.getForm(sheet.property).getTrackName(sheet.channel.getId()));
+            Form trackForm = FormUtils.getForm(sheet.property);
+
+            if (trackForm != null)
+            {
+                sheet.title = IKey.constant(trackForm.getTrackName(sheet.channel.getId()));
+            }
         }
 
         int colon = sheet.id.indexOf(':');
