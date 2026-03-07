@@ -468,6 +468,11 @@ public class UIReplaysEditor extends UIElement
             return;
         }
 
+        if (!this.replay.isGroup.get() && this.replay.form.get() == null)
+        {
+            return;
+        }
+
         /* Replay keyframes */
         List<UIKeyframeSheet> sheets = new ArrayList<>();
 
@@ -678,9 +683,18 @@ public class UIReplaysEditor extends UIElement
         List<UIKeyframeSheet> grouped = new ArrayList<>();
         Set<String> addedGroups = new HashSet<>();
 
-        if (BBSSettings.originalKeyframeUI.get())
+        if (BBSSettings.originalKeyframeUI.get() && !this.replay.isGroup.get())
         {
-            Form rootForm = FormUtils.getRoot(this.replay.form.get());
+            Form formObj = this.replay.form.get();
+
+            if (formObj == null)
+            {
+                sheets = grouped;
+
+                return;
+            }
+
+            Form rootForm = FormUtils.getRoot(formObj);
             String rootPath = FormUtils.getPath(rootForm);
             String rootKey = this.replay.uuid.get() + ":" + rootPath;
             boolean rootExpanded = !this.collapsedModelTracks.getOrDefault(rootKey, false);
@@ -796,7 +810,7 @@ public class UIReplaysEditor extends UIElement
 
             sheets = grouped;
         }
-        else
+        else if (!this.replay.isGroup.get())
         {
             Form rootForm = FormUtils.getRoot(this.replay.form.get());
             String rootPath = FormUtils.getPath(rootForm);
@@ -1104,7 +1118,12 @@ public class UIReplaysEditor extends UIElement
         /* Reset title in case it was changed by originalKeyframeUI mode */
         if (sheet.property != null)
         {
-            sheet.title = IKey.constant(FormUtils.getForm(sheet.property).getTrackName(sheet.channel.getId()));
+            Form trackForm = FormUtils.getForm(sheet.property);
+
+            if (trackForm != null)
+            {
+                sheet.title = IKey.constant(trackForm.getTrackName(sheet.channel.getId()));
+            }
         }
 
         int colon = sheet.id.indexOf(':');
