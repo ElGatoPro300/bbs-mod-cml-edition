@@ -260,11 +260,7 @@ public class UIReplaysEditor extends UIElement
 
         if (colon != -1)
         {
-            String bone = key.substring(colon + 1);
-            int hash = Math.abs(bone.hashCode());
-            int[] colors = {0xff3333, 0x33ff33, 0x3366ff, 0xffff33, 0x33ffff, 0xff66ff, 0xff1493, 0xff9da1, 0xff8822};
-
-            return colors[hash % colors.length];
+            return 0xff3333;
         }
 
         String topLevel = StringUtils.fileName(key);
@@ -505,6 +501,7 @@ public class UIReplaysEditor extends UIElement
                 Integer customColor = this.replay.getSheetColor(key);
                 int baseColor = getColor(key);
                 int sheetColor = customColor != null ? customColor : baseColor;
+
                 UIKeyframeSheet sheet = customTitle != null && !customTitle.isEmpty()
                     ? new UIKeyframeSheet(key, IKey.constant(customTitle), sheetColor, false, channel, null)
                     : new UIKeyframeSheet(sheetColor, false, channel, null);
