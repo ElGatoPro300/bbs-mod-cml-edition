@@ -22,12 +22,15 @@ import mchorse.bbs_mod.ui.forms.UIToggleEditorEvent;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.UIScrollView;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.events.UIRemovedEvent;
 import mchorse.bbs_mod.ui.framework.elements.input.UIPropTransform;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIStringList;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
 import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.model_blocks.camera.ImmersiveModelBlockCameraController;
 import mchorse.bbs_mod.ui.utils.UI;
@@ -84,6 +87,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
     public UITrackpad hitboxPos2Y;
     public UITrackpad hitboxPos2Z;
     public UIPropTransform transform;
+    public UIElement properties;
 
     private ModelBlockEntity modelBlock;
     private ModelBlockEntity hovered;
@@ -121,7 +125,7 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
             if (this.modelBlock != null) menu.action(UIKeys.MODEL_BLOCKS_KEYS_TELEPORT, this::teleport);
         });
         this.modelBlocks.background();
-        this.modelBlocks.h(UIStringList.DEFAULT_HEIGHT * 9);
+        this.modelBlocks.h(UIStringList.DEFAULT_HEIGHT * 7);
 
         this.pickEdit = new UINestedEdit((editing) ->
         {
@@ -281,23 +285,14 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
         this.hitboxPos2Z.textbox.setColor(Colors.BLUE);
 
         this.transform = new UIPropTransform();
-        this.transform.enableHotkeys();
+        this.transform.enableHotkeys().marginBottom(4);
 
         UIIcon hitboxIcon1 = new UIIcon(Icons.BLOCK, null);
         UIIcon hitboxIcon2 = new UIIcon(Icons.BLOCK, null);
         hitboxIcon1.iconColor = hitboxIcon1.hoverColor = hitboxIcon1.activeColor = hitboxIcon1.disabledColor = Colors.WHITE;
         hitboxIcon2.iconColor = hitboxIcon2.hoverColor = hitboxIcon2.activeColor = hitboxIcon2.disabledColor = Colors.WHITE;
 
-        this.editor = UI.column(
-            this.pickEdit,
-            this.enabled,
-            this.shadow,
-            this.global,
-            this.lookAt,
-            this.hitbox,
-            this.transform,
-            UI.row(hitboxIcon1, this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
-            UI.row(hitboxIcon2, this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z),
+        this.properties = UI.column(4,
             UI.row(5, 0, 20, new UIElement()
             {
                 @Override
@@ -317,14 +312,49 @@ public class UIModelBlockPanel extends UIDashboardPanel implements IFlightSuppor
 
                     context.batcher.icon(Icons.PICKAXE, Colors.WHITE, this.area.mx(), this.area.my(), 0.5F, 0.5F);
                 }
-            }.w(20).h(20), this.hardness));
+            }.w(20).h(20), this.hardness),
+            UI.row(hitboxIcon1, this.hitboxPos1X, this.hitboxPos1Y, this.hitboxPos1Z),
+            UI.row(hitboxIcon2, this.hitboxPos2X, this.hitboxPos2Y, this.hitboxPos2Z));
+        this.properties.setVisible(true);
+
+        this.editor = UI.column(4,
+            this.pickEdit,
+            this.enabled,
+            this.shadow,
+            this.global,
+            this.lookAt,
+            this.hitbox,
+            this.transform,
+            new UIButton(UIKeys.MODEL_BLOCKS_PROPERTIES, (b) ->
+            {
+                properties.toggleVisible();
+                UIModelBlockPanel.this.resize();
+            })
+            {
+                @Override
+                protected void renderSkin(UIContext context)
+                {
+                    this.area.render(context.batcher, properties.isVisible() ? Colors.A50 : Colors.A25);
+
+                    if (this.hover)
+                    {
+                        this.area.render(context.batcher, Colors.A25);
+                    }
+
+                    FontRenderer font = context.batcher.getFont();
+                    context.batcher.text(this.label.get(), this.area.x + 10, this.area.my(font.getHeight()), Colors.WHITE);
+
+                    context.batcher.icon(properties.isVisible() ? Icons.ARROW_DOWN : Icons.ARROW_RIGHT, Colors.WHITE, this.area.ex() - 10, this.area.my(), 0.5F, 0.5F);
+                }
+            }.h(16).marginTop(4).marginBottom(2),
+            this.properties);
 
         this.lightLevel.tooltip(UIKeys.MODEL_BLOCKS_LIGHT_LEVEL, Direction.BOTTOM);
         this.hardness.tooltip(UIKeys.MODEL_BLOCKS_HARDNESS, Direction.BOTTOM);
 
-        this.scrollView = UI.scrollView(5, 10, this.modelBlocks, this.editor);
+        this.scrollView = UI.scrollView(5, 12, this.modelBlocks, this.editor);
         this.scrollView.scroll.opposite().cancelScrolling();
-        this.scrollView.relative(this).w(200).h(1F);
+        this.scrollView.relative(this).w(220).h(1F);
 
         this.fill(null, false);
 

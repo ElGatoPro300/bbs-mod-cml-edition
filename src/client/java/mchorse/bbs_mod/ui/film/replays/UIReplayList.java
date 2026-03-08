@@ -33,6 +33,7 @@ import mchorse.bbs_mod.settings.values.IValueListener;
 import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.core.ValueForm;
 import mchorse.bbs_mod.ui.UIKeys;
+import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanels;
 import mchorse.bbs_mod.ui.film.UIFilmPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.forms.UIFormPalette;
@@ -40,6 +41,7 @@ import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.UIKeyframes;
 import mchorse.bbs_mod.ui.framework.elements.input.list.UIList;
@@ -66,6 +68,7 @@ import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.keyframes.factories.IKeyframeFactory;
 import mchorse.bbs_mod.utils.pose.Transform;
 import mchorse.bbs_mod.utils.resources.Pixels;
 import net.minecraft.client.MinecraftClient;
@@ -74,6 +77,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -114,6 +118,7 @@ public class UIReplayList extends UIList<Replay> {
     private static double LAST_PROCESS_SCATTER_AREA_Z = 10D;
     private static double LAST_PROCESS_SCATTER_SEED = 0D;
     private static double LAST_PROCESS_SCATTER_MIN_SEPARATION = 1D;
+    private static boolean LAST_PROCESS_SNAP_TERRAIN = false;
     private static int LAST_OFFSET_SECTION = 0;
     private static double LAST_OFFSET_STEP = 1D;
     private static double LAST_OFFSET_RANDOM_SEED = 0D;
@@ -162,6 +167,22 @@ public class UIReplayList extends UIList<Replay> {
                 MapType data = Window.getClipboardMap("_CopyKeyframes");
 
                 if (!isGroup) {
+                    menu.action(Icons.COPY, IKey.constant("Copy keyframes..."), () -> {
+                        this.getContext().replaceContextMenu((sub) -> {
+                            sub.autoKeys();
+                            sub.action(Icons.POSE, IKey.constant("Copy Poses"), () -> this.copyKeyframesFiltered(KeyframeFactories.POSE));
+                            sub.action(Icons.ALL_DIRECTIONS, IKey.constant("Copy Transforms"), () -> this.copyKeyframesFiltered(KeyframeFactories.TRANSFORM));
+                            sub.action(Icons.IMAGE, IKey.constant("Copy texture"), () -> this.copyKeyframesByPropertySuffixes("texture"));
+                            sub.action(Icons.STRUCTURE, IKey.constant("Copy model"), () -> this.copyKeyframesByPropertySuffixes("model"));
+                        });
+                    });
+                    if (data != null) {
+                        menu.action(Icons.PASTE, UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES,
+                                () -> this.pasteToReplays(data));
+                    }
+                }
+
+                if (!isGroup) {
                     menu.action(Icons.ALL_DIRECTIONS, UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS, this::processReplays);
                     menu.action(Icons.TIME, UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME, this::offsetTimeReplays);
                     menu.action(Icons.BLOCK, UIKeys.SCENE_REPLAYS_CONTEXT_RANDOM_SKINS, this::applyRandomSkins);
@@ -169,10 +190,7 @@ public class UIReplayList extends UIList<Replay> {
 
                 menu.action(Icons.FOLDER, UIKeys.SCENE_REPLAYS_CONTEXT_ADD_GROUP, this::addGroup);
 
-                if (!isGroup && data != null) {
-                    menu.action(Icons.PASTE, UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES,
-                            () -> this.pasteToReplays(data));
-                }
+                
 
                 if (!isGroup) {
                     menu.action(Icons.DUPE, UIKeys.SCENE_REPLAYS_CONTEXT_DUPE, () -> {
@@ -202,6 +220,146 @@ public class UIReplayList extends UIList<Replay> {
                 consumer.accept(this, menu);
             }
         });
+    }
+
+    private boolean hasSelectedKeyframes() {
+        UIReplaysEditor replayEditor = this.panel.replayEditor;
+
+        if (replayEditor == null || replayEditor.keyframeEditor == null || replayEditor.keyframeEditor.view == null) {
+            return false;
+        }
+
+        return replayEditor.keyframeEditor.view.getGraph().getSelected() != null;
+    }
+
+    private void copyKeyframesFiltered(IKeyframeFactory... factories) {
+        UIReplaysEditor replayEditor = this.panel.replayEditor;
+
+        if (replayEditor == null || replayEditor.keyframeEditor == null || replayEditor.keyframeEditor.view == null) {
+            // Fallback to export from replay directly
+            MapType fallback = exportAllKeyframesFromReplay(this.getCurrentFirst(), factories);
+            if (fallback != null && !fallback.isEmpty()) {
+                Window.setClipboard(fallback, "_CopyKeyframes");
+            }
+            return;
+        }
+
+        MapType data = replayEditor.keyframeEditor.view.serializeKeyframesByFactories(factories);
+
+        if (data == null || data.isEmpty()) {
+            data = exportAllKeyframesFromReplay(this.getCurrentFirst(), factories);
+        }
+
+        if (data != null && !data.isEmpty()) {
+            Window.setClipboard(data, "_CopyKeyframes");
+        }
+    }
+
+    private void copyKeyframesByPropertySuffixes(String... suffixes) {
+        UIReplaysEditor replayEditor = this.panel.replayEditor;
+
+        if (replayEditor == null || replayEditor.keyframeEditor == null || replayEditor.keyframeEditor.view == null) {
+            MapType fallback = exportKeyframesFromReplayByPropertySuffixes(this.getCurrentFirst(), suffixes);
+            if (fallback != null && !fallback.isEmpty()) {
+                Window.setClipboard(fallback, "_CopyKeyframes");
+            }
+            return;
+        }
+
+        MapType data = replayEditor.keyframeEditor.view.serializeKeyframesByPropertySuffixes(suffixes);
+
+        if (data == null || data.isEmpty()) {
+            data = exportKeyframesFromReplayByPropertySuffixes(this.getCurrentFirst(), suffixes);
+        }
+
+        if (data != null && !data.isEmpty()) {
+            Window.setClipboard(data, "_CopyKeyframes");
+        }
+    }
+
+    private MapType exportAllKeyframesFromReplay(Replay replay, IKeyframeFactory... factories) {
+        if (replay == null) {
+            return null;
+        }
+
+        java.util.Set<IKeyframeFactory> allow = new java.util.HashSet<>();
+        if (factories != null && factories.length > 0) {
+            allow.addAll(java.util.Arrays.asList(factories));
+        }
+
+        MapType out = new MapType();
+
+        for (java.util.Map.Entry<String, KeyframeChannel> entry : replay.properties.properties.entrySet()) {
+            KeyframeChannel channel = entry.getValue();
+
+            if (!allow.isEmpty() && !allow.contains(channel.getFactory())) {
+                continue;
+            }
+
+            ListType list = new ListType();
+
+            for (Object kfObj : channel.getKeyframes()) {
+                Keyframe<?> kf = (Keyframe<?>) kfObj;
+                list.add(kf.toData());
+            }
+
+            if (!list.isEmpty()) {
+                MapType data = new MapType();
+                data.putString("type", CollectionUtils.getKey(KeyframeFactories.FACTORIES, channel.getFactory()));
+                data.put("keyframes", list);
+
+                out.put(entry.getKey(), data);
+            }
+        }
+
+        return out;
+    }
+
+    private MapType exportKeyframesFromReplayByPropertySuffixes(Replay replay, String... suffixes) {
+        if (replay == null) {
+            return null;
+        }
+
+        java.util.Set<String> allow = new java.util.HashSet<>();
+        if (suffixes != null && suffixes.length > 0) {
+            allow.addAll(java.util.Arrays.asList(suffixes));
+        }
+
+        MapType out = new MapType();
+
+        for (java.util.Map.Entry<String, KeyframeChannel> entry : replay.properties.properties.entrySet()) {
+            if (!allow.isEmpty() && !matchesPropertySuffix(entry.getKey(), allow)) {
+                continue;
+            }
+
+            KeyframeChannel channel = entry.getValue();
+            ListType list = new ListType();
+
+            for (Object kfObj : channel.getKeyframes()) {
+                Keyframe<?> kf = (Keyframe<?>) kfObj;
+                list.add(kf.toData());
+            }
+
+            if (!list.isEmpty()) {
+                MapType data = new MapType();
+                data.putString("type", CollectionUtils.getKey(KeyframeFactories.FACTORIES, channel.getFactory()));
+                data.put("keyframes", list);
+
+                out.put(entry.getKey(), data);
+            }
+        }
+
+        return out;
+    }
+
+    private boolean matchesPropertySuffix(String property, java.util.Set<String> allow) {
+        for (String suffix : allow) {
+            if (property.equals(suffix) || property.endsWith("/" + suffix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -362,8 +520,6 @@ public class UIReplayList extends UIList<Replay> {
 
         UINumberOverlayPanel offsetPanel = new UINumberOverlayPanel(UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES_TITLE,
                 UIKeys.SCENE_REPLAYS_CONTEXT_PASTE_KEYFRAMES_DESCRIPTION, (n) -> {
-                    int tick = this.panel.getCursor();
-
                     for (Replay replay : selectedReplays) {
                         int randomOffset = (int) (n.intValue() * Math.random());
 
@@ -376,14 +532,8 @@ public class UIReplayList extends UIList<Replay> {
                                 channel = replay.properties.getOrCreate(replay.form.get(), id);
                             }
 
-                            float min = Integer.MAX_VALUE;
-
                             for (Keyframe kf : pastedKeyframes.keyframes) {
-                                min = Math.min(kf.getTick(), min);
-                            }
-
-                            for (Keyframe kf : pastedKeyframes.keyframes) {
-                                float finalTick = tick + (kf.getTick() - min) + randomOffset;
+                                float finalTick = kf.getTick() + randomOffset;
                                 int index = channel.insert(finalTick, kf.getValue());
                                 Keyframe inserted = channel.get(index);
 
@@ -424,6 +574,7 @@ public class UIReplayList extends UIList<Replay> {
         UITrackpad scatterAreaZ = new UITrackpad((v) -> LAST_PROCESS_SCATTER_AREA_Z = v.doubleValue());
         UITrackpad scatterSeed = new UITrackpad((v) -> LAST_PROCESS_SCATTER_SEED = v.doubleValue());
         UITrackpad scatterMinSeparation = new UITrackpad((v) -> LAST_PROCESS_SCATTER_MIN_SEPARATION = v.doubleValue());
+        UIToggle snapTerrain = new UIToggle(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_SNAP_TERRAIN, LAST_PROCESS_SNAP_TERRAIN, (t) -> LAST_PROCESS_SNAP_TERRAIN = t.getValue());
         UIElement gridControls = UI.column(4,
                 UI.label(UIKeys.SCENE_REPLAYS_CONTEXT_PROCESS_GRID_COLUMNS),
                 gridColumns,
@@ -483,6 +634,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -513,6 +668,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -546,6 +705,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -614,6 +777,10 @@ public class UIReplayList extends UIList<Replay> {
 
                                 this.applyOffset(replay, "x", xOffset);
                                 this.applyOffset(replay, "z", zOffset);
+
+                                if (snapTerrain.getValue()) {
+                                    this.snapReplayToTerrain(replay);
+                                }
                             }
 
                             return;
@@ -660,9 +827,48 @@ public class UIReplayList extends UIList<Replay> {
                                     kf.setValue(kf.getFactory().yToValue(parse.doubleValue()), true);
                                 }
                             }
+
+                            if (snapTerrain.getValue()) {
+                                this.snapReplayToTerrain(replay);
+                            }
                         }
                     }
-                });
+                })
+        {
+            @Override
+            protected void renderBackground(UIContext context)
+            {
+                super.renderBackground(context);
+
+                UIIcon active = null;
+
+                if (sectionExpression.isActive())
+                {
+                    active = sectionExpression;
+                }
+                else if (sectionGrid.isActive())
+                {
+                    active = sectionGrid;
+                }
+                else if (sectionCircle.isActive())
+                {
+                    active = sectionCircle;
+                }
+                else if (sectionLine.isActive())
+                {
+                    active = sectionLine;
+                }
+                else if (sectionScatter.isActive())
+                {
+                    active = sectionScatter;
+                }
+
+                if (active != null)
+                {
+                    UIDashboardPanels.renderHighlightHorizontal(context.batcher, active.area);
+                }
+            }
+        };
 
         for (KeyframeChannel<?> channel : this.getCurrentFirst().keyframes.getChannels()) {
             if (KeyframeFactories.isNumeric(channel.getFactory())) {
@@ -671,7 +877,7 @@ public class UIReplayList extends UIList<Replay> {
         }
 
         properties.background().multi().sort();
-        properties.relative(expression).y(-5).w(1F).h(16 * 9).anchor(0F, 1F);
+        properties.relative(expression).y(-28).w(1F).h(16 * 9).anchor(0F, 1F);
 
         if (!LAST_PROCESS_PROPERTIES.isEmpty()) {
             properties.setCurrentScroll(LAST_PROCESS_PROPERTIES.get(0));
@@ -798,11 +1004,13 @@ public class UIReplayList extends UIList<Replay> {
         expression.setVisible(LAST_PROCESS_SECTION == 0);
         properties.setVisible(LAST_PROCESS_SECTION == 0);
 
+        snapTerrain.relative(panel.confirm).x(6).y(-1F, -24).w(1F, -12);
+
         panel.confirm.w(1F, -10);
-        panel.content.add(gridControls, circleControls, lineControls, scatterControls, expression, properties);
+        panel.content.add(gridControls, circleControls, lineControls, scatterControls, expression, properties, snapTerrain);
         panel.icons.add(sectionExpression, sectionGrid, sectionCircle, sectionLine, sectionScatter);
 
-        UIOverlay.addOverlay(this.getContext(), panel, 240, 300);
+        UIOverlay.addOverlay(this.getContext(), panel, 240, 320);
     }
 
     private void applyOffset(Replay replay, String property, double offset) {
@@ -823,6 +1031,64 @@ public class UIReplayList extends UIList<Replay> {
 
             kf.setValue(rawChannel.getFactory().yToValue(currentValue + offset), true);
         }
+    }
+
+    private void snapReplayToTerrain(Replay replay) {
+        World world = MinecraftClient.getInstance().world;
+
+        if (world == null || replay.keyframes.y.getKeyframes().isEmpty()) {
+            return;
+        }
+
+        float tick = this.getFirstPositionTick(replay);
+        double x = replay.keyframes.x.interpolate(tick);
+        double y = replay.keyframes.y.interpolate(tick);
+        double z = replay.keyframes.z.interpolate(tick);
+        Double terrainY = this.getTerrainY(world, x, z);
+
+        if (terrainY == null) {
+            return;
+        }
+
+        double offset = terrainY - y;
+
+        if (offset != 0D) {
+            this.applyOffset(replay, "y", offset);
+        }
+    }
+
+    private float getFirstPositionTick(Replay replay) {
+        float tick = Float.MAX_VALUE;
+
+        tick = Math.min(tick, this.getFirstTick(replay.keyframes.x));
+        tick = Math.min(tick, this.getFirstTick(replay.keyframes.y));
+        tick = Math.min(tick, this.getFirstTick(replay.keyframes.z));
+
+        return tick == Float.MAX_VALUE ? 0F : tick;
+    }
+
+    private float getFirstTick(KeyframeChannel<Double> channel) {
+        List<Keyframe<Double>> keyframes = channel.getKeyframes();
+
+        if (keyframes.isEmpty()) {
+            return Float.MAX_VALUE;
+        }
+
+        return keyframes.get(0).getTick();
+    }
+
+    private Double getTerrainY(World world, double x, double z) {
+        int top = world.getTopY(Heightmap.Type.WORLD_SURFACE, (int) x, (int) z);
+        int bottom = world.getBottomY();
+        double distance = Math.max(0D, top - bottom + 2D);
+        Vec3d start = new Vec3d(x, top + 1D, z);
+        BlockHitResult result = RayTracing.rayTrace(world, start, new Vec3d(0D, -1D, 0D), distance);
+
+        if (result.getType() == HitResult.Type.BLOCK) {
+            return result.getPos().y;
+        }
+
+        return null;
     }
 
     private void offsetTimeReplays() {
@@ -942,7 +1208,38 @@ public class UIReplayList extends UIList<Replay> {
                             BaseValue.edit(replay, (r) -> r.shift(tickv));
                         }
                     }
-                });
+                })
+        {
+            @Override
+            protected void renderBackground(UIContext context)
+            {
+                super.renderBackground(context);
+
+                UIIcon active = null;
+
+                if (sectionExpression.isActive())
+                {
+                    active = sectionExpression;
+                }
+                else if (sectionStagger.isActive())
+                {
+                    active = sectionStagger;
+                }
+                else if (sectionAlternating.isActive())
+                {
+                    active = sectionAlternating;
+                }
+                else if (sectionRandom.isActive())
+                {
+                    active = sectionRandom;
+                }
+
+                if (active != null)
+                {
+                    UIDashboardPanels.renderHighlightHorizontal(context.batcher, active.area);
+                }
+            }
+        };
 
         tick.setText(LAST_OFFSET);
         tick.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_OFFSET_TIME_EXPRESSION_TOOLTIP);
@@ -1090,7 +1387,7 @@ public class UIReplayList extends UIList<Replay> {
         palette.updatable();
     }
 
-    private void addReplay() {
+    public void addReplay() {
         World world = MinecraftClient.getInstance().world;
         Camera camera = this.panel.getCamera();
 
@@ -1262,7 +1559,7 @@ public class UIReplayList extends UIList<Replay> {
         this.panel.replayEditor.updateChannelsList();
     }
 
-    private void dupeReplay() {
+    public void dupeReplay() {
         if (this.isDeselected()) {
             return;
         }
@@ -1701,7 +1998,7 @@ public class UIReplayList extends UIList<Replay> {
         return true;
     }
 
-    private void removeReplay() {
+    public void removeReplay() {
         if (this.isDeselected()) {
             return;
         }

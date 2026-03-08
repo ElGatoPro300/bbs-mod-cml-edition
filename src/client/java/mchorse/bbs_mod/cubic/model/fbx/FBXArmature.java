@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.fbx;
+package mchorse.bbs_mod.cubic.model.fbx;
 
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJBone;

@@ -505,9 +505,16 @@ public class ClientNetwork
 
         data.put("left", entity.left.toData());
         data.put("right", entity.right.toData());
+        data.put("enter", entity.enter.toData());
+        data.put("exit", entity.exit.toData());
+        data.put("whileIn", entity.whileIn.toData());
+        data.putInt("regionDelay", entity.regionDelay.get());
         data.put("pos1", entity.pos1.toData());
         data.put("pos2", entity.pos2.toData());
+        data.put("regionOffset", entity.regionOffset.toData());
+        data.put("regionSize", entity.regionSize.toData());
         data.putBool("collidable", entity.collidable.get());
+        data.putBool("region", entity.region.get());
 
         crusher.send(MinecraftClient.getInstance().player, ServerNetwork.SERVER_TRIGGER_BLOCK_UPDATE, data, (packetByteBuf) ->
         {

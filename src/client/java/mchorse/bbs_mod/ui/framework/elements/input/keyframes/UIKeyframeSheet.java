@@ -16,7 +16,7 @@ public class UIKeyframeSheet
 {
     /* Meta data */
     public final String id;
-    public final IKey title;
+    public IKey title;
     public final int color;
     public boolean separator;
 
@@ -29,8 +29,11 @@ public class UIKeyframeSheet
 
     public boolean groupHeader;
     public boolean groupExpanded = true;
+    public boolean expanded = false;
+    public int level = 0;
     public String groupKey;
     public Runnable toggleGroup;
+    public Runnable toggleExpanded;
 
     public UIKeyframeSheet(int color, boolean separator, KeyframeChannel channel, BaseValueBasic property)
     {

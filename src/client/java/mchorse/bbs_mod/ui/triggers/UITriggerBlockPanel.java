@@ -27,6 +27,7 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -192,6 +193,66 @@ public class UITriggerBlockPanel extends UIDashboardPanel implements IFlightSupp
         super.render(context);
     }
 
+    @Override
+    public void renderInWorld(WorldRenderContext context)
+    {
+        super.renderInWorld(context);
+
+        this.hovered = null;
+
+        MinecraftClient mc = MinecraftClient.getInstance();
+        Camera camera = mc.gameRenderer.getCamera();
+        Vec3d pos = camera.getPos();
+
+        Vector3f mouseDirection = CameraUtils.getMouseDirection(
+            RenderSystem.getProjectionMatrix(),
+            context.matrixStack().peek().getPositionMatrix(),
+            (int) mc.mouse.getX(), (int) mc.mouse.getY(), 0, 0, mc.getWindow().getWidth(), mc.getWindow().getHeight()
+        );
+
+        this.hovered = this.getClosestObject(new Vector3d(pos.x, pos.y, pos.z), mouseDirection);
+
+        RenderSystem.enableDepthTest();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+
+        context.matrixStack().push();
+        context.matrixStack().translate(-pos.x, -pos.y, -pos.z);
+
+        if (this.entity != null)
+        {
+            this.renderBox(context.matrixStack(), this.entity, 0F, 1F, 0F);
+
+            if (this.entity.region.get())
+            {
+                RenderSystem.disableDepthTest();
+                this.renderRegionBox(context.matrixStack(), this.entity, 1F, 1F, 1F);
+                RenderSystem.enableDepthTest();
+            }
+        }
+
+        for (TriggerBlockEntity entity : TriggerBlockEntityRenderer.capturedTriggerBlocks)
+        {
+            if (this.entity == entity)
+            {
+                continue;
+            }
+
+            if (this.hovered == entity)
+            {
+                this.renderBox(context.matrixStack(), entity, 0F, 1F, 0F);
+            }
+            else
+            {
+                this.renderBox(context.matrixStack(), entity, -1F, -1F, -1F);
+            }
+        }
+
+        context.matrixStack().pop();
+
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
+    }
 
     private void renderBox(net.minecraft.client.util.math.MatrixStack stack, TriggerBlockEntity entity, float r, float g, float b)
     {
@@ -217,6 +278,13 @@ public class UITriggerBlockPanel extends UIDashboardPanel implements IFlightSupp
             Draw.renderBox(stack, x, y, z, w, h, d);
         else
             Draw.renderBox(stack, x, y, z, w, h, d, r, g, b);
+    }
+
+    private void renderRegionBox(net.minecraft.client.util.math.MatrixStack stack, TriggerBlockEntity entity, float r, float g, float b)
+    {
+        Box box = entity.getRegionBox();
+
+        Draw.renderBox(stack, box.minX, box.minY, box.minZ, box.maxX - box.minX, box.maxY - box.minY, box.maxZ - box.minZ, r, g, b);
     }
 
     protected double getDistance(TriggerBlockEntity object, Vector3d pos, Vector3f dir)

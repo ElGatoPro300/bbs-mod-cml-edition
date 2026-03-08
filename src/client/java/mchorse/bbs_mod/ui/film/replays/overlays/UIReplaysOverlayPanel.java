@@ -10,6 +10,7 @@ import mchorse.bbs_mod.ui.forms.UINestedEdit;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.ui.framework.elements.UIElement;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIButton;
+import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIToggle;
 import mchorse.bbs_mod.ui.framework.elements.input.UITrackpad;
 import mchorse.bbs_mod.ui.framework.elements.input.keyframes.factories.UIAnchorKeyframeFactory;
@@ -17,6 +18,7 @@ import mchorse.bbs_mod.ui.framework.elements.input.text.UITextbox;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlayPanel;
 import mchorse.bbs_mod.ui.utils.UI;
 import mchorse.bbs_mod.ui.utils.UIDataUtils;
+import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.colors.Colors;
 import org.slf4j.Logger;
 
@@ -54,6 +56,9 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
     public UITrackpad relativeOffsetZ;
     public UIToggle axesPreview;
     public UIButton pickAxesPreviewBone;
+    public UIIcon addReplay;
+    public UIIcon dupeReplay;
+    public UIIcon removeReplay;
 
     /* Item drop velocity configuration */
     public UITrackpad dropVelocityMinX;
@@ -147,6 +152,23 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
             });
         });
 
+        this.addReplay = new UIIcon(Icons.ADD, (b) -> this.replays.addReplay());
+        this.addReplay.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_ADD);
+
+        this.dupeReplay = new UIIcon(Icons.DUPE, (b) -> this.replays.dupeReplay());
+        this.dupeReplay.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_DUPE);
+
+        this.removeReplay = new UIIcon(Icons.REMOVE, (b) -> this.replays.removeReplay());
+        this.removeReplay.tooltip(UIKeys.SCENE_REPLAYS_CONTEXT_REMOVE);
+
+        this.dupeReplay.setEnabled(false);
+        this.removeReplay.setEnabled(false);
+
+        this.icons.add(this.addReplay, this.dupeReplay, this.removeReplay);
+
+        this.keys().register(mchorse.bbs_mod.ui.Keys.REPLAYS_REMOVE, () -> this.replays.removeReplay())
+            .active(() -> !this.replays.getCurrent().isEmpty());
+
         /* Item drop velocity configuration */
         this.dropVelocityMinX = new UITrackpad((v) -> this.edit((replay) -> replay.dropVelocityMinX.set(v.floatValue())));
         this.dropVelocityMinX.tooltip(UIKeys.FILM_REPLAY_DROP_VELOCITY_MIN_X);
@@ -237,6 +259,9 @@ public class UIReplaysOverlayPanel extends UIOverlayPanel
     {
         boolean hasReplay = replay != null;
         boolean isGroup = hasReplay && replay.isGroup.get();
+
+        this.dupeReplay.setEnabled(hasReplay && !isGroup);
+        this.removeReplay.setEnabled(hasReplay);
 
         this.replayProperties.setVisible(hasReplay && !isGroup);
         this.groupProperties.setVisible(hasReplay && isGroup);

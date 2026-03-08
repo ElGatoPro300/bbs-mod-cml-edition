@@ -10,6 +10,8 @@ import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.Box;
+import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,5 +33,23 @@ public class TriggerBlockEntityRenderer implements BlockEntityRenderer<TriggerBl
     public void render(BlockEntityRenderState state, MatrixStack matrices, OrderedRenderCommandQueue queue, CameraRenderState cameraRenderState)
     {
         
+        if (mc.getDebugHud().shouldShowDebugHud())
+        {
+            matrices.push();
+            matrices.translate(0.5D, 0, 0.5D);
+            /* Render green debug box for triggers */
+            Draw.renderBox(matrices, -0.5D, 0, -0.5D, 1, 1, 1, 0, 1F, 0.5F, 0.5F);
+            matrices.pop();
+
+            if (entity.region.get())
+            {
+                Box box = entity.getRegionBoxRelative();
+
+                /* Render white debug box for region triggers */
+                com.mojang.blaze3d.systems.RenderSystem.disableDepthTest();
+                Draw.renderBox(matrices, box.minX, box.minY, box.minZ, box.maxX - box.minX, box.maxY - box.minY, box.maxZ - box.minZ, 1F, 1F, 1F, 0.5F);
+                com.mojang.blaze3d.systems.RenderSystem.enableDepthTest();
+            }
+        }
     }
 }

@@ -1,10 +1,9 @@
-package mchorse.bbs_mod.gltf.data;
+package mchorse.bbs_mod.cubic.model.gltf.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 /**
  * Root class for GLTF 2.0 data structure.
  */

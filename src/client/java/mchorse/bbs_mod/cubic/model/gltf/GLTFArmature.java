@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.gltf;
+package mchorse.bbs_mod.cubic.model.gltf;
 
 import mchorse.bbs_mod.bobj.BOBJArmature;
 import mchorse.bbs_mod.bobj.BOBJBone;

@@ -806,7 +806,7 @@ public class Supporters
         this.add("ElGatoPro300", "https://www.youtube.com/@ElGatoPro300", "textures/banners/ElGatoPro300.png").withDate(12, 1);
         this.add("seb024xd", "https://www.youtube.com/@seb024yt", "textures/banners/seb024xd.png").withDate(12, 1);
         this.add("Diobede", "https://www.youtube.com/watch?v=iik25wqIuFo", "textures/banners/Diobede.png").withDate(12, 1);
-        this.add("Fanyel", "https://www.youtube.com/@Fanyel", "textures/banners/Fanyel.png").withDate(12, 1);
+        this.add("Fanyel", "http://youtube.com/@imLOSTStudios", "textures/banners/Fanyel.png").withDate(12, 1);
         this.add("Mattux", "https://www.youtube.com/@Mattux", "textures/banners/Mattux.png").withDate(12, 1);
         this.add("bay4lly", "https://www.youtube.com/@bay4lly", "textures/banners/bay4lly.png").withDate(12, 1);
 
