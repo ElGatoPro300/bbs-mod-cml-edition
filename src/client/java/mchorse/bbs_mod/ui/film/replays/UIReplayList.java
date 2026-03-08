@@ -77,6 +77,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -1077,7 +1078,7 @@ public class UIReplayList extends UIList<Replay> {
     }
 
     private Double getTerrainY(World world, double x, double z) {
-        int top = world.getTopY();
+        int top = world.getTopY(Heightmap.Type.WORLD_SURFACE, (int) x, (int) z);
         int bottom = world.getBottomY();
         double distance = Math.max(0D, top - bottom + 2D);
         Vec3d start = new Vec3d(x, top + 1D, z);
