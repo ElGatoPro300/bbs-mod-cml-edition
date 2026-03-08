@@ -42,9 +42,12 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -724,6 +727,18 @@ public class UIKeyframes extends UIElement
 
     private MapType serializeKeyframes()
     {
+        return this.serializeKeyframesByFactories();
+    }
+
+    public MapType serializeKeyframesByFactories(IKeyframeFactory... allowedFactories)
+    {
+        Set<IKeyframeFactory> allow = new HashSet<>();
+
+        if (allowedFactories != null && allowedFactories.length > 0)
+        {
+            allow.addAll(Arrays.asList(allowedFactories));
+        }
+
         MapType keyframes = new MapType();
 
         for (UIKeyframeSheet property : this.currentGraph.getSheets())
@@ -731,6 +746,11 @@ public class UIKeyframes extends UIElement
             List<Keyframe> selected = property.selection.getSelected();
 
             if (selected.isEmpty())
+            {
+                continue;
+            }
+
+            if (!allow.isEmpty() && !allow.contains(property.channel.getFactory()))
             {
                 continue;
             }
@@ -753,6 +773,64 @@ public class UIKeyframes extends UIElement
         }
 
         return keyframes;
+    }
+
+    public MapType serializeKeyframesByPropertySuffixes(String... suffixes)
+    {
+        Set<String> allow = new HashSet<>();
+
+        if (suffixes != null && suffixes.length > 0)
+        {
+            allow.addAll(Arrays.asList(suffixes));
+        }
+
+        MapType keyframes = new MapType();
+
+        for (UIKeyframeSheet property : this.currentGraph.getSheets())
+        {
+            List<Keyframe> selected = property.selection.getSelected();
+
+            if (selected.isEmpty())
+            {
+                continue;
+            }
+
+            if (!allow.isEmpty() && !matchesPropertySuffix(property.id, allow))
+            {
+                continue;
+            }
+
+            MapType data = new MapType();
+            ListType list = new ListType();
+
+            data.putString("type", CollectionUtils.getKey(KeyframeFactories.FACTORIES, property.channel.getFactory()));
+            data.put("keyframes", list);
+
+            for (Keyframe keyframe : selected)
+            {
+                list.add(keyframe.toData());
+            }
+
+            if (!list.isEmpty())
+            {
+                keyframes.put(property.id, data);
+            }
+        }
+
+        return keyframes;
+    }
+
+    private boolean matchesPropertySuffix(String property, Set<String> allow)
+    {
+        for (String suffix : allow)
+        {
+            if (property.equals(suffix) || property.endsWith("/" + suffix))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -947,13 +1025,17 @@ public class UIKeyframes extends UIElement
             max = this.getDuration();
         }
 
+        int sidebar = this.currentGraph instanceof UIKeyframeDopeSheet ? IUIKeyframeGraph.SIDEBAR_WIDTH : 0;
+
         if (Math.abs(max - min) > 0.01F)
         {
-            this.xAxis.viewOffset(min, max, this.area.w, 30);
+            this.xAxis.viewOffset(min, max, this.area.w - sidebar, 30);
+            this.xAxis.setShift(this.xAxis.getShift() - sidebar / this.xAxis.getZoom());
         }
         else
         {
             this.xAxis.set(0, 2);
+            this.xAxis.setShift(this.xAxis.getShift() - sidebar / this.xAxis.getZoom());
         }
     }
 
@@ -1283,9 +1365,10 @@ public class UIKeyframes extends UIElement
         {
             int leftBorder = this.toGraphX(0);
             int rightBorder = this.toGraphX(duration);
+            int sidebarX = this.area.x + IUIKeyframeGraph.SIDEBAR_WIDTH;
 
-            if (leftBorder > this.area.x) context.batcher.box(this.area.x, this.area.y, Math.min(this.area.ex(), leftBorder), this.area.y + this.area.h, Colors.A50);
-            if (rightBorder < this.area.ex()) context.batcher.box(Math.max(this.area.x, rightBorder), this.area.y, this.area.ex() , this.area.y + this.area.h, Colors.A50);
+            if (leftBorder > sidebarX) context.batcher.box(sidebarX, this.area.y, Math.min(this.area.ex(), leftBorder), this.area.y + this.area.h, Colors.A50);
+            if (rightBorder < this.area.ex()) context.batcher.box(Math.max(sidebarX, rightBorder), this.area.y, this.area.ex() , this.area.y + this.area.h, Colors.A50);
         }
 
         if (this.backgroundRender != null)

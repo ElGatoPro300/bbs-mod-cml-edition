@@ -272,9 +272,16 @@ public class ServerNetwork
                     {
                         if (data.has("left")) trigger.left.fromData(data.getList("left"));
                         if (data.has("right")) trigger.right.fromData(data.getList("right"));
+                        if (data.has("enter")) trigger.enter.fromData(data.getList("enter"));
+                        if (data.has("exit")) trigger.exit.fromData(data.getList("exit"));
+                        if (data.has("whileIn")) trigger.whileIn.fromData(data.getList("whileIn"));
+                        if (data.has("regionDelay")) trigger.regionDelay.set(data.getInt("regionDelay"));
                         if (data.has("pos1")) trigger.pos1.fromData(data.getList("pos1"));
                         if (data.has("pos2")) trigger.pos2.fromData(data.getList("pos2"));
+                        if (data.has("regionOffset")) trigger.regionOffset.fromData(data.getList("regionOffset"));
+                        if (data.has("regionSize")) trigger.regionSize.fromData(data.getList("regionSize"));
                         if (data.has("collidable")) trigger.collidable.set(data.getBool("collidable"));
+                        if (data.has("region")) trigger.region.set(data.getBool("region"));
 
                         trigger.markDirty();
                         world.updateListeners(pos, world.getBlockState(pos), world.getBlockState(pos), 3);

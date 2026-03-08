@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.gltf;
+package mchorse.bbs_mod.cubic.model.gltf;
 
 import mchorse.bbs_mod.bobj.BOBJAction;
 import mchorse.bbs_mod.bobj.BOBJArmature;
@@ -13,7 +13,9 @@ import mchorse.bbs_mod.bobj.BOBJLoader.Face;
 import mchorse.bbs_mod.bobj.BOBJLoader.IndexGroup;
 import mchorse.bbs_mod.bobj.BOBJLoader.Vertex;
 import mchorse.bbs_mod.bobj.BOBJLoader.Weight;
-import mchorse.bbs_mod.gltf.data.GLTF;
+import mchorse.bbs_mod.cubic.model.gltf.data.GLTF;
+import mchorse.bbs_mod.cubic.model.gltf.GLTFArmature;
+
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2d;

@@ -142,7 +142,19 @@ public class UIClips extends UIElement
         this.delegate = delegate;
         this.factory = factory;
 
-        this.embeddedClose = new UIIcon(Icons.CLOSE, (b) -> this.embedView(null));
+        this.embeddedClose = new UIIcon(Icons.CLOSE, (b) -> this.embedView(null))
+        {
+            @Override
+            protected void renderSkin(UIContext context)
+            {
+                if (UIClips.this.embedded != null && UIClips.this.delegate.getClip() instanceof KeyframeClip)
+                {
+                    this.area.render(context.batcher, Colors.setA(Colors.RED, 0.5F));
+                }
+
+                super.renderSkin(context);
+            }
+        };
         this.embeddedClose.relative(this);
 
         this.context((menu) ->

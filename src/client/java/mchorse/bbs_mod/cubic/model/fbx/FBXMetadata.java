@@ -1,4 +1,4 @@
-package mchorse.bbs_mod.fbx;
+package mchorse.bbs_mod.cubic.model.fbx;
 
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;

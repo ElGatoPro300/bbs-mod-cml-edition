@@ -133,6 +133,8 @@ public class Icons
     public static final Icon ARROW_UP = register(new Icon(ATLAS, "arrow_up", 208, 96));
     public static final Icon ARROW_DOWN = register(new Icon(ATLAS, "arrow_down", 224, 96));
     public static final Icon ARROW_RIGHT = register(new Icon(ATLAS, "arrow_right", 240, 96));
+    public static final Icon COLLAPSED = register(new Icon(ATLAS, "collapsed", 3, 161));
+    public static final Icon UNCOLLAPSED = register(new Icon(ATLAS, "uncollapsed", 17, 161));
 
     public static final Icon ARROW_LEFT = register(new Icon(ATLAS, "arrow_left", 0, 112));
     public static final Icon HEART = register(new Icon(ATLAS, "heart", 16, 112));

@@ -1,7 +1,10 @@
-package mchorse.bbs_mod.gltf;
+package mchorse.bbs_mod.cubic.model.gltf;
 
 import mchorse.bbs_mod.bobj.BOBJLoader;
-import mchorse.bbs_mod.gltf.data.GLTF;
+import mchorse.bbs_mod.cubic.model.gltf.data.GLTF;
+import mchorse.bbs_mod.cubic.model.gltf.GLTFConverter;
+import mchorse.bbs_mod.cubic.model.gltf.GLTFParser;
+
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
