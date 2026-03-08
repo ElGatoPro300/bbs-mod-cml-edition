@@ -46,7 +46,7 @@ public class WorldRendererMixin
     }
     */
 
-    @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderLayer", at = @At("HEAD"), cancellable = true, require = 0)
     public void onRenderLayer(RenderLayer renderLayer, double cameraX, double cameraY, double cameraZ, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info)
     {
         if (BBSSettings.chromaSkyEnabled.get() && !BBSSettings.chromaSkyTerrain.get())
@@ -56,8 +56,8 @@ public class WorldRendererMixin
         }
     }
 
-    @Inject(method = "setupFrustum", at = @At("HEAD"))
-    public void onSetupFrustum(Vec3d vec3d, Matrix4f matrix4f, Matrix4f positionMatrix, CallbackInfo info)
+    @Inject(method = "setupFrustum", at = @At("HEAD"), require = 0)
+    public void onSetupFrustum(Matrix4f matrix4f, Matrix4f positionMatrix, Vec3d vec3d, CallbackInfoReturnable<?> cir)
     {
         BBSRendering.camera.set(matrix4f);
     }
