@@ -73,6 +73,8 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     private ModelInstance cachedModel;
     private ModelInstance sourceModel;
 
+    private int lastAge = -1;
+
     private IEntity entity = new StubEntity();
 
     @Override
@@ -715,9 +717,19 @@ public class ModelFormRenderer extends FormRenderer<ModelForm> implements ITicka
     {
         this.ensureAnimator(0F);
 
+        int age = entity.getAge();
+
         if (this.animator != null)
         {
+            if (this.lastAge != -1 && age != this.lastAge + 1)
+            {
+                this.resetAnimator();
+                this.ensureAnimator(0F);
+            }
+
             this.animator.update(entity);
         }
+
+        this.lastAge = age;
     }
 }
