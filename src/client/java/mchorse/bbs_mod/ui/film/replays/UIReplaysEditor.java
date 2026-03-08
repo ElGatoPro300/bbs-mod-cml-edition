@@ -890,7 +890,7 @@ public class UIReplaysEditor extends UIElement
                             worldTracks.add(sheet);
                         }
                     }
-                    else if (MODEL_PROPERTIES.contains(sheet.id) || sheet.id.startsWith("pose:") || sheet.id.startsWith("pose_overlay:"))
+                    else if (MODEL_PROPERTIES.contains(sheet.id) || sheet.id.startsWith("pose") || sheet.id.startsWith("transform_overlay"))
                     {
                         if (!this.collapsedModelTracks.getOrDefault(modelPropsKey, false))
                         {
@@ -939,7 +939,9 @@ public class UIReplaysEditor extends UIElement
                                 subForms.put(path, new FormTracks(form));
                             }
 
-                            this.processTrack(sheet, this.replay.uuid.get() + ":" + path, path.split("/").length, subForms.get(path).before, subForms.get(path).pose, subForms.get(path).limbs, subForms.get(path).overlays, subForms.get(path).after);
+                            String groupKey = this.replay.uuid.get() + ":" + path;
+
+                            this.processTrack(sheet, groupKey, path.split("/").length, subForms.get(path).before, subForms.get(path).pose, subForms.get(path).limbs, subForms.get(path).overlays, subForms.get(path).after);
                         }
                     }
                 }
@@ -1135,7 +1137,7 @@ public class UIReplaysEditor extends UIElement
             String actualParentId = parentId.replaceAll("pose_overlay_?\\d*", "pose");
             String parentKey = this.replay.uuid.get() + ":" + actualParentId;
 
-            if (!BBSSettings.originalKeyframeUI.get() && this.collapsedModelTracks.getOrDefault(parentKey, false))
+            if (!BBSSettings.originalKeyframeUI.get() && this.collapsedModelTracks.getOrDefault(parentKey, true))
             {
                 return;
             }
@@ -1159,12 +1161,12 @@ public class UIReplaysEditor extends UIElement
         else if (trackName.equals("pose"))
         {
             String parentKey = this.replay.uuid.get() + ":" + sheet.id;
-            boolean expanded = !this.collapsedModelTracks.getOrDefault(parentKey, false);
+            boolean expanded = !this.collapsedModelTracks.getOrDefault(parentKey, true);
 
             sheet.expanded = expanded;
             sheet.toggleExpanded = () ->
             {
-                this.collapsedModelTracks.put(parentKey, !this.collapsedModelTracks.getOrDefault(parentKey, false));
+                this.collapsedModelTracks.put(parentKey, !this.collapsedModelTracks.getOrDefault(parentKey, true));
                 this.updateChannelsList();
             };
 
