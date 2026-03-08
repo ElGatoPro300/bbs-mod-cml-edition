@@ -6,6 +6,7 @@ import mchorse.bbs_mod.audio.SoundBuffer;
 import mchorse.bbs_mod.audio.Waveform;
 import mchorse.bbs_mod.camera.Camera;
 import mchorse.bbs_mod.camera.CameraUtils;
+import mchorse.bbs_mod.camera.clips.ClipFactoryData;
 import mchorse.bbs_mod.camera.clips.misc.AudioClip;
 import mchorse.bbs_mod.camera.utils.TimeUtils;
 import mchorse.bbs_mod.cubic.ModelInstance;
@@ -48,6 +49,7 @@ import mchorse.bbs_mod.ui.film.replays.overlays.UIReplaysOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIKeyframeSheetFilterOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIRenameSheetOverlayPanel;
 import mchorse.bbs_mod.ui.film.replays.overlays.UIAnimationToPoseOverlayPanel;
+import mchorse.bbs_mod.ui.framework.elements.utils.FontRenderer;
 import mchorse.bbs_mod.ui.utils.Area;
 import mchorse.bbs_mod.ui.utils.Gizmo;
 import mchorse.bbs_mod.ui.utils.Scale;
@@ -329,20 +331,63 @@ public class UIReplaysEditor extends UIElement
 
     public static final Form DUMMY_FORM = new StructureForm();
 
-    public static boolean renderBackground(UIContext context, UIKeyframes keyframes, Clips camera, int clipOffset)
+    public static boolean renderBackground(UIContext context, UIKeyframes keyframes, Clips camera, int clipOffset, Clip selectedClip)
     {
-        if (!BBSSettings.audioWaveformVisible.get())
-        {
-            return false;
-        }
-
         Scale scale = keyframes.getXAxis();
         boolean renderedOnce = false;
+        boolean simplified = BBSSettings.simplifiedKeyframeUI.get();
 
+        if (simplified)
+        {
+            Area area = new Area();
+            area.copy(keyframes.area);
+            area.x += IUIKeyframeGraph.SIDEBAR_WIDTH;
+            area.w -= IUIKeyframeGraph.SIDEBAR_WIDTH;
+
+            context.batcher.clip(area, context);
+        }
+
+        /* First pass: Render selected clip background */
+        for (Clip clip : camera.get())
+        {
+            if (clip == selectedClip && !(clip instanceof AudioClip))
+            {
+                float offset = clip.tick.get() - clipOffset;
+                int x1 = (int) scale.to(offset);
+                int x2 = (int) scale.to(offset + clip.duration.get());
+                int y = keyframes.area.y + 15;
+                int h = 20;
+
+                if (x2 > keyframes.area.x && x1 < keyframes.area.ex())
+                {
+                    ClipFactoryData data = camera.getFactory().getData(clip);
+                    int color = data.color;
+                    int primary = BBSSettings.primaryColor.get();
+
+                    context.batcher.dropShadow(x1 + 2, y + 2, x2 - 2, y + h - 2, 8, Colors.A75 + primary, primary);
+                    context.batcher.box(x1, y, x2, y + h, color | Colors.A100);
+                    context.batcher.outline(x1, y, x2, y + h, Colors.WHITE);
+
+                    if (x2 - x1 > 20)
+                    {
+                        context.batcher.icon(data.icon, Colors.mulA(Colors.mulRGB(Colors.WHITE, 0.75F), 0.5F), x2 - 2, y + h / 2, 1F, 0.5F);
+                    }
+
+                    renderedOnce = true;
+                }
+            }
+        }
+
+        /* Second pass: Render audio waveforms on top */
         for (Clip clip : camera.get())
         {
             if (clip instanceof AudioClip audioClip)
             {
+                if (!BBSSettings.audioWaveformVisible.get())
+                {
+                    continue;
+                }
+
                 Link link = audioClip.audio.get();
 
                 if (link == null)
@@ -373,6 +418,11 @@ public class UIReplaysEditor extends UIElement
                     renderedOnce = true;
                 }
             }
+        }
+
+        if (simplified)
+        {
+            context.batcher.unclip(context);
         }
 
         return renderedOnce;
@@ -1040,7 +1090,7 @@ public class UIReplaysEditor extends UIElement
                 UIKeyframes view = this.keyframeEditor.view;
 
                 context.batcher.flush();
-                renderBackground(context, view, this.film.camera, 0);
+                renderBackground(context, view, this.film.camera, 0, this.filmPanel.cameraEditor.getClip());
             });
             this.keyframeEditor.view.duration(() -> this.film.camera.calculateDuration());
             this.keyframeEditor.view.context((menu) ->
