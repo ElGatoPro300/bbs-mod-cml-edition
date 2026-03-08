@@ -722,6 +722,11 @@ public class UIKeys
     public static final IKey KEYFRAMES_CONTEXT_INVERT_SCALE = L10n.lang("bbs.ui.keyframes.context.invert_scale");
     public static final IKey KEYFRAMES_CONTEXT_INVERT_ROTATION = L10n.lang("bbs.ui.keyframes.context.invert_rotation");
     public static final IKey KEYFRAMES_CONTEXT_INVERT_ROTATION2 = L10n.lang("bbs.ui.keyframes.context.invert_rotation2");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION = L10n.lang("bbs.ui.keyframes.context.interpolation");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_LINEAR = L10n.lang("bbs.ui.keyframes.context.interpolation.linear");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_BEZIER = L10n.lang("bbs.ui.keyframes.context.interpolation.bezier");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_HERMITE = L10n.lang("bbs.ui.keyframes.context.interpolation.hermite");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_STEP = L10n.lang("bbs.ui.keyframes.context.interpolation.step");
     public static final IKey KEYFRAMES_CONTEXT_MAXIMIZE = L10n.lang("bbs.ui.keyframes.context.maximize");
     public static final IKey KEYFRAMES_CONTEXT_PASTE = L10n.lang("bbs.ui.keyframes.context.paste");
     public static final IKey KEYFRAMES_CONTEXT_REMOVE = L10n.lang("bbs.ui.keyframes.context.remove");
