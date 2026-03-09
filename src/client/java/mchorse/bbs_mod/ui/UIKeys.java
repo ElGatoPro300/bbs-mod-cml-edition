@@ -307,6 +307,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_AXES_PREVIEW = L10n.lang("bbs.ui.film.replay.axes_preview");
     public static final IKey FILM_REPLAY_CONTEXT_ADD = L10n.lang("bbs.ui.film.replay.context.add");
     public static final IKey FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES = L10n.lang("bbs.ui.film.replay.context.animation_to_keyframes");
+    public static final IKey FILM_REPLAY_CONTEXT_POSE_TO_LIMBS = L10n.lang("bbs.ui.film.replay.context.pose_to_limbs");
     public static final IKey FILM_REPLAY_CONTEXT_MOVE_HERE = L10n.lang("bbs.ui.film.replay.context.move_here");
     public static final IKey FILM_REPLAY_FILTER_SHEETS = L10n.lang("bbs.ui.film.replay.filter_sheets");
     public static final IKey FILM_REPLAY_FILTER_SHEETS_TITLE = L10n.lang("bbs.ui.film.replay.filter_sheets-title");
