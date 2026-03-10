@@ -9,12 +9,14 @@ import mchorse.bbs_mod.cubic.render.vao.ModelVAO;
 import mchorse.bbs_mod.cubic.render.vao.ModelVAOData;
 import mchorse.bbs_mod.cubic.render.vao.ModelVAORenderer;
 import mchorse.bbs_mod.cubic.render.vao.StructureVAOCollector;
+import mchorse.bbs_mod.cubic.render.vao.LightmapModelVAO;
 import mchorse.bbs_mod.forms.CustomVertexConsumerProvider;
 import mchorse.bbs_mod.forms.FormUtilsClient;
 import mchorse.bbs_mod.forms.forms.StructureForm;
 import mchorse.bbs_mod.forms.forms.utils.StructureLightSettings;
 import mchorse.bbs_mod.forms.renderers.utils.RecolorVertexConsumer;
 import mchorse.bbs_mod.forms.renderers.utils.VirtualBlockRenderView;
+import mchorse.bbs_mod.forms.renderers.utils.StructureVirtualBlockRenderView;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.ui.framework.UIContext;
 import mchorse.bbs_mod.utils.MatrixStackUtils;
@@ -106,13 +108,15 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
     private boolean capturingVAO = false;
     private boolean vaoPickingDirty = true;
     private boolean capturingIncludeSpecialBlocks = false;
+    private boolean lastEmitLight = false;
+    private int lastLightIntensity = 0;
     private boolean hasTranslucentLayer = false;
     private boolean hasCutoutLayer = false;
     private boolean hasAnimatedLayer = false;
     private boolean hasBiomeTintedLayer = false;
     private boolean hasBlockEntityLayer = false;
     private VirtualBlockRenderView.Entry[] entriesCache = null;
-    private VirtualBlockRenderView cachedView = null;
+    private StructureVirtualBlockRenderView cachedView = null;
 
     public static void clearAllCachedVaos()
     {
@@ -121,6 +125,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
             if (holder.vao instanceof ModelVAO)
             {
                 ((ModelVAO) holder.vao).delete();
+            }
+
+            if (holder.vao instanceof LightmapModelVAO)
+            {
+                ((LightmapModelVAO) holder.vao).delete();
             }
 
             if (holder.picking instanceof ModelVAO)
@@ -169,7 +178,6 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         float finalScale;
 
         boolean optimize = true;
-        boolean lightsEnabled;
 
         if (this.boundsMin != null && this.boundsMax != null)
         {
@@ -194,17 +202,15 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         matrices.peek().getNormalMatrix().getScale(Vectors.EMPTY_3F);
         matrices.peek().getNormalMatrix().scale(1F / Vectors.EMPTY_3F.x, -1F / Vectors.EMPTY_3F.y, 1F / Vectors.EMPTY_3F.z);
 
-        /* If structure light is enabled, force BufferBuilder path so dynamic light calculation via VirtualBlockRenderView applies. */
-        /* This prevents VAO (simpler lighting) from ignoring the light panel. */
+        StructureLightSettings slUi = this.form.structureLight.getRuntimeValue();
+        boolean currentEmitLightUi = (slUi != null) ? slUi.enabled : this.form.emitLight.get();
+        int currentLightIntensityUi = (slUi != null) ? slUi.intensity : this.form.lightIntensity.get();
+
+        if (currentEmitLightUi != this.lastEmitLight || currentLightIntensityUi != this.lastLightIntensity)
         {
-            StructureLightSettings sl = this.form.structureLight.getRuntimeValue();
-
-            lightsEnabled = (sl != null) ? sl.enabled : this.form.emitLight.get();
-
-            if (lightsEnabled)
-            {
-                optimize = false;
-            }
+            this.vaoDirty = true;
+            this.lastEmitLight = currentEmitLightUi;
+            this.lastLightIntensity = currentLightIntensityUi;
         }
 
         if (!optimize)
@@ -355,6 +361,17 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         boolean picking = context.isPicking();
 
         IModelVAO vao = this.getStructureVao();
+
+        StructureLightSettings sl = this.form.structureLight.getRuntimeValue();
+        boolean currentEmitLight = (sl != null) ? sl.enabled : this.form.emitLight.get();
+        int currentLightIntensity = (sl != null) ? sl.intensity : this.form.lightIntensity.get();
+
+        if (currentEmitLight != this.lastEmitLight || currentLightIntensity != this.lastLightIntensity)
+        {
+            this.vaoDirty = true;
+            this.lastEmitLight = currentEmitLight;
+            this.lastLightIntensity = currentLightIntensity;
+        }
 
         if (optimize && (vao == null || this.vaoDirty))
         {
@@ -605,13 +622,24 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
         if (this.cachedView == null)
         {
-            this.cachedView = new VirtualBlockRenderView(Arrays.asList(this.entriesCache));
+            this.cachedView = new StructureVirtualBlockRenderView(Arrays.asList(this.entriesCache));
         }
 
         info.view = this.cachedView
             .setBiomeOverride(this.form.biomeId.get())
             .setLightsEnabled(lightsEnabled)
             .setLightIntensity(lightIntensity);
+
+        if (lightsEnabled)
+        {
+            this.cachedView.setVirtualMode(true, lightIntensity)
+                .setIgnoreWorldBlockLight(false);
+        }
+        else
+        {
+            this.cachedView.setVirtualMode(false, 0)
+                .setIgnoreWorldBlockLight(true);
+        }
 
         /* World anchor: for items/UI use player position (more stable) */
         /* to avoid anchoring at (0,0,0) and getting low world light. */
@@ -642,10 +670,11 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         int baseDz = (int) Math.floor(-info.pivotZ);
 
         info.view.setWorldAnchor(info.anchor, baseDx, baseDy, baseDz)
-            /* In UI/thumbnail/inventory item, force max sky light to avoid darkening */
-            .setForceMaxSkyLight(context.ui
+            /* In UI/thumbnail/inventory item, force max sky light to avoid darkening.
+               EXCEPT during VAO capture, where we want real virtual lighting baked. */
+            .setForceMaxSkyLight(!this.capturingVAO && (context.ui
                 || context.type == FormRenderType.PREVIEW
-                || context.type == FormRenderType.ITEM_INVENTORY || forceMaxSkyLight);
+                || context.type == FormRenderType.ITEM_INVENTORY || forceMaxSkyLight));
 
         return info;
     }
@@ -1144,13 +1173,14 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         /* Capture geometry in a VAO using vanilla pipeline but substituting the consumer. */
         CustomVertexConsumerProvider provider = FormUtilsClient.getProvider();
         StructureVAOCollector collector = new StructureVAOCollector();
+        LightmapStructureVAOCollector lightWrapper = new LightmapStructureVAOCollector(collector);
         MatrixStack captureStack = new MatrixStack();
         FormRenderingContext captureContext;
         boolean useEntityLayers = false; /* capture with block layers */
         ModelVAOData data;
 
         /* Substitute any consumer with our collector. */
-        provider.setSubstitute(vc -> collector);
+        provider.setSubstitute(vc -> lightWrapper);
 
         captureContext = new FormRenderingContext()
             .set(FormRenderType.PREVIEW, null, captureStack, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE, OverlayTexture.DEFAULT_UV, 0F);
@@ -1192,7 +1222,12 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 ((ModelVAO) holder.vao).delete();
             }
 
-            holder.vao = new ModelVAO(data);
+            if (holder.vao instanceof LightmapModelVAO)
+            {
+                ((LightmapModelVAO) holder.vao).delete();
+            }
+
+            holder.vao = new LightmapModelVAO(data, lightWrapper.getLightmapData());
         }
 
         this.vaoDirty = false;
@@ -1298,10 +1333,119 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
                 ((ModelVAO) holder.vao).delete();
             }
 
+            if (holder.vao instanceof LightmapModelVAO)
+            {
+                ((LightmapModelVAO) holder.vao).delete();
+            }
+
             if (holder.picking instanceof ModelVAO)
             {
                 ((ModelVAO) holder.picking).delete();
             }
+        }
+    }
+
+    private static class LightmapStructureVAOCollector implements VertexConsumer
+    {
+        private final StructureVAOCollector delegate;
+        private int[] lightData = new int[8192];
+        private int lightSize = 0;
+        private final int[] quadLights = new int[4];
+        private int quadIndex = 0;
+
+        public LightmapStructureVAOCollector(StructureVAOCollector delegate)
+        {
+            this.delegate = delegate;
+        }
+
+        public int[] getLightmapData()
+        {
+            return Arrays.copyOf(this.lightData, this.lightSize);
+        }
+
+        @Override
+        public VertexConsumer vertex(double x, double y, double z)
+        {
+            this.delegate.vertex(x, y, z);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer color(int red, int green, int blue, int alpha)
+        {
+            this.delegate.color(red, green, blue, alpha);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer texture(float u, float v)
+        {
+            this.delegate.texture(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer overlay(int u, int v)
+        {
+            this.delegate.overlay(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer light(int u, int v)
+        {
+            this.quadLights[this.quadIndex] = (u & 0xFFFF) | ((v & 0xFFFF) << 16);
+            this.delegate.light(u, v);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer normal(float x, float y, float z)
+        {
+            this.delegate.normal(x, y, z);
+            return this;
+        }
+
+        @Override
+        public void next()
+        {
+            this.delegate.next();
+            this.quadIndex++;
+
+            if (this.quadIndex == 4)
+            {
+                this.addLight(this.quadLights[0]);
+                this.addLight(this.quadLights[1]);
+                this.addLight(this.quadLights[2]);
+
+                this.addLight(this.quadLights[0]);
+                this.addLight(this.quadLights[2]);
+                this.addLight(this.quadLights[3]);
+
+                this.quadIndex = 0;
+            }
+        }
+
+        @Override
+        public void fixedColor(int red, int green, int blue, int alpha)
+        {
+        }
+
+        @Override
+        public void unfixColor()
+        {
+        }
+
+        private void addLight(int l)
+        {
+            if (this.lightSize >= this.lightData.length)
+            {
+                int[] n = new int[this.lightData.length * 2];
+                System.arraycopy(this.lightData, 0, n, 0, this.lightSize);
+                this.lightData = n;
+            }
+
+            this.lightData[this.lightSize++] = l;
         }
     }
 
