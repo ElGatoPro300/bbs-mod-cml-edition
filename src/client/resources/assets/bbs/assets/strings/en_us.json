@@ -708,6 +708,7 @@
     "bbs.ui.film.replay.axes_preview": "Axes preview",
     "bbs.ui.film.replay.context.add": "Add a replay here",
     "bbs.ui.film.replay.context.animation_to_keyframes": "Animation to pose keyframes...",
+    "bbs.ui.film.replay.context.pose_to_limbs": "Pose to limbs",
     "bbs.ui.film.replay.context.move_here": "Move actor here",
     "bbs.ui.film.replay.drop_velocity": "Item Drop Velocity",
     "bbs.ui.film.replay.drop_velocity_max_x": "Max X velocity for item drops (default: 0.1)",
