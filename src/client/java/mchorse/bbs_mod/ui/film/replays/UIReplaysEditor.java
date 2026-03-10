@@ -71,6 +71,8 @@ import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
 import mchorse.bbs_mod.utils.pose.Transform;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -1095,14 +1097,22 @@ public class UIReplaysEditor extends UIElement
             this.keyframeEditor.view.duration(() -> this.film.camera.calculateDuration());
             this.keyframeEditor.view.context((menu) ->
             {
-                if (this.replay.form.get() instanceof ModelForm modelForm)
-                {
-                    int mouseY = this.getContext().mouseY;
-                    UIKeyframeSheet sheet = this.keyframeEditor.view.getGraph().getSheet(mouseY);
+                int mouseY = this.getContext().mouseY;
+                UIKeyframeSheet sheet = this.keyframeEditor.view.getGraph().getSheet(mouseY);
 
-                    if (sheet != null && sheet.channel.getFactory() == KeyframeFactories.POSE && (sheet.id.equals("pose") || sheet.id.startsWith("pose_overlay")))
+                if (sheet != null && sheet.channel.getFactory() == KeyframeFactories.POSE)
+                {
+                    String trackName = StringUtils.fileName(sheet.id);
+
+                    if (trackName.equals("pose") || trackName.startsWith("pose_overlay"))
                     {
-                        menu.action(Icons.POSE, UIKeys.FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES, () -> this.animationToPoses(modelForm, sheet));
+                        Form form = sheet.property != null ? FormUtils.getForm(sheet.property) : this.replay.form.get();
+
+                        if (form instanceof ModelForm modelForm)
+                        {
+                            menu.action(Icons.POSE, UIKeys.FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES, () -> this.animationToPoses(modelForm, sheet));
+                        }
+                        menu.action(Icons.CONVERT, UIKeys.FILM_REPLAY_CONTEXT_POSE_TO_LIMBS, () -> this.convertToLimbs(sheet));
                     }
                 }
 
@@ -1331,6 +1341,57 @@ public class UIReplaysEditor extends UIElement
         Collections.sort(ticks);
 
         return ticks;
+    }
+
+    private void convertToLimbs(UIKeyframeSheet sheet)
+    {
+        List<Keyframe> selected = sheet.selection.getSelected();
+
+        if (selected.isEmpty())
+        {
+            return;
+        }
+
+        Form form = sheet.property != null ? FormUtils.getForm(sheet.property) : this.replay.form.get();
+
+        if (form == null)
+        {
+            return;
+        }
+
+        BaseValue.edit(this.replay, (r) ->
+        {
+            for (Keyframe kf : selected)
+            {
+                Pose pose = (Pose) kf.getValue();
+
+                if (pose == null)
+                {
+                    continue;
+                }
+
+                for (Map.Entry<String, PoseTransform> entry : pose.transforms.entrySet())
+                {
+                    String boneName = entry.getKey();
+                    PoseTransform transform = entry.getValue();
+                    String key = sheet.id + ":" + boneName;
+
+                    KeyframeChannel<Transform> channel = this.replay.properties.getOrCreate(this.replay.form.get(), key);
+
+                    if (channel != null)
+                    {
+                        int index = channel.insert(kf.getTick(), transform.copy());
+                        Keyframe<Transform> newKf = channel.get(index);
+
+                        newKf.copyOverExtra(kf);
+                    }
+                }
+
+                sheet.channel.remove(kf);
+            }
+        });
+
+        this.updateChannelsList();
     }
 
     private void fillAnimationPose(UIKeyframeSheet sheet, float i, ModelInstance model, IEntity entity, Animation animation, int current)

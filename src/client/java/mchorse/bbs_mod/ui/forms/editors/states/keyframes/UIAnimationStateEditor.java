@@ -12,6 +12,8 @@ import mchorse.bbs_mod.forms.renderers.utils.MatrixCache;
 import mchorse.bbs_mod.forms.renderers.utils.MatrixCacheEntry;
 import mchorse.bbs_mod.forms.states.AnimationState;
 import mchorse.bbs_mod.graphics.window.Window;
+import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.settings.values.base.BaseValue;
 import mchorse.bbs_mod.settings.values.base.BaseValueBasic;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.film.replays.UIReplaysEditor;
@@ -34,14 +36,19 @@ import mchorse.bbs_mod.utils.Pair;
 import mchorse.bbs_mod.utils.StringUtils;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.joml.Matrices;
+import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.factories.KeyframeFactories;
+import mchorse.bbs_mod.utils.pose.Pose;
+import mchorse.bbs_mod.utils.pose.PoseTransform;
+import mchorse.bbs_mod.utils.pose.Transform;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -194,28 +201,36 @@ public class UIAnimationStateEditor extends UIElement
             this.keyframeEditor.view.duration(() -> this.state.duration.get());
             this.keyframeEditor.view.context((menu) ->
             {
-                if (this.editor.form instanceof ModelForm modelForm)
+                int mouseY = this.getContext().mouseY;
+                UIKeyframeSheet sheet = this.keyframeEditor.view.getGraph().getSheet(mouseY);
+
+                if (sheet != null && sheet.channel.getFactory() == KeyframeFactories.POSE)
                 {
-                    int mouseY = this.getContext().mouseY;
-                    UIKeyframeSheet sheet = this.keyframeEditor.view.getGraph().getSheet(mouseY);
+                    String trackName = StringUtils.fileName(sheet.id);
 
-                    if (sheet != null && sheet.channel.getFactory() == KeyframeFactories.POSE && sheet.id.equals("pose"))
+                    if (trackName.equals("pose") || trackName.startsWith("pose_overlay"))
                     {
-                        menu.action(Icons.POSE, UIKeys.FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES, () ->
+                        Form form = sheet.property != null ? FormUtils.getForm(sheet.property) : this.editor.form;
+
+                        if (form instanceof ModelForm modelForm)
                         {
-                            ModelInstance model = ModelFormRenderer.getModel(modelForm);
-
-                            if (model != null)
+                            menu.action(Icons.POSE, UIKeys.FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES, () ->
                             {
-                                UIOverlay.addOverlay(this.getContext(), new UIAnimationToPoseOverlayPanel((animationKey, onlyKeyframes, length, step) ->
-                                {
-                                    int current = this.editor.getCursor();
-                                    IEntity entity = this.editor.renderer.getTargetEntity();
+                                ModelInstance model = ModelFormRenderer.getModel(modelForm);
 
-                                    UIReplaysEditorUtils.animationToPoseKeyframes(this.keyframeEditor, sheet, modelForm, entity, current, animationKey, onlyKeyframes, length, step);
-                                }, modelForm, sheet), 260, 260);
-                            }
-                        });
+                                if (model != null)
+                                {
+                                    UIOverlay.addOverlay(this.getContext(), new UIAnimationToPoseOverlayPanel((animationKey, onlyKeyframes, length, step) ->
+                                    {
+                                        int current = this.editor.getCursor();
+                                        IEntity entity = this.editor.renderer.getTargetEntity();
+
+                                        UIReplaysEditorUtils.animationToPoseKeyframes(this.keyframeEditor, sheet, modelForm, entity, current, animationKey, onlyKeyframes, length, step);
+                                    }, modelForm, sheet), 260, 260);
+                                }
+                            });
+                        }
+                        menu.action(Icons.CONVERT, UIKeys.FILM_REPLAY_CONTEXT_POSE_TO_LIMBS, () -> this.convertToLimbs(sheet));
                     }
                 }
 
@@ -351,6 +366,50 @@ public class UIAnimationStateEditor extends UIElement
         }
 
         return matrix == null ? Matrices.EMPTY_4F : matrix;
+    }
+
+    private void convertToLimbs(UIKeyframeSheet sheet)
+    {
+        List<Keyframe> selected = sheet.selection.getSelected();
+
+        if (selected.isEmpty())
+        {
+            return;
+        }
+
+        BaseValue.edit(this.state, (s) ->
+        {
+            for (Keyframe kf : selected)
+            {
+                Pose pose = (Pose) kf.getValue();
+
+                if (pose == null)
+                {
+                    continue;
+                }
+
+                for (Map.Entry<String, PoseTransform> entry : pose.transforms.entrySet())
+                {
+                    String boneName = entry.getKey();
+                    PoseTransform transform = entry.getValue();
+                    String key = sheet.id + ":" + boneName;
+
+                    KeyframeChannel<Transform> channel = this.state.properties.getOrCreate(this.editor.form, key);
+
+                    if (channel != null)
+                    {
+                        int index = channel.insert(kf.getTick(), transform.copy());
+                        Keyframe<Transform> newKf = channel.get(index);
+
+                        newKf.copyOverExtra(kf);
+                    }
+                }
+
+                sheet.channel.remove(kf);
+            }
+        });
+
+        this.setState(this.state);
     }
 
     @Override
