@@ -17,6 +17,7 @@ import mchorse.bbs_mod.settings.ui.UISettingsOverlayPanel;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.addons.UIAddonsPanel;
+import mchorse.bbs_mod.ui.news.UINewsPanel;
 import mchorse.bbs_mod.ui.dashboard.panels.IFlightSupported;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanel;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanels;
@@ -281,6 +282,7 @@ public class UIDashboard extends UIBaseMenu
         this.panels.registerPanel(new UIAudioEditorPanel(this), UIKeys.AUDIO_TITLE, Icons.SOUND);
         this.panels.registerPanel(new UIGraphPanel(this), UIKeys.GRAPH_TOOLTIP, Icons.GRAPH);
         this.panels.registerPanel(new UIAddonsPanel(this), UIKeys.ADDONS_TITLE, Icons.PROCESSOR).marginLeft(10);
+        this.panels.registerPanel(new UINewsPanel(this), UIKeys.NEWS_TITLE, Icons.NEWS);
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment())
         {
