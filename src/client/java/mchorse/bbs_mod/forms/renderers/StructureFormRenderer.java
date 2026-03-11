@@ -1359,7 +1359,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         }
 
         @Override
-        public VertexConsumer vertex(double x, double y, double z)
+        public VertexConsumer vertex(float x, float y, float z)
         {
             this.delegate.vertex(x, y, z);
             return this;
@@ -1398,13 +1398,7 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
         public VertexConsumer normal(float x, float y, float z)
         {
             this.delegate.normal(x, y, z);
-            return this;
-        }
 
-        @Override
-        public void next()
-        {
-            this.delegate.next();
             this.quadIndex++;
 
             if (this.quadIndex == 4)
@@ -1419,14 +1413,14 @@ public class StructureFormRenderer extends FormRenderer<StructureForm>
 
                 this.quadIndex = 0;
             }
+
+            return this;
         }
 
-        @Override
         public void fixedColor(int red, int green, int blue, int alpha)
         {
         }
 
-        @Override
         public void unfixColor()
         {
         }
