@@ -12,10 +12,12 @@ import mchorse.bbs_mod.events.register.RegisterDashboardPanelsEvent;
 import mchorse.bbs_mod.graphics.window.Window;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.settings.Settings;
 import mchorse.bbs_mod.settings.ui.UISettingsOverlayPanel;
 import mchorse.bbs_mod.ui.Keys;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.addons.UIAddonsPanel;
+import mchorse.bbs_mod.ui.news.UINewsPanel;
 import mchorse.bbs_mod.ui.dashboard.panels.IFlightSupported;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanel;
 import mchorse.bbs_mod.ui.dashboard.panels.UIDashboardPanels;
@@ -27,6 +29,7 @@ import mchorse.bbs_mod.ui.film.UIFilmPanel;
 import mchorse.bbs_mod.ui.framework.UIBaseMenu;
 import mchorse.bbs_mod.ui.framework.UIRenderingContext;
 import mchorse.bbs_mod.ui.framework.elements.buttons.UIIcon;
+import mchorse.bbs_mod.ui.framework.elements.overlay.UIFnafOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIMessageOverlayPanel;
 import mchorse.bbs_mod.ui.framework.elements.overlay.UIOverlay;
 import mchorse.bbs_mod.ui.model.UIModelPanel;
@@ -138,8 +141,6 @@ public class UIDashboard extends UIBaseMenu
 
             UIOverlay.addOverlay(this.context, new UIUtilityOverlayPanel(UIKeys.UTILITY_TITLE, null), 240, 230);
         });
-
-        this.showAnnoyingPopups();
     }
 
     private void showAnnoyingPopups()
@@ -150,6 +151,25 @@ public class UIDashboard extends UIBaseMenu
                 UIKeys.DASHBOARD_OPTIFINE_EW_TITLE,
                 UIKeys.DASHBOARD_OPTIFINE_EW_DESCRIPTION
             ));
+        }
+
+        if (!BBSSettings.shownFnafPopup.get())
+        {
+            MinecraftClient mc = MinecraftClient.getInstance();
+
+            if (mc.player != null && mc.player.getUuidAsString().equals("62151594-754f-4f81-a583-dc9459164d01"))
+            {
+                UIOverlay.addOverlay(this.context, new UIFnafOverlayPanel(UIKeys.DASHBOARD_FNAF_POPUP, UIKeys.DASHBOARD_FNAF_POPUP_SMALL), 320, 160);
+
+                BBSSettings.shownFnafPopup.set(true);
+
+                Settings settings = BBSMod.getSettings().modules.get("bbs");
+
+                if (settings != null)
+                {
+                    settings.saveLater();
+                }
+            }
         }
     }
 
@@ -218,6 +238,8 @@ public class UIDashboard extends UIBaseMenu
         }
 
         BBSModClient.getCameraController().add(this.camera);
+
+        this.showAnnoyingPopups();
     }
 
     @Override
@@ -260,6 +282,7 @@ public class UIDashboard extends UIBaseMenu
         this.panels.registerPanel(new UIAudioEditorPanel(this), UIKeys.AUDIO_TITLE, Icons.SOUND);
         this.panels.registerPanel(new UIGraphPanel(this), UIKeys.GRAPH_TOOLTIP, Icons.GRAPH);
         this.panels.registerPanel(new UIAddonsPanel(this), UIKeys.ADDONS_TITLE, Icons.PROCESSOR).marginLeft(10);
+        this.panels.registerPanel(new UINewsPanel(this), UIKeys.NEWS_TITLE, Icons.NEWS);
 
         if (FabricLoader.getInstance().isDevelopmentEnvironment())
         {

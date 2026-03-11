@@ -133,8 +133,6 @@ public class Icons
     public static final Icon ARROW_UP = register(new Icon(ATLAS, "arrow_up", 208, 96));
     public static final Icon ARROW_DOWN = register(new Icon(ATLAS, "arrow_down", 224, 96));
     public static final Icon ARROW_RIGHT = register(new Icon(ATLAS, "arrow_right", 240, 96));
-    public static final Icon COLLAPSED = register(new Icon(ATLAS, "collapsed", 3, 161));
-    public static final Icon UNCOLLAPSED = register(new Icon(ATLAS, "uncollapsed", 17, 161));
 
     public static final Icon ARROW_LEFT = register(new Icon(ATLAS, "arrow_left", 0, 112));
     public static final Icon HEART = register(new Icon(ATLAS, "heart", 16, 112));
@@ -187,6 +185,10 @@ public class Icons
     public static final Icon LIKE = register(new Icon(ATLAS, "like", 208, 144));
     public static final Icon DISLIKE = register(new Icon(ATLAS, "dislike", 224, 144));
     public static final Icon PICKAXE = register(new Icon(ATLAS, "pickaxe", 240, 144));
+
+    public static final Icon COLLAPSED = register(new Icon(ATLAS, "collapsed", 0, 160));
+    public static final Icon UNCOLLAPSED = register(new Icon(ATLAS, "uncollapsed", 16, 160));
+    public static final Icon NEWS = register(new Icon(ATLAS, "news", 32, 160));
 
     public static final Icon INTERP_LINEAR = register(new Icon(ATLAS, "interp_linear", 0, 192));
     public static final Icon INTERP_CONST = register(new Icon(ATLAS, "interp_const", 16, 192));
