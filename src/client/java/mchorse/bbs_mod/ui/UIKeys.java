@@ -233,6 +233,8 @@ public class UIKeys
     public static final IKey CONTEXT_MENU_KEY_CATEGORY = L10n.lang("bbs.ui.context.key_category");
     public static final IKey COMING_SOON = L10n.lang("bbs.ui.coming_soon");
     public static final IKey DASHBOARD_CATEGORY = L10n.lang("bbs.ui.dashboard.category");
+    public static final IKey DASHBOARD_FNAF_POPUP = L10n.lang("bbs.ui.dashboard.fnaf_popup");
+    public static final IKey DASHBOARD_FNAF_POPUP_SMALL = L10n.lang("bbs.ui.dashboard.fnaf_popup_small");
     public static final IKey DASHBOARD_CONTEXT_TOGGLE_VISIBILITY = L10n.lang("bbs.ui.dashboard.context.toggle_visibility");
     public static final IKey DASHBOARD_OPTIFINE_EW_DESCRIPTION = L10n.lang("bbs.ui.dashboard.optifine_ew-description");
     public static final IKey DASHBOARD_OPTIFINE_EW_TITLE = L10n.lang("bbs.ui.dashboard.optifine_ew-title");
@@ -307,6 +309,7 @@ public class UIKeys
     public static final IKey FILM_REPLAY_AXES_PREVIEW = L10n.lang("bbs.ui.film.replay.axes_preview");
     public static final IKey FILM_REPLAY_CONTEXT_ADD = L10n.lang("bbs.ui.film.replay.context.add");
     public static final IKey FILM_REPLAY_CONTEXT_ANIMATION_TO_KEYFRAMES = L10n.lang("bbs.ui.film.replay.context.animation_to_keyframes");
+    public static final IKey FILM_REPLAY_CONTEXT_POSE_TO_LIMBS = L10n.lang("bbs.ui.film.replay.context.pose_to_limbs");
     public static final IKey FILM_REPLAY_CONTEXT_MOVE_HERE = L10n.lang("bbs.ui.film.replay.context.move_here");
     public static final IKey FILM_REPLAY_FILTER_SHEETS = L10n.lang("bbs.ui.film.replay.filter_sheets");
     public static final IKey FILM_REPLAY_FILTER_SHEETS_TITLE = L10n.lang("bbs.ui.film.replay.filter_sheets-title");
@@ -722,6 +725,11 @@ public class UIKeys
     public static final IKey KEYFRAMES_CONTEXT_INVERT_SCALE = L10n.lang("bbs.ui.keyframes.context.invert_scale");
     public static final IKey KEYFRAMES_CONTEXT_INVERT_ROTATION = L10n.lang("bbs.ui.keyframes.context.invert_rotation");
     public static final IKey KEYFRAMES_CONTEXT_INVERT_ROTATION2 = L10n.lang("bbs.ui.keyframes.context.invert_rotation2");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION = L10n.lang("bbs.ui.keyframes.context.interpolation");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_LINEAR = L10n.lang("bbs.ui.keyframes.context.interpolation.linear");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_BEZIER = L10n.lang("bbs.ui.keyframes.context.interpolation.bezier");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_HERMITE = L10n.lang("bbs.ui.keyframes.context.interpolation.hermite");
+    public static final IKey KEYFRAMES_CONTEXT_INTERPOLATION_STEP = L10n.lang("bbs.ui.keyframes.context.interpolation.step");
     public static final IKey KEYFRAMES_CONTEXT_MAXIMIZE = L10n.lang("bbs.ui.keyframes.context.maximize");
     public static final IKey KEYFRAMES_CONTEXT_PASTE = L10n.lang("bbs.ui.keyframes.context.paste");
     public static final IKey KEYFRAMES_CONTEXT_REMOVE = L10n.lang("bbs.ui.keyframes.context.remove");
@@ -819,6 +827,10 @@ public class UIKeys
     public static final IKey MORPHING_FROM_MOB = L10n.lang("bbs.ui.morphing.from_mob");
 
     public static final IKey MORPHING_TITLE = L10n.lang("bbs.ui.morphing.title");
+    public static final IKey NEWS_TITLE = L10n.lang("bbs.ui.news.title");
+    public static final IKey NEWS_SEARCH = L10n.lang("bbs.ui.news.search");
+    public static final IKey NEWS_RELOAD = L10n.lang("bbs.ui.news.reload");
+    public static final IKey NEWS_EMPTY = L10n.lang("bbs.ui.news.empty");
     public static final IKey OVERLAYS_SOUNDS_ADD_MODE = L10n.lang("bbs.ui.overlays.sounds.add_mode");
     public static final IKey OVERLAYS_SOUNDS_FOLDER_MODE = L10n.lang("bbs.ui.overlays.sounds.folder_mode");
     public static final IKey OVERLAYS_SOUNDS_LIKE_MODE = L10n.lang("bbs.ui.overlays.sounds.like_mode");

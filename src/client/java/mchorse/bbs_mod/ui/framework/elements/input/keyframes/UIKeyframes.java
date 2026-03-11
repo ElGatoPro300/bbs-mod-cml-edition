@@ -26,6 +26,8 @@ import mchorse.bbs_mod.utils.CollectionUtils;
 import mchorse.bbs_mod.utils.MathUtils;
 import mchorse.bbs_mod.utils.Pair;
 import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.interps.IInterp;
+import mchorse.bbs_mod.utils.interps.Interpolations;
 import mchorse.bbs_mod.utils.keyframes.Keyframe;
 import mchorse.bbs_mod.utils.keyframes.KeyframeChannel;
 import mchorse.bbs_mod.utils.keyframes.KeyframeSegment;
@@ -143,6 +145,7 @@ public class UIKeyframes extends UIElement
             if (hasSelected)
             {
                 menu.action(Icons.EXCHANGE, UIKeys.KEYFRAMES_CONTEXT_INVERT, this::invertKeyframesMenu);
+                menu.action(Icons.CURVES, UIKeys.KEYFRAMES_CONTEXT_INTERPOLATION, this::interpolationMenu);
                 menu.action(Icons.CONVERT, UIKeys.KEYFRAMES_CONTEXT_SPREAD, this::spreadKeyframes);
                 menu.action(Icons.OUTLINE_SPHERE, UIKeys.KEYFRAMES_CONTEXT_ROUND, () ->
                 {
@@ -232,6 +235,40 @@ public class UIKeyframes extends UIElement
             menu2.action(Icons.ARROW_LEFT, UIKeys.KEYFRAMES_CONTEXT_ADJUST_VALUES_LEFT, () -> this.adjustValues(false));
             menu2.action(Icons.ARROW_RIGHT, UIKeys.KEYFRAMES_CONTEXT_ADJUST_VALUES_RIGHT, () -> this.adjustValues(true));
         });
+    }
+
+    private void interpolationMenu()
+    {
+        this.getContext().replaceContextMenu((menu2) ->
+        {
+            menu2.autoKeys();
+            menu2.action(Icons.INTERP_LINEAR, UIKeys.KEYFRAMES_CONTEXT_INTERPOLATION_LINEAR, () -> this.setInterpolation(Interpolations.LINEAR));
+            menu2.action(Icons.ARC, UIKeys.KEYFRAMES_CONTEXT_INTERPOLATION_BEZIER, () -> this.setInterpolation(Interpolations.BEZIER));
+            menu2.action(Icons.CURVES, UIKeys.KEYFRAMES_CONTEXT_INTERPOLATION_HERMITE, () -> this.setInterpolation(Interpolations.HERMITE));
+            menu2.action(Icons.INTERP_STEP, UIKeys.KEYFRAMES_CONTEXT_INTERPOLATION_STEP, () -> this.setInterpolation(Interpolations.STEP));
+        });
+    }
+
+    private void setInterpolation(IInterp interp)
+    {
+        for (UIKeyframeSheet sheet : this.getGraph().getSheets())
+        {
+            List<Keyframe> selected = sheet.selection.getSelected();
+
+            if (selected.isEmpty())
+            {
+                continue;
+            }
+
+            sheet.channel.preNotify();
+
+            for (Keyframe keyframe : selected)
+            {
+                keyframe.getInterpolation().setInterp(interp);
+            }
+
+            sheet.channel.postNotify();
+        }
     }
 
     private void invertKeyframesMenu()
