@@ -189,6 +189,11 @@ public class Icons
     public static final Icon COLLAPSED = register(new Icon(ATLAS, "collapsed", 0, 160));
     public static final Icon UNCOLLAPSED = register(new Icon(ATLAS, "uncollapsed", 16, 160));
     public static final Icon NEWS = register(new Icon(ATLAS, "news", 32, 160));
+    public static final Icon NEWS_UNREAD = register(new Icon(ATLAS, "news_unread", 48, 160));
+    public static final Icon NOTIFICATION = register(new Icon(ATLAS, "notification", 64, 160));
+    public static final Icon IK = register(new Icon(ATLAS, "ik", 80, 160));
+    public static final Icon DYNAMIC_BONES = register(new Icon(ATLAS, "dynamic_bones", 96, 160));
+    public static final Icon MODELS_SETTINGS = register(new Icon(ATLAS, "models_settings", 112, 160));
 
     public static final Icon INTERP_LINEAR = register(new Icon(ATLAS, "interp_linear", 0, 192));
     public static final Icon INTERP_CONST = register(new Icon(ATLAS, "interp_const", 16, 192));
