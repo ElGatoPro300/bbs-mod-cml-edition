@@ -831,6 +831,7 @@ public class UIKeys
     public static final IKey NEWS_SEARCH = L10n.lang("bbs.ui.news.search");
     public static final IKey NEWS_RELOAD = L10n.lang("bbs.ui.news.reload");
     public static final IKey NEWS_EMPTY = L10n.lang("bbs.ui.news.empty");
+    public static final IKey NEWS_UPDATED = L10n.lang("bbs.ui.news.updated");
     public static final IKey OVERLAYS_SOUNDS_ADD_MODE = L10n.lang("bbs.ui.overlays.sounds.add_mode");
     public static final IKey OVERLAYS_SOUNDS_FOLDER_MODE = L10n.lang("bbs.ui.overlays.sounds.folder_mode");
     public static final IKey OVERLAYS_SOUNDS_LIKE_MODE = L10n.lang("bbs.ui.overlays.sounds.like_mode");
