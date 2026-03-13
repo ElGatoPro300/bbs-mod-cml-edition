@@ -46,8 +46,6 @@ public class CubicCubeRenderer implements ICubicRenderer
     protected int light;
     protected int overlay;
     protected StencilMap stencilMap;
-    public boolean transparentPass;
-    public static final float TRANSP_EPS = 0.01F;
 
     /* Temporary variables to avoid allocating and GC vectors */
     protected Vector3f normal = new Vector3f();
@@ -119,27 +117,6 @@ public class CubicCubeRenderer implements ICubicRenderer
     @Override
     public boolean renderGroup(BufferBuilder builder, MatrixStack stack, ModelGroup group, Model model)
     {
-        if (this.stencilMap != null && !this.stencilMap.isBoneAllowed(group.id))
-        {
-            return false;
-        }
-
-        float a = this.a * group.color.a;
-
-        if (a <= 0F)
-        {
-            return false;
-        }
-
-        if (this.transparentPass)
-        {
-            if (a >= TRANSP_EPS) return false;
-        }
-        else
-        {
-            if (a < TRANSP_EPS) return false;
-        }
-
         for (ModelCube cube : group.cubes)
         {
             this.renderCube(builder, stack, group, cube);

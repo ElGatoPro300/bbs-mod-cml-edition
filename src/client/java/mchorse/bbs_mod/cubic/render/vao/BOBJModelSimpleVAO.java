@@ -21,32 +21,16 @@ public class BOBJModelSimpleVAO extends BOBJModelVAO
     {
         super(data, armature);
 
-        if (this.armature != null && this.armature.bones != null)
-        {
-            this.armLeft = new Joint(this.armature.bones.get("left_arm"), this.armature.bones.get("low_left_arm"));
-            this.armRight = new Joint(this.armature.bones.get("right_arm"), this.armature.bones.get("low_right_arm"));
-            this.legLeft = new Joint(this.armature.bones.get("left_leg"), this.armature.bones.get("low_left_leg"));
-            this.legRight = new Joint(this.armature.bones.get("right_leg"), this.armature.bones.get("low_leg_right"));
-            this.body = new Joint(this.armature.bones.get("body"), this.armature.bones.get("low_body"));
-        }
-        else
-        {
-            this.armLeft = new Joint(null, null);
-            this.armRight = new Joint(null, null);
-            this.legLeft = new Joint(null, null);
-            this.legRight = new Joint(null, null);
-            this.body = new Joint(null, null);
-        }
+        this.armLeft = new Joint(this.armature.bones.get("left_arm"), this.armature.bones.get("low_left_arm"));
+        this.armRight = new Joint(this.armature.bones.get("right_arm"), this.armature.bones.get("low_right_arm"));
+        this.legLeft = new Joint(this.armature.bones.get("left_leg"), this.armature.bones.get("low_left_leg"));
+        this.legRight = new Joint(this.armature.bones.get("right_leg"), this.armature.bones.get("low_leg_right"));
+        this.body = new Joint(this.armature.bones.get("body"), this.armature.bones.get("low_body"));
     }
 
     @Override
     protected void processData(float[] newVertices, float[] newNormals)
     {
-        if (this.armLeft == null || this.armLeft.top == null || this.data == null || this.data.posData == null || this.data.texData == null)
-        {
-            return;
-        }
-
         if (!this.armLeft.isFilled())
         {
             float rmn1 = 22 / 64F;
@@ -65,7 +49,7 @@ public class BOBJModelSimpleVAO extends BOBJModelVAO
                 {
                     int boneIndex = this.data.boneIndexData[i * 4 + j];
 
-                    if (boneIndex == -1 || boneIndex >= this.armature.orderedBones.size())
+                    if (boneIndex == -1)
                     {
                         continue;
                     }
