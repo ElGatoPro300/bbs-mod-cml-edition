@@ -1123,6 +1123,7 @@
     "bbs.ui.news.search": "Search news...",
     "bbs.ui.news.reload": "Reload news",
     "bbs.ui.news.empty": "No news available at the moment.",
+    "bbs.ui.news.updated": "New news are available in the News panel.",
     "bbs.ui.none": "<none>",
     "bbs.ui.ok": "Ok",
     "bbs.ui.overlays.sounds.add_mode": "Minecraft sounds",
