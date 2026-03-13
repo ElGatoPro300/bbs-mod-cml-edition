@@ -492,16 +492,15 @@ public class ModelInstance implements IModelInstance
         else if (this.model instanceof BOBJModel model)
         {
             BOBJModelVAO vao = model.getVao();
-            ShaderProgram shader = program.get();
 
-            if (vao != null && shader != null && vao.armature != null)
+            if (vao != null)
             {
                 stack.push();
                 stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180F));
 
                 vao.armature.setupMatrices();
                 vao.updateMesh(stencilMap);
-                vao.render(shader, stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
+                vao.render(program.get(), stack, color.r, color.g, color.b, color.a, stencilMap, light, overlay);
 
                 stack.pop();
             }

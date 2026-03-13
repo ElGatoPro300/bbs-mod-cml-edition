@@ -12,11 +12,6 @@ public class ModelVAORenderer
 {
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
-        if (shader == null)
-        {
-            return;
-        }
-
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
@@ -32,11 +27,6 @@ public class ModelVAORenderer
 
     public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
-        if (shader == null)
-        {
-            return;
-        }
-
         for (int i = 0; i < 12; i++)
         {
             shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
