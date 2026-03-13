@@ -13,10 +13,15 @@ public class ModelVAORenderer
 {
     public static void render(ShaderProgram shader, IModelVAO modelVAO, MatrixStack stack, float r, float g, float b, float a, int light, int overlay)
     {
+        if (shader == null)
+        {
+            return;
+        }
+
         int currentVAO = GL30.glGetInteger(GL30.GL_VERTEX_ARRAY_BINDING);
         int currentElementArrayBuffer = GL30.glGetInteger(GL30.GL_ELEMENT_ARRAY_BUFFER_BINDING);
 
-        setupUniforms(stack, shader, r, g, b, a);
+        setupUniforms(stack, shader);
 
         shader.bind();
         modelVAO.render(shader.getFormat(), r, g, b, a, light, overlay);
@@ -26,8 +31,13 @@ public class ModelVAORenderer
         GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, currentElementArrayBuffer);
     }
 
-    public static void setupUniforms(MatrixStack stack, ShaderProgram shader, float r, float g, float b, float a)
+    public static void setupUniforms(MatrixStack stack, ShaderProgram shader)
     {
+        if (shader == null)
+        {
+            return;
+        }
+
         for (int i = 0; i < 12; i++)
         {
             shader.addSampler("Sampler" + i, RenderSystem.getShaderTexture(i));
@@ -43,6 +53,10 @@ public class ModelVAORenderer
             shader.modelViewMat.set(new Matrix4f(RenderSystem.getModelViewMatrix()).mul(stack.peek().getPositionMatrix()));
         }
 
+        /* NormalMat is present by default in Iris' shaders, but when there is no Iris,
+         * the BBS mod's model.json shader is being used instead that provides NormalMat
+         * uniform.
+         */
         GlUniform normalUniform = shader.getUniform("NormalMat");
 
         if (normalUniform != null)
@@ -72,7 +86,7 @@ public class ModelVAORenderer
 
         if (shader.colorModulator != null)
         {
-            shader.colorModulator.set(r, g, b, a);
+            shader.colorModulator.set(1F, 1F, 1F, 1F);
         }
 
         if (shader.gameTime != null)

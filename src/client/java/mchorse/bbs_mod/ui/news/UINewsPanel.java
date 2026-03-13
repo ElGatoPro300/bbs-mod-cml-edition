@@ -3,6 +3,7 @@ package mchorse.bbs_mod.ui.news;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import mchorse.bbs_mod.BBSModClient;
+import mchorse.bbs_mod.news.NewsReadManager;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.ui.UIKeys;
@@ -35,21 +36,25 @@ import java.util.Set;
 
 import net.minecraft.client.MinecraftClient;
 import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.utils.Timer;
 
 public class UINewsPanel extends UISidebarDashboardPanel
 {
     private final UIUnreadNewsList list = new UIUnreadNewsList((items) -> this.showSelected());
     private final UISearchList<String> search = new UISearchList<>(this.list);
     private final UIScrollView content = UI.scrollView(6, 6);
-    private final UIIcon reload = new UIIcon(Icons.REFRESH, (b) -> this.reload());
+    private final UIIcon reload = new UIIcon(Icons.REFRESH, (b) -> this.reload(false));
 
     private final Gson gson = new Gson();
     private final Type type = new TypeToken<List<NewsEntry>>(){}.getType();
     private List<NewsEntry> entries = new ArrayList<>();
 
-    private static final Set<String> readIds = new HashSet<>();
+    private static final NewsReadManager readManager = new NewsReadManager();
     private static boolean hasUnread;
     private static UIIcon newsIcon;
+
+    private static final Timer autoTimer = new Timer(60L * 60L * 1000L);
+    private static boolean autoInitialized;
 
     public UINewsPanel(UIDashboard dashboard)
     {
@@ -60,7 +65,7 @@ public class UINewsPanel extends UISidebarDashboardPanel
         title.relative(this.editor).x(10).y(10).h(12);
 
         this.list.background();
-        this.list.bindIds(new ArrayList<>(), readIds);
+        this.list.bindIds(new ArrayList<>(), new HashSet<>());
         this.search.label(UIKeys.NEWS_SEARCH);
         this.search.relative(this.editor).x(10).y(26).w(220).h(1F, -36);
 
@@ -79,6 +84,12 @@ public class UINewsPanel extends UISidebarDashboardPanel
         {
             newsIcon.both(() -> hasUnread ? Icons.NEWS_UNREAD : Icons.NEWS);
         }
+
+        if (!autoInitialized)
+        {
+            autoTimer.mark();
+            autoInitialized = true;
+        }
     }
 
     private static void updateIcon()
@@ -86,18 +97,45 @@ public class UINewsPanel extends UISidebarDashboardPanel
         // Icon uses supplier bound in attachIcon
     }
 
+    public static void tickAuto(UIDashboard dashboard)
+    {
+        if (!autoInitialized)
+        {
+            return;
+        }
+
+        if (!autoTimer.checkRepeat())
+        {
+            return;
+        }
+
+        UINewsPanel panel = dashboard.getPanel(UINewsPanel.class);
+
+        if (panel != null)
+        {
+            panel.reload(true);
+        }
+    }
+
     @Override
     public void requestNames()
     {
-        this.reload();
+        this.reload(false);
     }
 
-    private void reload()
+    private void reload(boolean fromAuto)
     {
         CompletableFuture.runAsync(() ->
         {
             try
             {
+                List<String> oldIds = new ArrayList<>();
+
+                for (NewsEntry e : this.entries)
+                {
+                    oldIds.add(e.id);
+                }
+
                 String json = null;
 
                 try
@@ -126,10 +164,44 @@ public class UINewsPanel extends UISidebarDashboardPanel
 
                 hasUnread = !getUnreadIdsLocal().isEmpty();
 
+                final boolean hasNewEntries;
+
+                if (!fromAuto)
+                {
+                    hasNewEntries = false;
+                }
+                else
+                {
+                    List<String> newIds = new ArrayList<>();
+
+                    for (NewsEntry e : this.entries)
+                    {
+                        newIds.add(e.id);
+                    }
+
+                    boolean tmpHasNew = false;
+
+                    for (String id : newIds)
+                    {
+                        if (id != null && !oldIds.contains(id))
+                        {
+                            tmpHasNew = true;
+                            break;
+                        }
+                    }
+
+                    hasNewEntries = tmpHasNew;
+                }
+
                 MinecraftClient.getInstance().execute(() ->
                 {
                     updateIcon();
                     this.populate();
+
+                    if (hasNewEntries)
+                    {
+                        this.getContext().notifyInfo(UIKeys.NEWS_UPDATED);
+                    }
                 });
             }
             catch (Exception e)
@@ -189,7 +261,7 @@ public class UINewsPanel extends UISidebarDashboardPanel
 
         if (entry.id != null)
         {
-            readIds.add(entry.id);
+            readManager.markRead(entry.id);
             hasUnread = !getUnreadIdsLocal().isEmpty();
             updateIcon();
             this.list.bindIds(collectIdsLocal(), getUnreadIdsLocal());
@@ -255,7 +327,7 @@ public class UINewsPanel extends UISidebarDashboardPanel
 
         for (NewsEntry entry : this.entries)
         {
-            if (entry.id != null && !readIds.contains(entry.id))
+            if (entry.id != null && !readManager.isRead(entry.id))
             {
                 unread.add(entry.id);
             }
