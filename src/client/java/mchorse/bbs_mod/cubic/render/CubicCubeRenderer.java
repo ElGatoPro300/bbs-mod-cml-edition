@@ -46,6 +46,8 @@ public class CubicCubeRenderer implements ICubicRenderer
     protected int light;
     protected int overlay;
     protected StencilMap stencilMap;
+    public boolean transparentPass;
+    public static final float TRANSP_EPS = 0.01F;
 
     /* Temporary variables to avoid allocating and GC vectors */
     protected Vector3f normal = new Vector3f();
