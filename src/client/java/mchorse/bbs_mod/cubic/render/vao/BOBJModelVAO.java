@@ -438,52 +438,77 @@ public class BOBJModelVAO
         }
 
         /* Translucent pass */
-        if (semiTransparent && this.translucentIndexCount > 0)
+        if (semiTransparent)
         {
-            /* Sort translucent triangles back-to-front using current model-view */
-            org.joml.Matrix4f mv = new org.joml.Matrix4f(com.mojang.blaze3d.systems.RenderSystem.getModelViewMatrix()).mul(stack.peek().getPositionMatrix());
-            int triCount = this.translucentIndexCount / 3;
-            Integer[] order = new Integer[triCount];
-            for (int i = 0; i < triCount; i++) order[i] = i;
-
-            org.joml.Vector4f vtx = new org.joml.Vector4f();
-            java.util.Arrays.sort(order, (aIdx, bIdx) -> {
-                int a0 = aIdx * 3;
-                int ia0 = this.getTransIndex(a0);
-                int ia1 = this.getTransIndex(a0 + 1);
-                int ia2 = this.getTransIndex(a0 + 2);
-                float az = centroidZ(ia0, ia1, ia2, this.tmpVertices, mv, vtx);
-
-                int b0 = bIdx * 3;
-                int ib0 = this.getTransIndex(b0);
-                int ib1 = this.getTransIndex(b0 + 1);
-                int ib2 = this.getTransIndex(b0 + 2);
-                float bz = centroidZ(ib0, ib1, ib2, this.tmpVertices, mv, vtx);
-
-                return Float.compare(az, bz); /* back-to-front (Z more positive is farther) */
-            });
-
-            int[] sortedTrans = new int[this.translucentIndexCount];
-            int p = 0;
-            for (int i = 0; i < triCount; i++)
-            {
-                int base = order[i] * 3;
-                sortedTrans[p++] = this.getTransIndex(base);
-                sortedTrans[p++] = this.getTransIndex(base + 1);
-                sortedTrans[p++] = this.getTransIndex(base + 2);
-            }
-
-            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
-            GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, sortedTrans, GL15.GL_DYNAMIC_DRAW);
-
             com.mojang.blaze3d.systems.RenderSystem.depthMask(false);
 
-            GL11.glCullFace(GL11.GL_FRONT);
-            GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
-            GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+            /* Render opaque part as translucent if global alpha < 1 */
+            if (globalTranslucent)
+            {
+                if (this.opaqueIndexCount > 0)
+                {
+                    GL11.glCullFace(GL11.GL_FRONT);
+                    GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.opaqueIndexBuffer);
+                    GL30.glDrawElements(GL30.GL_TRIANGLES, this.opaqueIndexCount, GL30.GL_UNSIGNED_INT, 0L);
 
-            GL11.glCullFace(GL11.GL_BACK);
-            GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+                    GL11.glCullFace(GL11.GL_BACK);
+                    GL30.glDrawElements(GL30.GL_TRIANGLES, this.opaqueIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+                }
+                else
+                {
+                    GL11.glCullFace(GL11.GL_FRONT);
+                    GL30.glDrawArrays(GL11.GL_TRIANGLES, 0, this.count);
+
+                    GL11.glCullFace(GL11.GL_BACK);
+                    GL30.glDrawArrays(GL11.GL_TRIANGLES, 0, this.count);
+                }
+            }
+
+            if (this.translucentIndexCount > 0)
+            {
+                /* Sort translucent triangles back-to-front using current model-view */
+                org.joml.Matrix4f mv = new org.joml.Matrix4f(com.mojang.blaze3d.systems.RenderSystem.getModelViewMatrix()).mul(stack.peek().getPositionMatrix());
+                int triCount = this.translucentIndexCount / 3;
+                Integer[] order = new Integer[triCount];
+                for (int i = 0; i < triCount; i++) order[i] = i;
+
+                org.joml.Vector4f vtx = new org.joml.Vector4f();
+                java.util.Arrays.sort(order, (aIdx, bIdx) -> {
+                    int a0 = aIdx * 3;
+                    int ia0 = this.getTransIndex(a0);
+                    int ia1 = this.getTransIndex(a0 + 1);
+                    int ia2 = this.getTransIndex(a0 + 2);
+                    float az = centroidZ(ia0, ia1, ia2, this.tmpVertices, mv, vtx);
+
+                    int b0 = bIdx * 3;
+                    int ib0 = this.getTransIndex(b0);
+                    int ib1 = this.getTransIndex(b0 + 1);
+                    int ib2 = this.getTransIndex(b0 + 2);
+                    float bz = centroidZ(ib0, ib1, ib2, this.tmpVertices, mv, vtx);
+
+                    return Float.compare(az, bz); /* back-to-front (Z more positive is farther) */
+                });
+
+                int[] sortedTrans = new int[this.translucentIndexCount];
+                int p = 0;
+                for (int i = 0; i < triCount; i++)
+                {
+                    int base = order[i] * 3;
+                    sortedTrans[p++] = this.getTransIndex(base);
+                    sortedTrans[p++] = this.getTransIndex(base + 1);
+                    sortedTrans[p++] = this.getTransIndex(base + 2);
+                }
+
+                GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
+                GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, sortedTrans, GL15.GL_DYNAMIC_DRAW);
+
+                GL11.glCullFace(GL11.GL_FRONT);
+                GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, this.translucentIndexBuffer);
+                GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+
+                GL11.glCullFace(GL11.GL_BACK);
+                GL30.glDrawElements(GL30.GL_TRIANGLES, this.translucentIndexCount, GL30.GL_UNSIGNED_INT, 0L);
+            }
 
             com.mojang.blaze3d.systems.RenderSystem.depthMask(true);
         }
