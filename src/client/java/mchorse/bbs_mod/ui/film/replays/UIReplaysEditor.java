@@ -1427,7 +1427,7 @@ public class UIReplaysEditor extends UIElement
                 String pathWithProperty = colon != -1 ? sheetId.substring(0, colon) : sheetId;
                 String propertyId = StringUtils.fileName(pathWithProperty);
 
-                if (pathWithProperty.startsWith(formPath) && (propertyId.equals("pose") || propertyId.startsWith("pose_overlay")))
+                if (StringUtils.parentPath(pathWithProperty).equals(formPath) && (propertyId.equals("pose") || propertyId.startsWith("pose_overlay")))
                 {
                     propertyPath = pathWithProperty;
                 }
@@ -1445,7 +1445,7 @@ public class UIReplaysEditor extends UIElement
                 String pathWithProperty = colon != -1 ? sheetId.substring(0, colon) : sheetId;
                 String propertyId = StringUtils.fileName(pathWithProperty);
 
-                if (pathWithProperty.startsWith(formPath) && (propertyId.equals("pose") || propertyId.startsWith("pose_overlay")))
+                if (StringUtils.parentPath(pathWithProperty).equals(formPath) && (propertyId.equals("pose") || propertyId.startsWith("pose_overlay")))
                 {
                     propertyPath = pathWithProperty;
                 }
@@ -1466,7 +1466,7 @@ public class UIReplaysEditor extends UIElement
                 int colon = sheetId.indexOf(':');
                 String pathWithProperty = colon != -1 ? sheetId.substring(0, colon) : sheetId;
 
-                if (pathWithProperty.startsWith(formPath))
+                if (StringUtils.parentPath(pathWithProperty).equals(formPath))
                 {
                     String propertyId = StringUtils.fileName(pathWithProperty);
 
