@@ -226,6 +226,11 @@ public class UIPropTransform extends UITransform
 
         UIContext context = this.getContext();
 
+        if (context == null)
+        {
+            return;
+        }
+
         if (this.editing)
         {
             Axis[] values = Axis.values();
@@ -265,6 +270,11 @@ public class UIPropTransform extends UITransform
 
         UIContext context = this.getContext();
 
+        if (context == null)
+        {
+            return;
+        }
+
         this.axis = primary == null ? Axis.X : primary;
         this.secondaryAxis = secondary;
         this.freeRotation = false;
@@ -290,6 +300,11 @@ public class UIPropTransform extends UITransform
         }
 
         UIContext context = this.getContext();
+
+        if (context == null)
+        {
+            return;
+        }
 
         if (this.editing)
         {

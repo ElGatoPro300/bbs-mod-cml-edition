@@ -319,6 +319,11 @@ public class UIDashboard extends UIBaseMenu
         {
             this.panels.panel.update();
         }
+
+        if (this.main.isVisible())
+        {
+            UINewsPanel.tickAuto(this);
+        }
     }
 
     @Override
