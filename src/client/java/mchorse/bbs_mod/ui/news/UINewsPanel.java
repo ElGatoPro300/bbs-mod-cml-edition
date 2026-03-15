@@ -2,9 +2,12 @@ package mchorse.bbs_mod.ui.news;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mojang.blaze3d.systems.RenderSystem;
+import mchorse.bbs_mod.BBSMod;
 import mchorse.bbs_mod.BBSModClient;
 import mchorse.bbs_mod.news.NewsReadManager;
 import mchorse.bbs_mod.resources.Link;
+import mchorse.bbs_mod.resources.packs.URLSourcePack;
 import mchorse.bbs_mod.l10n.keys.IKey;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.dashboard.UIDashboard;
@@ -17,10 +20,13 @@ import mchorse.bbs_mod.ui.framework.elements.input.list.UISearchList;
 import mchorse.bbs_mod.ui.framework.elements.utils.UILabel;
 import mchorse.bbs_mod.ui.framework.elements.utils.UIText;
 import mchorse.bbs_mod.ui.utils.UI;
+import mchorse.bbs_mod.ui.utils.icons.Icon;
 import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.NaturalOrderComparator;
 import mchorse.bbs_mod.utils.colors.Colors;
+import mchorse.bbs_mod.utils.resources.Pixels;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -32,11 +38,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import net.minecraft.client.MinecraftClient;
 import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.graphics.texture.TextureManager;
 import mchorse.bbs_mod.utils.Timer;
+import org.lwjgl.opengl.GL11;
 
 public class UINewsPanel extends UISidebarDashboardPanel
 {
@@ -55,6 +64,7 @@ public class UINewsPanel extends UISidebarDashboardPanel
 
     private static final Timer autoTimer = new Timer(60L * 60L * 1000L);
     private static boolean autoInitialized;
+    private static final Set<Link> prefetchingImages = Collections.synchronizedSet(new HashSet<>());
 
     public UINewsPanel(UIDashboard dashboard)
     {
@@ -158,11 +168,11 @@ public class UINewsPanel extends UISidebarDashboardPanel
                 }
                 else
                 {
-                    List<NewsEntry> loaded = gson.fromJson(json, type);
+                    List<NewsEntry> loaded = this.gson.fromJson(json, this.type);
                     this.entries = loaded != null ? loaded : new ArrayList<>();
                 }
 
-                hasUnread = !getUnreadIdsLocal().isEmpty();
+                hasUnread = !this.getUnreadIdsLocal().isEmpty();
 
                 final boolean hasNewEntries;
 
@@ -193,6 +203,8 @@ public class UINewsPanel extends UISidebarDashboardPanel
                     hasNewEntries = tmpHasNew;
                 }
 
+                prefetchImages(this.entries);
+
                 MinecraftClient.getInstance().execute(() ->
                 {
                     updateIcon();
@@ -210,6 +222,92 @@ public class UINewsPanel extends UISidebarDashboardPanel
                 MinecraftClient.getInstance().execute(this::populate);
             }
         });
+    }
+
+    private static void prefetchImages(List<NewsEntry> entries)
+    {
+        if (entries == null)
+        {
+            return;
+        }
+
+        for (NewsEntry entry : entries)
+        {
+            if (entry == null || entry.images == null)
+            {
+                continue;
+            }
+
+            for (String url : entry.images)
+            {
+                if (url == null || url.isEmpty())
+                {
+                    continue;
+                }
+
+                Link link = Link.create(url);
+
+                if (link.source == null || !link.source.startsWith("http"))
+                {
+                    continue;
+                }
+
+                TextureManager textures = BBSModClient.getTextures();
+
+                if (textures.textures.get(link) != null)
+                {
+                    continue;
+                }
+
+                if (!prefetchingImages.add(link))
+                {
+                    continue;
+                }
+
+                CompletableFuture.runAsync(() ->
+                {
+                    try
+                    {
+                        try (InputStream stream = URLSourcePack.downloadImage(link))
+                        {
+                            if (stream == null)
+                            {
+                                return;
+                            }
+
+                            Pixels pixels = Pixels.fromPNGStream(stream);
+
+                            if (pixels == null)
+                            {
+                                return;
+                            }
+
+                            RenderSystem.recordRenderCall(() ->
+                            {
+                                try
+                                {
+                                    Texture texture = Texture.textureFromPixels(pixels, GL11.GL_NEAREST);
+
+                                    BBSModClient.getTextures().textures.put(link, texture);
+                                }
+                                catch (Exception exception)
+                                {
+                                    exception.printStackTrace();
+                                }
+                            });
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        exception.printStackTrace();
+                    }
+                    finally
+                    {
+                        prefetchingImages.remove(link);
+                    }
+                });
+            }
+        }
     }
 
     private void populate()
@@ -288,8 +386,15 @@ public class UINewsPanel extends UISidebarDashboardPanel
 
         if (entry.images != null)
         {
-            for (String url : entry.images)
+            Set<String> uniqueUrls = new LinkedHashSet<>(entry.images);
+
+            for (String url : uniqueUrls)
             {
+                if (url == null || url.isEmpty())
+                {
+                    continue;
+                }
+
                 Link link = Link.create(url);
                 this.content.add(new UINewsImage(link));
             }
@@ -351,10 +456,64 @@ public class UINewsPanel extends UISidebarDashboardPanel
         {
             super.render(context);
 
-            Texture texture = BBSModClient.getTextures().getTexture(this.link);
+            TextureManager textures = BBSModClient.getTextures();
+            Texture texture;
+
+            if (this.link.source != null && this.link.source.startsWith("http"))
+            {
+                texture = textures.textures.get(this.link);
+            }
+            else
+            {
+                texture = textures.getTexture(this.link);
+            }
 
             if (texture == null)
             {
+                long frame = System.currentTimeMillis() / 200L;
+                int index = (int) (frame % 3L);
+                float cx = this.area.mx();
+                float cy = this.area.my() - 12;
+                float scale = 2.25F;
+                Icon icon;
+
+                if (index == 0)
+                {
+                    icon = Icons.LOADING_BBS_1;
+                }
+                else if (index == 1)
+                {
+                    icon = Icons.LOADING_BBS_2;
+                }
+                else
+                {
+                    icon = Icons.LOADING_BBS_3;
+                }
+
+                float iw = icon.w * scale;
+                float ih = icon.h * scale;
+
+                Texture atlas = BBSModClient.getTextures().getTexture(icon.texture);
+                context.batcher.texturedBox(
+                    atlas,
+                    Colors.WHITE,
+                    cx - iw / 2F,
+                    cy - ih / 2F,
+                    iw,
+                    ih,
+                    icon.x,
+                    icon.y,
+                    icon.x + icon.w,
+                    icon.y + icon.h,
+                    icon.textureW,
+                    icon.textureH
+                );
+
+                String loading = UIKeys.NEWS_IMAGE_LOADING.get();
+                int lw = context.batcher.getFont().getWidth(loading);
+
+                context.batcher.textShadow(loading, cx - lw / 2F, cy + ih / 2F + 4, Colors.LIGHTER_GRAY);
+
                 return;
             }
 
