@@ -9,6 +9,8 @@ import mchorse.bbs_mod.news.NewsReadManager;
 import mchorse.bbs_mod.resources.Link;
 import mchorse.bbs_mod.resources.packs.URLSourcePack;
 import mchorse.bbs_mod.l10n.keys.IKey;
+import mchorse.bbs_mod.graphics.texture.Texture;
+import mchorse.bbs_mod.graphics.texture.TextureManager;
 import mchorse.bbs_mod.ui.UIKeys;
 import mchorse.bbs_mod.ui.dashboard.UIDashboard;
 import mchorse.bbs_mod.ui.dashboard.panels.UISidebarDashboardPanel;
@@ -25,6 +27,9 @@ import mchorse.bbs_mod.ui.utils.icons.Icons;
 import mchorse.bbs_mod.utils.NaturalOrderComparator;
 import mchorse.bbs_mod.utils.colors.Colors;
 import mchorse.bbs_mod.utils.resources.Pixels;
+import mchorse.bbs_mod.utils.Timer;
+import net.minecraft.client.MinecraftClient;
+import org.lwjgl.opengl.GL11;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -40,12 +45,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import net.minecraft.client.MinecraftClient;
-import mchorse.bbs_mod.graphics.texture.Texture;
-import mchorse.bbs_mod.graphics.texture.TextureManager;
-import mchorse.bbs_mod.utils.Timer;
-import org.lwjgl.opengl.GL11;
 
 public class UINewsPanel extends UISidebarDashboardPanel
 {
@@ -64,6 +63,7 @@ public class UINewsPanel extends UISidebarDashboardPanel
 
     private static final Timer autoTimer = new Timer(60L * 60L * 1000L);
     private static boolean autoInitialized;
+    private static boolean sessionInitialReloadDone;
     private static final Set<Link> prefetchingImages = Collections.synchronizedSet(new HashSet<>());
 
     public UINewsPanel(UIDashboard dashboard)
@@ -125,6 +125,24 @@ public class UINewsPanel extends UISidebarDashboardPanel
         {
             panel.reload(true);
         }
+    }
+
+    public static void onDashboardOpened(UIDashboard dashboard)
+    {
+        if (sessionInitialReloadDone)
+        {
+            return;
+        }
+
+        UINewsPanel panel = dashboard.getPanel(UINewsPanel.class);
+
+        if (panel == null)
+        {
+            return;
+        }
+
+        sessionInitialReloadDone = true;
+        panel.reload(false);
     }
 
     @Override
