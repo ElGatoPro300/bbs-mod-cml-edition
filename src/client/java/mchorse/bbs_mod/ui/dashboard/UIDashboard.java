@@ -324,6 +324,7 @@ public class UIDashboard extends UIBaseMenu
         if (this.main.isVisible())
         {
             UINewsPanel.tickAuto(this);
+            UINewsPanel.tickPriorityAnnouncement(this);
         }
     }
 
